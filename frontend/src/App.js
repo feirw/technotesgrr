@@ -380,7 +380,7 @@ function App() {
                   activeTab === 'flashcards ' ? 'bg-pink-500 text-white' : 'text-gray-700 hover:text-pink-500'
                 }`}
               >
-                Flashcards{ /*its up*/}
+                Flashcards
                 </button>
               <button
                 onClick={() => setActiveTab('leaderboard')}
