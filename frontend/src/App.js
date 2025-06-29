@@ -174,6 +174,7 @@ function App() {
       setQuizStarted(true);
       setCurrentQuestion(0);
       setScore(0);
+      resetProgress();
       setShowQuizMenu(true);
     } else {
       alert('Παρακαλώ εισάγετε το όνομα σας για να ξεκινήσετε το quiz!');
@@ -192,13 +193,20 @@ function App() {
     setIsMenuOpen(false);
   };
 
-  // When closing the menu, don't reset progress
+  // When closing the menu, reset progress
   const handleMenuClose = () => {
-    setShowQuizMenu(false);
-    setQuizStarted(false);
+    const hasProgress = Object.values(categoryAnswers).some((obj) => Object.keys(obj).length > 0);
+    if (hasProgress) {
+      setShowExitWarning(true);
+    } else {
+      resetProgress();
+      setShowQuizMenu(false);
+      setQuizStarted(false);
+    }
   };
   const confirmExit = () => {
     setShowExitWarning(false);
+    resetProgress();
     setShowQuizMenu(false);
     setQuizStarted(false);
   };

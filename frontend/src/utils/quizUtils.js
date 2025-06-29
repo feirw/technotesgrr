@@ -1,5 +1,14 @@
 const BACKEND_URL = 'http://localhost:8001';
 
+const chapterNameMap = {
+  lists: 'Λίστες',
+  stack: 'Στοίβα',
+  queue: 'Ουρά',
+  trees: 'Δένδρα',
+  oop: 'Αντικειμενοστραφής προγραμματισμός',
+  debug: 'Αποσφαλμάτωση',
+};
+
 export const fetchQuizCategories = async () => {
   try {
     const response = await fetch(`${BACKEND_URL}/api/categories`);
@@ -53,7 +62,7 @@ export const fetchAllQuizzes = async () => {
     // Format into quiz objects with chapter titles
     const quizzes = Object.entries(questionsByChapter).map(([chapter, questions]) => ({
       id: `chapter-${chapter}`,
-      title: `Κεφάλαιο ${chapter}`,
+      title: `Κεφάλαιο ${chapterNameMap[chapter] || chapter}`,
       questions,
     }));
 

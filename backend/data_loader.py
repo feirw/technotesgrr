@@ -24,34 +24,58 @@ def extract_chapter_from_filename(filename):
     # If no chapter pattern found, use the filename itself
     return name
 
-def generate_category_from_filename(filename):
-    """Generate a readable category from filename"""
+def generate_category_from_filename(filename, data_type):
+    """Generate a readable category from filename and data type
+    
+    Args:
+        filename: The filename without path
+        data_type: Either 'quiz' or 'flashcard'
+    """
     name = filename.replace('.json', '').replace('_', ' ').replace('-', ' ')
     
-    # Special mappings for common abbreviations
+    # Special mappings for common abbreviations based on data type
     category_mappings = {
-        'oop': 'Αντικειμενοστραφής Προγραμματισμός',
-        'stack': 'Στοίβα',
-        'queue': 'Ουρά',
-        'lists': 'Λίστες',
-        'trees': 'Δένδρα',
-        'debug': 'Εκσφαλμάτωση',
-        'chap1': 'Ανάλυση Προβλήματος',
-        'chap2': 'Βασικές Έννοιες Αλγορίθμων',
-        'chap3': 'Δομές Δεδομένων και Αλγόριθμοι',
-        'chap6': 'Εισαγωγή στον Προγραμματισμό',
-        'chap7': 'Βασικές Έννοιες Προγραμματισμού',
-        'chap8': 'Επιλογή και Επανάληψη',
-        'chap10': 'Υποπρογράμματα'
+        'quiz': {
+            'chap1': 'Ανάλυση προβλήματος',
+            'chap2': 'Βασικές έννοιες αλγορίθμων',
+            'chap3': 'Δομές δεδομένων και Αλγόριθμοι',
+            'chap6': 'Εισαγωγή στον προγραμματισμό',
+            'chap7': 'Βασικές έννοιες προγραμματισμού',
+            'chap8': 'Επιλογή και επανάληψη',
+            'chap10': 'Υποπρογράμματα',
+            'stack': 'Στοίβα',
+            'queue': 'Ουρά',
+            'lists': 'Λίστες',
+            'trees': 'Δένδρα',
+            'oop': 'Αντικειμενοστραφής προγραμματισμός',
+            'debug': 'Εκσφαλμάτωση',
+        },
+        'flashcard': {
+            'chap1': 'Ανάλυση προβλήματος',
+            'chap2': 'Βασικές έννοιες αλγορίθμων',
+            'chap3': 'Δομές δεδομένων και Αλγόριθμοι',
+            'chap4': 'Εισαγωγή στον προγραμματισμό',
+            'chap5': 'Βασικές έννοιες προγραμματισμού',
+            'chap6': 'Επιλογή και επανάληψη',
+            'chap7': 'Υποπρογράμματα',
+            'chap8': 'Στοίβα',
+            'chap9': 'Ουρά',
+            'chap10': 'Λίστες',
+            'chap11': 'Δένδρα',
+            'chap12': 'Γράφοι',
+            'chap13': 'Τεχνικές σχεδίασης και ανάλυσης αλγορίθμων',
+            'chap14': 'Αντικειμενοστραφής προγραμματισμός',
+            'chap15': 'Εκσφαλμάτωση'
+        }
     }
     
-    # Check if we have a specific mapping
+    # Check if we have a specific mapping for this data type
     lower_name = name.lower().strip()
-    if lower_name in category_mappings:
-        return category_mappings[lower_name]
+    if data_type in category_mappings and lower_name in category_mappings[data_type]:
+        return category_mappings[data_type][lower_name]
     
-    # Otherwise, title case the name
-    return name.title()
+    # Otherwise, title case the name and add the data type
+    return f"{name.title()} ({data_type.title()})"
 
 def load_quizzes_to_db():
     """Load all quiz questions from JSON files to database"""
@@ -79,7 +103,7 @@ def load_quizzes_to_db():
         for file_path in json_files:
             filename = file_path.name
             chapter = extract_chapter_from_filename(filename)
-            category = generate_category_from_filename(filename)
+            category = generate_category_from_filename(filename, 'quiz')  # Updated call
             
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
@@ -160,7 +184,7 @@ def load_flashcards_to_db():
         for file_path in json_files:
             filename = file_path.name
             chapter = extract_chapter_from_filename(filename)
-            category = generate_category_from_filename(filename)
+            category = generate_category_from_filename(filename, 'flashcard')  # Updated call
             
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
