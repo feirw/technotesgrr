@@ -48,8 +48,13 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add frontend
-          git commit -m "Prettier formatted the code"
-          git push
+          # Check for changes and only commit if there are any
+          if ! git diff --staged --quiet; then
+            git commit -m "Prettier formatted the code"
+            git push
+          else
+            echo "No formatting changes to commit."
+          fi
         working-directory: .
 
       - name: Build project
