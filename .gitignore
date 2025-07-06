@@ -1,71 +1,38 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-.idea/
-dist
-# dependencies
+
+# ===================
+# IDE & Editor
+# ===================
+.vscode/
+
+# ===================
+# Dependencies
+# ===================
 node_modules/
-/.pnp
-.pnp.js
-.yarn/install-state.gz
-.vscode
-# testing
-/coverage
-dump.rdb
-chainlit.md
-.chainlit
-# next.js
-/.next/
-/out/
-.ipynb_checkpoints/
-# production
-/build
+/build/
+/dist/
 
-# misc
-.DS_Store
-*.pem
+# ===================
+# Python
+# ===================
+env/
+__pycache__/
 
-# debug
+# ===================
+# Logs & Caches
+# ===================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-# .env*.local
-*token.json*
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-*pyc*
-#*.env
-.ac
-agenthub/agents/youtube/db
-*credentials.json*
-
-venv/
-env/
-.venv/
-__pycache__/
+# ===================
+# Sensitive & Local Files
+# ===================
+*.env
+.env
 
 # ===================
-# ADDITIONAL RULES TO PREVENT FILE SIZE VIOLATIONS
+# Archives & Packages
 # ===================
-# Archive files (anywhere in the project)
-**/*.zip
-**/*.tar.gz
-**/*.tar
-**/*.tgz
-
-# Build caches and artifacts
-.cache/
-*.pack
-
-# System packages
-*.deb
-
-# Python native libraries
-*.dylib
-
-# Android SDK
-android-sdk/
+context.py
+ai.md

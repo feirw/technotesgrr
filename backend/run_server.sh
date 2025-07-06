@@ -5,4 +5,4 @@ source env/bin/activate
 pip install -r requirements.txt
 python3 server.py
 
-rm leaderboard.db
+# rm leaderboard.db
