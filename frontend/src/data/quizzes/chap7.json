@@ -5,11 +5,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -19,11 +19,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -33,17 +33,17 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
   {
     "id": "4",
-    "question": "Η λογική έκφραση Χ ́Η (ΟΧΙ Χ) είναι πάντα αληθής για κάθε τιμή της λογικής μεταβλητής Χ.",
+    "question": "Η λογική έκφραση Χ Ή (ΟΧΙ Χ) είναι πάντα αληθής για κάθε τιμή της λογικής μεταβλητής Χ.",
     "answers": [
       {
         "text": "Σωστό",
@@ -75,11 +75,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -89,11 +89,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -131,11 +131,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -145,11 +145,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -159,11 +159,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },

@@ -47,11 +47,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -61,11 +61,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -75,11 +75,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -117,11 +117,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -145,31 +145,17 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
   {
     "id": "12",
     "question": "To εκτελέσιμο πρόγραμμα δημιουργείται ακόμα και στην περίπτωση που το αρχικό πρόγραμμα περιέχει λογικά, αλλά όχι συντακτικά λάθη.",
-    "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
-    ]
-  },
-  {
-    "id": "13",
-    "question": "Να αναφέρετε επιγραμματικά πέντε από τα πλεονεκτήματα του δομημένου προγραμματισμού.",
     "answers": [
       {
         "text": "Σωστό",

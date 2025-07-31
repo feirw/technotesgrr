@@ -3,182 +3,104 @@
     "id": "1",
     "question": "Σε έναν αλγόριθμο στον οποίο υπάρχει μόνο η δομή ακολουθίας κάθε εντολή εκτελείται ακριβώς μια φορά.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "2",
     "question": "Κατά την εκτέλεση της εντολής ΔΙΑΒΑΣΕ, το πρόγραμμα διακόπτει την εκτέλεσή του και περιμένει την εισαγωγή τιμών από το πληκτρολόγιο.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "3",
     "question": "Ο χρόνος εκτέλεσης κάθε αλγορίθμου εξαρτάται από τη Γλώσσα προγραμματισμού που θα χρησιμοποιηθεί.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "4",
     "question": "Ένας από τους παράγοντες από τους οποίους εξαρτάται η επιλογή της καταλληλότερης γλώσσας προγραμματισμού για την ανάπτυξη μιας εφαρμογής είναι το είδος της εφαρμογής.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "5",
     "question": "Ένας αλγόριθμος είναι μία πεπερασμένη σειρά ενεργειών.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "6",
     "question": "Οι ενέργειες που ορίζει ένας αλγόριθμος είναι αυστηρά καθορισμένες.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "7",
     "question": "Η έννοια του αλγόριθμου συνδέεται αποκλειστικά με την Πληροφορική.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": false },
+      { "text": "Λάθος", "correct": true }
     ]
   },
   {
     "id": "8",
     "question": "Ο αλγόριθμος τελειώνει μετά από πεπερασμένα βήματα εκτέλεσης εντολών.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "9",
     "question": "Ο πιο δομημένος τρόπος παρουσίασης αλγορίθμων είναι με ελεύθερο κείμενο.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": false },
+      { "text": "Λάθος", "correct": true }
     ]
   },
   {
     "id": "10",
     "question": "Ένας αλγόριθμος στοχεύει στην επίλυση ενός προβλήματος.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "11",
     "question": "Η περατότητα ενός αλγορίθμου αναφέρεται στο γεγονός ότι καταλήγει στη λύση του προβλήματος μετά από πεπερασμένο αριθμό βημάτων(εντολών).",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": true },
+      { "text": "Λάθος", "correct": false }
     ]
   },
   {
     "id": "12",
     "question": "Για να αναπαραστήσουμε τα δεδομένα και τα αποτελέσματα σ’ έναν αλγόριθμο, χρησιμοποιούμε μόνο σταθερές.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": false },
+      { "text": "Λάθος", "correct": true }
     ]
   },
   {
     "id": "13",
-    "question": "Η έννοια του αλγορίθμου συνδέεται αποκλειστικά και μόνο με προβλήματα της Πληροφορικής",
+    "question": "Η έννοια του αλγορίθμου συνδέεται αποκλειστικά και μόνο με προβλήματα της Πληροφορικής.",
     "answers": [
-      {
-        "text": "Σωστό",
-        "correct": true
-      },
-      {
-        "text": "Λάθος",
-        "correct": false
-      }
+      { "text": "Σωστό", "correct": false },
+      { "text": "Λάθος", "correct": true }
     ]
   }
 ]

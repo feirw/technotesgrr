@@ -42,7 +42,6 @@ const Notes = () => {
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-2xl font-bold text-pink-600">€{note.price}</span>
             <button className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
               Αγορά
             </button>
