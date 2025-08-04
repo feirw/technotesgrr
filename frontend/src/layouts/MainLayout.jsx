@@ -67,7 +67,9 @@ const MainLayout = () => {
                   className="object-contain w-full h-full"
                 />
               </div>
-              <span className="text-xl font-bold text-gray-800 tracking-tight dark:text-white">technotesgr</span>
+              <span className="text-xl font-bold text-gray-800 tracking-tight dark:text-white">
+                technotesgr
+              </span>
             </NavLink>
 
             {/* Desktop Navigation */}
@@ -109,10 +111,7 @@ const MainLayout = () => {
 
       {/* Mobile Overlay */}
       {isMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={closeMenu}
-        />
+        <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" onClick={closeMenu} />
       )}
 
       {/* Mobile Side Drawer */}
@@ -124,19 +123,35 @@ const MainLayout = () => {
         <div className="p-6 space-y-6">
           <div className="flex justify-between items-center mb-4">
             <span className="text-lg font-semibold text-gray-700 dark:text-gray-100">Μενού</span>
-            <button onClick={closeMenu} className="p-2 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded">
+            <button
+              onClick={closeMenu}
+              className="p-2 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded"
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
 
-          <MobileNavButton to="/" icon="🏠" onClick={closeMenu}>Αρχική</MobileNavButton>
-          <MobileNavButton to="/notes" icon="📚" onClick={closeMenu}>Σημειώσεις</MobileNavButton>
-          <MobileNavButton to="/quiz" icon="🎯" onClick={closeMenu}>Quiz</MobileNavButton>
-          <MobileNavButton to="/flashcards" icon="🧠" onClick={closeMenu}>Flashcards</MobileNavButton>
-          
-            <a
+          <MobileNavButton to="/" icon="🏠" onClick={closeMenu}>
+            Αρχική
+          </MobileNavButton>
+          <MobileNavButton to="/notes" icon="📚" onClick={closeMenu}>
+            Σημειώσεις
+          </MobileNavButton>
+          <MobileNavButton to="/quiz" icon="🎯" onClick={closeMenu}>
+            Quiz
+          </MobileNavButton>
+          <MobileNavButton to="/flashcards" icon="🧠" onClick={closeMenu}>
+            Flashcards
+          </MobileNavButton>
+
+          <a
             href="https://evripides.mysch.gr/dave/"
             target="_blank"
             rel="noopener noreferrer"
@@ -149,7 +164,9 @@ const MainLayout = () => {
             </div>
           </a>
 
-          <MobileNavButton to="/about" icon="ℹ️" onClick={closeMenu}>Σχετικά</MobileNavButton>
+          <MobileNavButton to="/about" icon="ℹ️" onClick={closeMenu}>
+            Σχετικά
+          </MobileNavButton>
         </div>
       </div>
 

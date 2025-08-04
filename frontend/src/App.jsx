@@ -8,8 +8,6 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import AboutPage from './pages/AboutPage';
 import AlgorithmsPage from './pages/AlgorithmsPage';
 
-
-
 function App() {
   return (
     <Routes>
