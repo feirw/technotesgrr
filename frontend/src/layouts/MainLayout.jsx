@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import technotesLogo from '../assets/technotes_logo.jpg';
+import technotesLogo from '../assets/technotes_logo.png';
 
 // Το NavLink αντί για button θα αλλάζει αυτόματα το στυλ όταν το URL ταιριάζει
 const NavButton = ({ to, children }) => (

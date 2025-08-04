@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Εισάγουμε το Link για πλοήγηση
 import { useAppContext } from '../contexts/AppContext'; // 1. Εισάγουμε το hook για το context
 import SliderCard from '../components/SliderCard.jsx';
-import { Instagram, Youtube } from 'lucide-react';
-import technotesLogo from '../assets/technotes_logo.jpg';
+import { Instagram, Music2} from 'lucide-react';
+import technotesLogo from '../assets/technotes_logo.png';
 
 const BACKEND_URL = 'http://localhost:8001';
 
@@ -83,10 +83,10 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-pink-400 to-pink-600 text-white py-20">
+      <div className="relative bg-[#ffabaa] text-white py-20">
         <div className="container mx-auto px-6 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-pink-200 rounded-lg flex items-center justify-center">
+            <div className="w-16 h-16 bg-transparent rounded-lg flex items-center justify-center">
               <img
                 src={technotesLogo}
                 alt="Technotesgr Logo"
@@ -318,20 +318,22 @@ const HomePage = () => {
               <div className="mt-8 pt-8 border-t border-gray-200">
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                    Ή επικοινωνήστε μαζί μας στα social media
+                    Ή επικοινωνήστε μαζί μας στα social media!
                   </h3>
                   <div className="flex justify-center space-x-6">
                     <a
-                      href="#"
+                      href="https://www.instagram.com/technotesgr/"
+                      target="_blank"
                       className="flex items-center space-x-2 text-pink-600 hover:text-pink-700 transition-colors"
                     >
                       <Instagram size={20} /> <span className="font-medium">@technotesgr</span>
                     </a>
                     <a
-                      href="#"
+                      href="https://www.tiktok.com/@technotesgr"
+                      target="_blank"
                       className="flex items-center space-x-2 text-pink-600 hover:text-pink-700 transition-colors"
                     >
-                      <Youtube size={20} /> <span className="font-medium">@technotesgr</span>
+                      <Music2 size={20} /> <span className="font-medium">@technotesgr</span>
                     </a>
                   </div>
                 </div>
