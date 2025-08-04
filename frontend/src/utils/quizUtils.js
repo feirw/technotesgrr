@@ -1,6 +1,15 @@
 const BACKEND_URL = 'http://localhost:8001';
 
 const chapterNameMap = {
+  '1': 'Ανάλυση προβλήματος',
+  '2': 'Βασικές έννοιες αλγορίθμων',
+  '3': 'Δομές δεδομένων και Αλγόριθμοι',
+  '6': 'Εισαγωγή στον προγραμματισμό',
+  '7': 'Βασικές έννοιες προγραμματισμού',
+  '8': 'Επιλογή και επανάληψη',
+  '10': 'Υποπρογράμματα',
+  '12': 'Γράφοι',
+  '13': 'Τεχνικές σχεδίασης και ανάλυσης αλγορίθμων',
   lists: 'Λίστες',
   stack: 'Στοίβα',
   queue: 'Ουρά',
@@ -62,7 +71,7 @@ export const fetchAllQuizzes = async () => {
     // Format into quiz objects with chapter titles
     const quizzes = Object.entries(questionsByChapter).map(([chapter, questions]) => ({
       id: `chapter-${chapter}`,
-      title: `Κεφάλαιο ${chapterNameMap[chapter] || chapter}`,
+      title: `${chapterNameMap[chapter] || chapter}`,
       questions,
     }));
 
