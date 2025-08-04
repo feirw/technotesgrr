@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Εισάγουμε το Link για πλοήγηση
 import { useAppContext } from '../contexts/AppContext'; // 1. Εισάγουμε το hook για το context
 import SliderCard from '../components/SliderCard.jsx';
-import { Instagram, Music2} from 'lucide-react';
+import { Instagram, Music2 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 
 const BACKEND_URL = 'http://localhost:8001';
