@@ -2,22 +2,17 @@ import React from 'react';
 import Flashcards from '../components/Flashcards.jsx';
 
 const FlashcardsPage = () => {
-  // Αυτή η σελίδα δεν χρειάζεται δική της κατάσταση (state) ή πολύπλοκη λογική.
-  // Ο ρόλος της είναι να παρέχει τη γενική δομή της σελίδας (π.χ. background, τίτλος)
-  // και να αποδίδει το component των Flashcards.
-
   return (
-    <div className="min-h-screen bg-pink-50 py-8">
-      <div className="container mx-auto px-6 max-w-4xl">
-        <p className="text-lg sm:text-xl text-gray-700 mb-6 text-center font-semibold">
-          Εδώ θα βρείτε flashcards για να επαναλάβετε τις έννοιες της θεωρίας μας.
+    <div className="min-h-screen bg-[#fff2f2] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white/60 backdrop-blur-md rounded-xl shadow-md p-8 sm:p-10">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-6">
+            Flashcards Θεωρίας ΑΕΠΠ
+        </h1>
+        <p className="text-center text-gray-700 text-lg sm:text-xl mb-8">
+          Κάνε επανάληψη στις βασικές έννοιες μέσα από διαδραστικές κάρτες.
         </p>
 
-        {/* 
-          Το component <Flashcards /> είναι πλήρως αυτόνομο.
-          Διαχειρίζεται μόνο του τη φόρτωση των δεδομένων, την επιλογή κατηγορίας
-          και την εμφάνιση των καρτών.
-        */}
+        {/* Flashcards Component */}
         <Flashcards />
       </div>
     </div>

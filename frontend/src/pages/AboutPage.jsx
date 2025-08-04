@@ -2,49 +2,59 @@ import React from 'react';
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-pink-50 py-8">
-      <div className="container mx-auto px-6 max-w-4xl">
-        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8">
-            Σχετικά με εμάς
+    <div className="min-h-screen bg-[#fff2f2] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg p-8 sm:p-12">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8">
+            Σχετικά με εμάς 🎓
           </h1>
 
-          {/* 
-            Η κλάση 'prose' πιθανόν να προέρχεται από το plugin 'tailwindcss/typography'.
-            Βοηθάει στη γρήγορη και όμορφη μορφοποίηση κειμένου όπως άρθρα, χωρίς
-            να χρειάζεται να βάζεις κλάσεις σε κάθε παράγραφο, λίστα κ.λπ.
-          */}
-          <div className="prose max-w-none">
-            <p className="text-base sm:text-lg text-gray-700 mb-6">
-              Καλώς ήρθατε στο technotesgr! Είμαι μία καθηγήτρια πληροφορικής που στοχεύει να
-              βοηθήσει τους μαθητές της Γ' Λυκείου να επιτύχουν στις Πανελλαδικές εξετάσεις
-              Πληροφορικής.
+          <div className="prose max-w-none prose-p:text-gray-700 prose-li:text-gray-700">
+            <p className="text-lg">
+              Καλώς ήρθατε στο <strong>technotesgr</strong>! Είμαι φοιτήτρια του Τμήματος Πληροφορικής και Τηλεπικοινωνιών (ΕΚΠΑ), με στόχο να βοηθήσω τους μαθητές της Γ' Λυκείου να επιτύχουν στις Πανελλαδικές εξετάσεις Πληροφορικής.
             </p>
 
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">Ο σκοπός μας</h2>
-            <p className="text-gray-700 mb-6">
-              Να παρέχουμε ποιοτικό εκπαιδευτικό υλικό και διαδραστικές δραστηριότητες που θα
-              βοηθήσουν τους μαθητές να κατανοήσουν σε βάθος την πληροφορική και να προετοιμαστούν
-              αποτελεσματικά για τις εξετάσεις τους.
+            <h2 className="text-2xl font-semibold text-gray-800 mt-8">🎯 Ο σκοπός μας</h2>
+            <p>
+              Να προσφέρουμε ποιοτικό υλικό και σύγχρονα εργαλεία ώστε οι μαθητές να κατανοήσουν την Πληροφορική εις βάθος και να είναι πλήρως προετοιμασμένοι για τις εξετάσεις.
             </p>
 
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">Τι προσφέρουμε</h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-2 mb-6">
-              <li>Ολοκληρωμένες σημειώσεις εφ'όλης της ύλης</li>
-              <li>Quiz με ερωτήσεις από παλιές πανελλαδικές εξετάσεις</li>
-              <li>Flashcards για εύκολη επανάληψη εννοιών από την θεωρία μας</li>
+            <h2 className="text-2xl font-semibold text-gray-800 mt-8">📚 Τι προσφέρουμε</h2>
+            <ul className="list-disc list-inside space-y-2">
+              <li>Ολοκληρωμένες σημειώσεις εφ’ όλης της ύλης</li>
+              <li>Quiz με ερωτήσεις από παλιές Πανελλαδικές</li>
+              <li>Flashcards για γρήγορη επανάληψη θεωρίας</li>
               <li>
-                Παιχνίδια οπτικοποίησης αλγορίθμων (δυαδική αναζήτηση, γραμμική
-                αναζήτηση,δέντρα,λίστες,γράφοι)
+                Διαδραστικά παιχνίδια οπτικοποίησης αλγορίθμων όπως:
+                <ul className="list-disc list-inside pl-5">
+                  <li>Δυαδική και Γραμμική Αναζήτηση</li>
+                  <li>Δέντρα, Λίστες, Γράφοι</li>
+                </ul>
               </li>
             </ul>
 
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-              Στοιχεία Επικοινωνίας
-            </h2>
-            <div className="space-y-2 text-gray-700">
-              <p> Instagram: @technotesgr</p>
-              <p> TikTok: @technotesgr</p>
+            <h2 className="text-2xl font-semibold text-gray-800 mt-8">📬 Επικοινωνία</h2>
+            <p>
+              Μπορείτε να επικοινωνήσετε ή να ακολουθήσετε το project στα παρακάτω social:
+            </p>
+            <div className="mt-4 space-y-2">
+              <a
+                href="https://www.instagram.com/technotesgr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#ff7b7b] hover:underline hover:text-[#ff4d4d] font-medium"
+              >
+                👉 Instagram: @technotesgr
+              </a>
+              <br />
+              <a
+                href="https://www.tiktok.com/@technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#ff7b7b] hover:underline hover:text-[#ff4d4d] font-medium"
+              >
+                👉 TikTok: @technotesgr
+              </a>
             </div>
           </div>
         </div>

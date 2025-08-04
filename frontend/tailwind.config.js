@@ -8,4 +8,6 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  darkMode: 'class', // ή 'media' για αυτόματο με βάση το OS
+  // ...
 };
