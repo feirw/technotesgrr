@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext';
 import SliderCard from '../components/SliderCard.jsx';
 import { Instagram, Music2 } from 'lucide-react';
@@ -29,8 +28,7 @@ const reviewsData = [
   {
     name: 'Νίκος Αντωνίου',
     rating: 5,
-    description:
-     'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
+    description: 'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
   },
   {
     name: 'Αγγελική Βασιλείου',
@@ -40,8 +38,23 @@ const reviewsData = [
   },
 ];
 
+const featuresData = [
+  {
+    title: 'Σημειώσεις',
+    desc: 'Σημειώσεις που καλύπτουν σε βάθος όλη την θεωρία και τις μεθοδολογίες της ύλης',
+  },
+  {
+    title: 'Quiz',
+    desc: 'Τεστάρετε τις γνώσεις σας σε όλη την θεωρία του ΑΕΠΠ',
+  },
+  {
+    title: 'Flashcards',
+    desc: 'Επαναλάβετε γρήγορα και εύκολα τις βασικές έννοιες της θεωρίας',
+  },
+];
+
 const HomePage = () => {
-  const { nickname, leaderboard, loadingLeaderboard } = useAppContext();
+  const { nickname } = useAppContext();
   const [contactForm, setContactForm] = useState({
     firstName: '',
     lastName: '',
@@ -105,52 +118,9 @@ const HomePage = () => {
       {/* Features Section */}
       <div className="py-16">
         <div className="container mx-auto px-6">
-<<<<<<< HEAD
           <h2 className="text-2xl font-bold text-center mb-12">Τι προσφέρουμε</h2>
-
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {[
-        {
-          title: 'Σημειώσεις',
-          desc: 'Σημειώσεις που καλύπτουν σε βάθος όλη την θεωρία και τις μεθοδολογίες της ύλης',
-        },
-        {
-          title: 'Quiz',
-          desc: 'Τεστάρετε τις γνώσεις σας σε όλη την θεωρία του ΑΕΠΠ',
-        },
-        {
-          title: 'Flashcards',
-          desc: 'Επαναλάβετε γρήγορα και εύκολα τις βασικές έννοιες της θεωρίας',
-        },
-      ].map((feat, i) => (
-        <div
-          key={i}
-          className="group bg-white/60 dark:bg-[#1f1f1f]/70 backdrop-blur-md rounded-xl shadow-md p-6 text-center transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:ring-2 hover:ring-[#ffa9a9]/50"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-white group-hover:text-[#ff7b7b] transition-colors">
-            {feat.title}
-          </h3>
-          <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-            {feat.desc}
-          </p>
-=======
-          <h2 className="text-3xl font-bold text-center mb-12">Τι προσφέρουμε</h2>
-
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              {
-                title: 'Σημειώσεις',
-                desc: 'Σημειώσεις που καλύπτουν σε βάθος όλη την θεωρία και τις μεθοδολογίες της ύλης',
-              },
-              {
-                title: 'Quiz',
-                desc: 'Τεστάρετε τις γνώσεις σας σε όλη την θεωρία του ΑΕΠΠ',
-              },
-              {
-                title: 'Flashcards',
-                desc: 'Επαναλάβετε γρήγορα και εύκολα τις βασικές έννοιες της θεωρίας',
-              },
-            ].map((feat, i) => (
+            {featuresData.map((feat, i) => (
               <div
                 key={i}
                 className="group bg-white/60 dark:bg-[#1f1f1f]/70 backdrop-blur-md rounded-xl shadow-md p-6 text-center transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:ring-2 hover:ring-[#ffa9a9]/50"
@@ -162,7 +132,6 @@ const HomePage = () => {
               </div>
             ))}
           </div>
->>>>>>> 9ae91ba0e6ff3edbf52d6da934216fccc25502e4
         </div>
       </div>
 
@@ -192,128 +161,7 @@ const HomePage = () => {
         sliderSettings={{ autoplaySpeed: 4000, pauseOnHover: true }}
       />
 
-      {/* Contact Section */}
-      <div className="py-16 bg-[#fff2f2]">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">Επικοινωνία</h2>
-          <div className="max-w-2xl mx-auto bg-white/70 backdrop-blur-md rounded-xl shadow-md p-8">
-            <p className="text-center text-gray-600 mb-8">
-              Έχετε ερωτήσεις ή προτάσεις; Στείλτε μας μήνυμα και θα επικοινωνήσουμε μαζί σας!
-            </p>
-            <form className="space-y-6" onSubmit={handleContactSubmit}>
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="firstName"
-                    className="text-sm font-medium text-gray-700 mb-2 block"
-                  >
-                    Όνομα *
-                  </label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    required
-                    value={contactForm.firstName}
-                    onChange={handleContactInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa9a9]"
-                    placeholder="Το όνομά σας"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="lastName"
-                    className="text-sm font-medium text-gray-700 mb-2 block"
-                  >
-                    Επώνυμο *
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    required
-                    value={contactForm.lastName}
-                    onChange={handleContactInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa9a9]"
-                    placeholder="Το επώνυμό σας"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  value={contactForm.email}
-                  onChange={handleContactInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa9a9]"
-                  placeholder="example@email.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Μήνυμα *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  required
-                  value={contactForm.message}
-                  onChange={handleContactInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa9a9] resize-none"
-                  placeholder="Γράψτε το μήνυμά σας εδώ..."
-                />
-              </div>
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className="bg-[#ffa9a9] text-white px-8 py-3 rounded-lg hover:bg-[#ff8c8c] transition-colors text-lg font-semibold shadow-md hover:shadow-xl"
-                  disabled={contactSubmitting}
-                >
-                  {contactSubmitting ? 'Αποστολή...' : 'Αποστολή Μηνύματος'}
-                </button>
-              </div>
-            </form>
-            {contactSuccess && (
-              <div className="mt-4 text-center text-green-600">
-                <p className="font-semibold">Το μήνυμά σας εστάλη επιτυχώς!</p>
-                <p className="text-sm">Θα επικοινωνήσουμε μαζί σας σύντομα.</p>
-              </div>
-            )}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-center mb-4">
-                Ή επικοινωνήστε μαζί μας στα social media!
-              </h3>
-              <div className="flex justify-center space-x-6">
-                <a
-                  href="https://www.instagram.com/technotesgr/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center space-x-2 text-[#ff7b7b] hover:text-[#ff4d4d] transition-colors"
-                >
-                  <Instagram size={20} /> <span>@technotesgr</span>
-                </a>
-                <a
-                  href="https://www.tiktok.com/@technotesgr"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center space-x-2 text-[#ff7b7b] hover:text-[#ff4d4d] transition-colors"
-                >
-                  <Music2 size={20} /> <span>@technotesgr</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-<<<<<<< HEAD
-     <footer className="bg-white/80 backdrop-blur-md border-t border-[#ffdada] mt-16">
+      <footer className="bg-white/80 backdrop-blur-md border-t border-[#ffdada] mt-16">
   <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
     
     {/* About */}
@@ -359,15 +207,8 @@ const HomePage = () => {
           👉 TikTok: @technotesgr
         </a>
       </div>
-      
     </div>
   </div>
-
-  {/*location*/}
-  <div className="text-center text-gray-500 text-sm py-4 border-t border-gray-200">
-    <p> 📍Athens,Greece</p>
-  </div>
-
 
   {/* Bottom Bar */}
   <div className="bg-white/60 backdrop-blur-md py-4 border-t border-[#ffdada]">
@@ -377,19 +218,6 @@ const HomePage = () => {
     </div>
   </div>
 </footer>
-
-
-=======
-      {/*contact*/}
-      <footer className="bg-white/80 backdrop-blur-md py-6 mt-16">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-600 text-sm">
-            © {new Date().getFullYear()} technotesgr. All rights reserved.
-          </p>
-          <p className="text-gray-500 text-xs mt-2">Made with ❤️ by feirw,areynbaw and deathwish</p>
-        </div>
-      </footer>
->>>>>>> 9ae91ba0e6ff3edbf52d6da934216fccc25502e4
     </div>
   );
 };

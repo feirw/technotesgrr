@@ -164,13 +164,11 @@ const MainLayout = () => {
               <span className="font-medium">Algorithms Games</span>
             </div>
           </a>
-<<<<<<< HEAD
-=======
 
           <MobileNavButton to="/about" icon="ℹ️" onClick={closeMenu}>
             Σχετικά
           </MobileNavButton>
->>>>>>> 9ae91ba0e6ff3edbf52d6da934216fccc25502e4
+
         </div>
       </div>
 
