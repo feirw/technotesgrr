@@ -6,8 +6,11 @@ import QuizPage from './pages/QuizPage';
 import FlashcardsPage from './pages/FlashcardsPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AlgorithmsPage from './pages/AlgorithmsPage';
+<<<<<<< HEAD
 import PaliathemataPage from './pages/PaliathemataPage';
 import FlipbookViewer from './components/FlipbookViewer';
+=======
+>>>>>>> 9ae91ba0e6ff3edbf52d6da934216fccc25502e4
 
 function App() {
   return (
