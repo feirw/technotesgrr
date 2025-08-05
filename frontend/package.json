@@ -10,6 +10,8 @@
     "prettier": "^3.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-pageflip": "^2.0.3",
+    "react-pdf": "^10.0.1",
     "react-quizlet-flashcard": "^3.0.0",
     "react-router-dom": "^7.6.3",
     "react-scripts": "^5.0.1",

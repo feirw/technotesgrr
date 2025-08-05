@@ -5,25 +5,26 @@ import NotesPage from './pages/NotesPage';
 import QuizPage from './pages/QuizPage';
 import FlashcardsPage from './pages/FlashcardsPage';
 import LeaderboardPage from './pages/LeaderboardPage';
-import AboutPage from './pages/AboutPage';
 import AlgorithmsPage from './pages/AlgorithmsPage';
-
-
+import PaliathemataPage from './pages/PaliathemataPage';
+import FlipbookViewer from './components/FlipbookViewer';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        {/* Οι εσωτερικές διαδρομές αποδίδονται μέσα στο Outlet του MainLayout */}
         <Route index element={<HomePage />} />
         <Route path="notes" element={<NotesPage />} />
         <Route path="quiz" element={<QuizPage />} />
         <Route path="flashcards" element={<FlashcardsPage />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
-        <Route path="about" element={<AboutPage />} />
-        <Route path="/algorithms" element={<AlgorithmsPage />} />
+        <Route path="algorithms" element={<AlgorithmsPage />} />
+        <Route path="paliathemata" element={<PaliathemataPage />} />
+      
 
-        {/* Μπορείς να προσθέσεις και μια σελίδα 404 Not Found */}
+        {/* Νέα διαδρομή για flipbook */}
+        <Route path="flipbook" element={<FlipbookViewer />} />
+
         <Route path="*" element={<div>404 - Η σελίδα δεν βρέθηκε</div>} />
       </Route>
     </Routes>

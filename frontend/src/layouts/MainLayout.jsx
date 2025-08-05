@@ -77,7 +77,8 @@ const MainLayout = () => {
               <NavButton to="/quiz">Quiz</NavButton>
               <NavButton to="/flashcards">Flashcards</NavButton>
               <NavButton to="/algorithms">Algorithms Games</NavButton>
-              <NavButton to="/about">Σχετικά</NavButton>
+              <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
+              {/* <ΝavButton to="/palia">Παλια Θεματα</NavButton> */}
             </div>
 
             {/* Mobile Menu Button */}
@@ -148,8 +149,6 @@ const MainLayout = () => {
               <span className="font-medium">Algorithms Games</span>
             </div>
           </a>
-
-          <MobileNavButton to="/about" icon="ℹ️" onClick={closeMenu}>Σχετικά</MobileNavButton>
         </div>
       </div>
 

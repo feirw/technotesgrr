@@ -16,7 +16,7 @@ const Notes = () => {
               <iframe
                 src={note.pdfUrl}
                 width="100%"
-                height="300"
+                height="400"
                 className="rounded border"
                 title={`Preview of ${note.title}`}
               />
@@ -28,23 +28,21 @@ const Notes = () => {
               href={note.pdfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full max-w-xs text-center py-2 px-4 rounded-lg transition-colors bg-blue-500 text-white hover:bg-blue-600"
+              className="w-full max-w-xs text-center py-2 px-4 rounded-lg transition-colors bg-[#ffabaa] text-white hover:bg-gray-300"
             >
               Προβολή σε νέο παράθυρο
             </a>
             <a
               href={note.pdfUrl}
               download
-              className="w-full max-w-xs text-center py-2 px-4 rounded-lg transition-colors bg-gray-200 text-gray-800 hover:bg-gray-300"
+              className="w-full max-w-xs text-center py-2 px-4 rounded-lg transition-colors bg-[#ffabaa] text-white hover:bg-gray-300"
             >
               Λήψη PDF
             </a>
           </div>
 
           <div className="flex justify-between items-center">
-            <button className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
-              Αγορά
-            </button>
+          
           </div>
         </div>
       ))}

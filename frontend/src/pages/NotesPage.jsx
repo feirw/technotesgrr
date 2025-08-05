@@ -1,5 +1,8 @@
 import React from 'react';
 import Notes from '../components/Notes.jsx';
+import Palia from '../components/Palia.jsx';
+import { FlipHorizontal } from 'lucide-react';
+import FlipbookViewer from '../components/FlipbookViewer.jsx';
 
 const NotesPage = () => {
   return (
@@ -9,6 +12,10 @@ const NotesPage = () => {
           Εδώ θα βρείτε σημειώσεις για την θεωρία του ΑΕΠΠ.
         </p>
         <Notes />
+
+        <Palia />
+
+        <FlipbookViewer /> 
       </div>
     </div>
   );

@@ -100,7 +100,7 @@ const Flashcards = () => {
             <button
               key={set.id}
               onClick={() => setSelectedSetIndex(index)}
-              className="px-6 py-3 rounded-full text-lg font-semibold transition-all duration-200 bg-pink-200 text-pink-800 hover:bg-pink-300"
+              className="px-6 py-3 rounded-full text-lg font-semibold transition-all duration-200 bg-pink-100 text-pink-800 hover:bg-pink-300"
             >
               {set.title}
               <span className="ml-2 text-sm">({set.questions.length})</span>

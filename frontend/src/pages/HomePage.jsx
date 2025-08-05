@@ -30,7 +30,7 @@ const reviewsData = [
     name: 'Νίκος Αντωνίου',
     rating: 5,
     description:
-      'Το leaderboard με κίνητρο να συνεχίσω να εξασκούμαι! Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
+     'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
   },
   {
     name: 'Αγγελική Βασιλείου',
@@ -97,12 +97,12 @@ const HomePage = () => {
       </div>
 
       {/* Features Section */}
-<div className="py-16">
-  <div className="container mx-auto px-6">
-    <h2 className="text-3xl font-bold text-center mb-12">Τι προσφέρουμε</h2>
+      <div className="py-16">
+        <div className="container mx-auto px-6">
+          <h2 className="text-2xl font-bold text-center mb-12">Τι προσφέρουμε</h2>
 
-    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-      {[
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {[
         {
           title: 'Σημειώσεις',
           desc: 'Σημειώσεις που καλύπτουν σε βάθος όλη την θεωρία και τις μεθοδολογίες της ύλης',
@@ -217,17 +217,71 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/*contact*/}
-      <footer className="bg-white/80 backdrop-blur-md py-6 mt-16">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-600 text-sm">
-            © {new Date().getFullYear()} technotesgr. All rights reserved.
-          </p>
-          <p className="text-gray-500 text-xs mt-2">
-            Made with ❤️ by feirw,areynbaw and deathwish
-          </p>
-        </div>
-      </footer>
+     <footer className="bg-white/80 backdrop-blur-md border-t border-[#ffdada] mt-16">
+  <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+    
+    {/* About */}
+    <div>
+      <h3 className="text-lg font-bold text-gray-800 mb-4">Σχετικά με εμάς 🎓</h3>
+      <p className="text-gray-600 text-sm">
+        Το <strong>technotesgr</strong> δημιουργήθηκε για να βοηθήσει τους μαθητές της Γ' Λυκείου
+        να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής,
+        προσφέροντας σημειώσεις, quiz και διαδραστικά εργαλεία.
+      </p>
+    </div>
+
+    {/* Quick Links */}
+    <div>
+      <h3 className="text-lg font-bold text-gray-800 mb-4">Γρήγοροι Σύνδεσμοι</h3>
+      <ul className="space-y-2 text-sm">
+        <li><a href="/notes" className="text-gray-600 hover:text-[#ff7b7b] transition">📚 Σημειώσεις</a></li>
+        <li><a href="/quiz" className="text-gray-600 hover:text-[#ff7b7b] transition">🎯 Quiz</a></li>
+        <li><a href="/flashcards" className="text-gray-600 hover:text-[#ff7b7b] transition">🧠 Flashcards</a></li>
+        <li><a href="https://evripides.mysch.gr/dave/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#ff7b7b] transition">💻 Algorithms Games</a></li>
+      </ul>
+    </div>
+
+    {/* Social Media */}
+    <div>
+      <h3 className="text-lg font-bold text-gray-800 mb-4">Επικοινωνία 📬</h3>
+      <div className="space-y-2 text-sm">
+        <a
+          href="https://www.instagram.com/technotesgr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#00000] hover:underline hover:text-[#ff4d4d] font-medium"
+        >
+          👉 Instagram: @technotesgr
+        </a>
+        <br />
+        <a
+          href="https://www.tiktok.com/@technotesgr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#00000] hover:underline hover:text-[#ff4d4d] font-medium"
+        >
+          👉 TikTok: @technotesgr
+        </a>
+      </div>
+      
+    </div>
+  </div>
+
+  {/*location*/}
+  <div className="text-center text-gray-500 text-sm py-4 border-t border-gray-200">
+    <p> 📍Athens,Greece</p>
+  </div>
+
+
+  {/* Bottom Bar */}
+  <div className="bg-white/60 backdrop-blur-md py-4 border-t border-[#ffdada]">
+    <div className="container mx-auto px-6 text-center text-sm text-gray-500">
+      <p>© {new Date().getFullYear()} technotesgr. All rights reserved.</p>
+      <p className="mt-1">Made with ❤️ by feirw, areynbaw and deathwish</p>
+    </div>
+  </div>
+</footer>
+
 
     </div>
   );
