@@ -168,7 +168,6 @@ const MainLayout = () => {
           <MobileNavButton to="/about" icon="ℹ️" onClick={closeMenu}>
             Σχετικά
           </MobileNavButton>
-
         </div>
       </div>
 

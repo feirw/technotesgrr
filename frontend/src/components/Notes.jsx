@@ -41,9 +41,7 @@ const Notes = () => {
             </a>
           </div>
 
-          <div className="flex justify-between items-center">
-          
-          </div>
+          <div className="flex justify-between items-center"></div>
         </div>
       ))}
     </div>

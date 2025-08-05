@@ -162,62 +162,82 @@ const HomePage = () => {
       />
 
       <footer className="bg-white/80 backdrop-blur-md border-t border-[#ffdada] mt-16">
-  <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-    
-    {/* About */}
-    <div>
-      <h3 className="text-lg font-bold text-gray-800 mb-4">Σχετικά με εμάς 🎓</h3>
-      <p className="text-gray-600 text-sm">
-        Το <strong>technotesgr</strong> δημιουργήθηκε για να βοηθήσει τους μαθητές της Γ' Λυκείου
-        να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής,
-        προσφέροντας σημειώσεις, quiz και διαδραστικά εργαλεία.
-      </p>
-    </div>
+        <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+          {/* About */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Σχετικά με εμάς 🎓</h3>
+            <p className="text-gray-600 text-sm">
+              Το <strong>technotesgr</strong> δημιουργήθηκε για να βοηθήσει τους μαθητές της Γ'
+              Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής,
+              προσφέροντας σημειώσεις, quiz και διαδραστικά εργαλεία.
+            </p>
+          </div>
 
-    {/* Quick Links */}
-    <div>
-      <h3 className="text-lg font-bold text-gray-800 mb-4">Γρήγοροι Σύνδεσμοι</h3>
-      <ul className="space-y-2 text-sm">
-        <li><a href="/notes" className="text-gray-600 hover:text-[#ff7b7b] transition">📚 Σημειώσεις</a></li>
-        <li><a href="/quiz" className="text-gray-600 hover:text-[#ff7b7b] transition">🎯 Quiz</a></li>
-        <li><a href="/flashcards" className="text-gray-600 hover:text-[#ff7b7b] transition">🧠 Flashcards</a></li>
-        <li><a href="https://evripides.mysch.gr/dave/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#ff7b7b] transition">💻 Algorithms Games</a></li>
-      </ul>
-    </div>
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Γρήγοροι Σύνδεσμοι</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="/notes" className="text-gray-600 hover:text-[#ff7b7b] transition">
+                  📚 Σημειώσεις
+                </a>
+              </li>
+              <li>
+                <a href="/quiz" className="text-gray-600 hover:text-[#ff7b7b] transition">
+                  🎯 Quiz
+                </a>
+              </li>
+              <li>
+                <a href="/flashcards" className="text-gray-600 hover:text-[#ff7b7b] transition">
+                  🧠 Flashcards
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://evripides.mysch.gr/dave/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-[#ff7b7b] transition"
+                >
+                  💻 Algorithms Games
+                </a>
+              </li>
+            </ul>
+          </div>
 
-    {/* Social Media */}
-    <div>
-      <h3 className="text-lg font-bold text-gray-800 mb-4">Επικοινωνία 📬</h3>
-      <div className="space-y-2 text-sm">
-        <a
-          href="https://www.instagram.com/technotesgr/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#00000] hover:underline hover:text-[#ff4d4d] font-medium"
-        >
-          👉 Instagram: @technotesgr
-        </a>
-        <br />
-        <a
-          href="https://www.tiktok.com/@technotesgr"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#00000] hover:underline hover:text-[#ff4d4d] font-medium"
-        >
-          👉 TikTok: @technotesgr
-        </a>
-      </div>
-    </div>
-  </div>
+          {/* Social Media */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Επικοινωνία 📬</h3>
+            <div className="space-y-2 text-sm">
+              <a
+                href="https://www.instagram.com/technotesgr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#00000] hover:underline hover:text-[#ff4d4d] font-medium"
+              >
+                👉 Instagram: @technotesgr
+              </a>
+              <br />
+              <a
+                href="https://www.tiktok.com/@technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#00000] hover:underline hover:text-[#ff4d4d] font-medium"
+              >
+                👉 TikTok: @technotesgr
+              </a>
+            </div>
+          </div>
+        </div>
 
-  {/* Bottom Bar */}
-  <div className="bg-white/60 backdrop-blur-md py-4 border-t border-[#ffdada]">
-    <div className="container mx-auto px-6 text-center text-sm text-gray-500">
-      <p>© {new Date().getFullYear()} technotesgr. All rights reserved.</p>
-      <p className="mt-1">Made with ❤️ by feirw, areynbaw and deathwish</p>
-    </div>
-  </div>
-</footer>
+        {/* Bottom Bar */}
+        <div className="bg-white/60 backdrop-blur-md py-4 border-t border-[#ffdada]">
+          <div className="container mx-auto px-6 text-center text-sm text-gray-500">
+            <p>© {new Date().getFullYear()} technotesgr. All rights reserved.</p>
+            <p className="mt-1">Made with ❤️ by feirw, areynbaw and deathwish</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 const Palia = () => {
   // Αν το palia.pdf βρίσκεται στον φάκελο public/
   const pdfUrl = '/pdfs/panel.pdf';
@@ -6,7 +5,6 @@ const Palia = () => {
   return (
     <div className="flex h-screen flex-col items-center gap-8 p-6 bg-[#fff2f2]">
       <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow w-full max-w-2xl">
-
         {/* Ενσωμάτωση PDF */}
         <div className="mb-4">
           <iframe
@@ -38,8 +36,7 @@ const Palia = () => {
         </div>
 
         {/* Κουμπί αγοράς */}
-        <div className="flex justify-between items-center">
-        </div>
+        <div className="flex justify-between items-center"></div>
       </div>
     </div>
   );

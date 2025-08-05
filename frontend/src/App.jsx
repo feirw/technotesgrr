@@ -20,7 +20,6 @@ function App() {
         <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="algorithms" element={<AlgorithmsPage />} />
         <Route path="paliathemata" element={<PaliathemataPage />} />
-      
 
         {/* Νέα διαδρομή για flipbook */}
         <Route path="flipbook" element={<FlipbookViewer />} />
