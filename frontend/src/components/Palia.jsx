@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 
 const BTN =
-  "w-full max-w-xs text-center py-2 px-4 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-offset-2";
+  'w-full max-w-xs text-center py-2 px-4 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-offset-2';
 const BTN_PRIMARY = `${BTN} bg-[#feabab] text-black hover:bg-[#fd9a9a] focus:ring-[#feabab]`;
 const BTN_SECONDARY = `${BTN} bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 focus:ring-gray-300`;
 
-const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
+const Palia = ({ pdfPath = '/pdfs/panel.pdf', fileName = 'panel.pdf' }) => {
   const [loading, setLoading] = useState(true);
   const [timedOut, setTimedOut] = useState(false);
   const frameRef = useRef(null);
@@ -20,11 +20,11 @@ const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
   }, [pdfPath]);
 
   const handleOpenNew = () => {
-    window.open(pdfPath, "_blank", "noopener,noreferrer");
+    window.open(pdfPath, '_blank', 'noopener,noreferrer');
   };
 
   const handleDownload = () => {
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = pdfPath;
     a.download = fileName;
     document.body.appendChild(a);
@@ -34,7 +34,7 @@ const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
 
   const handlePrint = () => {
     // Ανοίγουμε σε νέο tab και κάνουμε print (οι περισσότεροι browsers το τιμάνε)
-    const w = window.open(pdfPath, "_blank", "noopener,noreferrer");
+    const w = window.open(pdfPath, '_blank', 'noopener,noreferrer');
     if (w) {
       const tryPrint = () => {
         try {
@@ -85,8 +85,8 @@ const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
           {/* Fallback μήνυμα αν αργεί υπερβολικά */}
           {loading && timedOut && (
             <div className="absolute inset-x-0 bottom-0 m-3 rounded bg-yellow-50 border border-yellow-200 p-3 text-yellow-800 text-sm shadow">
-              Αργεί να φορτώσει; Μπορεί να το μπλοκάρει ο browser. Δοκίμασε
-              «Προβολή σε νέο παράθυρο».
+              Αργεί να φορτώσει; Μπορεί να το μπλοκάρει ο browser. Δοκίμασε «Προβολή σε νέο
+              παράθυρο».
             </div>
           )}
 
@@ -96,7 +96,7 @@ const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
             title={fileName}
             width="100%"
             height="720"
-            className={`block ${loading ? "invisible absolute -z-10" : ""}`}
+            className={`block ${loading ? 'invisible absolute -z-10' : ''}`}
             onLoad={() => setLoading(false)}
             allow="fullscreen"
             allowFullScreen
@@ -113,27 +113,15 @@ const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
             Προβολή σε νέο παράθυρο
           </button>
 
-          <button
-            onClick={handleDownload}
-            className={BTN_PRIMARY}
-            aria-label="Λήψη PDF"
-          >
+          <button onClick={handleDownload} className={BTN_PRIMARY} aria-label="Λήψη PDF">
             Λήψη PDF
           </button>
 
-          <button
-            onClick={handlePrint}
-            className={BTN_SECONDARY}
-            aria-label="Εκτύπωση PDF"
-          >
+          <button onClick={handlePrint} className={BTN_SECONDARY} aria-label="Εκτύπωση PDF">
             Εκτύπωση
           </button>
 
-          <button
-            onClick={handleFullscreen}
-            className={BTN_SECONDARY}
-            aria-label="Πλήρης οθόνη"
-          >
+          <button onClick={handleFullscreen} className={BTN_SECONDARY} aria-label="Πλήρης οθόνη">
             Πλήρης οθόνη
           </button>
         </div>
@@ -142,4 +130,4 @@ const Palia = ({ pdfPath = "/pdfs/panel.pdf", fileName = "panel.pdf" }) => {
   );
 };
 
-export default Palia; 
+export default Palia;

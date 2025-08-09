@@ -14,7 +14,6 @@ const NotesPage = () => {
         <Notes />
 
         <Palia />
-
       </div>
     </div>
   );

@@ -111,9 +111,7 @@ const Flashcards = () => {
               onMouseLeave={(e) => (e.currentTarget.style.background = BRAND_LIGHT)}
             >
               {set.title}
-              <span className="ml-2 text-sm opacity-80">
-                ({set.questions.length})
-              </span>
+              <span className="ml-2 text-sm opacity-80">({set.questions.length})</span>
             </button>
           ))}
         </div>
