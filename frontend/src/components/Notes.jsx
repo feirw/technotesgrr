@@ -1,53 +1,116 @@
-import { notes } from '../utils/notes';
+import React, { useEffect, useRef, useState } from 'react';
 
-const Notes = () => {
+const BTN =
+  'w-full max-w-xs text-center py-2 px-4 rounded-lg font-semibold shadow ' +
+  'transition focus:outline-none focus:ring-2 focus:ring-offset-2';
+const BTN_PRIMARY =
+  `${BTN} bg-[#feabab] text-black hover:bg-[#fd9a9a] focus:ring-[#feabab]`;
+const BTN_SECONDARY =
+  `${BTN} bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 focus:ring-gray-300`;
+
+const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
+  const [loading, setLoading] = useState(true);
+  const [timedOut, setTimedOut] = useState(false);
+  const frameRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setTimedOut(true), 8000); // fallback αν αργήσει πολύ
+    return () => clearTimeout(t);
+  }, [pdfPath]);
+
+  const handleOpenNew = () => window.open(pdfPath, '_blank', 'noopener,noreferrer');
+
+  const handleDownload = () => {
+    const a = document.createElement('a');
+    a.href = pdfPath;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const handlePrint = () => {
+    // Ανοίγουμε σε νέο tab και κάνουμε print (τα περισσότερα browsers το τιμάνε)
+    const w = window.open(pdfPath, '_blank', 'noopener,noreferrer');
+    if (w) {
+      const tryPrint = () => {
+        try {
+          w.focus();
+          w.print();
+        } catch {
+          // ignore
+        }
+      };
+      setTimeout(tryPrint, 800);
+    }
+  };
+
+  const handleFullscreen = async () => {
+    if (containerRef.current?.requestFullscreen) {
+      await containerRef.current.requestFullscreen();
+    } else if (frameRef.current?.requestFullscreen) {
+      await frameRef.current.requestFullscreen();
+    }
+  };
+
   return (
-    <div className="flex h-screen flex-col items-center gap-8">
-      {notes.map((note) => (
-        <div
-          key={note.id}
-          className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow w-full max-w-2xl"
-        >
-          <h3 className="text-xl font-semibold mb-2 text-gray-800">{note.title}</h3>
-          <p className="text-sm text-pink-600 mb-3">{note.subject}</p>
+    <div className="flex min-h-screen flex-col items-center gap-8 p-6 bg-[#fff2f2]">
+      <div
+        ref={containerRef}
+        className="bg-white rounded-xl shadow-lg p-6 w-full max-w-4xl transition-shadow hover:shadow-2xl"
+      >
+        <header className="mb-4">
+          <h1 className="text-xl font-bold">Σημειώσεις (PDF)</h1>
+          <p className="text-gray-500 text-sm">Αν δεν εμφανίζεται, πάτα «Προβολή σε νέο παράθυρο».</p>
+        </header>
 
-          {note.pdfUrl && (
-            <div className="mb-4">
-              <iframe
-                src={note.pdfUrl}
-                width="100%"
-                height="400"
-                className="rounded border"
-                title={`Preview of ${note.title}`}
-              />
+        {/* Viewer */}
+        <div className="mb-4 rounded border overflow-hidden">
+          {/* Loading skeleton */}
+          {loading && (
+            <div className="h-[60vh] min-h-[420px] w-full animate-pulse bg-gray-100 grid place-items-center">
+              <span className="text-gray-500">Φόρτωση PDF…</span>
             </div>
           )}
 
-          <div className="flex flex-col items-center gap-3 mb-4">
-            <a
-              href={note.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full max-w-xs text-center py-2 px-4 rounded-lg transition-colors bg-[#ffabaa] text-white hover:bg-gray-300"
-            >
-              Προβολή σε νέο παράθυρο
-            </a>
-            <a
-              href={note.pdfUrl}
-              download
-              className="w-full max-w-xs text-center py-2 px-4 rounded-lg transition-colors bg-[#ffabaa] text-white hover:bg-gray-300"
-            >
-              Λήψη PDF
-            </a>
-          </div>
+          <iframe
+            ref={frameRef}
+            src={pdfPath}
+            title={fileName}
+            width="100%"
+            height="720"
+            className={`block ${loading ? 'hidden' : ''}`}
+            onLoad={() => setLoading(false)}
+            allow="fullscreen"
+          />
 
-          <div className="flex justify-between items-center">
-          
-          </div>
+          {/* Fallback μήνυμα αν δεν φορτώσει γρήγορα */}
+          {!loading && timedOut && (
+            <div className="p-4 bg-yellow-50 text-yellow-700 text-sm">
+              Δεν εμφανίζεται; Μπορεί να μπλοκάρεται από τον browser. Δοκίμασε «Προβολή σε νέο παράθυρο».
+            </div>
+          )}
         </div>
-      ))}
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row sm:justify-center gap-3">
+          <button onClick={handleOpenNew} className={BTN_PRIMARY} aria-label="Προβολή PDF σε νέο παράθυρο">
+            Προβολή σε νέο παράθυρο
+          </button>
+          <button onClick={handleDownload} className={BTN_PRIMARY} aria-label="Λήψη PDF">
+            Λήψη PDF
+          </button>
+          <button onClick={handlePrint} className={BTN_SECONDARY} aria-label="Εκτύπωση PDF">
+            Εκτύπωση
+          </button>
+          <button onClick={handleFullscreen} className={BTN_SECONDARY} aria-label="Πλήρης οθόνη">
+            Πλήρης οθόνη
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Notes;
+export default Palia;
