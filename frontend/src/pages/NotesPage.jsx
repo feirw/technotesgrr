@@ -15,7 +15,6 @@ const NotesPage = () => {
 
         <Palia />
 
-        {/* <FlipbookViewer />  */}
       </div>
     </div>
   );

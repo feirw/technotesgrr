@@ -20,7 +20,9 @@ function App() {
         <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="algorithms" element={<AlgorithmsPage />} />
         <Route path="paliathemata" element={<PaliathemataPage />} />
+        
         {/* <Route path="flipbook" element={<FlipbookViewer />} /> */}
+
 
         <Route path="*" element={<div>404 - Η σελίδα δεν βρέθηκε</div>} />
       </Route>

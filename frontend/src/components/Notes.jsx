@@ -85,12 +85,16 @@ const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
             allow="fullscreen"
           />
 
+
           {/* Fallback μήνυμα αν δεν φορτώσει γρήγορα */}
           {!loading && timedOut && (
             <div className="p-4 bg-yellow-50 text-yellow-700 text-sm">
               Δεν εμφανίζεται; Μπορεί να μπλοκάρεται από τον browser. Δοκίμασε «Προβολή σε νέο παράθυρο».
             </div>
           )}
+
+          <div className="flex justify-between items-center"></div>
+
         </div>
 
         {/* Actions */}

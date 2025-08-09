@@ -60,7 +60,7 @@ const MainLayout = () => {
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <NavLink to="/" className="flex items-center space-x-2">
-              <div className="w-9 h-9 bg-[#ffa9a9] rounded flex items-center justify-center overflow-hidden shadow-sm">
+              <div className="w-9 h-9 bg-[#ffa9a9]  flex items-center justify-center overflow-hidden shadow-sm">
                 <img
                   src={technotesLogo}
                   alt="Technotesgr Logo"
@@ -168,7 +168,6 @@ const MainLayout = () => {
           <MobileNavButton to="/about" icon="ℹ️" onClick={closeMenu}>
             Σχετικά
           </MobileNavButton>
-
         </div>
       </div>
 
