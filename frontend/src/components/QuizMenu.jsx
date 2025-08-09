@@ -67,7 +67,8 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
       (x) => !q.trim() || x.title.toLowerCase().includes(q.toLowerCase())
     );
     if (sort === 'title') return f.sort((a, b) => a.title.localeCompare(b.title, 'el'));
-    if (sort === 'progress') return f.sort((a, b) => b.percent - a.percent || a.title.localeCompare(b.title, 'el'));
+    if (sort === 'progress')
+      return f.sort((a, b) => b.percent - a.percent || a.title.localeCompare(b.title, 'el'));
     return f;
   }, [withProgress, q, sort]);
 
@@ -79,7 +80,11 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
       aria-labelledby="quizmenu-title"
     >
       {/* Backdrop */}
-      <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onClose} />
+      <div
+        className="absolute inset-0"
+        style={{ background: 'rgba(0,0,0,0.4)' }}
+        onClick={onClose}
+      />
 
       <div
         ref={dialogRef}
@@ -89,7 +94,11 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-4">
           <div>
-            <h3 id="quizmenu-title" className="text-2xl font-extrabold" style={{ color: TEXT_DARK }}>
+            <h3
+              id="quizmenu-title"
+              className="text-2xl font-extrabold"
+              style={{ color: TEXT_DARK }}
+            >
               Επιλέξτε Κεφάλαιο για Quiz
             </h3>
             <p className="text-sm" style={{ color: '#6b7280' }}>
@@ -150,7 +159,10 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
             />
           </div>
         ) : err ? (
-          <div className="my-6 rounded-lg px-4 py-3 text-sm" style={{ background: '#fef2f2', color: '#b91c1c' }}>
+          <div
+            className="my-6 rounded-lg px-4 py-3 text-sm"
+            style={{ background: '#fef2f2', color: '#b91c1c' }}
+          >
             {err}
           </div>
         ) : filtered.length === 0 ? (

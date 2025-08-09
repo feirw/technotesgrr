@@ -8,11 +8,35 @@ const BACKEND_URL = import.meta.env?.VITE_API_URL || 'http://localhost:8001';
 
 // ---------- Mock data ----------
 const reviewsData = [
-  { name: 'Μαρία Π.', rating: 5, description: 'Οι σημειώσεις είναι εξαιρετικές! Με βοήθησαν πάρα πολύ να κατανοήσω την ύλη της πληροφορικής. Το quiz είναι διασκεδαστικό και εκπαιδευτικό!' },
-  { name: 'Γιάννης Κ.', rating: 5, description: 'Φανταστικό site! Οι flashcards με βοήθησαν να επαναλάβω γρήγορα όλες τις έννοιες. Τώρα νιώθω πιο σίγουρος για τις πανελλαδικές!' },
-  { name: 'Ελένη Σ.', rating: 4, description: 'Πολύ καλή πλατφόρμα για προετοιμασία! Οι οπτικοποιήσεις των αλγορίθμων είναι πολύ χρήσιμες. Συνιστώ ανεπιφύλακτα!' },
-  { name: 'Νίκος Α.', rating: 5, description: 'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.' },
-  { name: 'Αγγελική Β.', rating: 5, description: 'Εξαιρετικό εργαλείο μελέτης! Τα παιχνίδια οπτικοποίησης με βοήθησαν να καταλάβω καλύτερα τους αλγορίθμους. Ευχαριστώ πολύ!' },
+  {
+    name: 'Μαρία Π.',
+    rating: 5,
+    description:
+      'Οι σημειώσεις είναι εξαιρετικές! Με βοήθησαν πάρα πολύ να κατανοήσω την ύλη της πληροφορικής. Το quiz είναι διασκεδαστικό και εκπαιδευτικό!',
+  },
+  {
+    name: 'Γιάννης Κ.',
+    rating: 5,
+    description:
+      'Φανταστικό site! Οι flashcards με βοήθησαν να επαναλάβω γρήγορα όλες τις έννοιες. Τώρα νιώθω πιο σίγουρος για τις πανελλαδικές!',
+  },
+  {
+    name: 'Ελένη Σ.',
+    rating: 4,
+    description:
+      'Πολύ καλή πλατφόρμα για προετοιμασία! Οι οπτικοποιήσεις των αλγορίθμων είναι πολύ χρήσιμες. Συνιστώ ανεπιφύλακτα!',
+  },
+  {
+    name: 'Νίκος Α.',
+    rating: 5,
+    description: 'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
+  },
+  {
+    name: 'Αγγελική Β.',
+    rating: 5,
+    description:
+      'Εξαιρετικό εργαλείο μελέτης! Τα παιχνίδια οπτικοποίησης με βοήθησαν να καταλάβω καλύτερα τους αλγορίθμους. Ευχαριστώ πολύ!',
+  },
 ];
 
 const featuresData = [
@@ -38,7 +62,9 @@ const Section = ({ id, title, subtitle, children }) => (
 
 const FeatureCard = ({ title, desc }) => (
   <div className="group bg-white/70 dark:bg-[#1f1f1f]/70 backdrop-blur rounded-xl shadow-md p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ring-1 ring-transparent hover:ring-[#feabab]/50">
-    <h3 className="text-xl font-semibold mb-2 group-hover:text-[#ff7b7b] transition-colors">{title}</h3>
+    <h3 className="text-xl font-semibold mb-2 group-hover:text-[#ff7b7b] transition-colors">
+      {title}
+    </h3>
     <p className="text-gray-700 dark:text-gray-300">{desc}</p>
   </div>
 );
@@ -46,7 +72,9 @@ const FeatureCard = ({ title, desc }) => (
 const StarRating = ({ value }) => (
   <div className="flex justify-center" aria-label={`Βαθμολογία ${value} από 5`}>
     {[...Array(5)].map((_, i) => (
-      <span key={i} className={`text-xl ${i < value ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+      <span key={i} className={`text-xl ${i < value ? 'text-yellow-400' : 'text-gray-300'}`}>
+        ★
+      </span>
     ))}
   </div>
 );
@@ -55,7 +83,12 @@ const StarRating = ({ value }) => (
 const HomePage = () => {
   const { nickname } = useAppContext();
 
-  const [contactForm, setContactForm] = useState({ firstName: '', lastName: '', email: '', message: '' });
+  const [contactForm, setContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: '',
+  });
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
 
@@ -65,8 +98,10 @@ const HomePage = () => {
   };
 
   const validate = () => {
-    if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim()) return 'Συμπλήρωσε όνομα, email και μήνυμα.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email)) return 'Το email δεν φαίνεται έγκυρο.';
+    if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim())
+      return 'Συμπλήρωσε όνομα, email και μήνυμα.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email))
+      return 'Το email δεν φαίνεται έγκυρο.';
     return null;
   };
 
@@ -102,12 +137,18 @@ const HomePage = () => {
         <div className="container mx-auto px-6 text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-white/70 rounded-xl backdrop-blur-sm flex items-center justify-center shadow-md ring-1 ring-white/40">
-              <img src={technotesLogo} alt="Technotesgr Logo" className="object-contain w-full h-full" />
+              <img
+                src={technotesLogo}
+                alt="Technotesgr Logo"
+                className="object-contain w-full h-full"
+              />
             </div>
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-3 tracking-tight">Technotesgr</h1>
-          <p className="text-lg sm:text-xl mb-6 opacity-90">Οι καλύτερες σημειώσεις για ΑΕΠΠ – Πανελλαδικές</p>
+          <p className="text-lg sm:text-xl mb-6 opacity-90">
+            Οι καλύτερες σημειώσεις για ΑΕΠΠ – Πανελλαδικές
+          </p>
           {nickname ? (
             <p className="text-base font-semibold opacity-90">Καλώς ήρθες ξανά, {nickname}!</p>
           ) : (
@@ -116,10 +157,16 @@ const HomePage = () => {
 
           {/* CTAs */}
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="/notes" className="px-6 py-3 rounded-lg font-semibold bg-white text-gray-900 shadow hover:shadow-lg transition">
+            <a
+              href="/notes"
+              className="px-6 py-3 rounded-lg font-semibold bg-white text-gray-900 shadow hover:shadow-lg transition"
+            >
               Δες τις Σημειώσεις
             </a>
-            <a href="/quiz" className="px-6 py-3 rounded-lg font-semibold bg-black/10 hover:bg-black/20 shadow transition">
+            <a
+              href="/quiz"
+              className="px-6 py-3 rounded-lg font-semibold bg-black/10 hover:bg-black/20 shadow transition"
+            >
               Ξεκίνα Quiz
             </a>
           </div>
@@ -159,8 +206,15 @@ const HomePage = () => {
       </Section>
 
       {/* Contact */}
-      <Section id="contact" title="Επικοινωνία" subtitle="Έχεις απορία ή πρόταση; Στείλε μας μήνυμα!">
-        <form onSubmit={handleContactSubmit} className="max-w-3xl mx-auto bg-white/80 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]">
+      <Section
+        id="contact"
+        title="Επικοινωνία"
+        subtitle="Έχεις απορία ή πρόταση; Στείλε μας μήνυμα!"
+      >
+        <form
+          onSubmit={handleContactSubmit}
+          className="max-w-3xl mx-auto bg-white/80 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]"
+        >
           {contactSuccess && (
             <div className="mb-4 rounded-lg bg-green-50 text-green-800 px-4 py-3 text-sm">
               ✅ Το μήνυμα στάλθηκε! Θα σου απαντήσουμε σύντομα.
@@ -169,7 +223,9 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium mb-1">Όνομα *</label>
+              <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+                Όνομα *
+              </label>
               <input
                 id="firstName"
                 name="firstName"
@@ -181,7 +237,9 @@ const HomePage = () => {
               />
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium mb-1">Επώνυμο</label>
+              <label htmlFor="lastName" className="block text-sm font-medium mb-1">
+                Επώνυμο
+              </label>
               <input
                 id="lastName"
                 name="lastName"
@@ -194,7 +252,9 @@ const HomePage = () => {
           </div>
 
           <div className="mt-4">
-            <label htmlFor="email" className="block text-sm font-medium mb-1">Email *</label>
+            <label htmlFor="email" className="block text-sm font-medium mb-1">
+              Email *
+            </label>
             <input
               id="email"
               name="email"
@@ -208,7 +268,9 @@ const HomePage = () => {
           </div>
 
           <div className="mt-4">
-            <label htmlFor="message" className="block text-sm font-medium mb-1">Μήνυμα *</label>
+            <label htmlFor="message" className="block text-sm font-medium mb-1">
+              Μήνυμα *
+            </label>
             <textarea
               id="message"
               name="message"
@@ -240,26 +302,59 @@ const HomePage = () => {
           <div>
             <h3 className="text-lg font-bold text-gray-800 mb-4">Σχετικά με εμάς 🎓</h3>
             <p className="text-gray-600 text-sm">
-              Το <strong>technotesgr</strong> βοηθά μαθητές Γ’ Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής — σημειώσεις, quiz & διαδραστικά εργαλεία.
+              Το <strong>technotesgr</strong> βοηθά μαθητές Γ’ Λυκείου να προετοιμαστούν
+              αποτελεσματικά για τις Πανελλαδικές Πληροφορικής — σημειώσεις, quiz & διαδραστικά
+              εργαλεία.
             </p>
           </div>
           <div>
             <h3 className="text-lg font-bold text-gray-800 mb-4">Γρήγοροι Σύνδεσμοι</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/notes" className="text-gray-600 hover:text-[#ff7b7b] transition">📚 Σημειώσεις</a></li>
-              <li><a href="/quiz" className="text-gray-600 hover:text-[#ff7b7b] transition">🎯 Quiz</a></li>
-              <li><a href="/flashcards" className="text-gray-600 hover:text-[#ff7b7b] transition">🧠 Flashcards</a></li>
-              <li><a href="https://evripides.mysch.gr/dave/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#ff7b7b] transition">💻 Algorithms Games</a></li>
+              <li>
+                <a href="/notes" className="text-gray-600 hover:text-[#ff7b7b] transition">
+                  📚 Σημειώσεις
+                </a>
+              </li>
+              <li>
+                <a href="/quiz" className="text-gray-600 hover:text-[#ff7b7b] transition">
+                  🎯 Quiz
+                </a>
+              </li>
+              <li>
+                <a href="/flashcards" className="text-gray-600 hover:text-[#ff7b7b] transition">
+                  🧠 Flashcards
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://evripides.mysch.gr/dave/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-[#ff7b7b] transition"
+                >
+                  💻 Algorithms Games
+                </a>
+              </li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-bold text-gray-800 mb-4">Επικοινωνία 📬</h3>
             <div className="space-y-2 text-sm">
-              <a href="https://www.instagram.com/technotesgr/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#ff4d4d] font-medium">
+              <a
+                href="https://www.instagram.com/technotesgr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-[#ff4d4d] font-medium"
+              >
                 👉 Instagram: @technotesgr
               </a>
               <br />
-              <a href="https://www.tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#ff4d4d] font-medium">
+              <a
+                href="https://www.tiktok.com/@technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-[#ff4d4d] font-medium"
+              >
                 👉 TikTok: @technotesgr
               </a>
             </div>

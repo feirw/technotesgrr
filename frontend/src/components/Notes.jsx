@@ -3,10 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 const BTN =
   'w-full max-w-xs text-center py-2 px-4 rounded-lg font-semibold shadow ' +
   'transition focus:outline-none focus:ring-2 focus:ring-offset-2';
-const BTN_PRIMARY =
-  `${BTN} bg-[#feabab] text-black hover:bg-[#fd9a9a] focus:ring-[#feabab]`;
-const BTN_SECONDARY =
-  `${BTN} bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 focus:ring-gray-300`;
+const BTN_PRIMARY = `${BTN} bg-[#feabab] text-black hover:bg-[#fd9a9a] focus:ring-[#feabab]`;
+const BTN_SECONDARY = `${BTN} bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 focus:ring-gray-300`;
 
 const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
   const [loading, setLoading] = useState(true);
@@ -62,7 +60,9 @@ const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
       >
         <header className="mb-4">
           <h1 className="text-xl font-bold">Σημειώσεις (PDF)</h1>
-          <p className="text-gray-500 text-sm">Αν δεν εμφανίζεται, πάτα «Προβολή σε νέο παράθυρο».</p>
+          <p className="text-gray-500 text-sm">
+            Αν δεν εμφανίζεται, πάτα «Προβολή σε νέο παράθυρο».
+          </p>
         </header>
 
         {/* Viewer */}
@@ -85,21 +85,24 @@ const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
             allow="fullscreen"
           />
 
-
           {/* Fallback μήνυμα αν δεν φορτώσει γρήγορα */}
           {!loading && timedOut && (
             <div className="p-4 bg-yellow-50 text-yellow-700 text-sm">
-              Δεν εμφανίζεται; Μπορεί να μπλοκάρεται από τον browser. Δοκίμασε «Προβολή σε νέο παράθυρο».
+              Δεν εμφανίζεται; Μπορεί να μπλοκάρεται από τον browser. Δοκίμασε «Προβολή σε νέο
+              παράθυρο».
             </div>
           )}
 
           <div className="flex justify-between items-center"></div>
-
         </div>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row sm:justify-center gap-3">
-          <button onClick={handleOpenNew} className={BTN_PRIMARY} aria-label="Προβολή PDF σε νέο παράθυρο">
+          <button
+            onClick={handleOpenNew}
+            className={BTN_PRIMARY}
+            aria-label="Προβολή PDF σε νέο παράθυρο"
+          >
             Προβολή σε νέο παράθυρο
           </button>
           <button onClick={handleDownload} className={BTN_PRIMARY} aria-label="Λήψη PDF">
