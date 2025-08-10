@@ -10,16 +10,43 @@ const BACKEND_URL = (import.meta.env?.VITE_API_URL || 'http://localhost:8001').r
 
 // ---------- Mock data ----------
 const reviewsData = [
-  { name: 'Μαρία Π.', rating: 5, description: 'Οι σημειώσεις είναι εξαιρετικές! Με βοήθησαν πάρα πολύ να κατανοήσω την ύλη της πληροφορικής. Το quiz είναι διασκεδαστικό και εκπαιδευτικό!' },
-  { name: 'Γιάννης Κ.', rating: 5, description: 'Φανταστικό site! Οι flashcards με βοήθησαν να επαναλάβω γρήγορα όλες τις έννοιες. Τώρα νιώθω πιο σίγουρος για τις πανελλαδικές!' },
-  { name: 'Ελένη Σ.', rating: 4, description: 'Πολύ καλή πλατφόρμα για προετοιμασία! Οι οπτικοποιήσεις των αλγορίθμων είναι πολύ χρήσιμες. Συνιστώ ανεπιφύλακτα!' },
-  { name: 'Νίκος Α.', rating: 5, description: 'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.' },
-  { name: 'Αγγελική Β.', rating: 5, description: 'Εξαιρετικό εργαλείο μελέτης! Τα παιχνίδια οπτικοποίησης με βοήθησαν να καταλάβω καλύτερα τους αλγορίθμους. Ευχαριστώ πολύ!' },
+  {
+    name: 'Μαρία Π.',
+    rating: 5,
+    description:
+      'Οι σημειώσεις είναι εξαιρετικές! Με βοήθησαν πάρα πολύ να κατανοήσω την ύλη της πληροφορικής. Το quiz είναι διασκεδαστικό και εκπαιδευτικό!',
+  },
+  {
+    name: 'Γιάννης Κ.',
+    rating: 5,
+    description:
+      'Φανταστικό site! Οι flashcards με βοήθησαν να επαναλάβω γρήγορα όλες τις έννοιες. Τώρα νιώθω πιο σίγουρος για τις πανελλαδικές!',
+  },
+  {
+    name: 'Ελένη Σ.',
+    rating: 4,
+    description:
+      'Πολύ καλή πλατφόρμα για προετοιμασία! Οι οπτικοποιήσεις των αλγορίθμων είναι πολύ χρήσιμες. Συνιστώ ανεπιφύλακτα!',
+  },
+  {
+    name: 'Νίκος Α.',
+    rating: 5,
+    description: 'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
+  },
+  {
+    name: 'Αγγελική Β.',
+    rating: 5,
+    description:
+      'Εξαιρετικό εργαλείο μελέτης! Τα παιχνίδια οπτικοποίησης με βοήθησαν να καταλάβω καλύτερα τους αλγορίθμους. Ευχαριστώ πολύ!',
+  },
 ];
 
 const featuresData = [
   { title: 'Σημειώσεις', desc: 'Καλύπτουν σε βάθος τη θεωρία και μεθοδολογίες της ύλης.' },
-  { title: 'Quiz', desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.' },
+  {
+    title: 'Quiz',
+    desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
+  },
   { title: 'Flashcards', desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.' },
 ];
 
@@ -43,7 +70,9 @@ const FeatureCard = ({ title, desc }) => (
     className="group bg-white/70 dark:bg-[#1f1f1f]/70 backdrop-blur rounded-xl shadow-md p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ring-1 ring-transparent hover:ring-[#feabab]/50"
     aria-label={title}
   >
-    <h3 className="text-xl font-semibold mb-2 group-hover:text-[#ff7b7b] transition-colors">{title}</h3>
+    <h3 className="text-xl font-semibold mb-2 group-hover:text-[#ff7b7b] transition-colors">
+      {title}
+    </h3>
     <p className="text-gray-700 dark:text-gray-300">{desc}</p>
   </article>
 );
@@ -71,7 +100,13 @@ const HomePage = () => {
   const { nickname } = useAppContext();
 
   // Contact form state
-  const [contactForm, setContactForm] = useState({ firstName: '', lastName: '', email: '', message: '', website: '' }); // website = honeypot
+  const [contactForm, setContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: '',
+    website: '',
+  }); // website = honeypot
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
   const [contactError, setContactError] = useState('');
@@ -93,53 +128,58 @@ const HomePage = () => {
 
   const validate = useCallback(() => {
     if (contactForm.website) return 'Spam detected.'; // honeypot
-    if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim()) return 'Συμπλήρωσε όνομα, email και μήνυμα.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email)) return 'Το email δεν φαίνεται έγκυρο.';
+    if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim())
+      return 'Συμπλήρωσε όνομα, email και μήνυμα.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email))
+      return 'Το email δεν φαίνεται έγκυρο.';
     return null;
   }, [contactForm]);
 
-  const handleContactSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setContactError('');
-    const err = validate();
-    if (err) {
-      setContactError(err);
-      return;
-    }
-
-    setContactSubmitting(true);
-    abortRef.current?.abort?.();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: contactForm.firstName.trim(),
-          lastName: contactForm.lastName.trim(),
-          email: contactForm.email.trim(),
-          message: contactForm.message.trim(),
-        }),
-        signal: controller.signal,
-      });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      await res.json().catch(() => ({}));
-
-      setContactSuccess(true);
-      setContactForm({ firstName: '', lastName: '', email: '', message: '', website: '' });
-      setTimeout(() => setContactSuccess(false), 4500);
-    } catch (error) {
-      if (error?.name !== 'AbortError') {
-        console.error('Error submitting contact form:', error);
-        setContactError('Υπήρξε πρόβλημα κατά την αποστολή. Δοκίμασε ξανά.');
+  const handleContactSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setContactError('');
+      const err = validate();
+      if (err) {
+        setContactError(err);
+        return;
       }
-    } finally {
-      setContactSubmitting(false);
-    }
-  }, [contactForm, validate]);
+
+      setContactSubmitting(true);
+      abortRef.current?.abort?.();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: contactForm.firstName.trim(),
+            lastName: contactForm.lastName.trim(),
+            email: contactForm.email.trim(),
+            message: contactForm.message.trim(),
+          }),
+          signal: controller.signal,
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        await res.json().catch(() => ({}));
+
+        setContactSuccess(true);
+        setContactForm({ firstName: '', lastName: '', email: '', message: '', website: '' });
+        setTimeout(() => setContactSuccess(false), 4500);
+      } catch (error) {
+        if (error?.name !== 'AbortError') {
+          console.error('Error submitting contact form:', error);
+          setContactError('Υπήρξε πρόβλημα κατά την αποστολή. Δοκίμασε ξανά.');
+        }
+      } finally {
+        setContactSubmitting(false);
+      }
+    },
+    [contactForm, validate]
+  );
 
   useEffect(() => () => abortRef.current?.abort?.(), []);
 
@@ -158,7 +198,10 @@ const HomePage = () => {
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-[0.06] dark:opacity-[0.08]"
-          style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+          style={{
+            backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }}
         />
 
         <div className="relative py-20 sm:py-24">
@@ -177,7 +220,10 @@ const HomePage = () => {
             </div>
 
             {/* Τίτλος */}
-            <h1 id="site-hero-title" className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">
+            <h1
+              id="site-hero-title"
+              className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl"
+            >
               Technotesgr
               <span className="block text-[rgb(35,35,35)]/80 mt-1 sm:mt-2">
                 Οι καλύτερες σημειώσεις για{' '}
@@ -192,7 +238,9 @@ const HomePage = () => {
             {/* Υπότιτλος / Προσωποποίηση */}
             <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg opacity-90">
               {nickname ? (
-                <>Καλώς ήρθες ξανά, <span className="font-semibold">{nickname}</span>!</>
+                <>
+                  Καλώς ήρθες ξανά, <span className="font-semibold">{nickname}</span>!
+                </>
               ) : (
                 <>Πληροφορική Γ&apos; Γενικού Λυκείου</>
               )}
@@ -251,21 +299,26 @@ const HomePage = () => {
         <div className="max-w-3xl mx-auto bg-white/80 dark:bg-white/10 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]">
           {/* Πρόσθεσε εδώ Accordion Q&A */}
           <p className="text-gray-700 font-bold dark:text-gray-300 hover:underline hover:text-[#ff4d4d] font-medium cursor-pointer">
-            1. Είναι δωρεάν τα quiz,τα flashcard και οι σημειώσεις; </p>
-            Ναι, όλα τα εργαλεία μας είναι εντελώς δωρεάν για όλους τους μαθητές. 
+            1. Είναι δωρεάν τα quiz,τα flashcard και οι σημειώσεις;{' '}
+          </p>
+          Ναι, όλα τα εργαλεία μας είναι εντελώς δωρεάν για όλους τους μαθητές.
           <p className="text-gray-700 font-bold dark:text-gray-300 hover:underline hover:text-[#ff4d4d] font-medium cursor-pointer">
-            2. Τι να κάνω αν έχω και άλλες απορίες; </p>
-            Μπορείς να μας στείλεις μήνυμα μέσω της φόρμας επικοινωνίας παρακάτω ή να μας ακολουθήσεις στα social media για άμεσες απαντήσεις.
+            2. Τι να κάνω αν έχω και άλλες απορίες;{' '}
+          </p>
+          Μπορείς να μας στείλεις μήνυμα μέσω της φόρμας επικοινωνίας παρακάτω ή να μας ακολουθήσεις
+          στα social media για άμεσες απαντήσεις.
         </div>
       </Section>
 
       {/* Reviews */}
       <Section id="reviews" title="Τι λένε οι μαθητές μας">
-        <Suspense fallback={
-          <div className="mx-auto max-w-4xl bg-white/60 rounded-xl ring-1 ring-[#ffdada] p-8 text-center">
-            Φόρτωση κριτικών…
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="mx-auto max-w-4xl bg-white/60 rounded-xl ring-1 ring-[#ffdada] p-8 text-center">
+              Φόρτωση κριτικών…
+            </div>
+          }
+        >
           <SliderCard
             title=""
             data={reviewsData}
@@ -288,15 +341,23 @@ const HomePage = () => {
       </Section>
 
       {/* Contact */}
-      <Section id="contact" title="Επικοινωνία" subtitle="Έχεις απορία ή πρόταση; Στείλε μας μήνυμα!">
+      <Section
+        id="contact"
+        title="Επικοινωνία"
+        subtitle="Έχεις απορία ή πρόταση; Στείλε μας μήνυμα!"
+      >
         <form
           onSubmit={handleContactSubmit}
           className="max-w-3xl mx-auto bg-white/80 dark:bg-white/10 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]"
           noValidate
         >
           {/* Live regions */}
-          <div role="status" aria-live="polite" id={successId} className="sr-only">{contactSuccess ? 'Το μήνυμα στάλθηκε!' : ''}</div>
-          <div role="alert" aria-live="assertive" id={errorId} className="sr-only">{contactError || ''}</div>
+          <div role="status" aria-live="polite" id={successId} className="sr-only">
+            {contactSuccess ? 'Το μήνυμα στάλθηκε!' : ''}
+          </div>
+          <div role="alert" aria-live="assertive" id={errorId} className="sr-only">
+            {contactError || ''}
+          </div>
 
           {contactSuccess && (
             <div className="mb-4 rounded-lg bg-green-50 text-green-800 px-4 py-3 text-sm">
@@ -322,7 +383,9 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor={firstId} className="block text-sm font-medium mb-1">Όνομα *</label>
+              <label htmlFor={firstId} className="block text-sm font-medium mb-1">
+                Όνομα *
+              </label>
               <input
                 id={firstId}
                 name="firstName"
@@ -337,7 +400,9 @@ const HomePage = () => {
               />
             </div>
             <div>
-              <label htmlFor={lastId} className="block text-sm font-medium mb-1">Επώνυμο</label>
+              <label htmlFor={lastId} className="block text-sm font-medium mb-1">
+                Επώνυμο
+              </label>
               <input
                 id={lastId}
                 name="lastName"
@@ -351,7 +416,9 @@ const HomePage = () => {
           </div>
 
           <div className="mt-4">
-            <label htmlFor={emailId} className="block text-sm font-medium mb-1">Email *</label>
+            <label htmlFor={emailId} className="block text-sm font-medium mb-1">
+              Email *
+            </label>
             <input
               id={emailId}
               name="email"
@@ -369,7 +436,9 @@ const HomePage = () => {
           </div>
 
           <div className="mt-4">
-            <label htmlFor={msgId} className="block text-sm font-medium mb-1">Μήνυμα *</label>
+            <label htmlFor={msgId} className="block text-sm font-medium mb-1">
+              Μήνυμα *
+            </label>
             <textarea
               id={msgId}
               name="message"
@@ -402,28 +471,76 @@ const HomePage = () => {
       <footer className="bg-gradient-to-l from-[#ff7b7b] via-red-200 to-white-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-[#ffdada] mt-8">
         <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Σχετικά με εμάς 🎓</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+              Σχετικά με εμάς 🎓
+            </h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              Το <strong>technotesgr</strong> βοηθά μαθητές Γ’ Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής — σημειώσεις, quiz & διαδραστικά εργαλελεία.
+              Το <strong>technotesgr</strong> βοηθά μαθητές Γ’ Λυκείου να προετοιμαστούν
+              αποτελεσματικά για τις Πανελλαδικές Πληροφορικής — σημειώσεις, quiz & διαδραστικά
+              εργαλελεία.
             </p>
           </div>
           <nav aria-label="Γρήγοροι σύνδεσμοι">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Γρήγοροι Σύνδεσμοι</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+              Γρήγοροι Σύνδεσμοι
+            </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/notes" className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition">📚 Σημειώσεις</a></li>
-              <li><a href="/quiz" className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition">🎯 Quiz</a></li>
-              <li><a href="/flashcards" className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition">🧠 Flashcards</a></li>
-              <li><a href="https://evripides.mysch.gr/dave/" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition">💻 Algorithms Games</a></li>
+              <li>
+                <a
+                  href="/notes"
+                  className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition"
+                >
+                  📚 Σημειώσεις
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/quiz"
+                  className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition"
+                >
+                  🎯 Quiz
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/flashcards"
+                  className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition"
+                >
+                  🧠 Flashcards
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://evripides.mysch.gr/dave/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 dark:text-gray-300 hover:text-[#ff7b7b] transition"
+                >
+                  💻 Algorithms Games
+                </a>
+              </li>
             </ul>
           </nav>
           <div>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Επικοινωνία </h3>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+              Επικοινωνία{' '}
+            </h3>
             <div className="space-y-2 text-sm">
-              <a href="https://www.instagram.com/technotesgr/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#ff4d4d] font-medium">
+              <a
+                href="https://www.instagram.com/technotesgr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-[#ff4d4d] font-medium"
+              >
                 Instagram: @technotesgr
               </a>
               <br />
-              <a href="https://www.tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#ff4d4d] font-medium">
+              <a
+                href="https://www.tiktok.com/@technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-[#ff4d4d] font-medium"
+              >
                 TikTok: @technotesgr
               </a>
             </div>
@@ -449,9 +566,9 @@ const HomePage = () => {
             url: 'https://technotes.gr',
             sameAs: [
               'https://www.instagram.com/technotesgr/',
-              'https://www.tiktok.com/@technotesgr'
-            ]
-          })
+              'https://www.tiktok.com/@technotesgr',
+            ],
+          }),
         }}
       />
     </div>
