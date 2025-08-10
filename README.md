@@ -2,6 +2,20 @@
 
 This website was created with the goal of helping high school students (3rd grade of Lyceum) better understand and engage with the Informatics course, especially in preparation for national exams in Greece.
 
+# How to see the website
+
+1. Clone the repository: `git clone`
+2. Navigate to the project directory: `cd technotesgr`
+3. Install dependencies: `npm install`
+4. Run the backend server : `cd backend`
+5. Start the backend server: `python3 server.py`
+6. Open a new terminal window, navigate to the frontend directory: `cd frontend`
+7. Start the frontend server: `npm i` and then `npm start`
+8. Open your browser and go to `http://localhost:3000`
+
+
+Now you can explore the website and its features!
+
 ## 🌟 What You'll Find
 
 ### 📝 Notes
