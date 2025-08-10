@@ -19,8 +19,8 @@ const reviewsData = [
 
 const featuresData = [
   { title: 'Σημειώσεις', desc: 'Καλύπτουν σε βάθος τη θεωρία και μεθοδολογίες της ύλης.' },
-  { title: 'Quiz', desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα.' },
-  { title: 'Flashcards', desc: 'Γρήγορη επανάληψη στις βασικές έννοιες.' },
+  { title: 'Quiz', desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.' },
+  { title: 'Flashcards', desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.' },
 ];
 
 // ---------- Small UI helpers ----------
@@ -157,23 +157,17 @@ const HomePage = () => {
 
         <div className="relative py-20 sm:py-24">
           <div className="container mx-auto max-w-6xl px-6 text-center">
-            {/* Logo + Badge */}
             <div className="mb-6 flex items-center justify-center gap-3">
-              <div className="grid h-16 w-16 place-items-center rounded-2xl bg-white/70 ring-1 ring-white/40 shadow">
                 <img
                   src={technotesLogo}
-                  alt="Technotesgr"
-                  className="h-12 w-12 object-contain"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-
-              <span className="hidden sm:inline-flex items-center gap-2 rounded-full bg-black/10 px-3 py-1 text-sm font-semibold ring-1 ring-black/10">
-                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-green-500" />
-                Νέες σημειώσεις {currentYear}
-              </span>
+                    alt="Technotesgr"
+                      className="h-24 w-24 object-contain"
+                        loading="lazy"
+                        decoding="async"
+                  />
+              
             </div>
+
 
             {/* Τίτλος */}
             <h1 id="site-hero-title" className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -217,15 +211,15 @@ const HomePage = () => {
             <div className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-3 text-sm text-gray-800/90 sm:grid-cols-3">
               <div className="rounded-lg bg-white/60 p-3 ring-1 ring-[#ffdada]">
                 <strong className="block text-lg">+5,000</strong>
-                μαθητές εμπιστεύτηκαν
+                μαθητές μας εμπιστεύτηκαν
               </div>
               <div className="rounded-lg bg-white/60 p-3 ring-1 ring-[#ffdada]">
                 <strong className="block text-lg">100%</strong>
-                free βασικές σημειώσεις
+                δωρεάν πλατφόρμα
               </div>
               <div className="col-span-2 sm:col-span-1 rounded-lg bg-white/60 p-3 ring-1 ring-[#ffdada]">
                 <strong className="block text-lg">Quiz</strong>
-                με άμεσο feedback
+                με απαντήσεις για να ελέγξεις τις γνώσεις σου
               </div>
             </div>
           </div>
@@ -249,7 +243,12 @@ const HomePage = () => {
       <Section id="faq" title="FAQ">
         <div className="max-w-3xl mx-auto bg-white/80 dark:bg-white/10 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]">
           {/* Πρόσθεσε εδώ Accordion Q&A */}
-          <p className="text-gray-700 dark:text-gray-300">Σύντομα θα προστεθούν συχνές ερωτήσεις.</p>
+        <p className="text-gray-700 font-bold dark:text-gray-300 hover:underline hover:text-[#ff4d4d] font-medium cursor-pointer">
+            1. Είναι δωρεάν τα quiz,τα flashcard και οι σημειώσεις; </p>
+            Ναι, όλα τα εργαλεία μας είναι εντελώς δωρεάν για όλους τους μαθητές. 
+          <p className="text-gray-700 font-bold dark:text-gray-300 hover:underline hover:text-[#ff4d4d] font-medium cursor-pointer">
+            2. Τι να κάνω αν έχω και άλλες απορίες; </p>
+            Μπορείς να μας στείλεις μήνυμα μέσω της φόρμας επικοινωνίας παρακάτω ή να μας ακολουθήσεις στα social media για άμεσες απαντήσεις.
         </div>
       </Section>
 
@@ -393,7 +392,7 @@ const HomePage = () => {
       </Section>
 
       {/* Footer */}
-      <footer className="bg-white/80 dark:bg-white/5 backdrop-blur border-t border-[#ffdada] mt-8">
+        <footer className="bg-gradient-to-l from-[#ff7b7b] via-red-200 to-white-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-[#ffdada] mt-8">
         <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Σχετικά με εμάς 🎓</h3>
@@ -411,14 +410,14 @@ const HomePage = () => {
             </ul>
           </nav>
           <div>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Επικοινωνία 📬</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Επικοινωνία </h3>
             <div className="space-y-2 text-sm">
               <a href="https://www.instagram.com/technotesgr/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#ff4d4d] font-medium">
-                👉 Instagram: @technotesgr
+                Instagram: @technotesgr
               </a>
               <br />
               <a href="https://www.tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#ff4d4d] font-medium">
-                👉 TikTok: @technotesgr
+                TikTok: @technotesgr
               </a>
             </div>
           </div>
@@ -426,7 +425,7 @@ const HomePage = () => {
         <div className="bg-white/60 dark:bg-white/10 backdrop-blur py-4 border-t border-[#ffdada]">
           <div className="container mx-auto px-6 text-center text-sm text-gray-500 dark:text-gray-400">
             <p>© {currentYear} technotesgr. All rights reserved.</p>
-            <p className="mt-1">Made with ❤️ by feirw, areynbaw and deathwish</p>
+            <p className="mt-1">Made with ♡ by feirw, areynbaw and deathwish</p>
           </div>
         </div>
       </footer>
