@@ -1,3 +1,5 @@
+The project is still under constraction :)))
+
 # High School Informatics Hub
 
 This website was created with the goal of helping high school students (3rd grade of Lyceum) better understand and engage with the Informatics course, especially in preparation for national exams in Greece.
