@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspense } from 'react';
 import { useAppContext } from '../contexts/AppContext';
 import technotesLogo from '../assets/technotes_logo.png';
-import ChatWidget from "../components/ChatWidget.jsx";
-import { motion, useScroll, useTransform, MotionConfig, AnimatePresence } from "motion/react";
+import ChatWidget from '../components/ChatWidget.jsx';
+import { motion, useScroll, useTransform, MotionConfig, AnimatePresence } from 'motion/react';
 
 // Lazy-load βαρύτερα components
 const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
@@ -456,7 +456,12 @@ const HomePage = () => {
                 title=""
                 data={reviewsData}
                 containerClassName="bg-white/60 backdrop-blur-xl rounded-xl ring-1 ring-[#ffdada] p-4"
-                sliderSettings={{ autoplaySpeed: 4000, pauseOnHover: true, arrows: false, dots: true }}
+                sliderSettings={{
+                  autoplaySpeed: 4000,
+                  pauseOnHover: true,
+                  arrows: false,
+                  dots: true,
+                }}
                 renderCard={(review) => (
                   <motion.article
                     className="bg-[#fff2f2] rounded-xl p-6 sm:p-8 text-center h-full flex flex-col justify-between shadow-sm ring-1 ring-[#ffdada]"
@@ -479,7 +484,11 @@ const HomePage = () => {
         </Section>
 
         {/* Contact */}
-        <Section id="contact" title="Επικοινωνία" subtitle="Έχεις απορία ή πρόταση; Στείλε μας μήνυμα!">
+        <Section
+          id="contact"
+          title="Επικοινωνία"
+          subtitle="Έχεις απορία ή πρόταση; Στείλε μας μήνυμα!"
+        >
           <motion.form
             onSubmit={handleContactSubmit}
             className="max-w-3xl mx-auto bg-white/80 dark:bg-white/10 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]"
@@ -583,7 +592,9 @@ const HomePage = () => {
                 required
                 inputMode="email"
                 autoComplete="email"
-                aria-invalid={!!contactError && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email)}
+                aria-invalid={
+                  !!contactError && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email)
+                }
                 aria-describedby={contactError ? errorId : undefined}
                 className="w-full rounded-lg border border-[#ffdada] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#feabab]"
                 placeholder="name@example.com"
@@ -647,8 +658,23 @@ const HomePage = () => {
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
                 Γρήγοροι Σύνδεσμοι
               </h3>
-              <motion.ul className="space-y-2 text-sm" variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true }}>
-                {[{ href: '/notes', label: '📚 Σημειώσεις' }, { href: '/quiz', label: '🎯 Quiz' }, { href: '/flashcards', label: '🧠 Flashcards' }, { href: 'https://evripides.mysch.gr/dave/', label: '💻 Algorithms Games', external: true }].map((item, idx) => (
+              <motion.ul
+                className="space-y-2 text-sm"
+                variants={stagger}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                {[
+                  { href: '/notes', label: '📚 Σημειώσεις' },
+                  { href: '/quiz', label: '🎯 Quiz' },
+                  { href: '/flashcards', label: '🧠 Flashcards' },
+                  {
+                    href: 'https://evripides.mysch.gr/dave/',
+                    label: '💻 Algorithms Games',
+                    external: true,
+                  },
+                ].map((item, idx) => (
                   <motion.li key={item.href} variants={fadeInUp}>
                     <a
                       href={item.href}
@@ -664,7 +690,9 @@ const HomePage = () => {
             </nav>
 
             <motion.div {...fadeIn}>
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Επικοινωνία</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
+                Επικοινωνία
+              </h3>
               <div className="space-y-2 text-sm">
                 <a
                   href="https://www.instagram.com/technotesgr/"
