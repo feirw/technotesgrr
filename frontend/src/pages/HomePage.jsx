@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspense } from 'react';
 import { useAppContext } from '../contexts/AppContext';
 import technotesLogo from '../assets/technotes_logo.png';
-import ChatWidget from "../components/ChatWidget.jsx";
-
+import ChatWidget from '../components/ChatWidget.jsx';
 
 // Lazy-load βαρύτερα components
 const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
@@ -226,7 +225,7 @@ const HomePage = () => {
               className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl"
             >
               <span className="block text-[#00000]/80 mt-1 sm:mt-2">
-                Γράψε 100 στην Πληροφορική 
+                Γράψε 100 στην Πληροφορική
               </span>
             </h1>
 
@@ -275,12 +274,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-
-
-
-
-
       {/* Features */}
       <Section
         id="features"
@@ -293,7 +286,6 @@ const HomePage = () => {
           ))}
         </div>
       </Section>
-
       {/* FAQ (placeholder) */}
       <Section id="faq" title="FAQ">
         <div className="max-w-3xl mx-auto bg-white/80 dark:bg-white/10 backdrop-blur p-6 rounded-xl shadow ring-1 ring-[#ffdada]">
@@ -309,7 +301,6 @@ const HomePage = () => {
           στα social media για άμεσες απαντήσεις.
         </div>
       </Section>
-
       {/* Reviews */}
       <Section id="reviews" title="Τι λένε οι μαθητές μας">
         <Suspense
@@ -339,7 +330,6 @@ const HomePage = () => {
           />
         </Suspense>
       </Section>
-
       {/* Contact */}
       <Section
         id="contact"
@@ -466,12 +456,8 @@ const HomePage = () => {
           </div>
         </form>
       </Section>
-
-
-
       // ...στο JSX:
-<ChatWidget nickname={nickname} />
-
+      <ChatWidget nickname={nickname} />
       {/* Footer */}
       <footer className="bg-gradient-to-l from-[#ff7b7b] via-red-200 to-white-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-[#ffdada] mt-8">
         <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
@@ -548,8 +534,6 @@ const HomePage = () => {
               >
                 TikTok: @technotesgr
               </a>
-
-              
             </div>
           </div>
         </div>
@@ -560,9 +544,7 @@ const HomePage = () => {
           </div>
         </div>
       </footer>
-
       {/* Προαιρετικό JSON-LD για SEO */}
-      
     </div>
   );
 };
