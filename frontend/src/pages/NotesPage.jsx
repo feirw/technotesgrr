@@ -1,7 +1,5 @@
-import React from 'react';
 import Notes from '../components/Notes.jsx';
 import Palia from '../components/Palia.jsx';
-import { FlipHorizontal } from 'lucide-react';
 // import FlipbookViewer from '../components/FlipbookViewer.jsx';
 
 const NotesPage = () => {

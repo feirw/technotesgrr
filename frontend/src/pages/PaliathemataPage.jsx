@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Palia from '../components/Palia.jsx';
+import { ChevronUp } from 'lucide-react';
 
 // 👉 Βάλε εδώ τις σωστές χρονιές για κάθε κατηγορία
 const KANONIKES_YEARS = [
@@ -115,7 +116,7 @@ const PaliathemataPage = () => {
         className="fixed bottom-4 right-4 bg-[#ff7b7b] text-white rounded-full p-3 shadow-lg hover:bg-[#ffa9a9] transition-colors"
         aria-label="Μετάβαση στην κορυφή"
       >
-        ↑
+        <ChevronUp className="w-6 h-6" />
       </button>
     </div>
   );
