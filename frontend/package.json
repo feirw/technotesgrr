@@ -7,6 +7,7 @@
     "axios": "^1.8.4",
     "cra-template": "1.2.0",
     "lucide-react": "^0.523.0",
+    "motion": "^12.23.12",
     "prettier": "^3.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

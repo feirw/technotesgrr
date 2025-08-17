@@ -14,7 +14,7 @@ const RULES = [
 
 function localBotReply(message) {
   for (const r of RULES) if (r.test.test(message)) return r.reply;
-  return "Ναι δεν ξερω τι να πω. 😅 Δοκίμασε να ρωτήσεις κάτι άλλο ή να είσαι πιο συγκεκριμένος.";
+  return "Ναι δεν ξερω τι να πω. Δοκίμασε να ρωτήσεις κάτι άλλο ή να είσαι πιο συγκεκριμένος.";
 }
 
 async function fetchBotReply(message) {
