@@ -275,7 +275,19 @@ const HomePage = () => {
 
           <div className="relative py-20 sm:py-24">
             <div className="container mx-auto max-w-6xl px-6 text-center">
-     
+              {/* Logo + Badge */}
+              {/*
+              <motion.div className="mb-6 flex items-center justify-center gap-3" {...fadeInUp}>
+                <img
+                  src={technotesLogo}
+                  alt="Technotesgr"
+                  className="h-20 w-20 object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </motion.div>
+              */}
+
               {/* Τίτλος */}
               <motion.h1
                 id="site-hero-title"
