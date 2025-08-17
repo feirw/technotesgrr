@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspense } from 'react';
 import { useAppContext } from '../contexts/AppContext';
 import technotesLogo from '../assets/technotes_logo.png';
+import ChatWidget from "../components/ChatWidget.jsx";
+
 
 // Lazy-load βαρύτερα components
 const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
@@ -206,32 +208,25 @@ const HomePage = () => {
 
         <div className="relative py-20 sm:py-24">
           <div className="container mx-auto max-w-6xl px-6 text-center">
-            {/* Logo + Badge */}
+            {/* Logo + Badge
             <div className="mb-6 flex items-center justify-center gap-3">
-              <div className="grid h-16 w-16 place-items-center rounded-2xl bg-white/70 ring-1 ring-white/40 shadow">
                 <img
                   src={technotesLogo}
                   alt="Technotesgr"
-                  className="h-12 w-12 object-contain"
+                  className="h-20 w-20 object-contain"
                   loading="lazy"
                   decoding="async"
                 />
-              </div>
-            </div>
+              
+            </div> */}
 
             {/* Τίτλος */}
             <h1
               id="site-hero-title"
               className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl"
             >
-              Technotesgr
-              <span className="block text-[rgb(35,35,35)]/80 mt-1 sm:mt-2">
-                Οι καλύτερες σημειώσεις για{' '}
-                <span className="relative">
-                  ΑΕΠΠ
-                  <span className="absolute -bottom-1 left-0 h-2 w-full bg-yellow-300/80" />
-                </span>{' '}
-                – Πανελλαδικές
+              <span className="block text-[#00000]/80 mt-1 sm:mt-2">
+                Γράψε 100 στην Πληροφορική 
               </span>
             </h1>
 
@@ -280,6 +275,11 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+
+
+
+
 
       {/* Features */}
       <Section
@@ -467,6 +467,11 @@ const HomePage = () => {
         </form>
       </Section>
 
+
+
+      // ...στο JSX:
+<ChatWidget nickname={nickname} />
+
       {/* Footer */}
       <footer className="bg-gradient-to-l from-[#ff7b7b] via-red-200 to-white-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-[#ffdada] mt-8">
         <div className="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
@@ -543,6 +548,8 @@ const HomePage = () => {
               >
                 TikTok: @technotesgr
               </a>
+
+              
             </div>
           </div>
         </div>
@@ -555,22 +562,7 @@ const HomePage = () => {
       </footer>
 
       {/* Προαιρετικό JSON-LD για SEO */}
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: 'technotesgr',
-            url: 'https://technotes.gr',
-            sameAs: [
-              'https://www.instagram.com/technotesgr/',
-              'https://www.tiktok.com/@technotesgr',
-            ],
-          }),
-        }}
-      />
+      
     </div>
   );
 };
