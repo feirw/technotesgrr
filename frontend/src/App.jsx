@@ -7,6 +7,7 @@ import FlashcardsPage from './pages/FlashcardsPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AlgorithmsPage from './pages/AlgorithmsPage';
 import PaliathemataPage from './pages/PaliathemataPage';
+import OnlinePage from './pages/OnlinePage';
 
 function App() {
   return (
@@ -19,8 +20,9 @@ function App() {
         <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="algorithms" element={<AlgorithmsPage />} />
         <Route path="paliathemata" element={<PaliathemataPage />} />
+        <Route path ="online" element={<OnlinePage /> } />
 
-        {/* <Route path="flipbook" element={<FlipbookViewer />} /> */}
+    
 
         <Route path="*" element={<div>404 - Η σελίδα δεν βρέθηκε</div>} />
       </Route>

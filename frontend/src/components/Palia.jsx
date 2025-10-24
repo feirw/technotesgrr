@@ -1,27 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Download, Printer, ExternalLink, Maximize, FileText } from 'lucide-react';
 
-const BTN =
-  'w-full max-w-xs text-center py-2 px-4 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-offset-2';
-const BTN_PRIMARY = `${BTN} bg-[#feabab] text-black hover:bg-[#fd9a9a] focus:ring-[#feabab]`;
-const BTN_SECONDARY = `${BTN} bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 focus:ring-gray-300`;
+const BRAND = '#fda8a9';
+const BRAND_DARK = '#f88b8c';
 
-const Palia = ({ pdfPath = '/pdfs/panel.pdf', fileName = 'panel.pdf' }) => {
+const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
   const [loading, setLoading] = useState(true);
-  const [timedOut, setTimedOut] = useState(false);
   const frameRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Timeout fallback αν αργήσει πολύ να φορτώσει το iframe
   useEffect(() => {
     setLoading(true);
-    setTimedOut(false);
-    const t = setTimeout(() => setTimedOut(true), 8000);
-    return () => clearTimeout(t);
   }, [pdfPath]);
 
-  const handleOpenNew = () => {
-    window.open(pdfPath, '_blank', 'noopener,noreferrer');
-  };
+  const handleOpenNew = () => window.open(pdfPath, '_blank', 'noopener,noreferrer');
 
   const handleDownload = () => {
     const a = document.createElement('a');
@@ -33,99 +26,77 @@ const Palia = ({ pdfPath = '/pdfs/panel.pdf', fileName = 'panel.pdf' }) => {
   };
 
   const handlePrint = () => {
-    // Ανοίγουμε σε νέο tab και κάνουμε print (οι περισσότεροι browsers το τιμάνε)
     const w = window.open(pdfPath, '_blank', 'noopener,noreferrer');
     if (w) {
-      const tryPrint = () => {
+      setTimeout(() => {
         try {
           w.focus();
           w.print();
-        } catch {
-          // ignore
-        }
-      };
-      setTimeout(tryPrint, 800);
+        } catch {}
+      }, 800);
     }
   };
 
   const handleFullscreen = async () => {
-    try {
-      if (containerRef.current?.requestFullscreen) {
-        await containerRef.current.requestFullscreen();
-      } else if (frameRef.current?.requestFullscreen) {
-        await frameRef.current.requestFullscreen();
-      }
-    } catch {
-      // ignore
+    if (containerRef.current?.requestFullscreen) {
+      await containerRef.current.requestFullscreen();
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-8 p-6 bg-[#fff2f2]">
-      <div
-        ref={containerRef}
-        className="bg-white rounded-xl shadow-lg p-6 w-full max-w-4xl transition-shadow hover:shadow-2xl"
-      >
-        <header className="mb-4">
-          <h1 className="text-xl font-bold">Παλιά Θέματα Οργανωμένα (PDF)</h1>
-          <p className="text-gray-500 text-sm">
-            Αν δεν εμφανίζεται, πάτα «Προβολή σε νέο παράθυρο».
-          </p>
-        </header>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 p-6">
+      <motion.div ref={containerRef} className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto" style={{ border: `3px solid ${BRAND}` }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 300 }}>
+        
+        {/* Header */}
+        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+              <FileText className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black">Σημειώσεις PDF</h1>
+              <p className="text-pink-100 text-sm">{fileName}</p>
+            </div>
+          </div>
+        </div>
 
-        {/* Viewer */}
-        <div className="mb-4 rounded border overflow-hidden relative">
-          {/* Loading skeleton */}
+        {/* PDF Viewer */}
+        <div className="relative bg-gray-100">
           {loading && (
-            <div className="h-[60vh] min-h-[420px] w-full animate-pulse bg-gray-100 grid place-items-center">
-              <span className="text-gray-500">Φόρτωση PDF…</span>
-            </div>
+            <motion.div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4" style={{ borderColor: BRAND }} animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} />
+              <p className="text-gray-600 font-semibold">Φόρτωση PDF...</p>
+            </motion.div>
           )}
 
-          {/* Fallback μήνυμα αν αργεί υπερβολικά */}
-          {loading && timedOut && (
-            <div className="absolute inset-x-0 bottom-0 m-3 rounded bg-yellow-50 border border-yellow-200 p-3 text-yellow-800 text-sm shadow">
-              Αργεί να φορτώσει; Μπορεί να το μπλοκάρει ο browser. Δοκίμασε «Προβολή σε νέο
-              παράθυρο».
-            </div>
-          )}
-
-          <iframe
-            ref={frameRef}
-            src={pdfPath}
-            title={fileName}
-            width="100%"
-            height="720"
-            className={`block ${loading ? 'invisible absolute -z-10' : ''}`}
-            onLoad={() => setLoading(false)}
-            allow="fullscreen"
-            allowFullScreen
-          />
+          <iframe ref={frameRef} src={pdfPath} title={fileName} width="100%" height="720" className="block" onLoad={() => setLoading(false)} allow="fullscreen" />
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row sm:justify-center gap-3">
-          <button
-            onClick={handleOpenNew}
-            className={BTN_PRIMARY}
-            aria-label="Προβολή PDF σε νέο παράθυρο"
-          >
-            Προβολή σε νέο παράθυρο
-          </button>
+        <div className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-t-2 border-pink-200">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <motion.button onClick={handleOpenNew} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg" style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+              <ExternalLink className="w-5 h-5" />
+              <span className="hidden sm:inline">Νέο Παράθυρο</span>
+            </motion.button>
 
-          <button onClick={handleDownload} className={BTN_PRIMARY} aria-label="Λήψη PDF">
-            Λήψη PDF
-          </button>
+            <motion.button onClick={handleDownload} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+              <Download className="w-5 h-5" />
+              <span className="hidden sm:inline">Λήψη</span>
+            </motion.button>
 
-          <button onClick={handlePrint} className={BTN_SECONDARY} aria-label="Εκτύπωση PDF">
-            Εκτύπωση
-          </button>
+            <motion.button onClick={handlePrint} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+              <Printer className="w-5 h-5" />
+              <span className="hidden sm:inline">Εκτύπωση</span>
+            </motion.button>
 
-          <button onClick={handleFullscreen} className={BTN_SECONDARY} aria-label="Πλήρης οθόνη">
-            Πλήρης οθόνη
-          </button>
+            <motion.button onClick={handleFullscreen} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+              <Maximize className="w-5 h-5" />
+              <span className="hidden sm:inline">Πλήρης</span>
+            </motion.button>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

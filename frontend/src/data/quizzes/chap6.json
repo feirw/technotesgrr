@@ -166,5 +166,19 @@
         "correct": false
       }
     ]
+  },
+  {
+    "id": "12",
+    "question": "Ο διερμηνευτής παράγει το αντικείμενο πρόγραμμα. ",
+    "answers": [
+      {
+        "text": "Σωστό",
+        "correct": true
+      },
+      {
+        "text": "Λάθος",
+        "correct": false
+      }
+    ]
   }
 ]
