@@ -7,9 +7,9 @@ import Palia from '../components/Palia.jsx';
  * ═══════════════════════════════════════════════════════════════
  * 📝 PALIATHEMATA PAGE - technotesgr
  * ═══════════════════════════════════════════════════════════════
- * 
+ *
  * Σελίδα παλιών θεμάτων Πανελληνίων Πληροφορικής
- * 
+ *
  * Features:
  * - Animated tabs (Κανονικές/Επαναληπτικές)
  * - Year cards με hover effects
@@ -19,7 +19,7 @@ import Palia from '../components/Palia.jsx';
  * - PDF viewer integration
  * - Responsive design
  * - Dark mode support
- * 
+ *
  * ═══════════════════════════════════════════════════════════════
  */
 
@@ -28,15 +28,13 @@ import Palia from '../components/Palia.jsx';
 // ═══════════════════════════════════════════════════════════════
 
 const KANONIKES_YEARS = [
-  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 
-  2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 
-  2020, 2021, 2022, 2023, 2024, 2025,
+  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
+  2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
 ];
 
 const EPANALIPTIKES_YEARS = [
-  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 
-  2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 
-  2020, 2021, 2022, 2023, 2024, 2025,
+  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
+  2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -69,7 +67,7 @@ const YearCard = ({ year, mode, isSelected, onClick, index }) => {
 
       {/* Icon */}
       <div className="flex justify-center">
-        <FileText 
+        <FileText
           className={`w-5 h-5 ${
             isSelected ? 'text-white' : 'text-pink-500 group-hover:text-pink-600'
           }`}
@@ -120,9 +118,7 @@ const PaliathemataPage = () => {
   // Filter years based on search
   const filteredYears = useMemo(() => {
     if (!searchQuery.trim()) return uniqueYears;
-    return uniqueYears.filter(year => 
-      year.toString().includes(searchQuery.trim())
-    );
+    return uniqueYears.filter((year) => year.toString().includes(searchQuery.trim()));
   }, [uniqueYears, searchQuery]);
 
   // ═══════════════════════════════════════════════════════════════
@@ -134,9 +130,9 @@ const PaliathemataPage = () => {
     // Scroll to PDF viewer after selection
     if (selectedYear !== year) {
       setTimeout(() => {
-        document.getElementById('pdf-viewer')?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
+        document.getElementById('pdf-viewer')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
         });
       }, 300);
     }
@@ -173,26 +169,26 @@ const PaliathemataPage = () => {
         <div className="absolute inset-0 overflow-hidden opacity-20">
           <motion.div
             className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full"
-            animate={{ 
-              scale: [1, 1.2, 1], 
-              rotate: [0, 180, 360] 
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
             }}
-            transition={{ 
-              duration: 20, 
-              repeat: Infinity, 
-              ease: "linear" 
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: 'linear',
             }}
           />
           <motion.div
             className="absolute -bottom-24 -right-24 w-96 h-96 bg-white rounded-full"
-            animate={{ 
-              scale: [1.2, 1, 1.2], 
-              rotate: [360, 180, 0] 
+            animate={{
+              scale: [1.2, 1, 1.2],
+              rotate: [360, 180, 0],
             }}
-            transition={{ 
-              duration: 25, 
-              repeat: Infinity, 
-              ease: "linear" 
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: 'linear',
             }}
           />
         </div>
@@ -267,9 +263,7 @@ const PaliathemataPage = () => {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Κανονικές
-                  <span className="ml-1 text-xs opacity-75">
-                    ({KANONIKES_YEARS.length})
-                  </span>
+                  <span className="ml-1 text-xs opacity-75">({KANONIKES_YEARS.length})</span>
                 </div>
               </motion.button>
 
@@ -292,9 +286,7 @@ const PaliathemataPage = () => {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Επαναληπτικές
-                  <span className="ml-1 text-xs opacity-75">
-                    ({EPANALIPTIKES_YEARS.length})
-                  </span>
+                  <span className="ml-1 text-xs opacity-75">({EPANALIPTIKES_YEARS.length})</span>
                 </div>
               </motion.button>
             </div>
@@ -324,10 +316,15 @@ const PaliathemataPage = () => {
           {/* Results Info */}
           <div className="flex items-center justify-between text-sm">
             <div className="text-gray-600 dark:text-gray-400">
-              Βρέθηκαν <span className="font-bold text-pink-600 dark:text-pink-400">{filteredYears.length}</span> χρονιές
+              Βρέθηκαν{' '}
+              <span className="font-bold text-pink-600 dark:text-pink-400">
+                {filteredYears.length}
+              </span>{' '}
+              χρονιές
               {selectedYear && (
                 <span className="ml-2">
-                  • Επιλεγμένη: <span className="font-bold text-pink-600 dark:text-pink-400">{selectedYear}</span>
+                  • Επιλεγμένη:{' '}
+                  <span className="font-bold text-pink-600 dark:text-pink-400">{selectedYear}</span>
                 </span>
               )}
             </div>
@@ -420,9 +417,7 @@ const PaliathemataPage = () => {
                     <h2 className="text-2xl font-bold">
                       {mode === 'kanonikes' ? 'Κανονικές' : 'Επαναληπτικές'} {selectedYear}
                     </h2>
-                    <p className="text-pink-100 text-sm">
-                      Θέματα Πανελληνίων Πληροφορικής
-                    </p>
+                    <p className="text-pink-100 text-sm">Θέματα Πανελληνίων Πληροφορικής</p>
                   </div>
                 </div>
 

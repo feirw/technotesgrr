@@ -74,7 +74,9 @@ const QuizPage = () => {
                 ease: 'linear',
               }}
             >
-              {Array.from({ length: 200 }).map((_, j) => (Math.random() > 0.5 ? '1' : '0')).join('')}
+              {Array.from({ length: 200 })
+                .map((_, j) => (Math.random() > 0.5 ? '1' : '0'))
+                .join('')}
             </motion.div>
           ))}
         </div>
@@ -104,7 +106,7 @@ const QuizPage = () => {
             &nbsp;&nbsp;return "success"; <br />
             {'}'}
           </motion.div>
-          
+
           <motion.div
             className="absolute top-40 right-32"
             animate={{ y: [0, 20, 0] }}
@@ -184,20 +186,42 @@ const QuizPage = () => {
         </AnimatePresence>
 
         {showQuizMenu && (
-          <QuizMenu onSelect={handleQuizCategorySelect} onClose={handleMenuClose} categoryAnswers={categoryAnswers} />
+          <QuizMenu
+            onSelect={handleQuizCategorySelect}
+            onClose={handleMenuClose}
+            categoryAnswers={categoryAnswers}
+          />
         )}
 
         {isQuizDialogOpen && selectedQuiz && (
-          <QuizDialog quiz={selectedQuiz} isOpen={isQuizDialogOpen} onClose={handleQuizDialogClose} onQuestionAnswered={handleQuestionAnswered} selectedAnswers={categoryAnswers[selectedQuiz.id] || {}} />
+          <QuizDialog
+            quiz={selectedQuiz}
+            isOpen={isQuizDialogOpen}
+            onClose={handleQuizDialogClose}
+            onQuestionAnswered={handleQuestionAnswered}
+            selectedAnswers={categoryAnswers[selectedQuiz.id] || {}}
+          />
         )}
 
         <AnimatePresence>
           {showExitWarning && (
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-              <motion.div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowExitWarning(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+              <motion.div
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                onClick={() => setShowExitWarning(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
 
-              <motion.div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden max-w-md w-full" style={{ border: `3px solid ${BRAND}` }} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring', stiffness: 300 }}>
-                
+              <motion.div
+                className="relative bg-white rounded-3xl shadow-2xl overflow-hidden max-w-md w-full"
+                style={{ border: `3px solid ${BRAND}` }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
                 <div className="bg-gradient-to-r from-red-500 to-rose-500 text-white p-6 text-center">
                   <AlertTriangle className="w-16 h-16 mx-auto mb-2" />
                   <h3 className="text-2xl font-black">Προσοχή!</h3>
@@ -209,10 +233,20 @@ const QuizPage = () => {
                   </p>
 
                   <div className="flex gap-3">
-                    <motion.button onClick={confirmExit} className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <motion.button
+                      onClick={confirmExit}
+                      className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       Ναι, έξοδος
                     </motion.button>
-                    <motion.button onClick={() => setShowExitWarning(false)} className="flex-1 py-3 rounded-xl font-bold bg-gray-200 text-gray-800 hover:bg-gray-300 shadow-lg" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <motion.button
+                      onClick={() => setShowExitWarning(false)}
+                      className="flex-1 py-3 rounded-xl font-bold bg-gray-200 text-gray-800 hover:bg-gray-300 shadow-lg"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       Ακύρωση
                     </motion.button>
                   </div>

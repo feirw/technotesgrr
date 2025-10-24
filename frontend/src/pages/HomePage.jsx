@@ -2,7 +2,15 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspen
 import { useAppContext } from '../contexts/AppContext';
 import technotesLogo from '../assets/technotes_logo.png';
 import ChatWidget from '../components/ChatWidget.jsx';
-import { motion, useScroll, useTransform, MotionConfig, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  MotionConfig,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from 'motion/react';
 
 // Lazy-load βαρύτερα components
 const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
@@ -43,23 +51,23 @@ const reviewsData = [
 ];
 
 const featuresData = [
-  { 
-    title: 'Σημειώσεις', 
+  {
+    title: 'Σημειώσεις',
     desc: 'Καλύπτουν σε βάθος τη θεωρία και μεθοδολογίες της ύλης.',
     icon: '📚',
-    gradient: 'from-pink-500 to-rose-500'
+    gradient: 'from-pink-500 to-rose-500',
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
     icon: '🎯',
-    gradient: 'from-purple-500 to-indigo-500'
+    gradient: 'from-purple-500 to-indigo-500',
   },
-  { 
-    title: 'Flashcards', 
+  {
+    title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
     icon: '🧠',
-    gradient: 'from-blue-500 to-cyan-500'
+    gradient: 'from-blue-500 to-cyan-500',
   },
 ];
 
@@ -94,8 +102,8 @@ const floatingAnimation = {
   transition: {
     duration: 3,
     repeat: Infinity,
-    ease: "easeInOut"
-  }
+    ease: 'easeInOut',
+  },
 };
 
 // ---------- Enhanced UI Components ----------
@@ -106,7 +114,7 @@ const Section = ({ id, title, subtitle, className = '', children, withGradient =
     )}
     <div className="container mx-auto px-6 relative z-10">
       {title && (
-        <motion.header 
+        <motion.header
           className="text-center mb-16"
           initial="initial"
           whileInView="animate"
@@ -144,51 +152,53 @@ const FeatureCard = ({ title, desc, icon, gradient, i }) => (
     initial={{ opacity: 0, y: 30, rotateX: -15 }}
     whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
     viewport={{ once: true, amount: 0.2 }}
-    transition={{ 
-      type: 'spring', 
-      stiffness: 80, 
-      damping: 20, 
-      delay: i * 0.15 
+    transition={{
+      type: 'spring',
+      stiffness: 80,
+      damping: 20,
+      delay: i * 0.15,
     }}
-    whileHover={{ 
-      y: -10, 
+    whileHover={{
+      y: -10,
       scale: 1.02,
       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-      transition: { duration: 0.3 }
+      transition: { duration: 0.3 },
     }}
   >
     {/* Animated gradient background on hover */}
-    <motion.div 
+    <motion.div
       className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
       initial={{ scale: 0.8, rotate: 45 }}
       whileHover={{ scale: 1, rotate: 0 }}
     />
-    
+
     {/* Glow effect */}
-    <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`} />
-    
+    <div
+      className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
+    />
+
     <div className="relative z-10">
-      <motion.div 
+      <motion.div
         className="text-6xl mb-6 inline-block"
-        whileHover={{ 
-          scale: 1.2, 
+        whileHover={{
+          scale: 1.2,
           rotate: [0, -10, 10, -10, 0],
-          transition: { duration: 0.5 }
+          transition: { duration: 0.5 },
         }}
       >
         {icon}
       </motion.div>
-      
+
       <motion.h3
         className="text-2xl font-bold mb-3 text-gray-900 dark:text-white"
-        whileHover={{ 
+        whileHover={{
           scale: 1.05,
-          transition: { duration: 0.2 }
+          transition: { duration: 0.2 },
         }}
       >
         {title}
       </motion.h3>
-      
+
       <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{desc}</p>
     </div>
   </motion.article>
@@ -206,16 +216,16 @@ const StarRating = ({ value = 0 }) => {
           aria-hidden="true"
           initial={{ scale: 0, rotate: -180, opacity: 0 }}
           animate={{ scale: 1, rotate: 0, opacity: 1 }}
-          whileHover={{ 
-            scale: 1.3, 
+          whileHover={{
+            scale: 1.3,
             rotate: 360,
-            transition: { duration: 0.4 }
+            transition: { duration: 0.4 },
           }}
-          transition={{ 
-            type: 'spring', 
-            stiffness: 260, 
-            damping: 20, 
-            delay: i * 0.08 
+          transition={{
+            type: 'spring',
+            stiffness: 260,
+            damping: 20,
+            delay: i * 0.08,
           }}
         >
           ★
@@ -229,7 +239,7 @@ const StarRating = ({ value = 0 }) => {
 // Floating particles background component
 const FloatingParticles = () => {
   const particles = Array.from({ length: 20 });
-  
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((_, i) => (
@@ -250,7 +260,7 @@ const FloatingParticles = () => {
             duration: 3 + Math.random() * 2,
             repeat: Infinity,
             delay: Math.random() * 2,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -369,7 +379,6 @@ const HomePage = () => {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
-        
         {/* Enhanced Progress Bar */}
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 origin-left z-50 shadow-lg shadow-pink-500/50"
@@ -379,9 +388,9 @@ const HomePage = () => {
         {/* Hero Section with Parallax */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
           <FloatingParticles />
-          
+
           {/* Animated gradient background */}
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-gradient-to-br from-pink-100 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900"
             animate={{
               background: [
@@ -389,12 +398,12 @@ const HomePage = () => {
                 'linear-gradient(to bottom right, #ffe4e6, #fee2e2, #fce7f3)',
                 'linear-gradient(to bottom right, #fee2e2, #fce7f3, #ffe4e6)',
                 'linear-gradient(to bottom right, #fce7f3, #ffe4e6, #fee2e2)',
-              ]
+              ],
             }}
             transition={{
               duration: 10,
               repeat: Infinity,
-              ease: "linear"
+              ease: 'linear',
             }}
           />
 
@@ -402,11 +411,11 @@ const HomePage = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.5, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 100, 
+              transition={{
+                type: 'spring',
+                stiffness: 100,
                 damping: 20,
-                delay: 0.2 
+                delay: 0.2,
               }}
             >
               <motion.img
@@ -414,10 +423,10 @@ const HomePage = () => {
                 alt="technotes logo"
                 className="mx-auto w-48 md:w-64 mb-8 drop-shadow-2xl"
                 animate={floatingAnimation}
-                whileHover={{ 
-                  scale: 1.1, 
+                whileHover={{
+                  scale: 1.1,
                   rotate: [0, -5, 5, -5, 0],
-                  transition: { duration: 0.5 }
+                  transition: { duration: 0.5 },
                 }}
               />
             </motion.div>
@@ -437,21 +446,18 @@ const HomePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> για την προετοιμασία σου στις Πανελλήνιες Πληροφορικής.
+              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> για την
+              προετοιμασία σου στις Πανελλήνιες Πληροφορικής.
               <br />
               Σημειώσεις, quiz, flashcards και πολλά ακόμα!
             </motion.p>
-
-          
-
-           
           </div>
         </section>
 
         {/* Features Section */}
-        <Section 
-          id="features" 
-          title="Τι προσφέρουμε;" 
+        <Section
+          id="features"
+          title="Τι προσφέρουμε;"
           subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες"
           withGradient
         >
@@ -467,8 +473,6 @@ const HomePage = () => {
             ))}
           </motion.div>
         </Section>
-        
-
 
         {/* Reviews Section */}
         <Section
@@ -483,7 +487,7 @@ const HomePage = () => {
                 <motion.div
                   className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                 />
               </div>
             }
@@ -503,10 +507,10 @@ const HomePage = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ delay: idx * 0.1, duration: 0.6 }}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.02,
                     boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                    transition: { duration: 0.3 }
+                    transition: { duration: 0.3 },
                   }}
                 >
                   <StarRating value={review.rating} />
@@ -585,7 +589,10 @@ const HomePage = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor={firstId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">
+                <label
+                  htmlFor={firstId}
+                  className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+                >
                   Όνομα *
                 </label>
                 <motion.input
@@ -602,7 +609,10 @@ const HomePage = () => {
                 />
               </div>
               <div>
-                <label htmlFor={lastId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">
+                <label
+                  htmlFor={lastId}
+                  className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+                >
                   Επώνυμο
                 </label>
                 <motion.input
@@ -620,7 +630,10 @@ const HomePage = () => {
             </div>
 
             <div className="mt-6">
-              <label htmlFor={emailId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">
+              <label
+                htmlFor={emailId}
+                className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+              >
                 Email *
               </label>
               <motion.input
@@ -640,7 +653,10 @@ const HomePage = () => {
             </div>
 
             <div className="mt-6">
-              <label htmlFor={msgId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">
+              <label
+                htmlFor={msgId}
+                className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+              >
                 Μήνυμα *
               </label>
               <motion.textarea
@@ -662,8 +678,8 @@ const HomePage = () => {
                 type="submit"
                 disabled={contactSubmitting}
                 className="relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group"
-                whileHover={{ 
-                  scale: 1.05, 
+                whileHover={{
+                  scale: 1.05,
                   boxShadow: '0 20px 40px rgba(236, 72, 153, 0.3)',
                 }}
                 whileTap={{ scale: 0.95 }}
@@ -671,7 +687,7 @@ const HomePage = () => {
                 <span className="relative z-10">
                   {contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}
                 </span>
-                <motion.div 
+                <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-500"
                   initial={{ x: '-100%' }}
                   whileHover={{ x: 0 }}
@@ -688,7 +704,7 @@ const HomePage = () => {
         {/* Enhanced Footer */}
         <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">
           <div className="container mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
-            <motion.div 
+            <motion.div
               {...fadeIn}
               whileInView={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
@@ -698,27 +714,32 @@ const HomePage = () => {
                 Σχετικά με εμάς 🎓
               </h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά μαθητές Γ' Λυκείου να προετοιμαστούν
-                αποτελεσματικά για τις Πανελλαδικές Πληροφορικής — σημειώσεις, quiz & διαδραστικά εργαλεία.
+                Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
+                μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές
+                Πληροφορικής — σημειώσεις, quiz & διαδραστικά εργαλεία.
               </p>
             </motion.div>
 
-           
-
-            <motion.div 
+            <motion.div
               {...fadeIn}
               whileInView={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
               viewport={{ once: true }}
             >
               <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4">
-                Επικοινωνία 
+                Επικοινωνία
               </h3>
               <div className="space-y-3">
                 {[
-                  { href: 'https://www.instagram.com/technotesgr/', label: 'Instagram: @technotesgr'},
-                  { href: 'https://www.tiktok.com/@technotesgr', label: 'TikTok: @technotesgr'},
-                  { href : 'https://www.linkedin.com/company/technotesgr/', label: 'Linkedin: technotesgr'},
+                  {
+                    href: 'https://www.instagram.com/technotesgr/',
+                    label: 'Instagram: @technotesgr',
+                  },
+                  { href: 'https://www.tiktok.com/@technotesgr', label: 'TikTok: @technotesgr' },
+                  {
+                    href: 'https://www.linkedin.com/company/technotesgr/',
+                    label: 'Linkedin: technotesgr',
+                  },
                 ].map((social) => (
                   <motion.a
                     key={social.href}
@@ -764,13 +785,15 @@ const HomePage = () => {
                 © {currentYear} technotesgr. All rights reserved.
               </p>
               <p className="text-gray-600 dark:text-gray-400">
-                Made with <motion.span 
+                Made with{' '}
+                <motion.span
                   className="inline-block text-pink-600"
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
                 >
                   ♡
-                </motion.span> by feirw, areynbaw and deathwish
+                </motion.span>{' '}
+                by feirw, areynbaw and deathwish
               </p>
             </div>
           </div>
