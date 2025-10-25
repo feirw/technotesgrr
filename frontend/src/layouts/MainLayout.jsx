@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, BookOpen, Trophy, Brain, Code, FileText, Menu, X, GraduationCap } from 'lucide-react';
+import {
+  Home,
+  BookOpen,
+  Trophy,
+  Brain,
+  Code,
+  FileText,
+  Menu,
+  X,
+  GraduationCap,
+} from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 
 const BRAND = '#fda8a9';
@@ -81,7 +91,6 @@ const MainLayout = () => {
       >
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center py-4">
-            
             {/* Logo */}
             <NavLink to="/" className="flex items-center gap-3 group">
               <motion.div
@@ -174,17 +183,17 @@ const MainLayout = () => {
                   animate="open"
                   variants={{
                     open: {
-                      transition: { staggerChildren: 0.07, delayChildren: 0.2 }
+                      transition: { staggerChildren: 0.07, delayChildren: 0.2 },
                     },
                     closed: {
-                      transition: { staggerChildren: 0.05, staggerDirection: -1 }
-                    }
+                      transition: { staggerChildren: 0.05, staggerDirection: -1 },
+                    },
                   }}
                 >
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
@@ -195,7 +204,7 @@ const MainLayout = () => {
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
@@ -206,7 +215,7 @@ const MainLayout = () => {
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/notes" icon={BookOpen} onClick={closeMenu}>
@@ -217,7 +226,7 @@ const MainLayout = () => {
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
@@ -228,7 +237,7 @@ const MainLayout = () => {
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
@@ -239,7 +248,7 @@ const MainLayout = () => {
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
@@ -250,7 +259,7 @@ const MainLayout = () => {
                   <motion.div
                     variants={{
                       open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 }
+                      closed: { y: 20, opacity: 0 },
                     }}
                   >
                     <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>

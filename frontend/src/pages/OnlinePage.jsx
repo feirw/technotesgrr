@@ -1,11 +1,45 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+<<<<<<< HEAD
 const LESSONS = [
   {
     id: 1,
     title: 'Μάθημα 1ο - Η έννοια του προβλήματος',
     description: 'Μάθε τα βασικά των αλγορίθμων και της υπολογιστικής σκέψης. Ιδανικό για αρχάριους!',
+=======
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * 📚 ONLINE LESSONS PAGE - technotesgr
+ * ═══════════════════════════════════════════════════════════════
+ *
+ * Σελίδα καταλόγου καταγεγραμμένων μαθημάτων Πληροφορικής
+ *
+ * Features:
+ * - Grid layout με animated cards
+ * - Search & filter functionality
+ * - Modal video player (YouTube/mp4)
+ * - Hover effects & animations
+ * - Fully responsive
+ * - Easy to extend
+ *
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// 📊 ΔΕΔΟΜΕΝΑ ΜΑΘΗΜΑΤΩΝ
+// ═══════════════════════════════════════════════════════════════
+// Πρόσθεσε/Αφαίρεσε μαθήματα εδώ!
+
+const LESSONS = [
+  {
+    id: 1,
+    title: 'Εισαγωγή στους Αλγορίθμους',
+    description:
+      'Μάθε τα βασικά των αλγορίθμων και της υπολογιστικής σκέψης. Ιδανικό για αρχάριους!',
+    duration: '45 λεπτά',
+    level: 'Αρχάριος',
+>>>>>>> ffc9dc66092cccf43bf2850f1a696f78636f91c6
     category: 'Αλγόριθμοι',
     thumbnail: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=300&fit=crop',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // YouTube embed URL
@@ -16,7 +50,14 @@ const LESSONS = [
   {
     id: 2,
     title: 'Δομές Δεδομένων - Πίνακες',
+<<<<<<< HEAD
     description: 'Κατανόησε πώς λειτουργούν οι πίνακες και πώς να τους χρησιμοποιείς αποτελεσματικά.',
+=======
+    description:
+      'Κατανόησε πώς λειτουργούν οι πίνακες και πώς να τους χρησιμοποιείς αποτελεσματικά.',
+    duration: '60 λεπτά',
+    level: 'Μεσαίος',
+>>>>>>> ffc9dc66092cccf43bf2850f1a696f78636f91c6
     category: 'Δομές Δεδομένων',
     thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
@@ -109,7 +150,12 @@ const VideoModal = ({ lesson, isOpen, onClose }) => {
             aria-label="Κλείσιμο"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
 
@@ -139,20 +185,26 @@ const VideoModal = ({ lesson, isOpen, onClose }) => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               {lesson.title}
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              {lesson.description}
-            </p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">{lesson.description}</p>
             <div className="flex flex-wrap gap-4 text-sm">
               <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 {lesson.duration}
               </span>
               <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 {lesson.views} προβολές
               </span>
@@ -190,7 +242,7 @@ const LessonCard = ({ lesson, onClick, index }) => {
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.3 }}
         />
-        
+
         {/* Play Overlay */}
         <motion.div
           className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -243,16 +295,18 @@ const LessonCard = ({ lesson, onClick, index }) => {
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-xs font-bold">
               {lesson.instructor.charAt(0)}
             </div>
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              {lesson.instructor}
-            </span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">{lesson.instructor}</span>
           </div>
 
           {/* Views */}
           <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-500">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                clipRule="evenodd"
+              />
             </svg>
             {lesson.views}
           </div>
@@ -286,17 +340,18 @@ const OnlinePage = () => {
   // ═══════════════════════════════════════════════════════════════
 
   // Get unique levels and categories
-  const levels = ['Όλα', ...new Set(LESSONS.map(l => l.level))];
-  const categories = ['Όλες', ...new Set(LESSONS.map(l => l.category))];
+  const levels = ['Όλα', ...new Set(LESSONS.map((l) => l.level))];
+  const categories = ['Όλες', ...new Set(LESSONS.map((l) => l.category))];
 
   // Filter lessons
   const filteredLessons = useMemo(() => {
-    return LESSONS.filter(lesson => {
-      const matchesSearch = lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          lesson.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return LESSONS.filter((lesson) => {
+      const matchesSearch =
+        lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lesson.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesLevel = selectedLevel === 'Όλα' || lesson.level === selectedLevel;
       const matchesCategory = selectedCategory === 'Όλες' || lesson.category === selectedCategory;
-      
+
       return matchesSearch && matchesLevel && matchesCategory;
     });
   }, [searchQuery, selectedLevel, selectedCategory]);
@@ -328,12 +383,12 @@ const OnlinePage = () => {
           <motion.div
             className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full"
             animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
           />
           <motion.div
             className="absolute -bottom-24 -right-24 w-96 h-96 bg-white rounded-full"
             animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           />
         </div>
 
@@ -386,7 +441,12 @@ const OnlinePage = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
 
@@ -396,8 +456,10 @@ const OnlinePage = () => {
               onChange={(e) => setSelectedLevel(e.target.value)}
               className="px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             >
-              {levels.map(level => (
-                <option key={level} value={level}>{level}</option>
+              {levels.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
               ))}
             </select>
 
@@ -407,15 +469,18 @@ const OnlinePage = () => {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             >
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
               ))}
             </select>
           </div>
 
           {/* Results Count */}
           <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-            Βρέθηκαν <span className="font-bold text-pink-600">{filteredLessons.length}</span> μαθήματα
+            Βρέθηκαν <span className="font-bold text-pink-600">{filteredLessons.length}</span>{' '}
+            μαθήματα
           </div>
         </div>
       </div>
@@ -453,11 +518,7 @@ const OnlinePage = () => {
       </div>
 
       {/* Video Modal */}
-      <VideoModal
-        lesson={selectedLesson}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      <VideoModal lesson={selectedLesson} isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

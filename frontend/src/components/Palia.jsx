@@ -45,8 +45,14 @@ const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 p-6">
-      <motion.div ref={containerRef} className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto" style={{ border: `3px solid ${BRAND}` }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 300 }}>
-        
+      <motion.div
+        ref={containerRef}
+        className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto"
+        style={{ border: `3px solid ${BRAND}` }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6">
           <div className="flex items-center gap-3">
@@ -63,34 +69,74 @@ const Palia = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
         {/* PDF Viewer */}
         <div className="relative bg-gray-100">
           {loading && (
-            <motion.div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <motion.div className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4" style={{ borderColor: BRAND }} animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} />
+            <motion.div
+              className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4"
+                style={{ borderColor: BRAND }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              />
               <p className="text-gray-600 font-semibold">Φόρτωση PDF...</p>
             </motion.div>
           )}
 
-          <iframe ref={frameRef} src={pdfPath} title={fileName} width="100%" height="720" className="block" onLoad={() => setLoading(false)} allow="fullscreen" />
+          <iframe
+            ref={frameRef}
+            src={pdfPath}
+            title={fileName}
+            width="100%"
+            height="720"
+            className="block"
+            onLoad={() => setLoading(false)}
+            allow="fullscreen"
+          />
         </div>
 
         {/* Actions */}
         <div className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-t-2 border-pink-200">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <motion.button onClick={handleOpenNew} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg" style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+            <motion.button
+              onClick={handleOpenNew}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg"
+              style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <ExternalLink className="w-5 h-5" />
               <span className="hidden sm:inline">Νέο Παράθυρο</span>
             </motion.button>
 
-            <motion.button onClick={handleDownload} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+            <motion.button
+              onClick={handleDownload}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Download className="w-5 h-5" />
               <span className="hidden sm:inline">Λήψη</span>
             </motion.button>
 
-            <motion.button onClick={handlePrint} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+            <motion.button
+              onClick={handlePrint}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Printer className="w-5 h-5" />
               <span className="hidden sm:inline">Εκτύπωση</span>
             </motion.button>
 
-            <motion.button onClick={handleFullscreen} className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+            <motion.button
+              onClick={handleFullscreen}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Maximize className="w-5 h-5" />
               <span className="hidden sm:inline">Πλήρης</span>
             </motion.button>
