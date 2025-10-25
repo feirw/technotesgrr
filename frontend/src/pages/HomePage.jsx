@@ -423,12 +423,12 @@ const HomePage = () => {
             </motion.div>
 
             <motion.h1
-              className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent"
+              className="text-xl md:text-5xl font-black mb-6 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              Καλώς ήρθες{nickname ? `, ${nickname}` : ''}! 🎓
+              Γράψε 100 στην Πληροφορική🎓
             </motion.h1>
 
             <motion.p
@@ -437,9 +437,9 @@ const HomePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> για την προετοιμασία σου στις Πανελλήνιες Πληροφορικής.
+              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> για την προετοιμασία σου στις Πανελλήνιες.
               <br />
-              Σημειώσεις, quiz, flashcards και πολλά ακόμα!
+            
             </motion.p>
 
           
@@ -474,7 +474,6 @@ const HomePage = () => {
         <Section
           id="reviews"
           title="Τι λένε οι μαθητές μας;"
-          subtitle="Πάνω από 1000+ μαθητές μας εμπιστεύονται"
           className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10"
         >
           <Suspense
