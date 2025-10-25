@@ -111,7 +111,7 @@ const Flashcards = () => {
                 <motion.button
                   key={set.id}
                   onClick={() => setSelectedSetIndex(index)}
-                  className="group relative p-6 rounded-2xl bg-white border-2 border-pink-200 hover:border-pink-400 hover:shadow-2xl transition-all text-left overflow-hidden"
+                  className="group relative p-4 rounded-2xl bg-white border-2 border-pink-200 hover:border-pink-400 hover:shadow-2xl transition-all text-left overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -123,7 +123,7 @@ const Flashcards = () => {
                       <BookOpen className="w-6 h-6 text-pink-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-800 group-hover:text-pink-600 transition-colors">
+                      <h3 className="font-bold text-sm text-gray-800 group-hover:text-pink-600 transition-colors">
                         {set.title}
                       </h3>
                     </div>

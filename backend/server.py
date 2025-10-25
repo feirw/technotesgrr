@@ -8,15 +8,15 @@ import uuid
 from datetime import datetime, timedelta
 import json
 from database import (
-    init_database, 
-    update_leaderboard, 
-    get_leaderboard_data, 
+    init_database,
+    update_leaderboard,
+    get_leaderboard_data,
     record_quiz_submission,
     get_db_connection,
     get_quizzes_from_db,
     get_flashcards_from_db,
     get_quiz_by_id,
-    save_contact_submission  # Add this import
+    save_contact_submission,  # Add this import
 )
 
 app = FastAPI()
@@ -30,6 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Models
 class Note(BaseModel):
     id: str
@@ -38,6 +39,7 @@ class Note(BaseModel):
     subject: str
     price: float
     download_count: int = 0
+
 
 class QuizQuestion(BaseModel):
     id: str
@@ -48,15 +50,18 @@ class QuizQuestion(BaseModel):
     points: int
     source_file: str
 
+
 class QuizSubmission(BaseModel):
     nickname: str
     question_id: str
     selected_answer: int
 
+
 class LeaderboardEntry(BaseModel):
     nickname: str
     total_points: int
     month: str
+
 
 class Flashcard(BaseModel):
     id: str
@@ -66,17 +71,19 @@ class Flashcard(BaseModel):
     chapter: str
     source_file: str
 
+
 class ContactForm(BaseModel):
     firstName: str
     lastName: str
     email: str
     message: str
 
+
 def init_sqlite_data():
     """Initialize SQLite database structure"""
     # with get_db_connection() as conn:
     #     cursor = conn.cursor()
-        
+
     #     # Create notes table
     #     cursor.execute('''
     #         CREATE TABLE IF NOT EXISTS notes (
@@ -89,9 +96,10 @@ def init_sqlite_data():
     #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     #         )
     #     ''')
-        
+
     #     # No need to insert sample data anymore
     #     conn.commit()
+
 
 # Initialize database on startup
 @app.on_event("startup")
@@ -100,10 +108,12 @@ async def startup_event():
     init_sqlite_data()
     print("SQLite database initialized successfully")
 
+
 # API Routes
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "message": "TechNotesGR API is running with SQLite"}
+
 
 # @app.get("/api/notes")
 # async def get_notes():
@@ -130,6 +140,7 @@ async def health_check():
 #     except Exception as e:
 #         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+
 @app.get("/api/quiz/questions")
 async def get_quiz_questions():
     """Get all quiz questions from the new quizzes table"""
@@ -137,10 +148,13 @@ async def get_quiz_questions():
         questions = get_quizzes_from_db()
         # Parse JSON answers for each question
         for question in questions:
-            question['answers'] = json.loads(question['answers'])
+            question["answers"] = json.loads(question["answers"])
         return {"questions": questions}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading quiz questions: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error loading quiz questions: {str(e)}"
+        )
+
 
 @app.get("/api/quiz/questions/{chapter}")
 async def get_quiz_questions_by_chapter(chapter: str):
@@ -149,56 +163,62 @@ async def get_quiz_questions_by_chapter(chapter: str):
         questions = get_quizzes_from_db()
         chapter_questions = []
         for question in questions:
-            if question['chapter'] == chapter:
-                question['answers'] = json.loads(question['answers'])
+            if question["chapter"] == chapter:
+                question["answers"] = json.loads(question["answers"])
                 chapter_questions.append(question)
         return {"questions": chapter_questions, "chapter": chapter}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading quiz questions: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error loading quiz questions: {str(e)}"
+        )
+
 
 @app.post("/api/quiz/submit")
 async def submit_quiz_answer(submission: QuizSubmission):
     try:
         # Find the question from the new quizzes table
         question = get_quiz_by_id(submission.question_id)
-        
+
         if not question:
             raise HTTPException(status_code=404, detail="Question not found")
-        
+
         # Parse the answers JSON
-        answers = json.loads(question['answers'])
-        
+        answers = json.loads(question["answers"])
+
         # Check if answer is correct - look for the correct answer in the answers array
         correct_answer = None
         for idx, answer in enumerate(answers):
-            if answer.get('correct', False):
+            if answer.get("correct", False):
                 correct_answer = idx
                 break
-        
+
         is_correct = submission.selected_answer == correct_answer
-        points_earned = question.get('points', 10) if is_correct else 0
-        
+        points_earned = question.get("points", 10) if is_correct else 0
+
         # Record the submission
         record_quiz_submission(
             nickname=submission.nickname,
             question_id=submission.question_id,
             selected_answer=str(submission.selected_answer),
             is_correct=is_correct,
-            points_earned=points_earned
+            points_earned=points_earned,
         )
-        
+
         # Update leaderboard
         if points_earned > 0:
             update_leaderboard(submission.nickname, points_earned)
-        
+
         return {
             "correct": is_correct,
             "points_earned": points_earned,
             "correct_answer": correct_answer,
-            "explanation": question.get('explanation', '')
+            "explanation": question.get("explanation", ""),
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error submitting quiz answer: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error submitting quiz answer: {str(e)}"
+        )
+
 
 @app.get("/api/flashcards")
 async def get_flashcards():
@@ -207,17 +227,23 @@ async def get_flashcards():
         flashcards = get_flashcards_from_db()
         return {"flashcards": flashcards}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading flashcards: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error loading flashcards: {str(e)}"
+        )
+
 
 @app.get("/api/flashcards/{chapter}")
 async def get_flashcards_by_chapter(chapter: str):
     """Get flashcards for a specific chapter"""
     try:
         flashcards = get_flashcards_from_db()
-        chapter_flashcards = [f for f in flashcards if f['chapter'] == chapter]
+        chapter_flashcards = [f for f in flashcards if f["chapter"] == chapter]
         return {"flashcards": chapter_flashcards, "chapter": chapter}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading flashcards: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error loading flashcards: {str(e)}"
+        )
+
 
 @app.get("/api/categories")
 async def get_categories():
@@ -225,22 +251,27 @@ async def get_categories():
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            
+
             # Get quiz categories
-            cursor.execute('SELECT DISTINCT category FROM quizzes ORDER BY category')
+            cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
             quiz_categories = [row[0] for row in cursor.fetchall()]
-            
+
             # Get flashcard categories
-            cursor.execute('SELECT DISTINCT category FROM flashcards ORDER BY category')
+            cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
             flashcard_categories = [row[0] for row in cursor.fetchall()]
-            
+
             return {
                 "quiz_categories": quiz_categories,
                 "flashcard_categories": flashcard_categories,
-                "all_categories": sorted(list(set(quiz_categories + flashcard_categories)))
+                "all_categories": sorted(
+                    list(set(quiz_categories + flashcard_categories))
+                ),
             }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading categories: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error loading categories: {str(e)}"
+        )
+
 
 @app.get("/api/leaderboard")
 async def get_leaderboard(month: str = None):
@@ -251,6 +282,7 @@ async def get_leaderboard(month: str = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+
 @app.post("/api/contact")
 async def contact_form(contact_data: ContactForm):
     try:
@@ -258,15 +290,19 @@ async def contact_form(contact_data: ContactForm):
             first_name=contact_data.firstName,
             last_name=contact_data.lastName,
             email=contact_data.email,
-            message=contact_data.message
+            message=contact_data.message,
         )
         return {
             "message": "Η φόρμα επικοινωνίας στάλθηκε επιτυχώς!",
-            "submission_id": submission_id
+            "submission_id": submission_id,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error saving contact form: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error saving contact form: {str(e)}"
+        )
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8001)

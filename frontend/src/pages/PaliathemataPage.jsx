@@ -139,6 +139,7 @@ const PaliathemataPage = () => {
   };
 
   const handleModeChange = (newMode) => {
+    // **Αφαιρέθηκε ο υπολογισμός direction**
     setMode(newMode);
     setSelectedYear(null);
     setSearchQuery('');
@@ -233,14 +234,14 @@ const PaliathemataPage = () => {
         </div>
       </div>
 
-      {/* Tabs & Search Section */}
+      {/* Tabs & Search Section - Εφαρμογή layoutId */}
       <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-pink-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-6 py-6">
           {/* Tabs */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-            {/* Mode Tabs */}
+            {/* Mode Tabs Container */}
             <div
-              className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full shadow-inner"
+              className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full shadow-inner relative"
               role="tablist"
               aria-label="Επιλογή κατηγορίας"
             >
@@ -248,19 +249,28 @@ const PaliathemataPage = () => {
                 role="tab"
                 aria-selected={mode === 'kanonikes'}
                 className={`
-                  px-6 py-3 rounded-full font-bold text-sm transition-all
+                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
                     mode === 'kanonikes'
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      ? 'text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
                 onClick={() => handleModeChange('kanonikes')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="flex items-center gap-2">
+                {/* Ενεργό Background (για slide animation) */}
+                {mode === 'kanonikes' && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                    layoutId="activeTabIndicator"
+                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                  />
+                )}
+                {/* Περιεχόμενο (Πάνω από το background) */}
+                <div className="relative z-20 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Κανονικές
                   <span className="ml-1 text-xs opacity-75">({KANONIKES_YEARS.length})</span>
@@ -271,19 +281,28 @@ const PaliathemataPage = () => {
                 role="tab"
                 aria-selected={mode === 'epanaliptikes'}
                 className={`
-                  px-6 py-3 rounded-full font-bold text-sm transition-all
+                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
                     mode === 'epanaliptikes'
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      ? 'text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
                 onClick={() => handleModeChange('epanaliptikes')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="flex items-center gap-2">
+                {/* Ενεργό Background (για slide animation) */}
+                {mode === 'epanaliptikes' && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                    layoutId="activeTabIndicator"
+                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                  />
+                )}
+                {/* Περιεχόμενο (Πάνω από το background) */}
+                <div className="relative z-20 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Επαναληπτικές
                   <span className="ml-1 text-xs opacity-75">({EPANALIPTIKES_YEARS.length})</span>
@@ -345,17 +364,16 @@ const PaliathemataPage = () => {
         </div>
       </div>
 
-      {/* Years Grid */}
+      {/* Years Grid Section */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <AnimatePresence mode="wait">
           {filteredYears.length === 0 ? (
-            // Empty State
             <motion.div
               className="text-center py-20"
-              initial={{ opacity: 0, scale: 0.9 }}
+              key={`${mode}-empty`}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              key="empty"
+              exit={{ opacity: 0, scale: 0.95 }}
             >
               <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
@@ -374,13 +392,13 @@ const PaliathemataPage = () => {
               )}
             </motion.div>
           ) : (
-            // Years Grid
             <motion.div
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4"
-              key="grid"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              key={`${mode}-grid`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
             >
               {filteredYears.map((year, index) => (
                 <YearCard
