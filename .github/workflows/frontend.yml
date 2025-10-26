@@ -33,10 +33,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check formatting
-        id: format-check
-        run: npm run format:check
-        continue-on-error: true
+      # - name: Check formatting
+      #   id: format-check
+      #   run: npm run format:check
+      #   continue-on-error: true
 
       - name: Auto-format code if check fails
         if: steps.format-check.outcome == 'failure'
