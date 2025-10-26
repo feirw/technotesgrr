@@ -114,7 +114,7 @@ const MainLayout = () => {
               <NavButton to="/quiz">Quiz</NavButton>
               <NavButton to="/flashcards">Flashcards</NavButton>
               <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
-              <NavButton to ="/merch">Σχολικά είδη</NavButton>
+              <NavButton to="/merch">Σχολικά είδη</NavButton>
               <NavButton to="/algorithms">Algorithms</NavButton>
             </div>
 

@@ -13,19 +13,19 @@ const MerchPage = () => {
         <div className="absolute inset-0 overflow-hidden opacity-10">
           <motion.div
             className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500 rounded-full blur-3xl"
-            animate={{ 
+            animate={{
               scale: [1, 1.2, 1],
               x: [0, 50, 0],
-              y: [0, 30, 0]
+              y: [0, 30, 0],
             }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
             className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl"
-            animate={{ 
+            animate={{
               scale: [1.2, 1, 1.2],
               x: [0, -50, 0],
-              y: [0, -30, 0]
+              y: [0, -30, 0],
             }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -38,11 +38,11 @@ const MerchPage = () => {
             className="text-9xl mb-8"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ 
+            transition={{
               type: 'spring',
               stiffness: 200,
               damping: 15,
-              delay: 0.2 
+              delay: 0.2,
             }}
           >
             🎁
@@ -64,8 +64,7 @@ const MerchPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-          >
-          </motion.p>
+          ></motion.p>
 
           {/* Description */}
           <motion.p
@@ -74,10 +73,10 @@ const MerchPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
           >
-            Ετοιμάζουμε κάτι ξεχωριστό! Σύντομα θα βρεις εδώ οικονομικά σχολικά είδη εμπνευσμένα από την Πληροφορική των Πανελληνίων.
+            Ετοιμάζουμε κάτι ξεχωριστό! Σύντομα θα βρεις εδώ οικονομικά σχολικά είδη εμπνευσμένα από
+            την Πληροφορική των Πανελληνίων.
             <br />
-            <span className="text-pink-600 dark:text-pink-400 font-semibold">
-            </span>
+            <span className="text-pink-600 dark:text-pink-400 font-semibold"></span>
           </motion.p>
 
           {/* Animated Dots */}
@@ -142,17 +141,13 @@ const MerchPage = () => {
             </div>
           </motion.div>
 
-          
-
           {/* Social Proof */}
           <motion.p
             className="mt-8 text-sm text-gray-500 dark:text-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.6 }}
-          >
-        
-          </motion.p>
+          ></motion.p>
         </div>
       </div>
     </div>

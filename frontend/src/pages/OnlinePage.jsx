@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-
 const LESSONS = [
   {
     id: 1,
@@ -19,7 +18,8 @@ const LESSONS = [
   {
     id: 2,
     title: 'Μάθημα 2ο - Βασικές Έννοιες Προγραμματισμού',
-    description: 'Μεταβλητές,Σταθερές,Τύποι δεδομένων,εκφράσεις,εντολή εκχώρησης,ενσωματωμένες συναρτήσεις.',
+    description:
+      'Μεταβλητές,Σταθερές,Τύποι δεδομένων,εκφράσεις,εντολή εκχώρησης,ενσωματωμένες συναρτήσεις.',
     duration: '60 λεπτά',
     category: 'Αλγόριθμοι',
     thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
@@ -32,7 +32,8 @@ const LESSONS = [
   {
     id: 3,
     title: 'Μάθημα 3ο - Δομή Ακολουθίας',
-    description: 'Τι είναι αλγόριθμος,Σπουδαιότητα αλγορίθμων,Περιγραφή-αναπαράσταση αλγορίθμων,Διάγραμμα ροής,Βασικές συνιστώσες αλγορίθμου,δομή ακολουθίας.',
+    description:
+      'Τι είναι αλγόριθμος,Σπουδαιότητα αλγορίθμων,Περιγραφή-αναπαράσταση αλγορίθμων,Διάγραμμα ροής,Βασικές συνιστώσες αλγορίθμου,δομή ακολουθίας.',
     duration: '55 λεπτά',
     category: 'Αλγόριθμοι',
     thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400&h=300&fit=crop',
@@ -380,9 +381,7 @@ const OnlinePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-          >
-          
-          </motion.div>
+          ></motion.div>
         </div>
       </div>
 
