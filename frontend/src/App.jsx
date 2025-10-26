@@ -9,6 +9,8 @@ import AlgorithmsPage from './pages/AlgorithmsPage';
 import PaliathemataPage from './pages/PaliathemataPage';
 import OnlinePage from './pages/OnlinePage';
 import MerchPage from './pages/MerchPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import DataProtectionPage from './pages/DataProtectionPage';
 
 function App() {
   return (
@@ -22,7 +24,9 @@ function App() {
         <Route path="algorithms" element={<AlgorithmsPage />} />
         <Route path="paliathemata" element={<PaliathemataPage />} />
         <Route path="online" element={<OnlinePage />} />
-        <Route path="/merch" element={<MerchPage />} /> {/* ← ΝΕΟ! */}
+        <Route path="/merch" element={<MerchPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/data" element={<DataProtectionPage />} />
         <Route path="*" element={<div>404 - Η σελίδα δεν βρέθηκε</div>} />
       </Route>
     </Routes>

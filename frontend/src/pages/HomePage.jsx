@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspense } from 'react';
 import { useAppContext } from '../contexts/AppContext';
+import emailjs from '@emailjs/browser';
 import technotesLogo from '../assets/technotes_logo.png';
 import ChatWidget from '../components/ChatWidget.jsx';
 import {
@@ -10,12 +11,10 @@ import {
   AnimatePresence,
   useMotionValue,
   useSpring,
-} from 'motion/react';
+} from 'framer-motion';
 
 // Lazy-load βαρύτερα components
 const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
-
-const BACKEND_URL = (import.meta.env?.VITE_API_URL || 'http://localhost:8001').replace(/\/+$/, '');
 
 // ---------- Mock data ----------
 const reviewsData = [
@@ -303,7 +302,6 @@ const HomePage = () => {
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
   const [contactError, setContactError] = useState('');
-  const abortRef = useRef(null);
 
   const firstId = useId();
   const lastId = useId();
@@ -339,42 +337,34 @@ const HomePage = () => {
       }
 
       setContactSubmitting(true);
-      abortRef.current?.abort?.();
-      const controller = new AbortController();
-      abortRef.current = controller;
 
       try {
-        const res = await fetch(`${BACKEND_URL}/api/contact`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            firstName: contactForm.firstName.trim(),
-            lastName: contactForm.lastName.trim(),
-            email: contactForm.email.trim(),
-            message: contactForm.message.trim(),
-          }),
-          signal: controller.signal,
-        });
+        const templateParams = {
+          firstName: contactForm.firstName.trim(),
+          lastName: contactForm.lastName.trim(),
+          email: contactForm.email.trim(),
+          message: contactForm.message.trim(),
+        };
 
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        await emailjs.send(
+          process.env.REACT_APP_EMAILJS_SERVICE_ID,
+          process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+          templateParams,
+          process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+        );
 
         setContactSuccess(true);
         setContactForm({ firstName: '', lastName: '', email: '', message: '', website: '' });
         setTimeout(() => setContactSuccess(false), 5000);
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          setContactError('Κάτι πήγε στραβά. Προσπάθησε ξανά.');
-        }
+        console.error('EmailJS error:', err);
+        setContactError('Κάτι πήγε στραβά. Προσπάθησε ξανά.');
       } finally {
         setContactSubmitting(false);
       }
     },
     [contactForm, validate]
   );
-
-  useEffect(() => {
-    return () => abortRef.current?.abort?.();
-  }, []);
 
   return (
     <MotionConfig reducedMotion="user">
@@ -700,9 +690,8 @@ const HomePage = () => {
         {/* <ChatWidget nickname={nickname} /> */}
 
         {/* Enhanced Footer */}
-        {/* Enhanced Footer */}
         <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">
-          <div className="container mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+          <div className="container mx-auto px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
             {/* --- Σχετικά με εμάς --- */}
             <motion.div
               {...fadeIn}
@@ -771,7 +760,7 @@ const HomePage = () => {
               </h3>
               <div className="space-y-2">
                 {[
-                  { href: '/privacy', label: 'Όροι Χρήσης & Πολιτική Απορρήτου' },
+                  { href: '/privacy-policy', label: 'Όροι Χρήσης & Πολιτική Απορρήτου' },
                   { href: '/data', label: 'Προσωπικά Δεδομένα' },
                 ].map((link) => (
                   <motion.a
