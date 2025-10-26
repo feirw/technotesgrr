@@ -8,6 +8,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import AlgorithmsPage from './pages/AlgorithmsPage';
 import PaliathemataPage from './pages/PaliathemataPage';
 import OnlinePage from './pages/OnlinePage';
+import MerchPage from './pages/MerchPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="algorithms" element={<AlgorithmsPage />} />
         <Route path="paliathemata" element={<PaliathemataPage />} />
         <Route path="online" element={<OnlinePage />} />
+        <Route path="/merch" element={<MerchPage />} />  {/* ← ΝΕΟ! */}
 
         <Route path="*" element={<div>404 - Η σελίδα δεν βρέθηκε</div>} />
       </Route>

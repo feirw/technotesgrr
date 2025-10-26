@@ -1,42 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * ═══════════════════════════════════════════════════════════════
- * 📚 ONLINE LESSONS PAGE - technotesgr
- * ═══════════════════════════════════════════════════════════════
- *
- * Σελίδα καταλόγου καταγεγραμμένων μαθημάτων Πληροφορικής
- *
- * Features:
- * - Grid layout με animated cards
- * - Search & filter functionality
- * - Modal video player (YouTube/mp4)
- * - Hover effects & animations
- * - Fully responsive
- * - Easy to extend
- *
- * ═══════════════════════════════════════════════════════════════
- */
-
-// ═══════════════════════════════════════════════════════════════
-// 📊 ΔΕΔΟΜΕΝΑ ΜΑΘΗΜΑΤΩΝ
-// ═══════════════════════════════════════════════════════════════
-// Πρόσθεσε/Αφαίρεσε μαθήματα εδώ!
 
 const LESSONS = [
   {
     id: 1,
-<<<<<<< HEAD
     title: 'Μάθημα 1ο - Ανάλυση Προβλήματος',
     description: 'Η έννοια του προβλήματος,Κατανόηση και δομή προβλήματος,καθορισμός απαιτήσεων. ',
-=======
-    title: 'Μάθημα 1ο - Η έννοια του',
-    description:
-      'Μάθε τα βασικά των αλγορίθμων και της υπολογιστικής σκέψης. Ιδανικό για αρχάριους!',
->>>>>>> bba2f9cd9236baf81a50b407ca5daac8c2f47a57
     duration: '45 λεπτά',
-    category: 'Πρόβλημα',
+    category: 'Θεωρητικά Μαθήματα',
     thumbnail: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=300&fit=crop',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // YouTube embed URL
     videoType: 'youtube', // 'youtube' ή 'mp4'
@@ -46,14 +18,8 @@ const LESSONS = [
   },
   {
     id: 2,
-<<<<<<< HEAD
     title: 'Μάθημα 2ο - Βασικές Έννοιες Προγραμματισμού',
     description: 'Μεταβλητές,Σταθερές,Τύποι δεδομένων,εκφράσεις,εντολή εκχώρησης,ενσωματωμένες συναρτήσεις.',
-=======
-    title: 'Δομές Δεδομένων - Πίνακες',
-    description:
-      'Κατανόησε πώς λειτουργούν οι πίνακες και πώς να τους χρησιμοποιείς αποτελεσματικά.',
->>>>>>> bba2f9cd9236baf81a50b407ca5daac8c2f47a57
     duration: '60 λεπτά',
     category: 'Αλγόριθμοι',
     thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
@@ -415,22 +381,7 @@ const OnlinePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <div>
-              <div className="text-4xl font-bold">{LESSONS.length}</div>
-              <div className="text-pink-100">Μαθήματα</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold">
-                {LESSONS.reduce((sum, l) => sum + l.views, 0)}
-              </div>
-              <div className="text-pink-100">Προβολές</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold">
-                {Math.floor(LESSONS.reduce((sum, l) => sum + parseInt(l.duration), 0) / 60)}h
-              </div>
-              <div className="text-pink-100">Περιεχόμενο</div>
-            </div>
+          
           </motion.div>
         </div>
       </div>

@@ -446,14 +446,8 @@ const HomePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-<<<<<<< HEAD
-              Η <span className="font-bold text-pink-600">Η τέλεια πλατφόρμα</span> προετοιμασίας για τις Πανελλήνιες.
-=======
-              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> για την
-              προετοιμασία σου στις Πανελλήνιες. Η{' '}
-              <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> για την προετοιμασία
-              σου στις Πανελλήνιες Πληροφορικής.
->>>>>>> bba2f9cd9236baf81a50b407ca5daac8c2f47a57
+              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> προετοιμασίας για τις Πανελλήνιες. 
+
               <br />
             </motion.p>
           </div>

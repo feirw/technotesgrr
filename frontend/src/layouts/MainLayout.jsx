@@ -109,12 +109,13 @@ const MainLayout = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-2">
               <NavButton to="/">Αρχική</NavButton>
-              <NavButton to="/online">Online</NavButton>
+              <NavButton to="/online">Online Μαθήματα</NavButton>
               <NavButton to="/notes">Σημειώσεις</NavButton>
               <NavButton to="/quiz">Quiz</NavButton>
               <NavButton to="/flashcards">Flashcards</NavButton>
-              <NavButton to="/algorithms">Algorithms</NavButton>
               <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
+              <NavButton to ="/merch">Σχολικά είδη</NavButton>
+              <NavButton to="/algorithms">Algorithms</NavButton>
             </div>
 
             {/* Mobile Menu Button */}
