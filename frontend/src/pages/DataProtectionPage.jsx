@@ -92,6 +92,7 @@ const DataProtectionPage = () => {
       <footer className="text-center mt-8 text-gray-500">
         <p>© {new Date().getFullYear()} technotesgr — Όλα τα δικαιώματα διατηρούνται.</p>
       </footer>
+      
     </div>
   );
 };

@@ -109,6 +109,7 @@ const MainLayout = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-2">
               <NavButton to="/">Αρχική</NavButton>
+              <NavButton to="/about">About Us</NavButton>
               <NavButton to="/online">Online Μαθήματα</NavButton>
               <NavButton to="/notes">Σημειώσεις</NavButton>
               <NavButton to="/quiz">Quiz</NavButton>

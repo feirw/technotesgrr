@@ -11,6 +11,7 @@ import OnlinePage from './pages/OnlinePage';
 import MerchPage from './pages/MerchPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import DataProtectionPage from './pages/DataProtectionPage';
+import AboutPage from './pages/AboutMe';  
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/merch" element={<MerchPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/data" element={<DataProtectionPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<div>404 - Η σελίδα δεν βρέθηκε</div>} />
       </Route>
     </Routes>

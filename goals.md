@@ -9,7 +9,9 @@
 - [ ] Create notes to upload
 - [ ] Create videos for the lessons
 - [X] Connect contact form with EmailJS
-- [ ] Remove mock data for reviews and add real reviews in the db
+- [ ] Remove mock data for reviews and add real reviews 
+- [ ] Add exercises from the web in page (notes)
+in the db
 - [ ] Make footer standalone and reusable
 - [ ] Make routes.tsx cleaner with route groups
 

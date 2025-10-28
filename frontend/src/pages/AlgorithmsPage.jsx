@@ -11,6 +11,7 @@ const AlgorithmsPage = () => {
         title="Iframe Example"
       ></iframe>
     </div>
+    
   );
 };
 

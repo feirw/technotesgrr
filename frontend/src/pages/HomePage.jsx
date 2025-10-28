@@ -70,6 +70,34 @@ const featuresData = [
   },
 ];
 
+// FAQ Data
+const faqData = [
+  {
+    question: 'Είναι δωρεάν η πλατφόρμα;',
+    answer: 'Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ\' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις.Μελλοντικά θα προστεθεί ένα merch site με σχολικά είδη για την υποστήριξη της πλατφόρμας. Επίσης, θα είναι διαθέσιμες προαιρετικές πληρωμές αν κάποιος θέλει πρόσβαση σε όλα τα καταγεγραμμένα μαθήματα της ύλης, για ευνόητους λόγους',
+  },
+  {
+    question: 'Καλύπτει όλη την ύλη της Πληροφορικής;',
+    answer: 'Ναι! Οι σημειώσεις μας καλύπτουν αναλυτικά όλη την ύλη του σχολικού βιβλίου Πληροφορικής Γ\' Λυκείου, με επιπλέον παραδείγματα και ασκήσεις.',
+  },
+  {
+    question: 'Πώς μπορώ να παρακολουθήσω την πρόοδό μου;',
+    answer: 'Μέσα από τα quiz και τα flashcards μπορείς να δεις τις απαντήσεις σου και να εντοπίσεις τα σημεία που χρειάζονται περισσότερη μελέτη. Κάθε quiz σου δίνει άμεσο feedback.',
+  },
+  {
+    question: 'Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό μου;',
+    answer: 'Απολύτως! Η πλατφόρμα είναι πλήρως responsive και λειτουργεί άψογα σε κινητά, tablets και υπολογιστές. Μπορείς να μελετάς όπου και όποτε θέλεις!',
+  },
+  {
+    question: 'Πόσο συχνά ενημερώνεται το περιεχόμενο;',
+    answer: 'Ενημερώνουμε τακτικά το περιεχόμενο με νέα quiz, flashcards και βελτιωμένες σημειώσεις. Παρακολουθούμε επίσης τις τάσεις των Πανελλαδικών για να προσθέτουμε σχετικό υλικό.',
+  },
+  {
+    question: 'Μπορώ να κάνω ερωτήσεις αν δυσκολευτώ;',
+    answer: 'Φυσικά! Μπορείς να επικοινωνήσεις μαζί μας μέσω της φόρμας επικοινωνίας ή μέσω των social media μας. Θα χαρούμε να σε βοηθήσουμε!',
+  },
+];
+
 // ---------- Enhanced Motion variants ----------
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -232,6 +260,65 @@ const StarRating = ({ value = 0 }) => {
       ))}
       <span className="sr-only">{clamped}/5</span>
     </div>
+  );
+};
+
+// FAQ Item Component
+const FAQItem = ({ question, answer, index }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <motion.div
+      className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ delay: index * 0.1 }}
+    >
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-6 py-5 flex items-center justify-between text-left group"
+        whileHover={{ backgroundColor: 'rgba(236, 72, 153, 0.05)' }}
+      >
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white pr-8 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+          {question}
+        </h3>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex-shrink-0"
+        >
+          <svg
+            className="w-6 h-6 text-pink-600 dark:text-pink-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </motion.div>
+      </motion.button>
+      
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="px-6 pb-5 text-gray-600 dark:text-gray-300 leading-relaxed">
+              {answer}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
@@ -513,6 +600,22 @@ const HomePage = () => {
             </motion.div>
           </Suspense>
         </Section>
+
+        {/* FAQ Section */}
+        <Section
+          id="faq"
+          title="Συχνές Ερωτήσεις"
+          subtitle="Απαντήσεις στις πιο κοινές απορίες σου"
+          withGradient
+        >
+          <div className="max-w-3xl mx-auto space-y-4">
+            {faqData.map((faq, index) => (
+              <FAQItem key={index} {...faq} index={index} />
+            ))}
+          </div>
+        </Section>
+
+          
 
         {/* Contact Section */}
         <Section
