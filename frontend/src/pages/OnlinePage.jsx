@@ -1,17 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
 const LESSONS = [
+  // ═══════════════════════════════════════════════════════════════
+  // 🆓 ΔΩΡΕΑΝ ΜΑΘΗΜΑΤΑ (BASIC)
+  // ═══════════════════════════════════════════════════════════════
   {
     id: 1,
     title: 'Μάθημα 1ο - Ανάλυση Προβλήματος',
-    description: 'Η έννοια του προβλήματος,Κατανόηση και Δομή προβλήματος,Καθορισμός Απαιτήσεων. ',
+    description: 'Η έννοια του προβλήματος, Κατανόηση και Δομή προβλήματος, Καθορισμός Απαιτήσεων.',
     duration: '45 λεπτά',
     category: 'Θεωρητικά Μαθήματα',
     thumbnail: '/images/1.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
-    instructor: 'Eλένη Ζαφείρη',
+    instructor: 'Ελένη Ζαφείρη',
     views: 1500,
     level: 'Easy',
     locked: false,
@@ -19,8 +21,7 @@ const LESSONS = [
   {
     id: 2,
     title: 'Μάθημα 2ο - Βασικές Έννοιες Προγραμματισμού',
-    description:
-      'Μεταβλητές,Σταθερές,Τύποι Δεδομένων,Εκφράσεις,Εντολή Εκχώρησης,Ενσωματωμένες Συναρτήσεις.',
+    description: 'Μεταβλητές, Σταθερές, Τύποι Δεδομένων, Εκφράσεις, Εντολή Εκχώρησης, Ενσωματωμένες Συναρτήσεις.',
     duration: '60 λεπτά',
     category: 'Βασικά για Αλγορίθμους',
     thumbnail: '/images/2.jpg',
@@ -34,10 +35,9 @@ const LESSONS = [
   {
     id: 3,
     title: 'Μάθημα 3ο - Αλγόριθμοι: Βασικές εντολές και Έννοιες',
-    description:
-      'Τι είναι αλγόριθμος,Σπουδαιότητα Αλγορίθμων,Περιγραφή-Αναπαράσταση Αλγορίθμων,Διάγραμμα Ροής,Βασικές Συνιστώσες Αλγορίθμου,Δομή Ακολουθίας με Αλγόριθμο.',
+    description: 'Τι είναι αλγόριθμος, Σπουδαιότητα Αλγορίθμων, Περιγραφή-Αναπαράσταση Αλγορίθμων, Διάγραμμα Ροής, Βασικές Συνιστώσες Αλγορίθμου, Δομή Ακολουθίας με Αλγόριθμο.',
     duration: '55 λεπτά',
-    category: 'Αλγόριθμοι',
+    category: 'Βασικά για Αλγορίθμους',
     thumbnail: '/images/3.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
@@ -48,217 +48,711 @@ const LESSONS = [
   },
   {
     id: 4,
-    title: 'Μάθημα 4ο - Προγράμματα : Βασικές Εντολές και Έννοιες ',
-    description: 'Βασικές συνιστώσεις ενός προγράμματος σε ΓΛΩΣΣΑ, Δομή Ακολουθίας στη ΓΛΩΣΣΑ',
+    title: 'Μάθημα 4ο - Προγράμματα: Βασικές Εντολές και Έννοιες',
+    description: 'Βασικές συνιστώσεις ενός προγράμματος σε ΓΛΩΣΣΑ, Δομή Ακολουθίας στη ΓΛΩΣΣΑ.',
     duration: '70 λεπτά',
-    level: 'Easy',
     category: 'Προγράμματα',
     thumbnail: '/images/4.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 1100,
+    level: 'Easy',
     locked: false,
   },
   {
     id: 5,
-    title: 'Μάθημα 5ο - Απλή Δομή επιλογής',
+    title: 'Μάθημα 5ο - Απλή Δομή Επιλογής',
     description: 'Σύνταξη, Λειτουργία και Παραδείγματα της Απλής Δομής Επιλογής σε ΓΛΩΣΣΑ.',
     duration: '50 λεπτά',
-    level: 'Easy',
-    category: 'Εντολές Επιλογής',
+    category: 'Δομές Επιλογής',
     thumbnail: '/images/1.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 890,
+    level: 'Easy',
     locked: false,
   },
   {
     id: 6,
-    title: 'Μάθημα 6ο - Σύνθετη Δομή επιλογής',
+    title: 'Μάθημα 6ο - Σύνθετη Δομή Επιλογής',
     description: 'Σύνταξη, Λειτουργία και Παραδείγματα της Σύνθετης Δομής Επιλογής σε ΓΛΩΣΣΑ.',
     duration: '65 λεπτά',
-    level: 'Easy',
-    category: 'Εντολές Επιλογής',
+    category: 'Δομές Επιλογής',
     thumbnail: '/images/2.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
+    level: 'Easy',
     locked: false,
   },
   {
     id: 7,
-    title: 'Μάθημα 7ο - Πολλαπλή Δομή επιλογής',
+    title: 'Μάθημα 7ο - Πολλαπλή Δομή Επιλογής',
     description: 'Σύνταξη, Λειτουργία και Παραδείγματα της Πολλαπλής Δομής Επιλογής σε ΓΛΩΣΣΑ.',
     duration: '65 λεπτά',
-    level: 'Easy',
-    category: 'Εντολές Επιλογής',
+    category: 'Δομές Επιλογής',
     thumbnail: '/images/3.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
+    level: 'Easy',
     locked: false,
   },
   {
     id: 8,
     title: 'Μάθημα 8ο - Πολλαπλή Επίλεξε',
-    description: 'Σύνταξη, Λειτουργία και Παραδείγματα της ΕΠΙΛΕΞΕ σε ΓΛΩΣΣΑ.',
+    description: 'Σύνταξη, Λειτουργία και Παραδείγματα της εντολής ΕΠΙΛΕΞΕ σε ΓΛΩΣΣΑ.',
     duration: '65 λεπτά',
-    level: 'Easy',
-    category: 'Εντολές Επιλογής',
+    category: 'Δομές Επιλογής',
     thumbnail: '/images/4.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
+    level: 'Easy',
     locked: false,
   },
   {
     id: 9,
-    title: 'Μάθημα 9ο - Εμφωλευμένη Δομή επιλογής',
+    title: 'Μάθημα 9ο - Εμφωλευμένη Δομή Επιλογής',
     description: 'Παραδείγματα, Μετατροπές και Μεθοδολογίες Εμφωλευμένης Δομής Επιλογής σε ΓΛΩΣΣΑ.',
     duration: '65 λεπτά',
-    level: 'Easy',
-    category: 'Εντολές Επιλογής',
+    category: 'Δομές Επιλογής',
     thumbnail: '/images/1.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
+    level: 'Easy',
     locked: false,
   },
+
   // ═══════════════════════════════════════════════════════════════
   // 🔒 ΚΛΕΙΔΩΜΕΝΑ ΜΑΘΗΜΑΤΑ (PRO)
   // ═══════════════════════════════════════════════════════════════
+  
+  // --- Δομές Επανάληψης ---
   {
     id: 10,
     title: 'Μάθημα 10ο - Εντολή Επανάληψης ΟΣΟ...ΕΠΑΝΑΛΑΒΕ',
-    description: 'Σύνταξη, Λειτουργία και Παραδείγματα της Δομής Επανάληψης ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
+    description: 'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
     duration: '75 λεπτά',
-    level: 'Medium',
-    category: 'Εντολές Επανάληψης',
+    category: 'Δομές Επανάληψης',
     thumbnail: '/images/2.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 543,
-    locked: true,
+    level: 'Medium',
+    locked: false,
   },
   {
     id: 11,
-    title: 'Μάθημα 11ο - Εντολή Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ',
-    description: 'Σύνταξη, Λειτουργία και Παραδείγματα της Δομής Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ.',
+    title: 'Μάθημα 11ο - Δομή Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ',
+    description: 'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ, Σχέση με ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
     duration: '70 λεπτά',
-    level: 'Medium',
-    category: 'Εντολές Επανάληψης',
+    category: 'Δομές Επανάληψης',
     thumbnail: '/images/3.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 489,
-    locked: true,
+    level: 'Medium',
+    locked: false,
   },
   {
     id: 12,
     title: 'Μάθημα 12ο - Εντολή Επανάληψης ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ',
-    description: 'Σύνταξη, Λειτουργία και Παραδείγματα της Δομής Επανάληψης ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
+    description: 'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
     duration: '80 λεπτά',
-    level: 'Medium',
-    category: 'Εντολές Επανάληψης',
+    category: 'Δομές Επανάληψης',
     thumbnail: '/images/4.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 612,
-    locked: true,
+    level: 'Medium',
+    locked: false,
   },
   {
     id: 13,
-    title: 'Μάθημα 13ο - Πίνακες: Μονοδιάστατοι',
-    description: 'Δήλωση, Δημιουργία και Χειρισμός Μονοδιάστατων Πινάκων σε ΓΛΩΣΣΑ.',
+    title: 'Μάθημα 13ο - Εμφωλευμένοι Βρόχοι Δομών Επανάληψης',
+    description: 'Παραδείγματα, Μετατροπές και Μεθοδολογίες Εμφωλευμένων Δομών Επανάληψης σε ΓΛΩΣΣΑ.',
     duration: '90 λεπτά',
-    level: 'Medium',
-    category: 'Πίνακες',
+    category: 'Δομές Επανάληψης',
     thumbnail: '/images/1.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 728,
+    level: 'Medium',
     locked: true,
   },
   {
     id: 14,
-    title: 'Μάθημα 14ο - Πίνακες: Δισδιάστατοι',
-    description: 'Δήλωση, Δημιουργία και Χειρισμός Δισδιάστατων Πινάκων σε ΓΛΩΣΣΑ.',
-    duration: '95 λεπτά',
+    title: 'Μάθημα 14ο - Μετατροπές Δομών Επανάληψης',
+    description: 'Όλες οι περιπτώσεις μετατροπών μεταξύ των δομών επανάληψης στη ΓΛΩΣΣΑ.',
+    duration: '90 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 701,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 15,
+    title: 'Μάθημα 15ο - Δύσκολες Μεθοδολογίες με Δομές Επανάληψης (1)',
+    description: 'Ανάλυση και επίλυση σύνθετων προβλημάτων με Δομές Επανάληψης στη ΓΛΩΣΣΑ.',
+    duration: '90 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 685,
     level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 16,
+    title: 'Μάθημα 16ο - Δύσκολες Μεθοδολογίες με Δομές Επανάληψης (2)',
+    description: 'Ανάλυση και επίλυση σύνθετων προβλημάτων με Δομές Επανάληψης στη ΓΛΩΣΣΑ - Μέρος 2.',
+    duration: '90 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 662,
+    level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 17,
+    title: 'Μάθημα 17ο - Αριθμητικά Προβλήματα - Σχηματισμός Ακολουθιών',
+    description: 'Μάθε να σχηματίζεις αριθμητικές ακολουθίες για θέμα Β με χρήση της ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
+    duration: '90 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 639,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 18,
+    title: 'Μάθημα 18ο - Ειδικές Περιπτώσεις Διαγραμμάτων Ροής',
+    description: 'Ειδικές περιπτώσεις διαγραμμάτων ροής με δομές επανάληψης και μετατροπή σε κώδικα ΓΛΩΣΣΑ.',
+    duration: '85 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 614,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 19,
+    title: 'Μάθημα 19ο - Θέματα Πανελλαδικών με Δομές Επανάληψης (1)',
+    description: 'Επίλυση θεμάτων Πανελλαδικών Εξετάσεων που αφορούν Δομές Επανάληψης - Μέρος 1.',
+    duration: '95 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 654,
+    level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 20,
+    title: 'Μάθημα 20ο - Θέματα Πανελλαδικών με Δομές Επανάληψης (2)',
+    description: 'Επίλυση θεμάτων Πανελλαδικών Εξετάσεων που αφορούν Δομές Επανάληψης - Μέρος 2.',
+    duration: '85 λεπτά',
+    category: 'Δομές Επανάληψης',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 571,
+    level: 'Hard',
+    locked: true,
+  },
+
+  // --- Θεωρητικά Μαθήματα ---
+  {
+    id: 21,
+    title: 'Μάθημα 21ο - Πολλαπλασιασμός αλά Ρωσικά - Ολίσθηση',
+    description: 'Περιγραφή και Υλοποίηση του Αλγορίθμου Πολλαπλασιασμού αλά Ρωσικά και εξήγηση της Ολίσθησης.',
+    duration: '90 λεπτά',
+    category: 'Θεωρητικά Μαθήματα',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 598,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 22,
+    title: 'Μάθημα 22ο - Φυσική Γλώσσα - Διάγραμμα Ροής - Κώδικας',
+    description: 'Ανάλυση και Επίλυση Προβλημάτων με τη μέθοδο Φυσικής Γλώσσας Κατά Βήματα, Διάγραμμα Ροής και Κώδικα ΓΛΩΣΣΑ.',
+    duration: '100 λεπτά',
+    category: 'Θεωρητικά Μαθήματα',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 432,
+    level: 'Medium',
+    locked: true,
+  },
+
+  // --- Πίνακες ---
+  {
+    id: 23,
+    title: 'Μάθημα 23ο - Εισαγωγή στις Δομές Δεδομένων - Πίνακες',
+    description: 'Εισαγωγή στις βασικές έννοιες των Δομών Δεδομένων και των Πινάκων στη ΓΛΩΣΣΑ.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 543,
+    level: 'Easy',
+    locked: true,
+  },
+  {
+    id: 24,
+    title: 'Μάθημα 24ο - Μονοδιάστατοι Πίνακες',
+    description: 'Δήλωση, Δημιουργία και Χειρισμός Μονοδιάστατων Πινάκων σε ΓΛΩΣΣΑ.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 521,
+    level: 'Easy',
+    locked: true,
+  },
+  {
+    id: 25,
+    title: 'Μάθημα 25ο - Ταξινόμηση Πινάκων',
+    description: 'Αλγόριθμοι Ταξινόμησης (Bubble Sort, Selection Sort) για Μονοδιάστατους Πίνακες.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 498,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 26,
+    title: 'Μάθημα 26ο - Σειριακή Αναζήτηση σε Μονοδιάστατους Πίνακες',
+    description: 'Μέθοδοι Σειριακής Αναζήτησης (Linear Search) σε Μονοδιάστατους Πίνακες.',
+    duration: '85 λεπτά',
     category: 'Πίνακες',
     thumbnail: '/images/2.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
-    views: 654,
+    views: 476,
+    level: 'Medium',
     locked: true,
   },
   {
-    id: 15,
-    title: 'Μάθημα 15ο - Υποπρογράμματα: Διαδικασίες',
-    description: 'Δήλωση, Κλήση και Χρήση Διαδικασιών στη ΓΛΩΣΣΑ.',
+    id: 27,
+    title: 'Μάθημα 27ο - Δυαδική Αναζήτηση σε Μονοδιάστατους Πίνακες',
+    description: 'Αλγόριθμος Δυαδικής Αναζήτησης (Binary Search) σε Ταξινομημένους Πίνακες.',
     duration: '85 λεπτά',
-    level: 'Hard',
-    category: 'Υποπρογράμματα',
+    category: 'Πίνακες',
     thumbnail: '/images/3.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
-    views: 571,
+    views: 454,
+    level: 'Hard',
     locked: true,
   },
   {
-    id: 16,
-    title: 'Μάθημα 16ο - Υποπρογράμματα: Συναρτήσεις',
-    description: 'Δήλωση, Κλήση και Χρήση Συναρτήσεων στη ΓΛΩΣΣΑ.',
-    duration: '90 λεπτά',
-    level: 'Hard',
+    id: 28,
+    title: 'Μάθημα 28ο - Συγχώνευση Πινάκων',
+    description: 'Συγχώνευση δύο ή περισσοτέρων Πινάκων σε έναν νέο Πίνακα.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 432,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 29,
+    title: 'Μάθημα 29ο - Δισδιάστατοι Πίνακες (1)',
+    description: 'Δήλωση, Δημιουργία και Χειρισμός Δισδιάστατων Πινάκων - Μέρος 1.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 489,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 30,
+    title: 'Μάθημα 30ο - Δισδιάστατοι Πίνακες (2)',
+    description: 'Επεξεργασία και Χειρισμός Δισδιάστατων Πινάκων - Μέρος 2.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 467,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 31,
+    title: 'Μάθημα 31ο - Δισδιάστατοι Πίνακες (3)',
+    description: 'Αναζήτηση και Ταξινόμηση σε Δισδιάστατους Πίνακες - Μέρος 3.',
+    duration: '85 λεπτά',
+    category: 'Πίνακες',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 445,
+    level: 'Medium',
+    locked: true,
+  },
+
+  // --- Υποπρογράμματα ---
+  {
+    id: 32,
+    title: 'Μάθημα 32ο - Τμηματικός Προγραμματισμός',
+    description: 'Εισαγωγή στον Τμηματικό Προγραμματισμό και τη χρήση Υποπρογραμμάτων.',
+    duration: '85 λεπτά',
     category: 'Υποπρογράμματα',
     thumbnail: '/images/4.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
-    views: 598,
+    views: 512,
+    level: 'Medium',
     locked: true,
   },
   {
-    id: 17,
-    title: 'Μάθημα 17ο - Αναδρομή',
-    description: 'Η έννοια της Αναδρομής και Αναδρομικά Υποπρογράμματα.',
-    duration: '100 λεπτά',
-    level: 'Hard',
-    category: 'Προχωρημένα',
+    id: 33,
+    title: 'Μάθημα 33ο - Υποπρογράμματα (1)',
+    description: 'Βασικές Έννοιες Υποπρογραμμάτων - Δήλωση και Κλήση.',
+    duration: '85 λεπτά',
+    category: 'Υποπρογράμματα',
     thumbnail: '/images/1.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
-    views: 432,
+    views: 498,
+    level: 'Medium',
     locked: true,
   },
   {
-    id: 18,
-    title: 'Μάθημα 18ο - Αρχεία: Ανάγνωση και Εγγραφή',
-    description: 'Δημιουργία, Ανάγνωση και Εγγραφή Αρχείων σε ΓΛΩΣΣΑ.',
+    id: 34,
+    title: 'Μάθημα 34ο - Υποπρογράμματα (2) - Συναρτήσεις',
+    description: 'Δήλωση, Κλήση και Χρήση Συναρτήσεων στη ΓΛΩΣΣΑ.',
     duration: '85 λεπτά',
-    level: 'Hard',
-    category: 'Αρχεία',
+    category: 'Υποπρογράμματα',
     thumbnail: '/images/2.jpg',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
-    views: 387,
+    views: 476,
+    level: 'Medium',
     locked: true,
   },
+  {
+    id: 35,
+    title: 'Μάθημα 35ο - Διαδικασίες',
+    description: 'Δήλωση, Κλήση και Χρήση Διαδικασιών στη ΓΛΩΣΣΑ.',
+    duration: '85 λεπτά',
+    category: 'Υποπρογράμματα',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 454,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 36,
+    title: 'Μάθημα 36ο - Πίνακες και Υποπρογράμματα',
+    description: 'Χρήση Πινάκων σε Υποπρογράμματα - Παράμετροι και Επιστροφή Τιμών.',
+    duration: '85 λεπτά',
+    category: 'Υποπρογράμματα',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 432,
+    level: 'Medium',
+    locked: true,
+  },
+
+  // --- Δομές Δεδομένων Προχωρημένες ---
+  {
+    id: 37,
+    title: 'Μάθημα 37ο - Εισαγωγή στον Προγραμματισμό (Κεφ. 6)',
+    description: 'Φυσικές και Τεχνητές Γλώσσες, Διαδικασία Μεταγλώττισης και Σύνδεσης',
+    duration: '85 λεπτά',
+    category: 'Θεωρητικά Μαθήματα',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 398,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 38,
+    title: 'Μάθημα 38ο - Ανάλυση Προβλήματος και Διαίρει και Βασίλευε',
+    description: 'Κεφάλαιο 4 Σχολικό και Κεφάλαιο 2 Συμπληρωματικό - Τεχνικές Ανάλυσης.',
+    duration: '85 λεπτά',
+    category: 'Θεωρητικά Μαθήματα',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 376,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 39,
+    title: 'Μάθημα 39ο - Στοίβα',
+    description: 'Δομή Δεδομένων Στοίβα (Stack) - Λειτουργίες PUSH και POP.',
+    duration: '85 λεπτά',
+    category: 'Δομές Δεδομένων',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 445,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 40,
+    title: 'Μάθημα 40ο - Ουρά',
+    description: 'Δομή Δεδομένων Ουρά (Queue) - Λειτουργίες ENQUEUE και DEQUEUE.',
+    duration: '85 λεπτά',
+    category: 'Δομές Δεδομένων',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 423,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 41,
+    title: 'Μάθημα 41ο - Στοίβα και Ουρά στα Υποπρογράμματα',
+    description: 'Υλοποίηση Στοίβας και Ουράς με χρήση Υποπρογραμμάτων.',
+    duration: '85 λεπτά',
+    category: 'Δομές Δεδομένων',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 401,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 42,
+    title: 'Μάθημα 42ο - Λίστες',
+    description: 'Συνδεδεμένες Λίστες (Linked Lists) - Δημιουργία και Διαχείριση.',
+    duration: '85 λεπτά',
+    category: 'Δομές Δεδομένων',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 389,
+    level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 43,
+    title: 'Μάθημα 43ο - Δένδρα',
+    description: 'Δένδρα (Trees) - Βασικές Έννοιες και Διασχίσεις.',
+    duration: '85 λεπτά',
+    category: 'Δομές Δεδομένων',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 367,
+    level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 44,
+    title: 'Μάθημα 44ο - Γράφοι',
+    description: 'Γράφοι (Graphs) - Αναπαράσταση και Βασικοί Αλγόριθμοι.',
+    duration: '85 λεπτά',
+    category: 'Δομές Δεδομένων',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 345,
+    level: 'Hard',
+    locked: true,
+  },
+
+  // --- Αντικειμενικός Προγραμματισμός ---
+  {
+    id: 45,
+    title: 'Μάθημα 45ο - Αντικειμενικός Προγραμματισμός (1)',
+    description: 'Εισαγωγή στον Αντικειμενικό Προγραμματισμό - Κλάσεις και Αντικείμενα.',
+    duration: '85 λεπτά',
+    category: 'Αντικειμενικός Προγραμματισμός',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 412,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 46,
+    title: 'Μάθημα 46ο - Αντικειμενικός Προγραμματισμός (2)',
+    description: 'Κληρονομικότητα και Πολυμορφισμός στον Αντικειμενικό Προγραμματισμό.',
+    duration: '85 λεπτά',
+    category: 'Αντικειμενικός Προγραμματισμός',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 398,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 47,
+    title: 'Μάθημα 47ο - Αντικειμενικός Προγραμματισμός (3)',
+    description: 'Ενθυλάκωση και Αφαίρεση στον Αντικειμενικό Προγραμματισμό.',
+    duration: '85 λεπτά',
+    category: 'Αντικειμενικός Προγραμματισμός',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 376,
+    level: 'Medium',
+    locked: true,
+  },
+
+  // --- Έλεγχος και Τεστ ---
+  {
+    id: 48,
+    title: 'Μάθημα 48ο - Κατηγορίες Λαθών - Εκσφαλμάτωση',
+    description: 'Τύποι Λαθών (Συντακτικά, Σημασιολογικά, Λογικά) και Τεχνικές Εκσφαλμάτωσης.',
+    duration: '85 λεπτά',
+    category: 'Έλεγχος Προγραμμάτων',
+    thumbnail: '/images/4.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 434,
+    level: 'Medium',
+    locked: true,
+  },
+  {
+    id: 49,
+    title: 'Μάθημα 49ο - Σενάρια Ελέγχου',
+    description: 'Δημιουργία και Εκτέλεση Σεναρίων Ελέγχου για Προγράμματα.',
+    duration: '85 λεπτά',
+    category: 'Έλεγχος Προγραμμάτων',
+    thumbnail: '/images/1.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 412,
+    level: 'Medium',
+    locked: true,
+  },
+
+  // --- Επαναληπτικά Θέματα ---
+  {
+    id: 50,
+    title: 'Μάθημα 50ο - Επαναληπτικά Θέματα Πανελληνίων (1)',
+    description: 'Επίλυση Θεμάτων Πανελλαδικών Εξετάσεων - Συλλογή Θεμάτων Μέρος 1.',
+    duration: '95 λεπτά',
+    category: 'Επανάληψη',
+    thumbnail: '/images/2.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 567,
+    level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 51,
+    title: 'Μάθημα 51ο - Επαναληπτικά Θέματα Πανελληνίων (2)',
+    description: 'Επίλυση Θεμάτων Πανελλαδικών Εξετάσεων - Συλλογή Θεμάτων Μέρος 2.',
+    duration: '95 λεπτά',
+    category: 'Επανάληψη',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 545,
+    level: 'Hard',
+    locked: true,
+  },
+  {
+    id: 52,
+    title: 'Μάθημα 52ο - Επαναληπτικά Θέματα Πανελληνίων (3)',
+    description: 'Επίλυση Θεμάτων Πανελλαδικών Εξετάσεων - Συλλογή Θεμάτων Μέρος 3.',
+    duration: '95 λεπτά',
+    category: 'Επανάληψη',
+    thumbnail: '/images/3.jpg',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoType: 'youtube',
+    instructor: 'Ελένη Ζαφείρη',
+    views: 545,
+    level: 'Hard',
+    locked: true,
+  },
+  
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -295,125 +789,37 @@ const UpgradeModal = ({ isOpen, onClose }) => {
             </svg>
           </button>
 
-          {/* Content */}
-          <div className="p-8 md:p-12">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <motion.div
-                className="inline-block mb-4"
-                animate={{ rotate: [0, 10, -10, 10, 0] }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <span className="text-6xl">🔓</span>
-              </motion.div>
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-3">
-                Ξεκλείδωσε όλα τα μαθήματα!
-              </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                Αποκτήστε πρόσβαση σε περισσότερα από 18 μαθήματα και βοηθήματα
-              </p>
-            </div>
+         <div className="flex items-center justify-center  bg-gradient-to-br from-pink-200 via-white to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Content */}
+      <div className="p-8 md:p-4 text-center">
+        {/* Header */}
+        <motion.div
+          className="inline-block mb-6"
+          animate={{ rotate: [0, 8, -8, 8, 0], scale: [1, 1.05, 1, 1.05, 1] }}
+          transition={{ duration: 1, repeat: Infinity, repeatDelay: 1.5 }}
+        >
+          <span className="text-7xl md:text-8xl">🚀</span>
+        </motion.div>
 
-            {/* Pricing Cards */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {/* Basic Plan */}
-              <motion.div
-                className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-700"
-                whileHover={{ scale: 1.02 }}
-              >
-                <div className="mb-4">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Basic</h3>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-black text-gray-900 dark:text-white">€0</span>
-                    <span className="text-gray-600 dark:text-gray-400">/μήνα</span>
-                  </div>
-                </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-700 dark:text-gray-300">9 δωρεάν μαθήματα</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-700 dark:text-gray-300">Βασικό υλικό</span>
-                  </li>
-                </ul>
-                <button className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  Τρέχον Πλάνο
-                </button>
-              </motion.div>
+        <motion.h2
+          className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          Coming Soon
+        </motion.h2>
 
-              {/* Pro Plan */}
-              <motion.div
-                className="relative bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl p-6 text-white shadow-xl"
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="absolute -top-3 -right-3 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-bold">
-                  🔥 Δημοφιλές
-                </div>
-                <div className="mb-4">
-                  <h3 className="text-2xl font-bold mb-2">Pro</h3>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-black">€11.99</span>
-                    <span className="text-pink-100">/μήνα</span>
-                  </div>
-                </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-yellow-300 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="font-semibold">18+ μαθήματα (όλα ξεκλειδωμένα)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-yellow-300 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span>Προχωρημένα θέματα</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-yellow-300 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span>Αποκλειστικό υλικό</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-yellow-300 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span>Ασκήσεις & λυμένα παραδείγματα</span>
-                  </li>
-                </ul>
-                <button className="w-full py-3 px-4 rounded-xl bg-white text-pink-600 font-bold hover:bg-pink-50 transition-colors shadow-lg">
-                  Αναβάθμιση σε Pro 🚀
-                </button>
-              </motion.div>
-            </div>
-
-            {/* Features Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div className="p-4 bg-pink-50 dark:bg-gray-800 rounded-xl">
-                <div className="text-3xl mb-2">📚</div>
-                <div className="text-sm font-semibold text-gray-900 dark:text-white">18+ Μαθήματα</div>
-              </div>
-              <div className="p-4 bg-pink-50 dark:bg-gray-800 rounded-xl">
-                <div className="text-3xl mb-2">⏱️</div>
-                <div className="text-sm font-semibold text-gray-900 dark:text-white">15+ Ώρες</div>
-              </div>
-              <div className="p-4 bg-pink-50 dark:bg-gray-800 rounded-xl">
-                <div className="text-3xl mb-2">🎯</div>
-                <div className="text-sm font-semibold text-gray-900 dark:text-white">100% Κάλυψη</div>
-              </div>
-              <div className="p-4 bg-pink-50 dark:bg-gray-800 rounded-xl">
-                <div className="text-3xl mb-2">🏆</div>
-                <div className="text-sm font-semibold text-gray-900 dark:text-white">Επιτυχία 20/20</div>
-              </div>
-            </div>
-          </div>
+        <motion.p
+          className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-md mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+        >
+          Δουλεύουμε σκληρά για να καταγράψουμε όλα τα μαθήματα! Μείνετε Συντονισμένοι!
+        </motion.p>
+      </div>
+    </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
@@ -472,22 +878,10 @@ const VideoModal = ({ lesson, isOpen, onClose }) => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{lesson.title}</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">{lesson.description}</p>
             <div className="flex flex-wrap gap-4 text-sm">
+              
               <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-                {lesson.duration}
               </span>
-              <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                </svg>
-                {lesson.views} προβολές
-              </span>
-              <span className="px-3 py-1 rounded-full bg-pink-500 text-white text-xs font-semibold">
-                {lesson.level}
-              </span>
+            
             </div>
           </div>
         </motion.div>
@@ -540,9 +934,9 @@ const LessonCard = ({ lesson, onClick, index }) => {
                 </svg>
               </motion.div>
               <span className="text-white font-bold text-sm">Κλειδωμένο</span>
-              <div className="mt-2 px-3 py-1 bg-pink-500 rounded-full text-white text-xs font-semibold inline-block">
+              {/* <div className="mt-2 px-3 py-1 bg-pink-500 rounded-full text-white text-xs font-semibold inline-block">
                 Pro 💎
-              </div>
+              </div> */}
             </motion.div>
           </div>
         )}
@@ -566,15 +960,7 @@ const LessonCard = ({ lesson, onClick, index }) => {
           </motion.div>
         )}
 
-        {/* Duration Badge */}
-        <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/70 text-white text-xs font-semibold backdrop-blur-sm">
-          {lesson.duration}
-        </div>
-
-        {/* Level Badge */}
-        <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-pink-500 text-white text-xs font-semibold">
-          {lesson.level}
-        </div>
+       
       </div>
 
       {/* Content */}
@@ -600,11 +986,8 @@ const LessonCard = ({ lesson, onClick, index }) => {
           </div>
 
           <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-500">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-            </svg>
-            {lesson.views}
+           
+           
           </div>
         </div>
       </div>
@@ -721,7 +1104,7 @@ const OnlinePage = () => {
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4">
               <div className="text-3xl font-black">{lockedLessons}</div>
-              <div className="text-sm text-pink-100">Pro Μαθήματα 💎</div>
+              <div className="text-sm text-pink-100">Comming soon 💎</div>
             </div>
           </motion.div>
         </div>

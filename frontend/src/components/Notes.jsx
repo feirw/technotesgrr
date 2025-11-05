@@ -135,10 +135,30 @@ const Palia = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="mb-8">
-                <h2 className="text-4xl font-bold text-gray-800 mb-3">Επιλέξτε Κατηγορία</h2>
-                <p className="text-xl text-gray-600">Τα διαγωνίσματα καλύπτουν μέχρι και την ύλη που αναγράφεται σε κάθε κατηγορία. </p>
-              </div>
+          <div className="max-w-2xl mx-auto bg-white/80 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-pink-100 dark:border-gray-700">
+  <div className="mb-6 text-center">
+    <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+      DISCLAIMER
+    </h2>
+    <div className="w-20 h-1 bg-pink-500 mx-auto rounded-full mb-6"></div>
+  </div>
+
+  <div className="space-y-3 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+    <p>📘 Τα διαγωνίσματα :</p>
+    <p>
+      ❗Καλύπτουν μέχρι και την ύλη που αναγράφεται σε κάθε κατηγορία.
+    </p>
+    <p>
+      ❗ΔΕΝ είναι φτιαγμένα από το <span className="font-semibold text-pink-600">technotesgr</span> αλλά από αξιέπαινους συναδέλφους.
+    </p>
+    <p>
+      ❗Είναι ΉΔΗ αναρτημένα στο διαδίκτυο. Τα συγκεντρώσαμε ανά κεφάλαιο
+      για τα παιδιά που θέλουν να μελετούν και να λύνουν ασκήσεις μόνα τους!
+    </p>
+  </div>
+</div>
+
+<div className="mb-8" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {examCategories.map((category, index) => (

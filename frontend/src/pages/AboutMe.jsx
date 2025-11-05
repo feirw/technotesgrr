@@ -170,7 +170,7 @@ const AboutPage = () => {
                   className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
                   variants={fadeInUp}
                 >
-                  Η αποστολή μου
+                  Η δουλειά μου
                 </motion.h2>
               </motion.div>
               
@@ -178,8 +178,15 @@ const AboutPage = () => {
                 className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
                 variants={fadeIn}
               >
-                Η αποστολή μου είναι απλή: να προσφέρω δωρεάν, υψηλής ποιότητας εκπαιδευτικό υλικό σε κάθε μαθητή που το χρειάζεται. 
-                Πιστεύω ότι η εκπαίδευση πρέπει να είναι προσβάσιμη σε όλους, ανεξάρτητα από τις οικονομικές τους δυνατότητες.
+                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση και παραδίδω ιδιαίτερα μαθήματα πληροφορικής σε μαθητές Β' και Γ' λυκείου. Στείλε μου στο instagram μήνυμα αν θέλεις να μάθεις περισσότερα!
+                  <a
+                  href="https://www.instagram.com/technotesgr/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-pink-600 dark:text-pink-400 font-bold underline ml-1"
+                >
+                  @technotesgr
+                </a>
               </motion.p>
             </motion.div>
 
