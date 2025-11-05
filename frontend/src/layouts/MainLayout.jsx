@@ -408,7 +408,35 @@ const MainLayout = () => {
               >
                 ♡
               </motion.span>{' '}
-              by <span className="font-semibold">feirw, areynbaw & deathwish</span>
+              by{' '}
+              <span className="font-semibold">
+                <motion.a
+                  href="https://github.com/feirw"
+                  target="_blank"
+                  className="text-pink-600 dark:text-pink-400 hover:underline transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  feirw
+                </motion.a>
+                {', '}
+                <motion.a
+                  href="https://github.com/a-reynbaw"
+                  target="_blank"
+                  className="text-pink-600 dark:text-pink-400 hover:underline transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  a-reynbaw
+                </motion.a>
+                {' & '}
+                <motion.a
+                  href="https://github.com/mgiannopoulos24"
+                  target="_blank"
+                  className="text-pink-600 dark:text-pink-400 hover:underline transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  mgiannopoulos24
+                </motion.a>
+              </span>
             </p>
           </div>
         </div>
