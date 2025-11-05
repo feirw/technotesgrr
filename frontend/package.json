@@ -13,6 +13,7 @@
     "prettier": "^3.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
     "react-pageflip": "^2.0.3",
     "react-pdf": "^10.0.1",
     "react-quizlet-flashcard": "^3.0.0",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/js": "9.23.0",
+    "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.20",
     "eslint": "9.23.0",
     "eslint-plugin-import": "2.31.0",

@@ -789,7 +789,7 @@ const HomePage = () => {
           </motion.form>
         </Section>
 
-        {/* <ChatWidget nickname={nickname} /> */}
+        <ChatWidget nickname={nickname} />
       </div>
     </MotionConfig>
   );

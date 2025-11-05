@@ -7,6 +7,12 @@ import os
 import uuid
 from datetime import datetime, timedelta
 import json
+import time
+from dotenv import load_dotenv
+
+load_dotenv()
+from ai_service import get_ai_response
+
 from database import (
     init_database,
     update_leaderboard,
@@ -16,7 +22,7 @@ from database import (
     get_quizzes_from_db,
     get_flashcards_from_db,
     get_quiz_by_id,
-    save_contact_submission,  # Add this import
+    save_contact_submission,
 )
 
 app = FastAPI()
@@ -44,7 +50,7 @@ class Note(BaseModel):
 class QuizQuestion(BaseModel):
     id: str
     question: str
-    answers: List[dict]  # Changed from options to answers
+    answers: List[dict]
     category: str
     chapter: str
     points: int
@@ -79,26 +85,13 @@ class ContactForm(BaseModel):
     message: str
 
 
+class ChatMessage(BaseModel):
+    message: str
+
+
 def init_sqlite_data():
     """Initialize SQLite database structure"""
-    # with get_db_connection() as conn:
-    #     cursor = conn.cursor()
-
-    #     # Create notes table
-    #     cursor.execute('''
-    #         CREATE TABLE IF NOT EXISTS notes (
-    #             id TEXT PRIMARY KEY,
-    #             title TEXT NOT NULL,
-    #             preview TEXT NOT NULL,
-    #             subject TEXT NOT NULL,
-    #             price REAL NOT NULL,
-    #             download_count INTEGER DEFAULT 0,
-    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    #         )
-    #     ''')
-
-    #     # No need to insert sample data anymore
-    #     conn.commit()
+    pass
 
 
 # Initialize database on startup
@@ -115,30 +108,22 @@ async def health_check():
     return {"status": "healthy", "message": "TechNotesGR API is running with SQLite"}
 
 
-# @app.get("/api/notes")
-# async def get_notes():
-#     try:
-#         with get_db_connection() as conn:
-#             cursor = conn.cursor()
-#             cursor.execute('SELECT * FROM notes ORDER BY created_at DESC')
-#             rows = cursor.fetchall()
-#             notes = [dict(row) for row in rows]
-#         return {"notes": notes}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+@app.post("/api/chat")
+async def chat_with_bot(chat_data: ChatMessage):
+    """Endpoint για επικοινωνία με τον AI βοηθό"""
+    try:
 
-# @app.get("/api/notes/{note_id}")
-# async def get_note(note_id: str):
-#     try:
-#         with get_db_connection() as conn:
-#             cursor = conn.cursor()
-#             cursor.execute('SELECT * FROM notes WHERE id = ?', (note_id,))
-#             row = cursor.fetchone()
-#             if not row:
-#                 raise HTTPException(status_code=404, detail="Note not found")
-#             return dict(row)
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        response_text = get_ai_response(chat_data.message)
+
+        time.sleep(0.5)
+
+        return {"reply": response_text}
+    except Exception as e:
+        print(f"Chat error: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Προέκυψε σφάλμα κατά την επεξεργασία του μηνύματος.",
+        )
 
 
 @app.get("/api/quiz/questions")

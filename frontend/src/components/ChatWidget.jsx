@@ -1,37 +1,45 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
+const BACKEND_URL = 'http://localhost:8001';
 
 const BOT_WELCOME =
   'Γεια! Είμαι ο βοηθός του technotesgr. Ρώτησέ με για σημειώσεις, quiz, flashcards ή οτιδήποτε σχετικό με ΑΕΠΠ. 😊';
 
-const RULES = [
-  { test: /σημειωσ|notes/i, reply: 'Οι σημειώσεις είναι εδώ 👉 /notes' },
-  { test: /quiz|κουιζ/i, reply: 'Μπορείς να ξεκινήσεις Quiz από εδώ 👉 /quiz' },
-  { test: /flashcards?|flash|καρτελ/i, reply: 'Οι Flashcards είναι διαθέσιμες εδώ 👉 /flashcards' },
-  {
-    test: /επικοινων|(contact|mail)/i,
-    reply: 'Γράψε μας στη φόρμα στο κάτω μέρος της σελίδας ή στείλε DM στο Instagram @technotesgr.',
-  },
-  {
-    test: /αεππ|πανελλαδικ/i,
-    reply:
-      'Καλύπτουμε πλήρως την ύλη της ΑΕΠΠ με σημειώσεις + quiz ανά κεφάλαιο. Θες να σου προτείνω σειρά μελέτης;',
-  },
-];
-
-function localBotReply(message) {
-  for (const r of RULES) if (r.test.test(message)) return r.reply;
-  return 'Δεν ξέρω την απάντηση. Δοκίμασε να ρωτήσεις κάτι άλλο!';
-}
-
 async function fetchBotReply(message) {
-  await new Promise((r) => setTimeout(r, 800));
-  return localBotReply(message);
+  const response = await fetch(`${BACKEND_URL}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Server error');
+  }
+
+  const data = await response.json();
+  return data.reply;
 }
+
+const BotMessageContent = ({ content }) => {
+  return (
+    <ReactMarkdown
+      components={{
+        ul: ({ node, ...props }) => <ul className="list-disc ml-5 space-y-1" {...props} />,
+        ol: ({ node, ...props }) => <ol className="list-decimal ml-5 space-y-1" {...props} />,
+        a: ({ node, ...props }) => <a className="text-pink-600 hover:text-pink-400" {...props} />,
+        p: ({ node, ...props }) => <p className="mb-2" {...props} />,
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
+};
+// ----------------------------------------------------------------------------------
 
 export default function ChatWidget({ nickname }) {
   const [open, setOpen] = useState(false);
@@ -54,18 +62,27 @@ export default function ChatWidget({ nickname }) {
     if (!text || sending) return;
     setInput('');
     const me = { role: 'user', content: text, ts: Date.now() };
+
     setMessages((prev) => [...prev, me]);
     setSending(true);
+
     try {
       const reply = await fetchBotReply(text);
+
       const content = nickname
         ? reply.replaceAll('{name}', nickname)
         : reply.replaceAll('{name}', 'φίλε/φίλη');
+
       setMessages((prev) => [...prev, { role: 'bot', content, ts: Date.now() }]);
     } catch (err) {
+      console.error('Chat AI Error:', err);
       setMessages((prev) => [
         ...prev,
-        { role: 'bot', content: 'Ωχ! Κάτι πήγε στραβά. Δοκίμασε ξανά.', ts: Date.now() },
+        {
+          role: 'bot',
+          content: 'Ωχ! Κάτι πήγε στραβά με τη σύνδεση AI. Δοκίμασε ξανά.',
+          ts: Date.now(),
+        },
       ]);
     } finally {
       setSending(false);
@@ -143,7 +160,7 @@ export default function ChatWidget({ nickname }) {
             <div
               ref={listRef}
               className="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-br from-pink-50 to-rose-50"
-              style={{ height: 'calc(70vh - 180px)' }}
+              style={{ height: 'calc(70vh - 120px - 80px)' }}
             >
               {messages.map((m, i) => (
                 <motion.div
@@ -151,7 +168,7 @@ export default function ChatWidget({ nickname }) {
                   className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
+                  transition={{ delay: i * 0.05 }}
                 >
                   <div
                     className={`flex items-end gap-2 max-w-[80%] ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
@@ -168,7 +185,11 @@ export default function ChatWidget({ nickname }) {
                     <div
                       className={`rounded-2xl px-4 py-3 shadow-lg ${m.role === 'user' ? 'bg-gradient-to-br from-pink-500 to-rose-500 text-white' : 'bg-white text-gray-800'}`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{m.content}</p>
+                      {m.role === 'user' ? (
+                        <p className="text-sm whitespace-pre-wrap">{m.content}</p>
+                      ) : (
+                        <BotMessageContent content={m.content} />
+                      )}
                     </div>
                   </div>
                 </motion.div>

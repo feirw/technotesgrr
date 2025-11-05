@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
-  darkMode: 'class', // ή 'media' για αυτόματο με βάση το OS
-  // ...
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
+  darkMode: 'class',
 };
