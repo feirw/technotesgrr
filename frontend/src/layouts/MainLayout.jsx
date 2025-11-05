@@ -13,6 +13,8 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
+import ChatWidget from '../components/ChatWidget.jsx';
+import { useAppContext } from '../contexts/AppContext';
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
@@ -82,6 +84,7 @@ const MobileNavButton = ({ to, children, icon: Icon, onClick }) => (
 
 const MainLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { nickname } = useAppContext();
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -297,6 +300,9 @@ const MainLayout = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
+
+      {/* Chat Widget - now accessible on all pages */}
+      <ChatWidget nickname={nickname} />
 
       {/* Enhanced Footer */}
       <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">

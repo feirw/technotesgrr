@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspen
 import { useAppContext } from '../contexts/AppContext';
 import emailjs from '@emailjs/browser';
 import technotesLogo from '../assets/technotes_logo.png';
-import ChatWidget from '../components/ChatWidget.jsx';
 import {
   motion,
   useScroll,
@@ -788,8 +787,6 @@ const HomePage = () => {
             </div>
           </motion.form>
         </Section>
-
-        <ChatWidget nickname={nickname} />
       </div>
     </MotionConfig>
   );
