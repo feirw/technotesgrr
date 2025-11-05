@@ -111,7 +111,7 @@ const MainLayout = () => {
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">About Us</NavButton>
               <NavButton to="/online">Online Μαθήματα</NavButton>
-              <NavButton to="/notes">Σημειώσεις</NavButton>
+              <NavButton to="/notes">Διαγωνίσματα</NavButton>
               <NavButton to="/quiz">Quiz</NavButton>
               <NavButton to="/flashcards">Flashcards</NavButton>
               <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
