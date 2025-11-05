@@ -11,7 +11,7 @@ import OnlinePage from './pages/OnlinePage';
 import MerchPage from './pages/MerchPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import DataProtectionPage from './pages/DataProtectionPage';
-import AboutPage from './pages/AboutMe';  
+import AboutPage from './pages/AboutMe';
 
 function App() {
   return (

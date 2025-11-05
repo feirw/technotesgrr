@@ -8,9 +8,7 @@ const FlashcardsPage = () => {
         {/* Flashcards Component */}
         <Flashcards />
       </div>
-      
     </div>
-    
   );
 };
 

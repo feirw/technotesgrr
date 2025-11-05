@@ -47,8 +47,7 @@ const AboutPage = () => {
               delay: 0.2,
             }}
             className="mb-8"
-          >
-          </motion.div>
+          ></motion.div>
 
           <motion.h1
             className="text-5xl md:text-7xl font-black mb-6 tracking-tight"
@@ -67,7 +66,8 @@ const AboutPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
-            Γεια σου! Είμαι η Ελένη, δημιουργός του <span className="font-bold text-pink-600 dark:text-pink-400">technotesgr</span>
+            Γεια σου! Είμαι η Ελένη, δημιουργός του{' '}
+            <span className="font-bold text-pink-600 dark:text-pink-400">technotesgr</span>
           </motion.p>
         </div>
       </section>
@@ -75,8 +75,7 @@ const AboutPage = () => {
       {/* Main Content */}
       <section className="py-20 relative">
         <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto space-y-16">
-            
+          <div className="max-w-3xl mx-auto space-y-16">
             {/* Story Section */}
             <motion.div
               className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
@@ -113,7 +112,7 @@ const AboutPage = () => {
                   Η ιστορία μου
                 </motion.h2>
               </motion.div>
-              
+
               <motion.div
                 className="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
                 initial="initial"
@@ -122,17 +121,21 @@ const AboutPage = () => {
                 variants={stagger}
               >
                 <motion.p variants={fadeIn}>
-                  Είμαι η Ελένη και είμαι φοιτήτρια του τμήματος Πληροφορικής και Τηλεπικοινωνιών του Εθνικού και Καποδιστριακού Πανεπιστημίου Αθηνών. 
-                  Στις πανελλήνιες του 2024 συγκέντρωσα 19.000 μόρια και συγκεκριμένα στην πληροφορική πέτυχα 99/100.Επίσης, κατάγομαι από ένα μικρό χωριό της Φθιώτιδας. 
+                  Είμαι η Ελένη και είμαι φοιτήτρια του τμήματος Πληροφορικής και Τηλεπικοινωνιών
+                  του Εθνικού και Καποδιστριακού Πανεπιστημίου Αθηνών. Στις πανελλήνιες του 2024
+                  συγκέντρωσα 19.000 μόρια και συγκεκριμένα στην πληροφορική πέτυχα 99/100.Επίσης,
+                  κατάγομαι από ένα μικρό χωριό της Φθιώτιδας.
                 </motion.p>
-                
+
                 <motion.p variants={fadeIn}>
-                  Όταν ήμουν μαθήτρια Γ' Λυκείου, κατάλαβα πόσο δύσκολο μπορεί να είναι να βρεις οργανωμένο και ποιοτικό υλικό μελέτης. 
-                  Αυτή η εμπειρία με ώθησε να δημιουργήσω μια πλατφόρμα που θα έκανε τη μελέτη πιο εύκολη και αποτελεσματική.
+                  Όταν ήμουν μαθήτρια Γ' Λυκείου, κατάλαβα πόσο δύσκολο μπορεί να είναι να βρεις
+                  οργανωμένο και ποιοτικό υλικό μελέτης. Αυτή η εμπειρία με ώθησε να δημιουργήσω μια
+                  πλατφόρμα που θα έκανε τη μελέτη πιο εύκολη και αποτελεσματική.
                 </motion.p>
-                
+
                 <motion.p variants={fadeIn}>
-                  Το technotesgr δεν είναι απλά μια ιστοσελίδα - είναι το όνειρό μου να κάνω την εκπαίδευση πιο προσβάσιμη για όλους!
+                  Το technotesgr δεν είναι απλά μια ιστοσελίδα - είναι το όνειρό μου να κάνω την
+                  εκπαίδευση πιο προσβάσιμη για όλους!
                 </motion.p>
               </motion.div>
             </motion.div>
@@ -173,13 +176,15 @@ const AboutPage = () => {
                   Η δουλειά μου
                 </motion.h2>
               </motion.div>
-              
+
               <motion.p
                 className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
                 variants={fadeIn}
               >
-                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση και παραδίδω ιδιαίτερα μαθήματα πληροφορικής σε μαθητές Β' και Γ' λυκείου. Στείλε μου στο instagram μήνυμα αν θέλεις να μάθεις περισσότερα!
-                  <a
+                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση και παραδίδω ιδιαίτερα
+                μαθήματα πληροφορικής σε μαθητές Β' και Γ' λυκείου. Στείλε μου στο instagram μήνυμα
+                αν θέλεις να μάθεις περισσότερα!
+                <a
                   href="https://www.instagram.com/technotesgr/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -239,9 +244,7 @@ const AboutPage = () => {
                   <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    {item.desc}
-                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">{item.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -282,7 +285,7 @@ const AboutPage = () => {
                   Fun Facts About Me
                 </motion.h2>
               </motion.div>
-              
+
               <motion.ul
                 className="space-y-4"
                 initial="initial"
@@ -312,9 +315,6 @@ const AboutPage = () => {
                 ))}
               </motion.ul>
             </motion.div>
-
-        
-
           </div>
         </div>
       </section>

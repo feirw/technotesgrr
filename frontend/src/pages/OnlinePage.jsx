@@ -21,7 +21,8 @@ const LESSONS = [
   {
     id: 2,
     title: 'Μάθημα 2ο - Βασικές Έννοιες Προγραμματισμού',
-    description: 'Μεταβλητές, Σταθερές, Τύποι Δεδομένων, Εκφράσεις, Εντολή Εκχώρησης, Ενσωματωμένες Συναρτήσεις.',
+    description:
+      'Μεταβλητές, Σταθερές, Τύποι Δεδομένων, Εκφράσεις, Εντολή Εκχώρησης, Ενσωματωμένες Συναρτήσεις.',
     duration: '60 λεπτά',
     category: 'Βασικά για Αλγορίθμους',
     thumbnail: '/images/2.jpg',
@@ -35,7 +36,8 @@ const LESSONS = [
   {
     id: 3,
     title: 'Μάθημα 3ο - Αλγόριθμοι: Βασικές εντολές και Έννοιες',
-    description: 'Τι είναι αλγόριθμος, Σπουδαιότητα Αλγορίθμων, Περιγραφή-Αναπαράσταση Αλγορίθμων, Διάγραμμα Ροής, Βασικές Συνιστώσες Αλγορίθμου, Δομή Ακολουθίας με Αλγόριθμο.',
+    description:
+      'Τι είναι αλγόριθμος, Σπουδαιότητα Αλγορίθμων, Περιγραφή-Αναπαράσταση Αλγορίθμων, Διάγραμμα Ροής, Βασικές Συνιστώσες Αλγορίθμου, Δομή Ακολουθίας με Αλγόριθμο.',
     duration: '55 λεπτά',
     category: 'Βασικά για Αλγορίθμους',
     thumbnail: '/images/3.jpg',
@@ -134,12 +136,13 @@ const LESSONS = [
   // ═══════════════════════════════════════════════════════════════
   // 🔒 ΚΛΕΙΔΩΜΕΝΑ ΜΑΘΗΜΑΤΑ (PRO)
   // ═══════════════════════════════════════════════════════════════
-  
+
   // --- Δομές Επανάληψης ---
   {
     id: 10,
     title: 'Μάθημα 10ο - Εντολή Επανάληψης ΟΣΟ...ΕΠΑΝΑΛΑΒΕ',
-    description: 'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
+    description:
+      'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
     duration: '75 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/2.jpg',
@@ -153,7 +156,8 @@ const LESSONS = [
   {
     id: 11,
     title: 'Μάθημα 11ο - Δομή Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ',
-    description: 'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ, Σχέση με ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
+    description:
+      'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΜΕΧΡΙΣ_ΟΤΟΥ, Σχέση με ΟΣΟ...ΕΠΑΝΑΛΑΒΕ.',
     duration: '70 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/3.jpg',
@@ -167,7 +171,8 @@ const LESSONS = [
   {
     id: 12,
     title: 'Μάθημα 12ο - Εντολή Επανάληψης ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ',
-    description: 'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
+    description:
+      'Σύνταξη, Λειτουργία, Μεθοδολογίες και Ασκήσεις με Δομή Επανάληψης ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
     duration: '80 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/4.jpg',
@@ -181,7 +186,8 @@ const LESSONS = [
   {
     id: 13,
     title: 'Μάθημα 13ο - Εμφωλευμένοι Βρόχοι Δομών Επανάληψης',
-    description: 'Παραδείγματα, Μετατροπές και Μεθοδολογίες Εμφωλευμένων Δομών Επανάληψης σε ΓΛΩΣΣΑ.',
+    description:
+      'Παραδείγματα, Μετατροπές και Μεθοδολογίες Εμφωλευμένων Δομών Επανάληψης σε ΓΛΩΣΣΑ.',
     duration: '90 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/1.jpg',
@@ -223,7 +229,8 @@ const LESSONS = [
   {
     id: 16,
     title: 'Μάθημα 16ο - Δύσκολες Μεθοδολογίες με Δομές Επανάληψης (2)',
-    description: 'Ανάλυση και επίλυση σύνθετων προβλημάτων με Δομές Επανάληψης στη ΓΛΩΣΣΑ - Μέρος 2.',
+    description:
+      'Ανάλυση και επίλυση σύνθετων προβλημάτων με Δομές Επανάληψης στη ΓΛΩΣΣΑ - Μέρος 2.',
     duration: '90 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/4.jpg',
@@ -237,7 +244,8 @@ const LESSONS = [
   {
     id: 17,
     title: 'Μάθημα 17ο - Αριθμητικά Προβλήματα - Σχηματισμός Ακολουθιών',
-    description: 'Μάθε να σχηματίζεις αριθμητικές ακολουθίες για θέμα Β με χρήση της ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
+    description:
+      'Μάθε να σχηματίζεις αριθμητικές ακολουθίες για θέμα Β με χρήση της ΓΙΑ...ΑΠΟ...ΜΕΧΡΙ.',
     duration: '90 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/1.jpg',
@@ -251,7 +259,8 @@ const LESSONS = [
   {
     id: 18,
     title: 'Μάθημα 18ο - Ειδικές Περιπτώσεις Διαγραμμάτων Ροής',
-    description: 'Ειδικές περιπτώσεις διαγραμμάτων ροής με δομές επανάληψης και μετατροπή σε κώδικα ΓΛΩΣΣΑ.',
+    description:
+      'Ειδικές περιπτώσεις διαγραμμάτων ροής με δομές επανάληψης και μετατροπή σε κώδικα ΓΛΩΣΣΑ.',
     duration: '85 λεπτά',
     category: 'Δομές Επανάληψης',
     thumbnail: '/images/2.jpg',
@@ -295,7 +304,8 @@ const LESSONS = [
   {
     id: 21,
     title: 'Μάθημα 21ο - Πολλαπλασιασμός αλά Ρωσικά - Ολίσθηση',
-    description: 'Περιγραφή και Υλοποίηση του Αλγορίθμου Πολλαπλασιασμού αλά Ρωσικά και εξήγηση της Ολίσθησης.',
+    description:
+      'Περιγραφή και Υλοποίηση του Αλγορίθμου Πολλαπλασιασμού αλά Ρωσικά και εξήγηση της Ολίσθησης.',
     duration: '90 λεπτά',
     category: 'Θεωρητικά Μαθήματα',
     thumbnail: '/images/1.jpg',
@@ -309,7 +319,8 @@ const LESSONS = [
   {
     id: 22,
     title: 'Μάθημα 22ο - Φυσική Γλώσσα - Διάγραμμα Ροής - Κώδικας',
-    description: 'Ανάλυση και Επίλυση Προβλημάτων με τη μέθοδο Φυσικής Γλώσσας Κατά Βήματα, Διάγραμμα Ροής και Κώδικα ΓΛΩΣΣΑ.',
+    description:
+      'Ανάλυση και Επίλυση Προβλημάτων με τη μέθοδο Φυσικής Γλώσσας Κατά Βήματα, Διάγραμμα Ροής και Κώδικα ΓΛΩΣΣΑ.',
     duration: '100 λεπτά',
     category: 'Θεωρητικά Μαθήματα',
     thumbnail: '/images/2.jpg',
@@ -752,7 +763,6 @@ const LESSONS = [
     level: 'Hard',
     locked: true,
   },
-  
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -784,42 +794,52 @@ const UpgradeModal = ({ isOpen, onClose }) => {
             className="absolute top-4 right-4 z-10 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
             aria-label="Κλείσιμο"
           >
-            <svg className="w-6 h-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6 text-gray-800 dark:text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
 
-         <div className="flex items-center justify-center  bg-gradient-to-br from-pink-200 via-white to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Content */}
-      <div className="p-8 md:p-4 text-center">
-        {/* Header */}
-        <motion.div
-          className="inline-block mb-6"
-          animate={{ rotate: [0, 8, -8, 8, 0], scale: [1, 1.05, 1, 1.05, 1] }}
-          transition={{ duration: 1, repeat: Infinity, repeatDelay: 1.5 }}
-        >
-          <span className="text-7xl md:text-8xl">🚀</span>
-        </motion.div>
+          <div className="flex items-center justify-center  bg-gradient-to-br from-pink-200 via-white to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            {/* Content */}
+            <div className="p-8 md:p-4 text-center">
+              {/* Header */}
+              <motion.div
+                className="inline-block mb-6"
+                animate={{ rotate: [0, 8, -8, 8, 0], scale: [1, 1.05, 1, 1.05, 1] }}
+                transition={{ duration: 1, repeat: Infinity, repeatDelay: 1.5 }}
+              >
+                <span className="text-7xl md:text-8xl">🚀</span>
+              </motion.div>
 
-        <motion.h2
-          className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Coming Soon
-        </motion.h2>
+              <motion.h2
+                className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                Coming Soon
+              </motion.h2>
 
-        <motion.p
-          className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-md mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
-          Δουλεύουμε σκληρά για να καταγράψουμε όλα τα μαθήματα! Μείνετε Συντονισμένοι!
-        </motion.p>
-      </div>
-    </div>
+              <motion.p
+                className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-md mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.3 }}
+              >
+                Δουλεύουμε σκληρά για να καταγράψουμε όλα τα μαθήματα! Μείνετε Συντονισμένοι!
+              </motion.p>
+            </div>
+          </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
@@ -855,7 +875,12 @@ const VideoModal = ({ lesson, isOpen, onClose }) => {
             aria-label="Κλείσιμο"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
 
@@ -870,18 +895,22 @@ const VideoModal = ({ lesson, isOpen, onClose }) => {
                 allowFullScreen
               />
             ) : (
-              <video className="absolute inset-0 w-full h-full" controls autoPlay src={lesson.videoUrl} />
+              <video
+                className="absolute inset-0 w-full h-full"
+                controls
+                autoPlay
+                src={lesson.videoUrl}
+              />
             )}
           </div>
 
           <div className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 dark:from-gray-800 dark:to-gray-800">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{lesson.title}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {lesson.title}
+            </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">{lesson.description}</p>
             <div className="flex flex-wrap gap-4 text-sm">
-              
-              <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-              </span>
-            
+              <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400"></span>
             </div>
           </div>
         </motion.div>
@@ -929,8 +958,16 @@ const LessonCard = ({ lesson, onClick, index }) => {
                 animate={{ rotate: [0, -10, 10, -10, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
               >
-                <svg className="w-16 h-16 text-yellow-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                <svg
+                  className="w-16 h-16 text-yellow-400 mx-auto mb-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </motion.div>
               <span className="text-white font-bold text-sm">Κλειδωμένο</span>
@@ -959,8 +996,6 @@ const LessonCard = ({ lesson, onClick, index }) => {
             </motion.div>
           </motion.div>
         )}
-
-       
       </div>
 
       {/* Content */}
@@ -985,10 +1020,7 @@ const LessonCard = ({ lesson, onClick, index }) => {
             <span className="text-xs text-gray-600 dark:text-gray-400">{lesson.instructor}</span>
           </div>
 
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-500">
-           
-           
-          </div>
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-500"></div>
         </div>
       </div>
 
@@ -1084,7 +1116,8 @@ const OnlinePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            Καταγεγραμμένα μαθήματα Πληροφορικής για τις Πανελλήνιες - Όλα όσα πρέπει να ξέρεις για να γράψεις 20!
+            Καταγεγραμμένα μαθήματα Πληροφορικής για τις Πανελλήνιες - Όλα όσα πρέπει να ξέρεις για
+            να γράψεις 20!
           </motion.p>
 
           {/* Stats */}
@@ -1128,7 +1161,12 @@ const OnlinePage = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
 
@@ -1158,7 +1196,8 @@ const OnlinePage = () => {
           </div>
 
           <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-            Βρέθηκαν <span className="font-bold text-pink-600">{filteredLessons.length}</span> μαθήματα
+            Βρέθηκαν <span className="font-bold text-pink-600">{filteredLessons.length}</span>{' '}
+            μαθήματα
           </div>
         </div>
       </div>
