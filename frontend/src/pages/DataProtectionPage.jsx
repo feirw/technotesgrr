@@ -88,7 +88,6 @@ const DataProtectionPage = () => {
       <p>
         <strong>Υπεύθυνος Επικοινωνίας:</strong> Ελένη Ζαφείρη
       </p>
-
     </div>
   );
 };
