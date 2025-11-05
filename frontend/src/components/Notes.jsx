@@ -47,7 +47,7 @@ const Palia = () => {
     ? examCategories.find((cat) => cat.id === selectedCategory)
     : null;
   const currentSubExams = selectedCategory ? getSubExamsForCategory(selectedCategory) : [];
-  
+
   const currentPdf = selectedSubExam
     ? currentSubExams.find((exam) => exam.id === selectedSubExam)
     : null;

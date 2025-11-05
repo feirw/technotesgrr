@@ -314,8 +314,8 @@ const MainLayout = () => {
             </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
-              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές
-              Πληροφορικής — σημειώσεις, quiz & διαδραστικά εργαλεία.
+              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής
+              — σημειώσεις, quiz & διαδραστικά εργαλεία.
             </p>
           </motion.div>
 
