@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -16,6 +16,11 @@ import technotesLogo from '../assets/technotes_logo.png';
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
+
+const fadeIn = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+};
 
 const NavButton = ({ to, children }) => (
   <NavLink
@@ -77,11 +82,12 @@ const MobileNavButton = ({ to, children, icon: Icon, onClick }) => (
 
 const MainLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
       {/* Navigation */}
       <motion.nav
         className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b-2 border-pink-200 dark:border-gray-700 shadow-lg"
@@ -287,10 +293,120 @@ const MainLayout = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <main>
+      {/* Main Content - grows to fill available space */}
+      <main className="flex-grow">
         <Outlet />
       </main>
+
+      {/* Enhanced Footer */}
+      <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">
+        <div className="container mx-auto px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+          {/* --- Σχετικά με εμάς --- */}
+          <motion.div
+            {...fadeIn}
+            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+              Σχετικά με εμάς 🎓
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
+              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές
+              Πληροφορικής — σημειώσεις, quiz & διαδραστικά εργαλεία.
+            </p>
+          </motion.div>
+
+          {/* --- Επικοινωνία --- */}
+          <motion.div
+            {...fadeIn}
+            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Επικοινωνία
+            </h3>
+            <div className="space-y-3">
+              {[
+                {
+                  href: 'https://www.instagram.com/technotesgr/',
+                  label: 'Instagram: @technotesgr',
+                },
+                { href: 'https://www.tiktok.com/@technotesgr', label: 'TikTok: @technotesgr' },
+                {
+                  href: 'https://www.linkedin.com/company/technotesgr/',
+                  label: 'LinkedIn: technotesgr',
+                },
+              ].map((social) => (
+                <motion.a
+                  key={social.href}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 font-medium transition-transform duration-200"
+                  whileHover={{ x: 6, scale: 1.05 }}
+                >
+                  {social.label}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* --- Όροι και Δεδομένα --- */}
+          <motion.div
+            {...fadeIn}
+            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Όροι και Δεδομένα
+            </h3>
+            <div className="space-y-2">
+              {[
+                { href: '/privacy-policy', label: 'Όροι Χρήσης & Πολιτική Απορρήτου' },
+                { href: '/data', label: 'Προσωπικά Δεδομένα' },
+              ].map((link) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 font-medium transition-transform duration-200"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* --- Κάτω μέρος --- */}
+        <div className="bg-gradient-to-r from-pink-100/40 to-rose-100/40 dark:from-gray-800/40 dark:to-purple-900/30 backdrop-blur border-t border-pink-200 dark:border-gray-700 py-6">
+          <div className="container mx-auto px-6 text-center">
+            <p className="text-gray-700 dark:text-gray-300 font-medium mb-2">
+              © {currentYear} technotesgr. All rights reserved.
+            </p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Made with{' '}
+              <motion.span
+                className="inline-block text-pink-600"
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                ♡
+              </motion.span>{' '}
+              by <span className="font-semibold">feirw, areynbaw & deathwish</span>
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

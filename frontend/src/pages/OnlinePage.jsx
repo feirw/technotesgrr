@@ -928,7 +928,7 @@ const LessonCard = ({ lesson, onClick, index }) => {
 
   return (
     <motion.div
-      className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+      className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col h-full"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
@@ -936,7 +936,7 @@ const LessonCard = ({ lesson, onClick, index }) => {
       onClick={onClick}
     >
       {/* Thumbnail */}
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-pink-200 to-rose-200">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-pink-200 to-rose-200 flex-shrink-0">
         <motion.img
           src={lesson.thumbnail}
           alt={lesson.title}
@@ -971,9 +971,6 @@ const LessonCard = ({ lesson, onClick, index }) => {
                 </svg>
               </motion.div>
               <span className="text-white font-bold text-sm">Κλειδωμένο</span>
-              {/* <div className="mt-2 px-3 py-1 bg-pink-500 rounded-full text-white text-xs font-semibold inline-block">
-                Pro 💎
-              </div> */}
             </motion.div>
           </div>
         )}
@@ -998,8 +995,8 @@ const LessonCard = ({ lesson, onClick, index }) => {
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-5">
+      {/* Content - grows to fill space */}
+      <div className="p-5 flex flex-col flex-grow">
         <div className="text-xs font-semibold text-pink-600 dark:text-pink-400 mb-2">
           {lesson.category}
         </div>
@@ -1008,13 +1005,13 @@ const LessonCard = ({ lesson, onClick, index }) => {
           {lesson.title}
         </h3>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 flex-grow">
           {lesson.description}
         </p>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700 mt-auto">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
               {lesson.instructor.charAt(0)}
             </div>
             <span className="text-xs text-gray-600 dark:text-gray-400">{lesson.instructor}</span>
@@ -1137,7 +1134,7 @@ const OnlinePage = () => {
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4">
               <div className="text-3xl font-black">{lockedLessons}</div>
-              <div className="text-sm text-pink-100">Comming soon 💎</div>
+              <div className="text-sm text-pink-100">Coming soon 💎</div>
             </div>
           </motion.div>
         </div>
