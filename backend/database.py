@@ -216,3 +216,22 @@ def save_contact_submission(first_name: str, last_name: str, email: str, message
         )
         conn.commit()
         return cursor.lastrowid
+        
+def get_unique_chapters():
+    """
+    ΤΡΟΠΟΠΟΙΗΜΕΝΗ: Παίρνει όλα τα μοναδικά chapter keys 
+    από τα quizzes και τα flashcards.
+    """
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Get unique chapters from quizzes
+        cursor.execute("SELECT DISTINCT chapter FROM quizzes")
+        quiz_chapters = [row[0] for row in cursor.fetchall()]
+
+        # Get unique chapters from flashcards
+        cursor.execute("SELECT DISTINCT chapter FROM flashcards")
+        flashcard_chapters = [row[0] for row in cursor.fetchall()]
+
+        # Combine and return unique keys
+        return set(quiz_chapters + flashcard_chapters)
