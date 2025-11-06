@@ -327,11 +327,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": false
+        "correct": true
       },
       {
         "text": "Λάθος",
-        "correct": true
+        "correct": false
       }
     ]
   },
