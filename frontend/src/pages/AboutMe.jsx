@@ -130,7 +130,10 @@ const AboutPage = () => {
                 <motion.p variants={fadeIn}>
                   Όταν ήμουν μαθήτρια Γ' Λυκείου, κατάλαβα πόσο δύσκολο μπορεί να είναι να βρεις
                   οργανωμένο και ποιοτικό υλικό μελέτης. Αυτή η εμπειρία με ώθησε να δημιουργήσω μια
-                  πλατφόρμα που θα έκανε τη μελέτη πιο εύκολη και αποτελεσματική.
+                  πλατφόρμα που θα έκανε τη μελέτη πιο εύκολη και αποτελεσματική.Επίσης , η εξαιρετική καθηγήτρια που με ανέλαβε στις πανελλήνιες, με ενέπνευσε να ακολουθήσω αυτόν τον τομέα. Δεν μου άρεσε καθόλου η πληροφορική στην αρχή. Όμως, η 
+                  κυρία 
+                  <a href = "https://www.vrisko.gr/details/21a516312h3ja01e0bd_4d_26h3j0jc0#:~:text=E%20%2D%20%CE%9C%CE%91%CE%98%CE%97%CE%A3%CE%97%20%2D%20e%2D%CE%BC%CE%AC%CE%B8%CE%B7%CF%83%CE%B7%20(%CE%A4%CF%83%CF%8E%CE%BD%CE%BF%CF%85%20%CE%95%CE%BB%CE%AD%CE%BD%CE%B7%20%CE%91.)&text=%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1%20%CE%A0%CF%81%CE%BF%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B9%CF%83%CE%BC%CE%BF%CF%8D%2C%20%CE%A6%CF%81%CE%BF%CE%BD%CF%84%CE%B9%CF%83%CF%84%CE%AE%CF%81%CE%B9%CE%B1%20%CE%9C%CE%AD%CF%83%CE%B7%CF%82%20%CE%95%CE%BA%CF%80%CE%B1%CE%AF%CE%B4%CE%B5%CF%85%CF%83%CE%B7%CF%82,%CE%A6%CE%98%CE%99%CE%A9%CE%A4%CE%99%CE%94%CE%91%CE%A3%20%2C%206976681079%20%7C%20vrisko.gr" target="_blank" rel="noopener noreferrer" className="text-pink-600 dark:text-pink-400 font-bold underline ml-1"> Λένα Τσώνου </a>            
+                   με έκανε να την αγαπήσω!
                 </motion.p>
 
                 <motion.p variants={fadeIn}>

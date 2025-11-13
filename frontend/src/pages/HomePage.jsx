@@ -50,8 +50,8 @@ const reviewsData = [
 
 const featuresData = [
   {
-    title: 'Σημειώσεις',
-    desc: 'Καλύπτουν σε βάθος τη θεωρία και μεθοδολογίες της ύλης.',
+    title: 'Online Καταγεγραμμένα Μαθήματα',
+    desc: 'Καλύπτουν σε βάθος τη θεωρία,μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
     icon: '📚',
     gradient: 'from-pink-500 to-rose-500',
   },
@@ -523,7 +523,7 @@ const HomePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              Η <span className="font-bold text-pink-600">τέλεια πλατφόρμα</span> προετοιμασίας για
+              Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας για
               τις Πανελλήνιες.
               <br />
             </motion.p>

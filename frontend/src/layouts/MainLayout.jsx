@@ -230,7 +230,7 @@ const MainLayout = () => {
                     }}
                   >
                     <MobileNavButton to="/notes" icon={BookOpen} onClick={closeMenu}>
-                      Σημειώσεις
+                      Διαγωνίσματα
                     </MobileNavButton>
                   </motion.div>
 

@@ -18,24 +18,22 @@ const Palia = () => {
   const [loading, setLoading] = useState(true);
   const frameRef = useRef(null);
 
-  // Κύριες Κατηγορίες - Όλες ροζ!
+  // Κύριες Κατηγορίες με αριθμό διαγωνισμάτων
   const examCategories = [
-    { id: 1, name: 'Δομή Ακολουθίας', color: '#ec4899' },
-    { id: 2, name: 'Δομές Επιλογής', color: '#f43f5e' },
-    { id: 3, name: 'Δομές Επανάληψης', color: '#fb7185' },
-    { id: 4, name: 'Πίνακες', color: '#f472b6' },
-    { id: 6, name: 'Υποπρογράμματα', color: '#db2777' },
-    { id: 7, name: 'Μεταγλωττιστής', color: '#be185d' },
-    { id: 8, name: 'Δυναμικές Δομές Δεδομένων', color: '#ec4899' },
-    { id: 13, name: 'Αντικειμενοστραφής', color: '#c026d3' },
-    { id: 14, name: 'Εκσφαλμάτωση', color: '#a21caf' },
-    { id: 15, name: 'Όλη η ύλη', color: '#ec4899' },
+    { id: 1, name: 'Δομή Ακολουθίας', color: '#ec4899', examCount: 1 },
+    { id: 2, name: 'Δομές Επιλογής', color: '#f43f5e', examCount: 2 },
+    { id: 3, name: 'Δομές Επανάληψης', color: '#fb7185', examCount: 28 },
+    { id: 4, name: 'Πίνακες', color: '#f472b6', examCount: 27 },
+    { id: 6, name: 'Υποπρογράμματα', color: '#db2777', examCount: 3},
+    { id: 15, name: 'Όλη η ύλη', color: '#ec4899', examCount: 38 },
   ];
 
-  // Για κάθε κατηγορία, δημιουργούμε 15 διαγωνίσματα
+  // Για κάθε κατηγορία, δημιουργούμε τον αριθμό διαγωνισμάτων που ορίζεται
   const getSubExamsForCategory = (categoryId) => {
     const category = examCategories.find((cat) => cat.id === categoryId);
-    return Array.from({ length: 15 }, (_, i) => ({
+    if (!category) return [];
+    
+    return Array.from({ length: category.examCount }, (_, i) => ({
       id: i + 1,
       name: `Διαγώνισμα ${i + 1}`,
       pdfPath: `/pdfs/category/category${categoryId}_exam${i + 1}.pdf`,
@@ -177,7 +175,7 @@ const Palia = () => {
                   <motion.button
                     key={category.id}
                     onClick={() => handleCategoryClick(category.id)}
-                    className="group relative overflow-hidden rounded-2xl p-3 text-white font-bold shadow-xl hover:shadow-2xl transition-all"
+                    className="group relative overflow-hidden rounded-2xl p-6 text-white font-bold shadow-xl hover:shadow-2xl transition-all"
                     style={{
                       background: `linear-gradient(135deg, ${category.color}, ${category.color}dd)`,
                     }}
@@ -190,7 +188,10 @@ const Palia = () => {
                     <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
                     <div className="relative flex flex-col items-center gap-3 text-center">
                       <div className="text-xl font-black leading-tight">{category.name}</div>
-                      <ChevronRight className="w-6 h-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="text-sm opacity-90 font-semibold">
+                        {category.examCount} Διαγωνίσματα
+                      </div>
+                      <ChevronRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </motion.button>
                 ))}
@@ -219,7 +220,9 @@ const Palia = () => {
 
               <div className="mb-6">
                 <h2 className="text-3xl font-bold text-gray-800 mb-3">{currentCategory?.name}</h2>
-                <p className="text-xl text-gray-600">Επιλέξτε διαγώνισμα</p>
+                <p className="text-xl text-gray-600">
+                  Επιλέξτε διαγώνισμα ({currentSubExams.length} διαθέσιμα)
+                </p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">

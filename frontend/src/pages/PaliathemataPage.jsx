@@ -11,7 +11,7 @@ import Palia from '../components/Palia.jsx';
  * Σελίδα παλιών θεμάτων Πανελληνίων Πληροφορικής
  *
  * Features:
- * - Animated tabs (Κανονικές/Επαναληπτικές)
+ * - Animated tabs (Κανονικές/Επαναληπτικές/ΟΕΦΕ)
  * - Year cards με hover effects
  * - Search functionality
  * - Stats display
@@ -37,11 +37,29 @@ const EPANALIPTIKES_YEARS = [
   2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
 ];
 
+const OEFE_YEARS = [
+  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
+  2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
+];
+
 // ═══════════════════════════════════════════════════════════════
 // 🎴 YEAR CARD COMPONENT
 // ═══════════════════════════════════════════════════════════════
 
 const YearCard = ({ year, mode, isSelected, onClick, index }) => {
+  const getModeLabel = (mode) => {
+    switch (mode) {
+      case 'kanonikes':
+        return 'Κανονικές';
+      case 'epanaliptikes':
+        return 'Επαναληπτικές';
+      case 'oefe':
+        return 'ΟΕΦΕ';
+      default:
+        return '';
+    }
+  };
+
   return (
     <motion.button
       className={`
@@ -60,7 +78,7 @@ const YearCard = ({ year, mode, isSelected, onClick, index }) => {
       transition={{ delay: index * 0.03 }}
       whileHover={{ y: -4, scale: 1.05 }}
       whileTap={{ scale: 0.98 }}
-      aria-label={`${mode === 'kanonikes' ? 'Κανονικές' : 'Επαναληπτικές'} ${year}`}
+      aria-label={`${getModeLabel(mode)} ${year}`}
     >
       {/* Year Number */}
       <div className="text-2xl font-black mb-2">{year}</div>
@@ -112,7 +130,12 @@ const PaliathemataPage = () => {
   // 📊 DATA & FILTERING
   // ═══════════════════════════════════════════════════════════════
 
-  const allYears = mode === 'kanonikes' ? KANONIKES_YEARS : EPANALIPTIKES_YEARS;
+  const allYears =
+    mode === 'kanonikes'
+      ? KANONIKES_YEARS
+      : mode === 'epanaliptikes'
+      ? EPANALIPTIKES_YEARS
+      : OEFE_YEARS;
   const uniqueYears = Array.from(new Set(allYears)).sort((a, b) => b - a); // Reverse chronological
 
   // Filter years based on search
@@ -139,7 +162,6 @@ const PaliathemataPage = () => {
   };
 
   const handleModeChange = (newMode) => {
-    // **Αφαιρέθηκε ο υπολογισμός direction**
     setMode(newMode);
     setSelectedYear(null);
     setSearchQuery('');
@@ -157,6 +179,20 @@ const PaliathemataPage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Get mode label
+  const getModeLabel = (mode) => {
+    switch (mode) {
+      case 'kanonikes':
+        return 'Κανονικές';
+      case 'epanaliptikes':
+        return 'Επαναληπτικές';
+      case 'oefe':
+        return 'ΟΕΦΕ';
+      default:
+        return '';
+    }
+  };
 
   // ═══════════════════════════════════════════════════════════════
   // 🎨 RENDER
@@ -225,8 +261,12 @@ const PaliathemataPage = () => {
               <div className="text-pink-100">Επαναληπτικές Περίοδοι</div>
             </div>
             <div className="text-center">
+              <div className="text-4xl font-bold">{OEFE_YEARS.length}</div>
+              <div className="text-pink-100">ΟΕΦΕ</div>
+            </div>
+            <div className="text-center">
               <div className="text-4xl font-bold">
-                {KANONIKES_YEARS.length + EPANALIPTIKES_YEARS.length}
+                {KANONIKES_YEARS.length + EPANALIPTIKES_YEARS.length + OEFE_YEARS.length}
               </div>
               <div className="text-pink-100">Σύνολο Θεμάτων</div>
             </div>
@@ -234,7 +274,7 @@ const PaliathemataPage = () => {
         </div>
       </div>
 
-      {/* Tabs & Search Section - Εφαρμογή layoutId */}
+      {/* Tabs & Search Section */}
       <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-pink-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-6 py-6">
           {/* Tabs */}
@@ -261,7 +301,6 @@ const PaliathemataPage = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Ενεργό Background (για slide animation) */}
                 {mode === 'kanonikes' && (
                   <motion.div
                     className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
@@ -269,7 +308,6 @@ const PaliathemataPage = () => {
                     transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
                   />
                 )}
-                {/* Περιεχόμενο (Πάνω από το background) */}
                 <div className="relative z-20 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Κανονικές
@@ -293,7 +331,6 @@ const PaliathemataPage = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Ενεργό Background (για slide animation) */}
                 {mode === 'epanaliptikes' && (
                   <motion.div
                     className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
@@ -301,11 +338,40 @@ const PaliathemataPage = () => {
                     transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
                   />
                 )}
-                {/* Περιεχόμενο (Πάνω από το background) */}
                 <div className="relative z-20 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Επαναληπτικές
                   <span className="ml-1 text-xs opacity-75">({EPANALIPTIKES_YEARS.length})</span>
+                </div>
+              </motion.button>
+
+              <motion.button
+                role="tab"
+                aria-selected={mode === 'oefe'}
+                className={`
+                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
+                  focus:outline-none focus:ring-2 focus:ring-pink-500
+                  ${
+                    mode === 'oefe'
+                      ? 'text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
+                  }
+                `}
+                onClick={() => handleModeChange('oefe')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {mode === 'oefe' && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                    layoutId="activeTabIndicator"
+                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                  />
+                )}
+                <div className="relative z-20 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  ΟΕΦΕ
+                  <span className="ml-1 text-xs opacity-75">({OEFE_YEARS.length})</span>
                 </div>
               </motion.button>
             </div>
@@ -427,14 +493,12 @@ const PaliathemataPage = () => {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             {/* PDF Header */}
-            <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-t-3xl p-6 shadow-lg">
+            {/* <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-t-3xl p-6 shadow-lg">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-3">
                   <FileText className="w-8 h-8" />
                   <div>
-                    <h2 className="text-2xl font-bold">
-                      {mode === 'kanonikes' ? 'Κανονικές' : 'Επαναληπτικές'} {selectedYear}
-                    </h2>
+                    <h2 className="text-2xl font-bold">{getModeLabel(mode)} {selectedYear}</h2>
                     <p className="text-pink-100 text-sm">Θέματα Πανελληνίων Πληροφορικής</p>
                   </div>
                 </div>
@@ -462,7 +526,7 @@ const PaliathemataPage = () => {
                   </motion.button>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* PDF Component */}
             <div className="bg-white dark:bg-gray-800 rounded-b-3xl shadow-2xl overflow-hidden">

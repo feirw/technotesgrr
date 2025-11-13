@@ -1,345 +1,618 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../contexts/AppContext';
-import { AlertTriangle, BookOpen, Sparkles, Target, Zap } from 'lucide-react';
+import { 
+  X, Search, CheckCircle, Clock, TrendingUp, Filter, SortAsc, Award, Play, RotateCcw, 
+  BookOpen, Code, Terminal, AlertTriangle 
+} from 'lucide-react';
 import QuizDialog from '../components/QuizDialog.jsx';
-import QuizMenu from '../components/QuizMenu.jsx';
+// Υποθέτουμε ότι υπάρχει η fetchAllQuizzes 
+import { fetchAllQuizzes } from '../utils/quizUtils'; 
 
-const BRAND = '#fda8a9';
-const BRAND_DARK = '#f88b8c';
+// Χρήση πιο καθορισμένων χρωμάτων (Tailwind friendly)
+const BRAND = 'rgb(236, 72, 153)'; // pink-600
+const BRAND_DARK = 'rgb(187, 12, 60)'; // A deeper red/pink for gradients
+const BRAND_BORDER = '#fda8a9';
 
 const QuizPage = () => {
   const { nickname, setNickname, fetchLeaderboard } = useAppContext();
 
+  // --- QuizPage State ---
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
-  const [showQuizMenu, setShowQuizMenu] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [categoryAnswers, setCategoryAnswers] = useState({});
-  const [showExitWarning, setShowExitWarning] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  // Removed showExitWarning and showQuizMenu state as it is now the main view
+  
+  // --- QuizMenu State (Merged Logic) ---
+  const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [q, setQ] = useState('');
+  const [sortBy, setSortBy] = useState('progress'); 
+  const [filterBy, setFilterBy] = useState('all'); 
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [showFilterMenu, setShowFilterBy] = useState(false);
 
-  // Initialize nickname
+  const searchInputRef = useRef(null);
+
+  // Initial setup & progress load
   useEffect(() => {
-    const storedNickname = localStorage.getItem('nickname');
-    if (storedNickname) {
-      setNickname(storedNickname);
-    } else if (!nickname) {
-      setNickname('Guest');
-      localStorage.setItem('nickname', 'Guest');
-    }
-    setIsInitialized(true);
+    if (!nickname) setNickname('Guest');
+    
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const data = await fetchAllQuizzes();
+        const initialAnswers = JSON.parse(localStorage.getItem('quizProgress') || '{}');
+        setCategoryAnswers(initialAnswers);
+        
+        const withProgress = (Array.isArray(data) ? data : []).map((quiz) => {
+          const answered = Object.keys(initialAnswers[quiz.id] || {}).length;
+          const total = quiz?.questions?.length || 0;
+          const percent = total ? Math.round((answered / total) * 100) : 0;
+          
+          // Simplified correct answers calculation
+          const correctAnswers = Object.values(initialAnswers[quiz.id] || {}).filter(
+             (ans, idx) => quiz.questions[idx]?.answers?.[ans]?.correct
+          ).length; 
+          
+          return { ...quiz, answered, total, percent, correctAnswers };
+        });
+        setQuizzes(withProgress);
+      } catch (e) {
+        console.error('Error loading quizzes:', e);
+        setError('Αποτυχία φόρτωσης κεφαλαίων. Δοκίμασε ξανά.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
   }, [nickname, setNickname]);
 
-  // Load saved progress from localStorage
+  // Keyboard shortcut for search focus
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('quizProgress');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setCategoryAnswers(parsed);
+    const onKey = (e) => {
+      if (e.key === '/') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
       }
-    } catch (error) {
-      console.error('Error loading saved progress:', error);
-    }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, []);
 
-  // Save progress to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('quizProgress', JSON.stringify(categoryAnswers));
-    } catch (error) {
-      console.error('Error saving progress:', error);
-    }
-  }, [categoryAnswers]);
-
-  const handleQuizCategorySelect = useCallback((quiz) => {
-    setSelectedQuiz(quiz);
-    setIsQuizDialogOpen(true);
-    setShowQuizMenu(false);
-  }, []);
-
-  const handleMenuClose = useCallback(() => {
-    const hasProgress = Object.values(categoryAnswers).some((obj) => Object.keys(obj).length > 0);
-    if (hasProgress) {
-      setShowExitWarning(true);
-    } else {
-      setShowQuizMenu(false);
-    }
-  }, [categoryAnswers]);
-
-  const confirmExit = useCallback(() => {
-    setShowExitWarning(false);
-    setCategoryAnswers({});
-    setShowQuizMenu(false);
-    // Clear localStorage progress
-    localStorage.removeItem('quizProgress');
-  }, []);
-
-  const cancelExit = useCallback(() => {
-    setShowExitWarning(false);
-  }, []);
-
-  const handleQuizDialogClose = useCallback(() => {
-    setIsQuizDialogOpen(false);
-    setShowQuizMenu(false);
-  }, []);
-
-  const handleQuestionAnswered = useCallback((quizId, questionIdx, selectedIdx, isCorrect, pointsEarned) => {
+  // Handle Answered Question (Update local progress and leaderboard)
+  const handleQuestionAnswered = (quizId, questionIdx, selectedIdx, isCorrect) => {
     setCategoryAnswers((prev) => {
       const prevQuiz = prev[quizId] ? { ...prev[quizId] } : {};
-      prevQuiz[questionIdx] = {
-        selectedAnswer: selectedIdx,
-        isCorrect,
-        pointsEarned: pointsEarned || 0,
-        timestamp: new Date().toISOString(),
-      };
-      return { ...prev, [quizId]: prevQuiz };
+      prevQuiz[questionIdx] = selectedIdx; 
+      
+      const newAnswers = { ...prev, [quizId]: prevQuiz };
+      
+      localStorage.setItem('quizProgress', JSON.stringify(newAnswers));
+      
+      return newAnswers;
     });
+    if (isCorrect) fetchLeaderboard();
+  };
+  
+  // Quiz Menu Handlers (Simplified)
+  const handleQuizCategorySelect = (quiz) => {
+    setSelectedQuiz(quiz);
+    setIsQuizDialogOpen(true);
+  };
+  
+  const handleQuizDialogClose = () => {
+    setIsQuizDialogOpen(false);
+    // Force re-evaluation of quiz progress on the main screen
+    setQuizzes((prev) => [...prev]); 
+  };
     
-    // Refresh leaderboard if answer was correct
-    if (isCorrect) {
-      fetchLeaderboard?.();
+  // Filter and sort quizzes (Merged Logic)
+  const processedQuizzes = useMemo(() => {
+    let result = [...quizzes];
+
+    // Search filter
+    if (q.trim()) {
+      const searchTerm = q.toLowerCase();
+      result = result.filter(quiz => 
+        quiz.title.toLowerCase().includes(searchTerm) ||
+        quiz.description?.toLowerCase().includes(searchTerm)
+      );
     }
-  }, [fetchLeaderboard]);
 
-  const totalAnswered = Object.values(categoryAnswers).reduce(
-    (sum, quiz) => sum + Object.keys(quiz).length,
-    0
-  );
+    // Progress filter
+    if (filterBy !== 'all') {
+      result = result.filter(quiz => {
+        if (filterBy === 'completed') return quiz.percent === 100;
+        if (filterBy === 'inProgress') return quiz.percent > 0 && quiz.percent < 100;
+        if (filterBy === 'notStarted') return quiz.percent === 0;
+        return true;
+      });
+    }
 
-  if (!isInitialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-rose-100 to-red-100">
-        <motion.div
-          className="w-16 h-16 rounded-full border-4 border-t-transparent"
-          style={{ borderColor: BRAND }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        />
+    // Sort
+    if (sortBy === 'progress') {
+      result.sort((a, b) => b.percent - a.percent);
+    } else if (sortBy === 'title') {
+      result.sort((a, b) => a.title.localeCompare(b.title, 'el'));
+    } else if (sortBy === 'recent') {
+      result.sort((a, b) => {
+        const getLatestTimestamp = (quizId) => {
+           const answers = categoryAnswers[quizId] || {};
+           const latestIndex = Math.max(...Object.keys(answers).map(Number));
+           return latestIndex > -1 ? latestIndex : 0; 
+        }
+        return getLatestTimestamp(b.id) - getLatestTimestamp(a.id);
+      });
+    }
+
+    return result;
+  }, [quizzes, q, sortBy, filterBy, categoryAnswers]);
+
+  // Statistics (Merged Logic)
+  const stats = useMemo(() => {
+    const completed = quizzes.filter(q => q.percent === 100).length;
+    const inProgress = quizzes.filter(q => q.percent > 0 && q.percent < 100).length;
+    const notStarted = quizzes.filter(q => q.percent === 0).length;
+    const totalQuestions = quizzes.reduce((sum, q) => sum + q.total, 0);
+    const answeredQuestions = quizzes.reduce((sum, q) => sum + q.answered, 0);
+    const correctQuestions = quizzes.reduce((sum, q) => sum + (q.correctAnswers || 0), 0);
+    const overallProgress = totalQuestions ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+    const accuracy = answeredQuestions ? Math.round((correctQuestions / answeredQuestions) * 100) : 0;
+
+    return { completed, inProgress, notStarted, totalQuestions, answeredQuestions, correctQuestions, overallProgress, accuracy };
+  }, [quizzes]);
+  
+  // Utility Functions
+  const getQuizStatus = (quiz) => {
+    if (quiz.percent === 100) return { label: 'Ολοκληρωμένο', color: 'green', icon: CheckCircle };
+    if (quiz.percent > 0) return { label: 'Σε εξέλιξη', color: 'blue', icon: TrendingUp };
+    return { label: 'Εκκρεμές', color: 'gray', icon: Clock };
+  };
+
+  const continueQuiz = (quiz) => {
+    const firstUnanswered = quiz.questions.findIndex((_, idx) => !categoryAnswers[quiz.id]?.[idx]);
+    handleQuizCategorySelect(quiz, firstUnanswered !== -1 ? firstUnanswered : 0);
+  };
+
+  const restartQuiz = (quiz, e) => {
+    e.stopPropagation();
+    if (window.confirm(`Θέλεις να επαναρχίσεις το "${quiz.title}"; Θα χαθεί η πρόοδός σου σε αυτό το κεφάλαιο.`)) {
+      setCategoryAnswers(prev => {
+        const newAnswers = { ...prev };
+        delete newAnswers[quiz.id];
+        localStorage.setItem('quizProgress', JSON.stringify(newAnswers));
+        return newAnswers;
+      });
+      setQuizzes((prev) => [...prev]);
+    }
+  };
+
+  // Background Component (Kept from previous iteration)
+  const TechBackgroundPattern = useMemo(() => (
+    <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 transition-colors duration-500">
+      
+      {/* Binary Code Pattern */}
+      <div className="absolute inset-0 opacity-5 dark:opacity-5 font-mono text-xs overflow-hidden text-pink-300 dark:text-purple-400/50">
+        {Array.from({ length: 25 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="whitespace-nowrap"
+            initial={{ x: i % 2 === 0 ? '100%' : '-100%' }}
+            animate={{ x: i % 2 === 0 ? '-100%' : '100%' }}
+            transition={{
+              duration: 30 + i * 2,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+          >
+            {Array.from({ length: 200 })
+              .map((_, j) => (Math.random() > 0.5 ? '1' : '0'))
+              .join('')}
+          </motion.div>
+        ))}
       </div>
-    );
-  }
+
+      {/* Floating Code Symbols */}
+      <div className="absolute inset-0 opacity-10 dark:opacity-10 text-pink-400 dark:text-rose-500/20">
+        <div className="absolute top-10 left-10 text-6xl"><Code size={80} /></div>
+        <div className="absolute top-40 right-20 text-7xl">{'{ }'}</div>
+        <div className="absolute bottom-20 left-1/4 text-5xl">[ ]</div>
+        <div className="absolute top-1/3 right-1/3 text-4xl"><Terminal size={60} /></div>
+        <div className="absolute bottom-40 right-10 text-6xl">=&gt;</div>
+        <div className="absolute top-60 left-1/2 text-8xl">#</div>
+      </div>
+      
+      {/* Floating Code Snippets */}
+      <div className="absolute inset-0 opacity-3 dark:opacity-3 font-mono text-sm text-gray-700 dark:text-gray-300">
+        <motion.div
+          className="absolute top-20 left-10"
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          if (true) {'{'} <br />
+          &nbsp;&nbsp;return "success"; <br />
+          {'}'}
+        </motion.div>
+
+        <motion.div
+          className="absolute top-40 right-32"
+          animate={{ y: [0, 20, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          for (let i = 0; i &lt; n; i++)
+        </motion.div>
+      </div>
+
+      {/* Tech Icons */}
+      <div className="absolute inset-0 opacity-15 text-pink-500 dark:text-pink-600">
+        <motion.div
+          className="absolute top-1/4 left-1/4"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+        >
+          ⚙️
+        </motion.div>
+        <motion.div
+          className="absolute bottom-1/4 right-1/4"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+        >
+          💻
+        </motion.div>
+      </div>
+      
+      {/* Gradient Overlay for soft edge */}
+      <div className="absolute inset-0 bg-gradient-to-t from-white/50 dark:from-gray-900/50 to-transparent pointer-events-none" />
+    </div>
+  ), []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Tech Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-100 via-rose-100 to-red-100">
-        {/* Binary Code Pattern */}
-        <div className="absolute inset-0 opacity-5 font-mono text-xs overflow-hidden select-none pointer-events-none">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="whitespace-nowrap"
-              initial={{ x: '100%' }}
-              animate={{ x: '-100%' }}
-              transition={{
-                duration: 20 + i * 2,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-            >
-              {Array.from({ length: 200 })
-                .map(() => (Math.random() > 0.5 ? '1' : '0'))
-                .join('')}
-            </motion.div>
-          ))}
-        </div>
+    <div className="min-h-screen relative">
+      
+      {TechBackgroundPattern}
 
-        {/* Code Symbols */}
-        <div className="absolute inset-0 opacity-10 font-mono text-4xl md:text-6xl select-none pointer-events-none">
-          <motion.div
-            className="absolute top-10 left-10"
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          >
-            &lt;/&gt;
-          </motion.div>
-          <motion.div
-            className="absolute top-40 right-20"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            {'{ }'}
-          </motion.div>
-          <motion.div className="absolute bottom-20 left-1/4">[ ]</motion.div>
-          <motion.div className="absolute top-1/3 right-1/3">( )</motion.div>
-          <motion.div
-            className="absolute bottom-40 right-10"
-            animate={{ opacity: [0.1, 0.3, 0.1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            =&gt;
-          </motion.div>
-          <motion.div className="absolute top-60 left-1/2">##</motion.div>
-          <motion.div className="absolute bottom-10 left-10">!=</motion.div>
-          <motion.div className="absolute top-20 right-1/4">++</motion.div>
-          <motion.div className="absolute top-1/4 left-20">&amp;&amp;</motion.div>
-          <motion.div className="absolute bottom-1/3 right-1/4">||</motion.div>
-        </div>
+      {/* Main Content Area - Full Screen Dashboard */}
+      <div className="relative z-20 flex flex-col min-h-screen">
+          
+        {/* Header (Menu Logic) - now full width, fixed at top */}
+        <div className="sticky top-0 z-30 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white p-6 shadow-xl dark:shadow-pink-900/50">
+          <div className="max-w-7xl mx-auto"> {/* Added max-width for content */}
+            <div className="flex items-center justify-between mb-4">
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                <h3 className="text-2xl md:text-3xl font-black mb-1">
+                  📚 Επιλογή Κεφαλαίου
+                </h3>
+                <p className="text-white/90 text-sm">
+                  {quizzes.length} διαθέσιμα κεφάλαια • {stats.answeredQuestions} συνολικές απαντήσεις
+                </p>
+              </motion.div>
+            </div>
 
-        {/* Floating Code Snippets */}
-        <div className="absolute inset-0 opacity-5 font-mono text-xs md:text-sm select-none pointer-events-none">
-          <motion.div
-            className="absolute top-20 left-10"
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          >
-            if (true) {'{'} <br />
-            &nbsp;&nbsp;return "success"; <br />
-            {'}'}
-          </motion.div>
+            {/* Stats Bar */}
+            {!loading && quizzes.length > 0 && (
+              <motion.div
+                className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-4 text-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                {[{ label: 'Πρόοδος', value: stats.overallProgress + '%', icon: Award },
+                 { label: 'Ακρίβεια', value: stats.accuracy + '%', icon: TrendingUp },
+                 { label: 'Ολοκληρωμένα', value: stats.completed, icon: CheckCircle },
+                 { label: 'Σε εξέλιξη', value: stats.inProgress, icon: Clock },
+                 { label: 'Εκκρεμή', value: stats.notStarted, icon: BookOpen },
+                ].map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                        <div key={idx} className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+                            <div className="flex items-center justify-center gap-2 mb-1">
+                                <Icon className="w-4 h-4" />
+                                <span className="text-xs font-medium opacity-90">{item.label}</span>
+                            </div>
+                            <div className="text-xl font-black">{item.value}</div>
+                        </div>
+                    );
+                })}
+              </motion.div>
+            )}
 
-          <motion.div
-            className="absolute top-40 right-32"
-            animate={{ y: [0, 20, 0] }}
-            transition={{ duration: 5, repeat: Infinity }}
-          >
-            for (let i = 0; i &lt; n; i++)
-          </motion.div>
-
-          <motion.div
-            className="absolute bottom-32 left-1/3"
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 6, repeat: Infinity }}
-          >
-            function quiz() {'{'} <br />
-            &nbsp;&nbsp;console.log("start"); <br />
-            {'}'}
-          </motion.div>
-
-          <motion.div
-            className="absolute top-1/2 right-20"
-            animate={{ y: [0, 25, 0] }}
-            transition={{ duration: 7, repeat: Infinity }}
-          >
-            while (learning) {'{'} <br />
-            &nbsp;&nbsp;practice(); <br />
-            {'}'}
-          </motion.div>
-        </div>
-
-        {/* Tech Icons */}
-        <div className="absolute inset-0 opacity-8 text-6xl md:text-8xl select-none pointer-events-none">
-          <motion.div
-            className="absolute top-1/4 left-1/4"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          >
-            ⚙️
-          </motion.div>
-          <motion.div
-            className="absolute bottom-1/4 right-1/4"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          >
-            💻
-          </motion.div>
-          <motion.div
-            className="absolute top-1/3 right-1/3"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          >
-            🎯
-          </motion.div>
-        </div>
-      </div>
-
-      <div className="relative z-10">
-        {/* Center Content */}
-        <AnimatePresence mode="wait">
-          {!showQuizMenu && !isQuizDialogOpen && (
-            <motion.div
-              className="fixed inset-0 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="text-center max-w-2xl">
-                {/* Welcome Message */}
-                <motion.div
-                  className="mb-8"
-                  initial={{ opacity: 0, y: -30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h1 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">
-                    Καλώς ήρθες στο Quiz! 🎓
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    Δοκίμασε τις γνώσεις σου και ανέβασε στην κορυφή του leaderboard!
-                  </p>
-                </motion.div>
-
-                {/* Stats */}
-                {totalAnswered > 0 && (
-                  <motion.div
-                    className="mb-8 grid grid-cols-3 gap-4 max-w-lg mx-auto"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 }}
+            {/* Search & Filters */}
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <input
+                  ref={searchInputRef}
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Αναζήτηση... (πάτα / για εστίαση)"
+                  className="w-full rounded-xl px-4 py-3 pl-11 pr-10 text-gray-800 outline-none focus:ring-2 focus:ring-white/50 transition-all"
+                  aria-label="Αναζήτηση κεφαλαίων"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                {q && (
+                  <motion.button
+                    onClick={() => setQ('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    aria-label="Καθαρισμός αναζήτησης"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border-2 border-pink-200">
-                      <Target className="w-6 h-6 text-pink-600 mx-auto mb-2" />
-                      <div className="text-2xl font-black text-gray-800">{totalAnswered}</div>
-                      <div className="text-xs text-gray-600">Απαντήσεις</div>
-                    </div>
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border-2 border-pink-200">
-                      <Zap className="w-6 h-6 text-yellow-600 mx-auto mb-2" />
-                      <div className="text-2xl font-black text-gray-800">
-                        {Object.keys(categoryAnswers).length}
-                      </div>
-                      <div className="text-xs text-gray-600">Κεφάλαια</div>
-                    </div>
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border-2 border-pink-200">
-                      <Sparkles className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-                      <div className="text-2xl font-black text-gray-800">
-                        {Object.values(categoryAnswers).reduce((sum, quiz) => {
-                          return (
-                            sum +
-                            Object.values(quiz).filter((ans) => ans.isCorrect).length
-                          );
-                        }, 0)}
-                      </div>
-                      <div className="text-xs text-gray-600">Σωστές</div>
-                    </div>
-                  </motion.div>
+                    <X className="w-4 h-4" />
+                  </motion.button>
                 )}
+              </div>
 
-                {/* Main Button */}
+              {/* Sort Button */}
+              <div className="relative">
                 <motion.button
-                  onClick={() => setShowQuizMenu(true)}
-                  className="px-10 py-5 rounded-2xl shadow-2xl font-black text-xl md:text-2xl text-white hover:shadow-3xl transition-all"
-                  style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  exit={{ scale: 0, rotate: 180 }}
-                  whileHover={{ scale: 1.05, y: -8 }}
+                  onClick={() => {
+                    setShowSortMenu(!showSortMenu);
+                    setShowFilterBy(false);
+                  }}
+                  className="px-4 py-3 rounded-xl bg-white/90 hover:bg-white text-gray-800 font-semibold flex items-center gap-2 transition-colors"
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
+                  aria-label="Ταξινόμηση"
                 >
-                  <div className="flex items-center gap-3">
-                    <BookOpen className="w-7 h-7" />
-                    {totalAnswered > 0 ? 'Συνέχεια Quiz' : 'Ξεκίνησε Quiz'}
-                  </div>
+                  <SortAsc className="w-5 h-5" />
+                  <span className="hidden md:inline">Ταξινόμηση</span>
                 </motion.button>
 
-               
+                <AnimatePresence>
+                  {showSortMenu && (
+                    <motion.div
+                      className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-pink-200 overflow-hidden z-20 min-w-[200px]"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      {[
+                        { value: 'progress', label: 'Πρόοδος' },
+                        { value: 'title', label: 'Αλφαβητικά' },
+                        { value: 'recent', label: 'Πρόσφατα' },
+                        { value: 'default', label: 'Προεπιλογή' },
+                      ].map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setSortBy(option.value);
+                            setShowSortMenu(false);
+                          }}
+                          className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors ${
+                            sortBy === option.value ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-700'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
-        {/* Quiz Menu */}
-        {showQuizMenu && (
-          <QuizMenu
-            onSelect={handleQuizCategorySelect}
-            onClose={handleMenuClose}
-            categoryAnswers={categoryAnswers}
-          />
-        )}
+              {/* Filter Button */}
+              <div className="relative">
+                <motion.button
+                  onClick={() => {
+                    setShowFilterBy(!showFilterMenu);
+                    setShowSortMenu(false);
+                  }}
+                  className="px-4 py-3 rounded-xl bg-white/90 hover:bg-white text-gray-800 font-semibold flex items-center gap-2 transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Φίλτρα"
+                >
+                  <Filter className="w-5 h-5" />
+                  {filterBy !== 'all' && (
+                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
+                  <span className="hidden md:inline">Φίλτρα</span>
+                </motion.button>
 
-        {/* Quiz Dialog */}
-        {isQuizDialogOpen && selectedQuiz && (
+                <AnimatePresence>
+                  {showFilterMenu && (
+                    <motion.div
+                      className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-pink-200 overflow-hidden z-20 min-w-[200px]"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      {[
+                        { value: 'all', label: 'Όλα', icon: BookOpen },
+                        { value: 'completed', label: 'Ολοκληρωμένα', icon: CheckCircle },
+                        { value: 'inProgress', label: 'Σε εξέλιξη', icon: TrendingUp },
+                        { value: 'notStarted', label: 'Εκκρεμή', icon: Clock },
+                      ].map((option) => {
+                        const Icon = option.icon;
+                        return (
+                          <button
+                            key={option.value}
+                            onClick={() => {
+                              setFilterBy(option.value);
+                              setShowFilterBy(false);
+                            }}
+                            className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors flex items-center gap-2 ${
+                              filterBy === option.value ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-700'
+                            }`}
+                          >
+                            <Icon className="w-4 h-4" />
+                            {option.label}
+                          </button>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content (Quiz Grid) - Now occupies remaining space */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl mx-auto w-full"> {/* Added max-w-7xl mx-auto w-full */}
+            
+            {/* Loading, Error, Empty States (JSX kept) */}
+            {error && (
+              <motion.div className="bg-red-50 border-2 border-red-300 rounded-2xl p-6 text-center" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} >
+                <div className="text-6xl mb-4">⚠️</div>
+                <h3 className="text-xl font-bold text-red-800 mb-2">Σφάλμα</h3>
+                <p className="text-red-600 mb-4">{error}</p>
+                <button onClick={() => window.location.reload()} className="px-6 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors" > Δοκίμασε ξανά </button>
+              </motion.div>
+            )}
+
+            {loading && (
+              <div className="flex flex-col items-center justify-center py-20">
+                <motion.div className="w-16 h-16 rounded-full border-4 border-t-transparent" style={{ borderColor: BRAND }} animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} />
+                <p className="mt-4 text-gray-500 font-semibold">Φόρτωση κεφαλαίων...</p>
+              </div>
+            )}
+
+            {!loading && !error && processedQuizzes.length === 0 && (
+              <motion.div className="text-center py-20" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} >
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  {q.trim() ? 'Δεν βρέθηκαν αποτελέσματα' : 'Δεν βρέθηκαν κεφάλαια'}
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  {q.trim() ? 'Δοκίμασε διαφορετική αναζήτηση' : 'Κανένο κεφάλαιο διαθέσιμο αυτή τη στιγμή'}
+                </p>
+                {(q.trim() || filterBy !== 'all') && (
+                  <button onClick={() => { setQ(''); setFilterBy('all'); }} className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all" >
+                    Καθαρισμός φίλτρων
+                  </button>
+                )}
+              </motion.div>
+            )}
+
+            {/* Quiz Grid */}
+            {!loading && !error && processedQuizzes.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6"> 
+                {processedQuizzes.map((quiz, i) => {
+                  const status = getQuizStatus(quiz);
+                  const StatusIcon = status.icon;
+                  
+                  return (
+                    <motion.div
+                      key={quiz.id}
+                      className="group relative p-6 rounded-2xl bg-white dark:bg-gray-700 border-2 border-pink-200 hover:border-pink-400 hover:shadow-2xl transition-all overflow-hidden cursor-pointer"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: Math.min(i * 0.05, 0.5) }}
+                      whileHover={{ y: -8, scale: 1.02 }}
+                      onClick={() => continueQuiz(quiz)} 
+                    >
+                      {/* Progress Bar */}
+                      <div className="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-gray-600 rounded-t-2xl overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-pink-500 via-rose-500 to-red-500"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${quiz.percent}%` }}
+                          transition={{ duration: 1, delay: Math.min(i * 0.05 + 0.3, 0.8) }}
+                        />
+                      </div>
+
+                      {/* Icon & Badge */}
+                      <div className="flex items-center justify-between mb-4 mt-2">
+                        <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/50 dark:to-rose-900/50 group-hover:from-pink-200 group-hover:to-rose-200 transition-all">
+                          <BookOpen className="w-7 h-7 text-pink-600 dark:text-pink-300" />
+                        </div>
+                        
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: Math.min(i * 0.05 + 0.4, 0.9) }}
+                        >
+                          <div className={`
+                            flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold
+                            ${status.color === 'green' ? 'bg-green-100 text-green-700' : ''}
+                            ${status.color === 'blue' ? 'bg-blue-100 text-blue-700' : ''}
+                            ${status.color === 'gray' ? 'bg-gray-100 text-gray-700' : ''}
+                          `}>
+                            <StatusIcon className="w-3 h-3" />
+                            {status.label}
+                          </div>
+                        </motion.div>
+                      </div>
+
+                      {/* Title */}
+                      <h4 className="font-bold text-lg text-gray-800 dark:text-white group-hover:text-pink-600 transition-colors mb-3 line-clamp-2 leading-tight">
+                        {quiz.title}
+                      </h4>
+
+                      {/* Description */}
+                      {quiz.description && (
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+                          {quiz.description}
+                        </p>
+                      )}
+
+                      {/* Stats */}
+                      <div className="space-y-2 mb-4 text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            Ερωτήσεις
+                          </span>
+                          <span className="font-bold text-gray-800 dark:text-white">{quiz.answered}/{quiz.total}</span>
+                        </div>
+                        
+                        {quiz.answered > 0 && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                              <CheckCircle className="w-4 h-4" />
+                              Σωστές
+                            </span>
+                            <span className="font-bold text-green-600 dark:text-green-400">
+                              {quiz.correctAnswers}/{quiz.answered}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-600">
+                        <motion.button
+                          className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Play className="w-4 h-4" />
+                          {quiz.percent > 0 ? 'Συνέχεια' : 'Έναρξη'}
+                        </motion.button>
+                        
+                        {quiz.answered > 0 && (
+                          <motion.button
+                            onClick={(e) => restartQuiz(quiz, e)}
+                            className="p-3 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 transition-colors"
+                            whileHover={{ scale: 1.1, rotate: -180 }}
+                            whileTap={{ scale: 0.9 }}
+                            title="Επανεκκίνηση"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                          </motion.button>
+                        )}
+                      </div>
+
+                      {/* Hover effect overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 to-rose-500/0 group-hover:from-pink-500/5 group-hover:to-rose-500/5 transition-all rounded-2xl pointer-events-none" />
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+        </div>
+
+        {/* Footer info */}
+      
+      </div>
+
+      {/* Quiz Dialog is still rendered conditionally, outside the main list */}
+      {isQuizDialogOpen && selectedQuiz && (
           <QuizDialog
             quiz={selectedQuiz}
             isOpen={isQuizDialogOpen}
@@ -347,72 +620,7 @@ const QuizPage = () => {
             onQuestionAnswered={handleQuestionAnswered}
             selectedAnswers={categoryAnswers[selectedQuiz.id] || {}}
           />
-        )}
-
-        {/* Exit Warning */}
-        <AnimatePresence>
-          {showExitWarning && (
-            <div className="fixed inset-0 flex items-center justify-center z-[60] p-4">
-              <motion.div
-                className="absolute inset-0 bg-black/60 backdrop-blur-md"
-                onClick={cancelExit}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              />
-
-              <motion.div
-                className="relative bg-white rounded-3xl shadow-2xl overflow-hidden max-w-md w-full"
-                style={{ border: `3px solid ${BRAND}` }}
-                initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              >
-                <div className="bg-gradient-to-r from-red-500 to-rose-500 text-white p-6 text-center">
-                  <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 500 }}
-                  >
-                    <AlertTriangle className="w-16 h-16 mx-auto mb-2" />
-                  </motion.div>
-                  <h3 className="text-2xl font-black">Προσοχή!</h3>
-                </div>
-
-                <div className="p-6">
-                  <p className="text-gray-700 text-center mb-2 text-lg font-semibold">
-                    Η πρόοδός σου θα χαθεί!
-                  </p>
-                  <p className="text-gray-600 text-center mb-6 text-sm">
-                    Έχεις απαντήσει σε {totalAnswered} ερωτήσεις. Θέλεις σίγουρα να διαγράψεις την πρόοδό σου και να κλείσεις;
-                  </p>
-
-                  <div className="flex gap-3">
-                    <motion.button
-                      onClick={confirmExit}
-                      className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg hover:shadow-xl transition-shadow"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Ναι, διαγραφή
-                    </motion.button>
-                    <motion.button
-                      onClick={cancelExit}
-                      className="flex-1 py-3 rounded-xl font-bold bg-gray-200 text-gray-800 hover:bg-gray-300 shadow-lg hover:shadow-xl transition-all"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Ακύρωση
-                    </motion.button>
-                  </div>
-
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
+      )}
     </div>
   );
 };
