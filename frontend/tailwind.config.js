@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+        arcade: ['ArcadeClassic', 'monospace'], // Χρησιμοποιήστε το 'ArcadeClassic'
+      },
   },
   plugins: [
     require('@tailwindcss/typography'),
