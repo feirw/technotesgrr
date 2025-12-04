@@ -1,6 +1,6 @@
-fastapi==0.115.14
-pydantic==2.11.7
-uvicorn==0.35.0
-black
-google-genai
+fastapi
+psycopg2_binary
+pydantic
 python-dotenv
+uvicorn
+supabase

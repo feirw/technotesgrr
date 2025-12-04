@@ -1,8 +1,7 @@
 import json
 import os
-import sqlite3
 from pathlib import Path
-from database import init_database, get_db_connection
+from database import get_db_connection
 
 # Paths to data directories
 QUIZ_DATA_DIR = Path(__file__).parent.parent / "frontend" / "src" / "data" / "quizzes"
@@ -84,7 +83,7 @@ def generate_category_from_filename(filename, data_type):
 
 
 def load_quizzes_to_db():
-    """Load all quiz questions from JSON files to database"""
+    """Load all quiz questions from JSON files to Supabase (Postgres)"""
 
     if not QUIZ_DATA_DIR.exists():
         print(f"Quiz directory not found: {QUIZ_DATA_DIR}")
@@ -98,82 +97,82 @@ def load_quizzes_to_db():
         return
 
     with get_db_connection() as conn:
-        cursor = conn.cursor()
+        with conn.cursor() as cursor:
+            # Clear existing quiz data using TRUNCATE (Fast for Postgres)
+            cursor.execute("TRUNCATE TABLE quizzes")
+            print("Cleared existing quiz data")
 
-        # Clear existing quiz data
-        cursor.execute("DELETE FROM quizzes")
-        print("Cleared existing quiz data")
+            total_loaded = 0
 
-        total_loaded = 0
+            for file_path in json_files:
+                filename = file_path.name
+                chapter = extract_chapter_from_filename(filename)
+                category = generate_category_from_filename(filename, "quiz")
 
-        for file_path in json_files:
-            filename = file_path.name
-            chapter = extract_chapter_from_filename(filename)
-            category = generate_category_from_filename(filename, "quiz")  # Updated call
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        questions = json.load(f)
 
-            try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    questions = json.load(f)
-
-                if not isinstance(questions, list):
-                    print(
-                        f"Warning: {filename} does not contain a list of questions, skipping..."
-                    )
-                    continue
-
-                file_question_count = 0
-                for question in questions:
-                    # Handle different question formats
-                    question_id = question.get("id", file_question_count + 1)
-                    question_text = question.get("question", question.get("text", ""))
-
-                    # Handle different answer formats
-                    answers = question.get("answers", question.get("options", []))
-
-                    # Skip if essential fields are missing
-                    if not question_text or not answers:
-                        print(f"Warning: Skipping incomplete question in {filename}")
+                    if not isinstance(questions, list):
+                        print(f"Warning: {filename} does not contain a list of questions, skipping...")
                         continue
 
-                    # Create unique ID
-                    unique_id = f"ch{chapter}_q{question_id}"
+                    file_question_count = 0
+                    for question in questions:
+                        # Handle different question formats
+                        question_id = question.get("id", file_question_count + 1)
+                        question_text = question.get("question", question.get("text", ""))
 
-                    # Insert into database
-                    cursor.execute(
-                        """
-                        INSERT OR REPLACE INTO quizzes (id, question, answers, category, chapter, source_file, points)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """,
-                        (
-                            unique_id,
-                            question_text,
-                            json.dumps(answers),  # Store answers as JSON string
-                            category,
-                            chapter,
-                            filename,
-                            question.get("points", 10),  # Default points
-                        ),
-                    )
-                    file_question_count += 1
-                    total_loaded += 1
+                        # Handle different answer formats
+                        answers = question.get("answers", question.get("options", []))
 
-                print(
-                    f"Loaded {file_question_count} questions from {filename} (Category: {category}, Chapter: {chapter})"
-                )
+                        # Skip if essential fields are missing
+                        if not question_text or not answers:
+                            print(f"Warning: Skipping incomplete question in {filename}")
+                            continue
 
-            except (json.JSONDecodeError, FileNotFoundError, UnicodeDecodeError) as e:
-                print(f"Error loading {filename}: {e}")
-                continue
-            except Exception as e:
-                print(f"Unexpected error loading {filename}: {e}")
-                continue
+                        # Create unique ID
+                        unique_id = f"ch{chapter}_q{question_id}"
+
+                        # Insert into database (Postgres syntax)
+                        cursor.execute(
+                            """
+                            INSERT INTO quizzes (id, question, answers, category, chapter, source_file, points)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            ON CONFLICT (id) DO UPDATE 
+                            SET question = EXCLUDED.question,
+                                answers = EXCLUDED.answers,
+                                category = EXCLUDED.category,
+                                points = EXCLUDED.points
+                            """,
+                            (
+                                unique_id,
+                                question_text,
+                                json.dumps(answers),  # Serialize list to JSON string for JSONB column
+                                category,
+                                chapter,
+                                filename,
+                                question.get("points", 10),
+                            ),
+                        )
+                        file_question_count += 1
+                        total_loaded += 1
+
+                    print(f"Loaded {file_question_count} questions from {filename} (Category: {category}, Chapter: {chapter})")
+
+                except (json.JSONDecodeError, FileNotFoundError, UnicodeDecodeError) as e:
+                    print(f"Error loading {filename}: {e}")
+                    continue
+                except Exception as e:
+                    print(f"Unexpected error loading {filename}: {e}")
+                    continue
 
         conn.commit()
         print(f"Total quiz questions loaded: {total_loaded}")
 
 
 def load_flashcards_to_db():
-    """Load all flashcards from JSON files to database"""
+    """Load all flashcards from JSON files to Supabase (Postgres)"""
 
     if not FLASHCARD_DATA_DIR.exists():
         print(f"Flashcard directory not found: {FLASHCARD_DATA_DIR}")
@@ -187,81 +186,78 @@ def load_flashcards_to_db():
         return
 
     with get_db_connection() as conn:
-        cursor = conn.cursor()
+        with conn.cursor() as cursor:
+            # Clear existing flashcard data
+            cursor.execute("TRUNCATE TABLE flashcards")
+            print("Cleared existing flashcard data")
 
-        # Clear existing flashcard data
-        cursor.execute("DELETE FROM flashcards")
-        print("Cleared existing flashcard data")
+            total_loaded = 0
 
-        total_loaded = 0
+            for file_path in json_files:
+                filename = file_path.name
+                chapter = extract_chapter_from_filename(filename)
+                category = generate_category_from_filename(filename, "flashcard")
 
-        for file_path in json_files:
-            filename = file_path.name
-            chapter = extract_chapter_from_filename(filename)
-            category = generate_category_from_filename(
-                filename, "flashcard"
-            )  # Updated call
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        flashcards = json.load(f)
 
-            try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    flashcards = json.load(f)
-
-                if not isinstance(flashcards, list):
-                    print(
-                        f"Warning: {filename} does not contain a list of flashcards, skipping..."
-                    )
-                    continue
-
-                file_flashcard_count = 0
-                for flashcard in flashcards:
-                    # Handle different flashcard formats
-                    flashcard_id = flashcard.get("id", file_flashcard_count + 1)
-
-                    # Try different field names for question/front
-                    question = (
-                        flashcard.get("question")
-                        or flashcard.get("front")
-                        or flashcard.get("term")
-                        or flashcard.get("prompt", "")
-                    )
-
-                    # Try different field names for answer/back
-                    answer = (
-                        flashcard.get("answer")
-                        or flashcard.get("back")
-                        or flashcard.get("definition")
-                        or flashcard.get("response", "")
-                    )
-
-                    # Skip if essential fields are missing
-                    if not question or not answer:
-                        print(f"Warning: Skipping incomplete flashcard in {filename}")
+                    if not isinstance(flashcards, list):
+                        print(f"Warning: {filename} does not contain a list of flashcards, skipping...")
                         continue
 
-                    # Create unique ID
-                    unique_id = f"fc_{chapter}_{flashcard_id}"
+                    file_flashcard_count = 0
+                    for flashcard in flashcards:
+                        # Handle different flashcard formats
+                        flashcard_id = flashcard.get("id", file_flashcard_count + 1)
 
-                    # Insert into database
-                    cursor.execute(
-                        """
-                        INSERT OR REPLACE INTO flashcards (id, question, answer, category, chapter, source_file)
-                        VALUES (?, ?, ?, ?, ?, ?)
-                    """,
-                        (unique_id, question, answer, category, chapter, filename),
-                    )
-                    file_flashcard_count += 1
-                    total_loaded += 1
+                        # Try different field names for question/front
+                        question = (
+                            flashcard.get("question")
+                            or flashcard.get("front")
+                            or flashcard.get("term")
+                            or flashcard.get("prompt", "")
+                        )
 
-                print(
-                    f"Loaded {file_flashcard_count} flashcards from {filename} (Category: {category}, Chapter: {chapter})"
-                )
+                        # Try different field names for answer/back
+                        answer = (
+                            flashcard.get("answer")
+                            or flashcard.get("back")
+                            or flashcard.get("definition")
+                            or flashcard.get("response", "")
+                        )
 
-            except (json.JSONDecodeError, FileNotFoundError, UnicodeDecodeError) as e:
-                print(f"Error loading {filename}: {e}")
-                continue
-            except Exception as e:
-                print(f"Unexpected error loading {filename}: {e}")
-                continue
+                        # Skip if essential fields are missing
+                        if not question or not answer:
+                            print(f"Warning: Skipping incomplete flashcard in {filename}")
+                            continue
+
+                        # Create unique ID
+                        unique_id = f"fc_{chapter}_{flashcard_id}"
+
+                        # Insert into database (Postgres syntax)
+                        cursor.execute(
+                            """
+                            INSERT INTO flashcards (id, question, answer, category, chapter, source_file)
+                            VALUES (%s, %s, %s, %s, %s, %s)
+                            ON CONFLICT (id) DO UPDATE
+                            SET question = EXCLUDED.question,
+                                answer = EXCLUDED.answer,
+                                category = EXCLUDED.category
+                            """,
+                            (unique_id, question, answer, category, chapter, filename),
+                        )
+                        file_flashcard_count += 1
+                        total_loaded += 1
+
+                    print(f"Loaded {file_flashcard_count} flashcards from {filename} (Category: {category}, Chapter: {chapter})")
+
+                except (json.JSONDecodeError, FileNotFoundError, UnicodeDecodeError) as e:
+                    print(f"Error loading {filename}: {e}")
+                    continue
+                except Exception as e:
+                    print(f"Unexpected error loading {filename}: {e}")
+                    continue
 
         conn.commit()
         print(f"Total flashcards loaded: {total_loaded}")
@@ -294,14 +290,13 @@ def scan_directories():
 
 def main():
     """Main function to load all data"""
-    print("=== Data Loading Script ===\n")
+    print("=== Data Loading Script (Supabase/Postgres) ===\n")
 
     # Scan directories first
     scan_directories()
 
-    print("Initializing database...")
-    init_database()
-
+    # Note: init_database() call removed as schema is managed by Supabase SQL Editor
+    
     print("\nLoading quiz data...")
     load_quizzes_to_db()
 
@@ -311,41 +306,45 @@ def main():
     print("\n=== Data loading complete! ===")
 
     # Display summary
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT COUNT(*) FROM quizzes")
+                quiz_count = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM quizzes")
-        quiz_count = cursor.fetchone()[0]
+                cursor.execute("SELECT COUNT(*) FROM flashcards")
+                flashcard_count = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM flashcards")
-        flashcard_count = cursor.fetchone()[0]
+                cursor.execute("SELECT COUNT(*) FROM leaderboard")
+                leaderboard_count = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM leaderboard")
-        leaderboard_count = cursor.fetchone()[0]
+                cursor.execute("SELECT COUNT(*) FROM quiz_submissions")
+                submission_count = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM quiz_submissions")
-        submission_count = cursor.fetchone()[0]
+                print(f"\n=== Database Summary ===")
+                print(f"📚 Quizzes: {quiz_count}")
+                print(f"🃏 Flashcards: {flashcard_count}")
+                print(f"🏆 Leaderboard entries: {leaderboard_count}")
+                print(f"📝 Quiz submissions: {submission_count}")
 
-        print(f"\n=== Database Summary ===")
-        print(f"📚 Quizzes: {quiz_count}")
-        print(f"🃏 Flashcards: {flashcard_count}")
-        print(f"🏆 Leaderboard entries: {leaderboard_count}")
-        print(f"📝 Quiz submissions: {submission_count}")
+                # Show categories
+                cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
+                quiz_categories = [row[0] for row in cursor.fetchall()]
+                if quiz_categories:
+                    print(f"\n📖 Quiz Categories:")
+                    for category in quiz_categories:
+                        print(f"  - {category}")
 
-        # Show categories
-        cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
-        quiz_categories = [row[0] for row in cursor.fetchall()]
-        if quiz_categories:
-            print(f"\n📖 Quiz Categories:")
-            for category in quiz_categories:
-                print(f"  - {category}")
+                cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
+                flashcard_categories = [row[0] for row in cursor.fetchall()]
+                if flashcard_categories:
+                    print(f"\n🃏 Flashcard Categories:")
+                    for category in flashcard_categories:
+                        print(f"  - {category}")
 
-        cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
-        flashcard_categories = [row[0] for row in cursor.fetchall()]
-        if flashcard_categories:
-            print(f"\n🃏 Flashcard Categories:")
-            for category in flashcard_categories:
-                print(f"  - {category}")
+    except Exception as e:
+        print(f"\nError fetching summary: {e}")
+        print("Please check your database connection string and network status.")
 
 
 if __name__ == "__main__":

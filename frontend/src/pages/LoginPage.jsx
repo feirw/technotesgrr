@@ -1,147 +1,129 @@
-import React, { useState, useEffect } from 'react';
-import { LogIn, Mail, Lock, AlertTriangle, UserPlus } from 'lucide-react';
+import React, { useState } from 'react';
+import { LogIn, Mail, Lock, AlertTriangle, UserPlus, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { motion } from 'framer-motion';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login, isAuthenticated } = useAuth();
+    
+    const { login } = useAuth(); 
     const navigate = useNavigate();
-
-    // Ανακατεύθυνση αν ο χρήστης είναι ήδη συνδεδεμένος
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/');
-        }
-    }, [isAuthenticated, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        
-        if (!email || !password) {
-            setError('Παρακαλώ συμπληρώστε και τα δύο πεδία.');
-            return;
-        }
-
         setLoading(true);
+
         try {
-            // Καλεί τη συνάρτηση login από το AuthContext
-            await login(email, password); 
-            // Επιτυχής σύνδεση, ανακατεύθυνση στο Home
-            navigate('/'); 
-
+            await login(email, password);
+            navigate('/'); // Redirect to home on success
         } catch (err) {
-            let errorMessage = 'Σφάλμα σύνδεσης. Ελέγξτε τα στοιχεία σας.';
-            
-            // Προσαρμογή μηνυμάτων σφάλματος (πρέπει να υποστηρίζονται από το FastAPI backend)
-            if (err.response && err.response.status === 401) {
-                errorMessage = 'Λάθος email ή κωδικός πρόσβασης.';
-            } else if (err.response) {
-                 errorMessage = `Σφάλμα: ${err.response.data.detail || 'Ανεπιθύμητο σφάλμα.'}`;
+            console.error(err);
+            // Handle Supabase specific errors
+            if (err.message.includes("Invalid login credentials")) {
+                setError('Λάθος email ή κωδικός πρόσβασης.');
+            } else if (err.message.includes("Email not confirmed")) {
+                setError('Παρακαλώ επιβεβαιώστε το email σας.');
+            } else {
+                setError('Προέκυψε σφάλμα σύνδεσης.');
             }
-
-            setError(errorMessage);
-            setLoading(false);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-rose-50 dark:bg-gray-900 p-4">
-            <div className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border-t-8 border-rose-500">
-                
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-pink-100 dark:border-gray-700"
+            >
                 <header className="text-center mb-8">
-                    <LogIn className="w-12 h-12 text-rose-600 mx-auto mb-2" />
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
-                        Σύνδεση Μέλους
+                    <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <LogIn className="w-8 h-8 text-pink-600" />
+                    </div>
+                    <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-2">
+                        Welcome Back
                     </h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Πρόσβαση στο πλήρες εκπαιδευτικό υλικό
+                    <p className="text-gray-500 dark:text-gray-400">
+                        Συνδέσου για να δεις την πρόοδο των Quiz σου
                     </p>
                 </header>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Μήνυμα Σφάλματος */}
+                <form onSubmit={handleSubmit} className="space-y-5">
                     {error && (
-                        <div className="flex items-center p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900 dark:border-red-600 dark:text-red-200" role="alert">
+                        <motion.div 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="flex items-center p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl"
+                        >
                             <AlertTriangle className="w-5 h-5 mr-2 flex-shrink-0" />
                             <p className="text-sm font-medium">{error}</p>
-                        </div>
+                        </motion.div>
                     )}
 
-                    {/* Πεδίο Email */}
-                    <div>
-                        <label 
-                            htmlFor="email" 
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        >
-                            Email
-                        </label>
+                    <div className="space-y-1">
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300 ml-1">Email</label>
                         <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
-                                id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
                                 placeholder="name@example.com"
                                 required
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150"
-                                disabled={loading}
                             />
                         </div>
                     </div>
 
-                    {/* Πεδίο Κωδικού */}
-                    <div>
-                        <label 
-                            htmlFor="password" 
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        >
-                            Κωδικός Πρόσβασης
-                        </label>
+                    <div className="space-y-1">
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300 ml-1">Κωδικός</label>
                         <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
-                                id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="********"
+                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
+                                placeholder="••••••••"
                                 required
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-150"
-                                disabled={loading}
                             />
                         </div>
                     </div>
 
-                    {/* Κουμπί Σύνδεσης */}
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-lg shadow-lg text-lg font-extrabold text-white transition duration-300 ${
-                            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-rose-600 hover:bg-rose-700 transform hover:scale-[1.01] active:scale-[0.99]'
-                        }`}
+                        className="w-full py-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                        {loading ? 'Σύνδεση...' : <><LogIn className="w-5 h-5 mr-2" /> Είσοδος</>}
+                        {loading ? 'Σύνδεση...' : (
+                            <>
+                                Είσοδος
+                                <ArrowRight className="w-5 h-5" />
+                            </>
+                        )}
                     </button>
                 </form>
 
-                <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Δεν έχετε λογαριασμό; 
-                        {/* Προσαρμόστε τη διαδρομή εγγραφής αν είναι διαφορετική */}
-                        <Link to="/register" className="ml-1 font-bold text-fuchsia-600 hover:text-fuchsia-500 dark:text-fuchsia-400 hover:underline transition duration-150 flex items-center justify-center mt-2">
-                             <UserPlus className="w-4 h-4 mr-1" /> Δημιουργήστε έναν τώρα!
-                        </Link>
+                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 text-center">
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                        Δεν έχεις λογαριασμό;
                     </p>
+                    <Link 
+                        to="/register" 
+                        className="inline-flex items-center justify-center px-6 py-3 border-2 border-pink-100 dark:border-gray-600 rounded-xl font-bold text-gray-700 dark:text-white hover:border-pink-500 hover:text-pink-600 transition-all w-full"
+                    >
+                        <UserPlus className="w-5 h-5 mr-2" />
+                        Δημιουργία Λογαριασμού
+                    </Link>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };

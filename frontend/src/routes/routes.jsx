@@ -12,7 +12,9 @@ import DataProtectionPage from '../pages/DataProtectionPage';
 import AboutPage from '../pages/AboutMe';
 import ProsanatolismosPage from '../pages/ProsanatolismosPage';
 import LoginPage from '../pages/LoginPage';
-// Το ProtectedRoute ΔΕΝ εισάγεται
+import RegisterPage from '../pages/RegisterPage';
+import AdminDashboard from '../pages/admin/AdminDashboard';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 const routes = [
     {
@@ -72,9 +74,22 @@ const routes = [
         element: <LoginPage />, // Δημόσια
     },
     {
+        path: 'register',
+        element: <RegisterPage />, // Δημόσια
+    },
+    {
         path: '*',
         element: <div>404 - Η σελίδα δεν βρέθηκε</div>, // Δημόσια
     },
+    {
+        element: <ProtectedRoute requireAdmin={true} />, // Wrap children
+        children: [
+            {
+                path: 'admin/dashboard',
+                element: <AdminDashboard />,
+            }
+        ]
+    }
 ];
 
 export default routes;

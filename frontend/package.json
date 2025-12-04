@@ -5,6 +5,7 @@
   "proxy": "http://localhost:8001",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@supabase/supabase-js": "^2.86.2",
     "axios": "^1.8.4",
     "cra-template": "1.2.0",
     "dotenv": "^17.2.3",

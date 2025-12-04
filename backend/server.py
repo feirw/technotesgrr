@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -11,8 +11,14 @@ import time
 from dotenv import load_dotenv
 
 load_dotenv()
-from ai_service import get_ai_response
 
+# Import AI Service
+try:
+    from ai_service import get_ai_response
+except ImportError:
+    def get_ai_response(msg): return "AI Service not configured."
+
+# Import Database functions
 from database import (
     init_database,
     update_leaderboard,
@@ -23,7 +29,13 @@ from database import (
     get_flashcards_from_db,
     get_quiz_by_id,
     save_contact_submission,
+    get_admin_stats,
+    is_user_admin
 )
+
+# Import Security Dependency
+# YOU MUST HAVE backend/deps.py CREATED FOR THIS TO WORK
+from deps import get_current_user
 
 app = FastAPI()
 
@@ -37,7 +49,7 @@ app.add_middleware(
 )
 
 
-# Models
+# --- Models ---
 class Note(BaseModel):
     id: str
     title: str
@@ -45,7 +57,6 @@ class Note(BaseModel):
     subject: str
     price: float
     download_count: int = 0
-
 
 class QuizQuestion(BaseModel):
     id: str
@@ -56,18 +67,15 @@ class QuizQuestion(BaseModel):
     points: int
     source_file: str
 
-
 class QuizSubmission(BaseModel):
     nickname: str
     question_id: str
     selected_answer: int
 
-
 class LeaderboardEntry(BaseModel):
     nickname: str
     total_points: int
     month: str
-
 
 class Flashcard(BaseModel):
     id: str
@@ -77,46 +85,37 @@ class Flashcard(BaseModel):
     chapter: str
     source_file: str
 
-
 class ContactForm(BaseModel):
     firstName: str
     lastName: str
     email: str
     message: str
 
-
 class ChatMessage(BaseModel):
     message: str
 
 
-def init_sqlite_data():
-    """Initialize SQLite database structure"""
-    pass
-
-
-# Initialize database on startup
+# --- Startup Event ---
 @app.on_event("startup")
 async def startup_event():
+    # Initialize connection to Supabase
     init_database()
-    init_sqlite_data()
-    print("SQLite database initialized successfully")
+    print("Backend connected to Supabase successfully")
 
 
-# API Routes
+# --- API Routes ---
+
 @app.get("/api/health")
 async def health_check():
-    return {"status": "healthy", "message": "TechNotesGR API is running with SQLite"}
+    return {"status": "healthy", "message": "TechNotesGR API is running on Supabase"}
 
 
 @app.post("/api/chat")
 async def chat_with_bot(chat_data: ChatMessage):
-    """Endpoint για επικοινωνία με τον AI βοηθό"""
+    """Endpoint for AI assistant communication"""
     try:
-
         response_text = get_ai_response(chat_data.message)
-
-        time.sleep(0.5)
-
+        time.sleep(0.5) # Simulate slight delay
         return {"reply": response_text}
     except Exception as e:
         print(f"Chat error: {e}")
@@ -128,12 +127,10 @@ async def chat_with_bot(chat_data: ChatMessage):
 
 @app.get("/api/quiz/questions")
 async def get_quiz_questions():
-    """Get all quiz questions from the new quizzes table"""
+    """Get all quiz questions from Supabase"""
     try:
         questions = get_quizzes_from_db()
-        # Parse JSON answers for each question
-        for question in questions:
-            question["answers"] = json.loads(question["answers"])
+        # No need for json.loads, Postgres JSONB returns python objects automatically
         return {"questions": questions}
     except Exception as e:
         raise HTTPException(
@@ -149,7 +146,6 @@ async def get_quiz_questions_by_chapter(chapter: str):
         chapter_questions = []
         for question in questions:
             if question["chapter"] == chapter:
-                question["answers"] = json.loads(question["answers"])
                 chapter_questions.append(question)
         return {"questions": chapter_questions, "chapter": chapter}
     except Exception as e:
@@ -158,29 +154,37 @@ async def get_quiz_questions_by_chapter(chapter: str):
         )
 
 
+# --- PROTECTED ROUTE ---
 @app.post("/api/quiz/submit")
-async def submit_quiz_answer(submission: QuizSubmission):
+async def submit_quiz_answer(
+    submission: QuizSubmission,
+    # This dependency checks the Bearer token header. 
+    # If the token is invalid or missing, it returns 401 Unauthorized.
+    user = Depends(get_current_user) 
+):
     try:
-        # Find the question from the new quizzes table
+        # Note: 'user' is the Supabase user object verified by the token.
+        
+        # Find the question
         question = get_quiz_by_id(submission.question_id)
 
         if not question:
             raise HTTPException(status_code=404, detail="Question not found")
 
-        # Parse the answers JSON
-        answers = json.loads(question["answers"])
+        # Parse answers (Already a list thanks to JSONB)
+        answers = question["answers"]
 
-        # Check if answer is correct - look for the correct answer in the answers array
-        correct_answer = None
+        # Check correctness
+        correct_answer_idx = None
         for idx, answer in enumerate(answers):
             if answer.get("correct", False):
-                correct_answer = idx
+                correct_answer_idx = idx
                 break
 
-        is_correct = submission.selected_answer == correct_answer
+        is_correct = submission.selected_answer == correct_answer_idx
         points_earned = question.get("points", 10) if is_correct else 0
 
-        # Record the submission
+        # Record submission
         record_quiz_submission(
             nickname=submission.nickname,
             question_id=submission.question_id,
@@ -196,7 +200,7 @@ async def submit_quiz_answer(submission: QuizSubmission):
         return {
             "correct": is_correct,
             "points_earned": points_earned,
-            "correct_answer": correct_answer,
+            "correct_answer": correct_answer_idx,
             "explanation": question.get("explanation", ""),
         }
     except Exception as e:
@@ -232,26 +236,25 @@ async def get_flashcards_by_chapter(chapter: str):
 
 @app.get("/api/categories")
 async def get_categories():
-    """Get all available categories from both quizzes and flashcards"""
+    """Get all available categories"""
     try:
         with get_db_connection() as conn:
-            cursor = conn.cursor()
+            with conn.cursor() as cursor:
+                # Get quiz categories
+                cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
+                quiz_categories = [row[0] for row in cursor.fetchall()]
 
-            # Get quiz categories
-            cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
-            quiz_categories = [row[0] for row in cursor.fetchall()]
+                # Get flashcard categories
+                cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
+                flashcard_categories = [row[0] for row in cursor.fetchall()]
 
-            # Get flashcard categories
-            cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
-            flashcard_categories = [row[0] for row in cursor.fetchall()]
-
-            return {
-                "quiz_categories": quiz_categories,
-                "flashcard_categories": flashcard_categories,
-                "all_categories": sorted(
-                    list(set(quiz_categories + flashcard_categories))
-                ),
-            }
+                return {
+                    "quiz_categories": quiz_categories,
+                    "flashcard_categories": flashcard_categories,
+                    "all_categories": sorted(
+                        list(set(quiz_categories + flashcard_categories))
+                    ),
+                }
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Error loading categories: {str(e)}"
@@ -286,8 +289,30 @@ async def contact_form(contact_data: ContactForm):
             status_code=500, detail=f"Error saving contact form: {str(e)}"
         )
 
+# --- ADMIN ROUTES ---
+
+@app.get("/api/admin/dashboard")
+async def get_dashboard_stats(user = Depends(get_current_user)):
+    """
+    Protected route: Only allows users with role='admin'.
+    The 'user' dependency ensures they are logged in with a valid token.
+    Then we check their role in the DB.
+    """
+    try:
+        # 1. Check if the user is an admin
+        if not is_user_admin(user.id):
+            raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
+        
+        # 2. Fetch admin stats
+        stats = get_admin_stats()
+        return stats
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8001)
