@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState, Suspense } from 'react';
-import { useAppContext } from '../contexts/AppContext';
-import emailjs from '@emailjs/browser';
-import technotesLogo from '../assets/technotes_logo.png'; // Διατηρείται το import, αν και δεν χρησιμοποιείται στο Hero
+import React, { useCallback, useEffect, useId, useMemo, useState, Suspense } from 'react';
+import { useAuth } from '../contexts/AuthContext'; // Updated import
+import { useNavigate } from 'react-router-dom';
 import {
   motion,
   useScroll,
@@ -12,19 +11,18 @@ import {
   useSpring,
 } from 'framer-motion';
 
-// Lazy-load βαρύτερα components
+// Lazy-load heavier components
 const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
 
-// ---------- MOCK IMAGE DATA (Διατήρηση) ----------
+// ---------- MOCK IMAGE DATA ----------
 const heroImages = [
   { src: '/images/1.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
   { src: '/images/2.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
   { src: '/images/3.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
   { src: '/images/4.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
 ];
-// ΣΗΜΕΙΩΣΗ: Αντικαταστήστε τα paths με πραγματικά paths εικόνων.
 
-// ---------- Mock data (Διατήρηση) ----------
+// ---------- Mock data ----------
 const reviewsData = [
   {
     name: 'Μαρία Π.',
@@ -78,12 +76,12 @@ const featuresData = [
   },
 ];
 
-// FAQ Data (Διατήρηση)
+// FAQ Data
 const faqData = [
   {
     question: 'Είναι δωρεάν η πλατφόρμα;',
     answer:
-      "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις.Μελλοντικά θα προστεθεί ένα merch site με σχολικά είδη για την υποστήριξη της πλατφόρμας. ",
+      "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις. Μελλοντικά θα προστεθεί ένα merch site με σχολικά είδη για την υποστήριξη της πλατφόρμας. ",
   },
   {
     question: 'Καλύπτει όλη την ύλη της Πληροφορικής;',
@@ -112,7 +110,7 @@ const faqData = [
   },
 ];
 
-// ---------- Enhanced Motion variants (Διατήρηση) ----------
+// ---------- Enhanced Motion variants ----------
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
@@ -132,16 +130,7 @@ const stagger = {
   },
 };
 
-const floatingAnimation = {
-  y: [0, -10, 0], // Πιο subtle float
-  transition: {
-    duration: 4,
-    repeat: Infinity,
-    ease: 'easeInOut',
-  },
-};
-
-// **Component: Animated Image Box** (Διατήρηση)
+// **Component: Animated Image Box**
 const AnimatedImageBox = ({ src, alt, delay, rotation, widthClass }) => (
   <motion.div
     className={`relative w-full h-auto bg-white/90 border-4 border-pink-500 rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
@@ -169,7 +158,7 @@ const AnimatedImageBox = ({ src, alt, delay, rotation, widthClass }) => (
   </motion.div>
 );
 
-// ---------- Enhanced UI Components (Επαναφορά Font) ----------
+// ---------- Enhanced UI Components ----------
 
 const Section = ({ id, title, subtitle, className = '', children, withGradient = false }) => (
   <section id={id} className={`py-20 relative overflow-hidden ${className}`}>
@@ -185,7 +174,6 @@ const Section = ({ id, title, subtitle, className = '', children, withGradient =
           viewport={{ once: true, amount: 0.3 }}
           variants={stagger}
         >
-          {/* Επαναφορά στην αρχική H2 */}
           <motion.h2
             className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-pink-600 via-rose-500 to-red-500 bg-clip-text text-transparent mb-4"
             variants={fadeInUp}
@@ -252,7 +240,6 @@ const FeatureCard = ({ title, desc, icon, gradient, i }) => (
         {icon}
       </motion.div>
 
-      {/* Επαναφορά στην αρχική H3 */}
       <motion.h3
         className="text-2xl font-bold mb-3 text-gray-900 dark:text-white"
         whileHover={{
@@ -263,7 +250,6 @@ const FeatureCard = ({ title, desc, icon, gradient, i }) => (
         {title}
       </motion.h3>
 
-      {/* Επαναφορά στην αρχική p */}
       <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{desc}</p>
     </div>
   </motion.article>
@@ -388,7 +374,8 @@ const FloatingParticles = () => {
 
 // ---------- Main Component ----------
 const HomePage = () => {
-  const { nickname } = useAppContext();
+  const { user } = useAuth(); // Replaces useAppContext
+  const navigate = useNavigate();
 
   // Enhanced scroll progress bar
   const { scrollYProgress } = useScroll();
@@ -429,8 +416,6 @@ const HomePage = () => {
   const successId = useId();
   const errorId = useId();
 
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
-
   const handleContactInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setContactForm((prev) => ({ ...prev, [name]: value }));
@@ -458,28 +443,15 @@ const HomePage = () => {
       setContactSubmitting(true);
 
       try {
-        const templateParams = {
-          firstName: contactForm.firstName.trim(),
-          lastName: contactForm.lastName.trim(),
-          email: contactForm.email.trim(),
-          message: contactForm.message.trim(),
-        };
-
-        // Mock email sending for demonstration (Replace with actual emailjs.send if needed)
+        // Here you would typically call your backend API or EmailJS
+        // For now, we simulate success
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // await emailjs.send(
-        //   process.env.REACT_APP_EMAILJS_SERVICE_ID,
-        //   process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-        //   templateParams,
-        //   process.env.REACT_APP_EMAILJS_PUBLIC_KEY
-        // );
 
         setContactSuccess(true);
         setContactForm({ firstName: '', lastName: '', email: '', message: '', website: '' });
         setTimeout(() => setContactSuccess(false), 5000);
       } catch (err) {
-        console.error('EmailJS error:', err);
+        console.error('Error:', err);
         setContactError('Κάτι πήγε στραβά. Προσπάθησε ξανά.');
       } finally {
         setContactSubmitting(false);
@@ -490,7 +462,6 @@ const HomePage = () => {
 
   return (
     <MotionConfig reducedMotion="user">
-      {/* Αφαίρεση της font-arcade class */}
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
         {/* Enhanced Progress Bar */}
         <motion.div
@@ -498,7 +469,7 @@ const HomePage = () => {
           style={{ scaleX }}
         />
 
-        {/* 🚀 HERO SECTION (Image Grid - Φωτεινό Θέμα) 🚀 */}
+        {/* 🚀 HERO SECTION 🚀 */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 md:py-0">
           <FloatingParticles />
 
@@ -521,7 +492,7 @@ const HomePage = () => {
           />
 
           <div className="container mx-auto px-6 relative z-10 text-center">
-            {/* Title Block - Επαναφορά στην αρχική H1 */}
+            {/* Title Block */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -548,11 +519,9 @@ const HomePage = () => {
 
               <button
                 className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
-                onClick={() => {
-                  window.location.href = '/login';
-                }}
+                onClick={() => navigate(user ? '/quiz' : '/login')}
               >
-                Συνδέσου για να ξεκινήσεις
+                {user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}
               </button>
             </motion.div>
 
@@ -571,7 +540,6 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        {/* -------------------------------------- */}
 
         {/* Features Section */}
         <Section

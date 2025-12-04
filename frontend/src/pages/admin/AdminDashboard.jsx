@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, FileText, CheckCircle, Activity, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../utils/supabaseClient'; // Import directly
 
 const StatCard = ({ title, value, icon: Icon, color, delay }) => (
   <motion.div
@@ -31,10 +32,13 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { session } = await import('../../utils/supabaseClient').then((m) =>
-          m.supabase.auth.getSession()
-        );
-        const token = session?.session?.access_token;
+        // Correctly retrieve the session from Supabase
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+
+        if (!token) {
+          throw new Error('Authentication token not found.');
+        }
 
         const response = await fetch('http://localhost:8001/api/admin/dashboard', {
           headers: {
@@ -42,12 +46,17 @@ const AdminDashboard = () => {
           },
         });
 
-        if (!response.ok) throw new Error('Failed to fetch admin data');
+        if (!response.ok) {
+          if (response.status === 401) throw new Error('Unauthorized');
+          if (response.status === 403) throw new Error('Access Forbidden: Admins only');
+          throw new Error('Failed to fetch admin data');
+        }
+
         const data = await response.json();
         setStats(data);
       } catch (err) {
         console.error(err);
-        setError('Δεν ήταν δυνατή η φόρτωση των δεδομένων.');
+        setError(err.message || 'Δεν ήταν δυνατή η φόρτωση των δεδομένων.');
       } finally {
         setLoading(false);
       }
@@ -65,9 +74,12 @@ const AdminDashboard = () => {
 
   if (error)
     return (
-      <div className="p-8 text-center text-red-500 bg-red-50 rounded-xl m-8 border border-red-200">
-        <AlertTriangle className="w-12 h-12 mx-auto mb-2" />
-        {error}
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 flex items-center justify-center">
+        <div className="p-8 text-center text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800 max-w-md w-full">
+          <AlertTriangle className="w-12 h-12 mx-auto mb-4" />
+          <h3 className="text-lg font-bold mb-2">Σφάλμα Πρόσβασης</h3>
+          <p>{error}</p>
+        </div>
       </div>
     );
 

@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import ChatWidget from '../components/ChatWidget.jsx';
-import { useAppContext } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
 const BRAND = '#fda8a9';
@@ -90,8 +89,7 @@ const MobileNavButton = ({ to, children, icon: Icon, onClick }) => (
 
 const MainLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { nickname } = useAppContext();
-  const { user, logout } = useAuth(); // Access user state and logout function
+  const { user, logout } = useAuth();
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const navigate = useNavigate();
 
@@ -100,7 +98,7 @@ const MainLayout = () => {
   const handleLogout = async () => {
     await logout();
     closeMenu();
-    navigate('/'); // Ensure redirect to home after logout
+    navigate('/'); 
   };
 
   return (
@@ -226,7 +224,7 @@ const MainLayout = () => {
                 {user && (
                     <div className="mb-6 p-4 bg-pink-50 dark:bg-gray-800 rounded-2xl border border-pink-100 dark:border-gray-700">
                         <p className="text-sm text-gray-500 dark:text-gray-400">Συνδεδεμένος ως:</p>
-                        <p className="font-bold text-gray-900 dark:text-white truncate">{user.email}</p>
+                        <p className="font-bold text-gray-900 dark:text-white truncate">{user.username || user.email}</p>
                     </div>
                 )}
 
@@ -323,8 +321,8 @@ const MainLayout = () => {
         <Outlet />
       </main>
 
-      {/* Chat Widget - Only show if logged in (Optional preference) */}
-      {user && <ChatWidget nickname={nickname} />}
+      {/* Chat Widget - Only show if logged in */}
+      {user && <ChatWidget nickname={user.username || user.email.split('@')[0]} />}
 
       {/* Footer - THE LOWER PART */}
       <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">

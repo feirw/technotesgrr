@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useAppContext } from '../contexts/AppContext';
 
 // Motion variants
 const fadeInUp = {
@@ -23,8 +22,6 @@ const stagger = {
 };
 
 const AboutPage = () => {
-  const { isDark } = useAppContext();
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-pink-50/30 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
       {/* Hero Section */}

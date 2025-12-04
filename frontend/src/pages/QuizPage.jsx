@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppContext } from '../contexts/AppContext';
 import {
   X,
   Search,
@@ -15,25 +14,25 @@ import {
   BookOpen,
   Code,
   Terminal,
-  AlertTriangle,
 } from 'lucide-react';
 import QuizDialog from '../components/QuizDialog.jsx';
-// Υποθέτουμε ότι υπάρχει η fetchAllQuizzes
 import { fetchAllQuizzes } from '../utils/quizUtils';
+import { useAuth } from '../contexts/AuthContext';
 
 // Χρήση πιο καθορισμένων χρωμάτων (Tailwind friendly)
 const BRAND = 'rgb(236, 72, 153)'; // pink-600
 const BRAND_DARK = 'rgb(187, 12, 60)'; // A deeper red/pink for gradients
-const BRAND_BORDER = '#fda8a9';
 
 const QuizPage = () => {
-  const { nickname, setNickname, fetchLeaderboard } = useAppContext();
+  // 1. Use AuthContext instead of AppContext
+  const { user } = useAuth();
+  // Derive nickname from user object or fallback
+  const nickname = user?.username || user?.email?.split('@')[0] || 'Guest';
 
   // --- QuizPage State ---
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [categoryAnswers, setCategoryAnswers] = useState({});
-  // Removed showExitWarning and showQuizMenu state as it is now the main view
 
   // --- QuizMenu State (Merged Logic) ---
   const [quizzes, setQuizzes] = useState([]);
@@ -49,14 +48,13 @@ const QuizPage = () => {
 
   // Initial setup & progress load
   useEffect(() => {
-    if (!nickname) setNickname('Guest');
-
     const load = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const data = await fetchAllQuizzes();
+        // Load progress from localStorage (for now)
         const initialAnswers = JSON.parse(localStorage.getItem('quizProgress') || '{}');
         setCategoryAnswers(initialAnswers);
 
@@ -81,7 +79,7 @@ const QuizPage = () => {
       }
     };
     load();
-  }, [nickname, setNickname]);
+  }, []); // Removed nickname dependency
 
   // Keyboard shortcut for search focus
   useEffect(() => {
@@ -95,7 +93,7 @@ const QuizPage = () => {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
-  // Handle Answered Question (Update local progress and leaderboard)
+  // Handle Answered Question (Update local progress)
   const handleQuestionAnswered = (quizId, questionIdx, selectedIdx, isCorrect) => {
     setCategoryAnswers((prev) => {
       const prevQuiz = prev[quizId] ? { ...prev[quizId] } : {};
@@ -107,10 +105,11 @@ const QuizPage = () => {
 
       return newAnswers;
     });
-    if (isCorrect) fetchLeaderboard();
+    // Note: We removed fetchLeaderboard() here because the LeaderboardPage 
+    // fetches fresh data on mount, and backend handles updates automatically.
   };
 
-  // Quiz Menu Handlers (Simplified)
+  // Quiz Menu Handlers
   const handleQuizCategorySelect = (quiz) => {
     setSelectedQuiz(quiz);
     setIsQuizDialogOpen(true);
@@ -118,11 +117,12 @@ const QuizPage = () => {
 
   const handleQuizDialogClose = () => {
     setIsQuizDialogOpen(false);
-    // Force re-evaluation of quiz progress on the main screen
-    setQuizzes((prev) => [...prev]);
+    // Force re-evaluation of quiz progress on the main screen by reloading state logic if needed
+    // or just re-triggering the effect. For simplicity here, we rely on local state updates.
+    setQuizzes((prev) => [...prev]); 
   };
 
-  // Filter and sort quizzes (Merged Logic)
+  // Filter and sort quizzes
   const processedQuizzes = useMemo(() => {
     let result = [...quizzes];
 
@@ -155,6 +155,9 @@ const QuizPage = () => {
       result.sort((a, b) => {
         const getLatestTimestamp = (quizId) => {
           const answers = categoryAnswers[quizId] || {};
+          // Assuming answers might store timestamps in future, currently just length/keys
+          // Fallback to simpler logic or metadata if available. 
+          // For now, using keys as proxies for activity if sequential.
           const latestIndex = Math.max(...Object.keys(answers).map(Number));
           return latestIndex > -1 ? latestIndex : 0;
         };
@@ -165,7 +168,7 @@ const QuizPage = () => {
     return result;
   }, [quizzes, q, sortBy, filterBy, categoryAnswers]);
 
-  // Statistics (Merged Logic)
+  // Statistics
   const stats = useMemo(() => {
     const completed = quizzes.filter((q) => q.percent === 100).length;
     const inProgress = quizzes.filter((q) => q.percent > 0 && q.percent < 100).length;
@@ -217,11 +220,18 @@ const QuizPage = () => {
         localStorage.setItem('quizProgress', JSON.stringify(newAnswers));
         return newAnswers;
       });
-      setQuizzes((prev) => [...prev]);
+      // Force refresh of quizzes state to reflect reset
+      setQuizzes((prev) =>
+        prev.map((q) =>
+          q.id === quiz.id
+            ? { ...q, percent: 0, answered: 0, correctAnswers: 0 }
+            : q
+        )
+      );
     }
   };
 
-  // Background Component (Kept from previous iteration)
+  // Background Component
   const TechBackgroundPattern = useMemo(
     () => (
       <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 transition-colors duration-500">
@@ -260,45 +270,6 @@ const QuizPage = () => {
           <div className="absolute top-60 left-1/2 text-8xl">#</div>
         </div>
 
-        {/* Floating Code Snippets */}
-        <div className="absolute inset-0 opacity-3 dark:opacity-3 font-mono text-sm text-gray-700 dark:text-gray-300">
-          <motion.div
-            className="absolute top-20 left-10"
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            if (true) {'{'} <br />
-            &nbsp;&nbsp;return "success"; <br />
-            {'}'}
-          </motion.div>
-
-          <motion.div
-            className="absolute top-40 right-32"
-            animate={{ y: [0, 20, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            for (let i = 0; i &lt; n; i++)
-          </motion.div>
-        </div>
-
-        {/* Tech Icons */}
-        <div className="absolute inset-0 opacity-15 text-pink-500 dark:text-pink-600">
-          <motion.div
-            className="absolute top-1/4 left-1/4"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          >
-            ⚙️
-          </motion.div>
-          <motion.div
-            className="absolute bottom-1/4 right-1/4"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
-          >
-            💻
-          </motion.div>
-        </div>
-
         {/* Gradient Overlay for soft edge */}
         <div className="absolute inset-0 bg-gradient-to-t from-white/50 dark:from-gray-900/50 to-transparent pointer-events-none" />
       </div>
@@ -310,13 +281,11 @@ const QuizPage = () => {
     <div className="min-h-screen relative">
       {TechBackgroundPattern}
 
-      {/* Main Content Area - Full Screen Dashboard */}
+      {/* Main Content Area */}
       <div className="relative z-20 flex flex-col min-h-screen">
-        {/* Header (Menu Logic) - now full width, fixed at top */}
+        {/* Header */}
         <div className="sticky top-0 z-30 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white p-6 shadow-xl dark:shadow-pink-900/50">
           <div className="max-w-7xl mx-auto">
-            {' '}
-            {/* Added max-width for content */}
             <div className="flex items-center justify-between mb-4">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                 <h3 className="text-2xl md:text-3xl font-black mb-1">📚 Επιλογή Κεφαλαίου</h3>
@@ -326,6 +295,7 @@ const QuizPage = () => {
                 </p>
               </motion.div>
             </div>
+            
             {/* Stats Bar */}
             {!loading && quizzes.length > 0 && (
               <motion.div
@@ -354,6 +324,7 @@ const QuizPage = () => {
                 })}
               </motion.div>
             )}
+
             {/* Search & Filters */}
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -488,11 +459,8 @@ const QuizPage = () => {
           </div>
         </div>
 
-        {/* Content (Quiz Grid) - Now occupies remaining space */}
+        {/* Content (Quiz Grid) */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl mx-auto w-full">
-          {' '}
-          {/* Added max-w-7xl mx-auto w-full */}
-          {/* Loading, Error, Empty States (JSX kept) */}
           {error && (
             <motion.div
               className="bg-red-50 border-2 border-red-300 rounded-2xl p-6 text-center"
@@ -506,11 +474,11 @@ const QuizPage = () => {
                 onClick={() => window.location.reload()}
                 className="px-6 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors"
               >
-                {' '}
-                Δοκίμασε ξανά{' '}
+                Δοκίμασε ξανά
               </button>
             </motion.div>
           )}
+          
           {loading && (
             <div className="flex flex-col items-center justify-center py-20">
               <motion.div
@@ -522,6 +490,7 @@ const QuizPage = () => {
               <p className="mt-4 text-gray-500 font-semibold">Φόρτωση κεφαλαίων...</p>
             </div>
           )}
+          
           {!loading && !error && processedQuizzes.length === 0 && (
             <motion.div
               className="text-center py-20"
@@ -535,7 +504,7 @@ const QuizPage = () => {
               <p className="text-gray-600 mb-6">
                 {q.trim()
                   ? 'Δοκίμασε διαφορετική αναζήτηση'
-                  : 'Κανένο κεφάλαιο διαθέσιμο αυτή τη στιγμή'}
+                  : 'Κανένα κεφάλαιο διαθέσιμο αυτή τη στιγμή'}
               </p>
               {(q.trim() || filterBy !== 'all') && (
                 <button
@@ -550,6 +519,7 @@ const QuizPage = () => {
               )}
             </motion.div>
           )}
+          
           {/* Quiz Grid */}
           {!loading && !error && processedQuizzes.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6">
@@ -671,11 +641,9 @@ const QuizPage = () => {
             </div>
           )}
         </div>
-
-        {/* Footer info */}
       </div>
 
-      {/* Quiz Dialog is still rendered conditionally, outside the main list */}
+      {/* Quiz Dialog */}
       {isQuizDialogOpen && selectedQuiz && (
         <QuizDialog
           quiz={selectedQuiz}

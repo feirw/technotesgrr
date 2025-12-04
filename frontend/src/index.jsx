@@ -3,19 +3,23 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
-import { AppProvider } from './contexts/AppContext';
 import { AuthProvider } from './contexts/AuthContext';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+console.log("🚀 Entry point (index.jsx) loaded!");
 
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <AppProvider>
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  console.error("❌ Fatal Error: Could not find element with id 'root'");
+} else {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <AuthProvider>
           <App />
-        </AppProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+        </AuthProvider>
+      </BrowserRouter>
+    </React.StrictMode>
+  );
+}

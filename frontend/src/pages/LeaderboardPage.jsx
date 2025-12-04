@@ -1,13 +1,29 @@
-import React from 'react';
-import { useAppContext } from '../contexts/AppContext'; // 1. Εισάγουμε το custom hook μας
+import React, { useState, useEffect } from 'react';
+import { Trophy, Medal, Award } from 'lucide-react';
+
+const BACKEND_URL = 'http://localhost:8001';
 
 const LeaderboardPage = () => {
-  // 2. Παίρνουμε τα δεδομένα απευθείας από το καθολικό context.
-  // Δεν χρειαζόμαστε πλέον useState ή useEffect σε αυτό το αρχείο!
-  const { leaderboard, loadingLeaderboard } = useAppContext();
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 3. Προσθέτουμε μια κατάσταση φόρτωσης για καλύτερη εμπειρία χρήστη.
-  if (loadingLeaderboard) {
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/leaderboard`);
+        const data = await response.json();
+        setLeaderboard(data.leaderboard || []);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-pink-50 py-8 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
@@ -15,15 +31,16 @@ const LeaderboardPage = () => {
     );
   }
 
-  // 4. Το JSX παραμένει το ίδιο, αλλά τώρα διαβάζει τα δεδομένα από το context.
   return (
     <div className="min-h-screen bg-pink-50 py-8">
       <div className="container mx-auto px-6 max-w-4xl">
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8">
-          Leaderboard
+          Leaderboard 🏆
         </h1>
-        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
-          <h2 className="text-lg sm:text-2xl font-semibold mb-6 text-center">Κατάταξη</h2>
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 border border-pink-100">
+          <h2 className="text-lg sm:text-2xl font-semibold mb-6 text-center text-gray-700">
+            Κορυφαίοι Παίκτες του Μήνα
+          </h2>
 
           {leaderboard.length === 0 ? (
             <p className="text-center text-gray-500 py-4">
@@ -31,38 +48,41 @@ const LeaderboardPage = () => {
             </p>
           ) : (
             <div className="space-y-3">
-              {leaderboard.map((entry, index) => (
-                <div
-                  key={entry.nickname} // Χρησιμοποιούμε το nickname ως κλειδί
-                  className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
-                    index === 0
-                      ? 'bg-yellow-100 border border-yellow-300'
-                      : index === 1
-                        ? 'bg-gray-200'
-                        : index === 2
-                          ? 'bg-orange-100'
-                          : 'bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center space-x-4">
-                    <span className="text-xl sm:text-2xl font-bold text-pink-600 w-10 text-center">
-                      {index === 0
-                        ? '🥇'
-                        : index === 1
-                          ? '🥈'
-                          : index === 2
-                            ? '🥉'
-                            : `#${index + 1}`}
-                    </span>
-                    <span className="font-semibold text-sm sm:text-base text-gray-800">
-                      {entry.nickname}
+              {leaderboard.map((entry, index) => {
+                let rankIcon = <span className="text-gray-600">#{index + 1}</span>;
+                let rowClass = 'bg-white border-gray-100';
+                
+                // Styling for top 3
+                if (index === 0) {
+                    rankIcon = <Trophy className="w-6 h-6 text-yellow-500" />;
+                    rowClass = 'bg-yellow-50 border-yellow-200 shadow-sm';
+                } else if (index === 1) {
+                    rankIcon = <Medal className="w-6 h-6 text-gray-400" />;
+                    rowClass = 'bg-gray-50 border-gray-300 shadow-sm';
+                } else if (index === 2) {
+                    rankIcon = <Award className="w-6 h-6 text-orange-400" />;
+                    rowClass = 'bg-orange-50 border-orange-200 shadow-sm';
+                }
+
+                return (
+                  <div
+                    key={`${entry.nickname}-${index}`}
+                    className={`flex items-center justify-between p-4 rounded-xl border transition-transform hover:scale-[1.01] ${rowClass}`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="font-bold text-xl w-10 flex justify-center">
+                        {rankIcon}
+                      </div>
+                      <span className="font-bold text-base sm:text-lg text-gray-800">
+                        {entry.nickname}
+                      </span>
+                    </div>
+                    <span className="text-base sm:text-lg font-black text-pink-600">
+                      {entry.total_points} pts
                     </span>
                   </div>
-                  <span className="text-base sm:text-lg font-bold text-gray-800">
-                    {entry.total_points} πόντοι
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

@@ -8,15 +8,18 @@ import {
   XCircle,
   Trophy,
   AlertCircle,
-  SkipForward,
   Flag,
   Lightbulb,
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../utils/supabaseClient';
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
+const BACKEND_URL = 'http://localhost:8001';
 
 const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers }) => {
+  const { user } = useAuth();
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -83,7 +86,6 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
           handleSelect(answerIndex);
         }
       } else if (e.key === 'f' || e.key === 'F') {
-        // Flag question with 'f' key
         toggleFlag();
       }
     };
@@ -100,11 +102,23 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
       setError(null);
 
       try {
-        const nickname = localStorage.getItem('nickname') || 'Anonymous';
+        // 1. Get the current session token for the Authorization header
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
 
-        const response = await fetch('http://localhost:8001/api/quiz/submit', {
+        if (!token) {
+          throw new Error('User not authenticated');
+        }
+
+        // 2. Determine nickname from Auth context
+        const nickname = user?.username || user?.email?.split('@')[0] || 'Anonymous';
+
+        const response = await fetch(`${BACKEND_URL}/api/quiz/submit`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Secure backend requirement
+          },
           body: JSON.stringify({
             nickname,
             question_id: question.id,
@@ -119,7 +133,7 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
         const result = await response.json();
         onQuestionAnswered(quiz.id, current, idx, result.correct, result.points_earned);
 
-        // Auto-advance to next question after a delay (if not last question and answer is correct)
+        // Auto-advance
         if (!isLastQuestion && result.correct) {
           setTimeout(() => {
             handleNext();
@@ -127,12 +141,12 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
         }
       } catch (error) {
         console.error('Error submitting answer:', error);
-        setError('Σφάλμα κατά την υποβολή της απάντησης. Δοκίμασε ξανά.');
+        setError('Σφάλμα κατά την υποβολή. Ελέγξτε τη σύνδεσή σας.');
       } finally {
         setLoading(false);
       }
     },
-    [selected, onQuestionAnswered, loading, question, quiz, current, isLastQuestion]
+    [selected, onQuestionAnswered, loading, question, quiz, current, isLastQuestion, user]
   );
 
   const handleNext = useCallback(() => {
@@ -170,15 +184,6 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
       return newSet;
     });
   }, [current]);
-
-  const skipToNextUnanswered = useCallback(() => {
-    const nextUnanswered = quiz.questions.findIndex(
-      (_, idx) => idx > current && !selectedAnswers?.[idx]
-    );
-    if (nextUnanswered !== -1) {
-      goToQuestion(nextUnanswered);
-    }
-  }, [quiz, current, selectedAnswers, goToQuestion]);
 
   if (!isOpen || !quiz) return null;
 
@@ -554,8 +559,6 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                 )}
               </motion.button>
             </div>
-
-            {/* Keyboard Shortcuts Hint */}
           </div>
         </motion.div>
       </div>

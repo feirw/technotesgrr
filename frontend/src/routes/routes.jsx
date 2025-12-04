@@ -98,7 +98,7 @@ const routes = [
     element: <ProtectedRoute requireAdmin={true} />,
     children: [
       {
-        path: 'admin/dashboard',
+        path: 'admin',
         element: <AdminDashboard />,
       },
     ],
