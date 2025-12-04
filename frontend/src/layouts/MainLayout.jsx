@@ -15,6 +15,7 @@ import {
 import technotesLogo from '../assets/technotes_logo.png';
 import ChatWidget from '../components/ChatWidget.jsx';
 import { useAppContext } from '../contexts/AppContext';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
@@ -91,41 +92,33 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
-      {/* Navigation */}
-      <motion.nav
-        className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b-2 border-pink-200 dark:border-gray-700 shadow-lg"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      >
+      
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <NavLink to="/" className="flex items-center gap-3 group">
-              <motion.div
-                className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg overflow-hidden"
-                style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
-                whileHover={{ scale: 1.1, rotate: 360 }}
-                transition={{ duration: 0.5 }}
-              >
-                <img src={technotesLogo} alt="Technotesgr" className="w-10 h-10 object-contain" />
-              </motion.div>
-              <span className="text-2xl font-black bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+            
+              
+                <img src={technotesLogo} alt="Technotesgr" className="w-10 h-10 pink object-contain" />
+              
+            
                 technotesgr
-              </span>
+              
             </NavLink>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-2">
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">About Us</NavButton>
+              {/* <NavButton to ="/login">Σύνδεση</NavButton> */}
+              <NavButton to ="/prosanatolismos">Προσανατολισμός</NavButton>
               <NavButton to="/online">Online Μαθήματα</NavButton>
               <NavButton to="/notes">Διαγωνίσματα</NavButton>
               <NavButton to="/quiz">Quiz</NavButton>
               <NavButton to="/flashcards">Flashcards</NavButton>
               <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
-              <NavButton to="/merch">Σχολικά είδη</NavButton>
               <NavButton to="/algorithms">Algorithms</NavButton>
+              <NavButton to="/merch">Σχολικά είδη</NavButton>
             </div>
 
             {/* Mobile Menu Button */}
@@ -140,7 +133,7 @@ const MainLayout = () => {
             </motion.button>
           </div>
         </div>
-      </motion.nav>
+      
 
       {/* Mobile Menu */}
       <AnimatePresence>

@@ -216,6 +216,51 @@ def save_contact_submission(first_name: str, last_name: str, email: str, message
         )
         conn.commit()
         return cursor.lastrowid
+        """Αρχικοποιεί τη δομή της βάσης δεδομένων, συμπεριλαμβανομένου του πίνακα χρηστών."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Δημιουργία πίνακα χρηστών (User table)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id TEXT PRIMARY KEY,
+            email TEXT UNIQUE NOT NULL,
+            nickname TEXT,
+            hashed_password TEXT NOT NULL
+        )
+    """)
+    # ... (Υπάρχουσα λογική για άλλους πίνακες)
+    
+    conn.commit()
+    conn.close()
+
+def get_user_by_email(email: str):
+    """Ανακτά χρήστη με βάση το email."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, email, nickname, hashed_password FROM users WHERE email = ?", (email,))
+    row = cursor.fetchone()
+    conn.close()
+    if row:
+        return {"id": row[0], "email": row[1], "nickname": row[2], "hashed_password": row[3]}
+    return None
+
+def create_user(email: str, password: str, nickname: str):
+    """Δημιουργεί νέο χρήστη, αποθηκεύοντας τον hashed κωδικό."""
+    hashed_password = get_password_hash(password)
+    user_id = str(uuid.uuid4())
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO users (id, email, nickname, hashed_password) VALUES (?, ?, ?, ?)",
+                       (user_id, email, nickname, hashed_password))
+        conn.commit()
+        return {"id": user_id, "email": email, "nickname": nickname}
+    except sqlite3.IntegrityError:
+        return None
+    finally:
+        conn.close()
         
 def get_unique_chapters():
     """

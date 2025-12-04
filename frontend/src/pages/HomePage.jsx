@@ -17,10 +17,10 @@ const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
 
 // ---------- MOCK IMAGE DATA (Διατήρηση) ----------
 const heroImages = [
-    { src: '/images/mock_code_1.png', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
-    { src: '/images/mock_quiz_2.png', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
-    { src: '/images/mock_flashcard_3.png', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
-    { src: '/images/mock_terminal_4.png', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
+    { src: '/images/1.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
+    { src: '/images/2.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
+    { src: '/images/3.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
+    { src: '/images/4.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
 ];
 // ΣΗΜΕΙΩΣΗ: Αντικαταστήστε τα paths με πραγματικά paths εικόνων.
 
@@ -550,8 +550,19 @@ const HomePage = () => {
                     Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας για
                     τις Πανελλήνιες.
                 </motion.p>
+
+                 <button
+                    className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+                    onClick={() => { window.location.href = '/login'; }}
+                >
+                    Συνδέσου για να ξεκινήσεις
+                </button>
+                
             </motion.div>
             
+
+
+
             {/* Image Grid Container */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-16">
                 {heroImages.map((image, index) => (
@@ -828,15 +839,8 @@ const HomePage = () => {
             </div>
           </motion.form>
         </Section>
-        
-        {/* Footer */}
-        <footer className="py-6 border-t border-gray-200 dark:border-gray-700 mt-10">
-            <div className="container mx-auto px-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                <p>
-                    &copy; {currentYear} TECHNOTESGR. ALL RIGHTS RESERVED.
-                </p>
-            </div>
-        </footer>
+      
+      
       </div>
     </MotionConfig>
   );
