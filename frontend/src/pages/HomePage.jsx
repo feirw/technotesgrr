@@ -17,10 +17,10 @@ const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
 
 // ---------- MOCK IMAGE DATA (Διατήρηση) ----------
 const heroImages = [
-    { src: '/images/1.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
-    { src: '/images/2.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
-    { src: '/images/3.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
-    { src: '/images/4.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
+  { src: '/images/1.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
+  { src: '/images/2.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
+  { src: '/images/3.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
+  { src: '/images/4.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
 ];
 // ΣΗΜΕΙΩΣΗ: Αντικαταστήστε τα paths με πραγματικά paths εικόνων.
 
@@ -80,36 +80,36 @@ const featuresData = [
 
 // FAQ Data (Διατήρηση)
 const faqData = [
-    {
-        question: 'Είναι δωρεάν η πλατφόρμα;',
-        answer:
-            "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις.Μελλοντικά θα προστεθεί ένα merch site με σχολικά είδη για την υποστήριξη της πλατφόρμας. ",
-    },
-    {
-        question: 'Καλύπτει όλη την ύλη της Πληροφορικής;',
-        answer:
-            "Ναι! Τα flashcards και τα quiz μας καλύπτουν αναλυτικά όλη την ύλη του σχολικού βιβλίου Πληροφορικής Γ' Λυκείου.",
-    },
-    {
-        question: 'Πώς μπορώ να παρακολουθήσω την πρόοδό μου;',
-        answer:
-            'Μέσα από τα quiz και τα flashcards μπορείς να δεις τις απαντήσεις σου και να εντοπίσεις τα σημεία που χρειάζονται περισσότερη μελέτη. Κάθε quiz σου δίνει άμεσο feedback. Αν δυσκολεύεσαι πολύ με κάτι μπορείς να επικοινωνήσεις μαζί μας για επιπλέον βοήθεια!',
-    },
-    {
-        question: 'Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό μου;',
-        answer:
-            'Απολύτως! Η πλατφόρμα είναι πλήρως responsive και λειτουργεί άψογα σε κινητά, tablets και υπολογιστές. Μπορείς να μελετάς όπου και όποτε θέλεις!',
-    },
-    {
-        question: 'Πόσο συχνά ενημερώνεται το περιεχόμενο;',
-        answer:
-            'Ενημερώνουμε τακτικά το περιεχόμενο με νέα quiz, flashcards και βελτιωμένες σημειώσεις. Παρακολουθούμε επίσης τις τάσεις των Πανελλαδικών για να προσθέτουμε σχετικό υλικό.',
-    },
-    {
-        question: 'Μπορώ να κάνω ερωτήσεις αν δυσκολευτώ;',
-        answer:
-            'Φυσικά! Μπορείς να επικοινωνήσεις μαζί μας μέσω της φόρμας επικοινωνίας ή μέσω των social media μας. Θα χαρούμε να σε βοηθήσουμε!',
-    },
+  {
+    question: 'Είναι δωρεάν η πλατφόρμα;',
+    answer:
+      "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις.Μελλοντικά θα προστεθεί ένα merch site με σχολικά είδη για την υποστήριξη της πλατφόρμας. ",
+  },
+  {
+    question: 'Καλύπτει όλη την ύλη της Πληροφορικής;',
+    answer:
+      "Ναι! Τα flashcards και τα quiz μας καλύπτουν αναλυτικά όλη την ύλη του σχολικού βιβλίου Πληροφορικής Γ' Λυκείου.",
+  },
+  {
+    question: 'Πώς μπορώ να παρακολουθήσω την πρόοδό μου;',
+    answer:
+      'Μέσα από τα quiz και τα flashcards μπορείς να δεις τις απαντήσεις σου και να εντοπίσεις τα σημεία που χρειάζονται περισσότερη μελέτη. Κάθε quiz σου δίνει άμεσο feedback. Αν δυσκολεύεσαι πολύ με κάτι μπορείς να επικοινωνήσεις μαζί μας για επιπλέον βοήθεια!',
+  },
+  {
+    question: 'Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό μου;',
+    answer:
+      'Απολύτως! Η πλατφόρμα είναι πλήρως responsive και λειτουργεί άψογα σε κινητά, tablets και υπολογιστές. Μπορείς να μελετάς όπου και όποτε θέλεις!',
+  },
+  {
+    question: 'Πόσο συχνά ενημερώνεται το περιεχόμενο;',
+    answer:
+      'Ενημερώνουμε τακτικά το περιεχόμενο με νέα quiz, flashcards και βελτιωμένες σημειώσεις. Παρακολουθούμε επίσης τις τάσεις των Πανελλαδικών για να προσθέτουμε σχετικό υλικό.',
+  },
+  {
+    question: 'Μπορώ να κάνω ερωτήσεις αν δυσκολευτώ;',
+    answer:
+      'Φυσικά! Μπορείς να επικοινωνήσεις μαζί μας μέσω της φόρμας επικοινωνίας ή μέσω των social media μας. Θα χαρούμε να σε βοηθήσουμε!',
+  },
 ];
 
 // ---------- Enhanced Motion variants (Διατήρηση) ----------
@@ -143,32 +143,31 @@ const floatingAnimation = {
 
 // **Component: Animated Image Box** (Διατήρηση)
 const AnimatedImageBox = ({ src, alt, delay, rotation, widthClass }) => (
-    <motion.div
-        className={`relative w-full h-auto bg-white/90 border-4 border-pink-500 rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
-        style={{ boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)' }} // Ροζ σκιά
-        initial={{ opacity: 0, scale: 0.8, rotate: rotation + 10 }}
-        animate={{ opacity: 1, scale: 1, rotate: rotation }}
-        transition={{ 
-            type: 'spring', 
-            stiffness: 80, 
-            damping: 15, 
-            delay: delay 
-        }}
-        whileHover={{ 
-            scale: 1.05, 
-            rotate: 0,
-            boxShadow: '0 15px 40px rgba(236, 72, 153, 0.6)'
-        }}
-    >
-        <img 
-            src={src} 
-            alt={alt} 
-            className="w-full h-full object-cover rounded-md"
-            style={{ filter: 'grayscale(0.1) brightness(1.05)' }} 
-        />
-    </motion.div>
+  <motion.div
+    className={`relative w-full h-auto bg-white/90 border-4 border-pink-500 rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
+    style={{ boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)' }} // Ροζ σκιά
+    initial={{ opacity: 0, scale: 0.8, rotate: rotation + 10 }}
+    animate={{ opacity: 1, scale: 1, rotate: rotation }}
+    transition={{
+      type: 'spring',
+      stiffness: 80,
+      damping: 15,
+      delay: delay,
+    }}
+    whileHover={{
+      scale: 1.05,
+      rotate: 0,
+      boxShadow: '0 15px 40px rgba(236, 72, 153, 0.6)',
+    }}
+  >
+    <img
+      src={src}
+      alt={alt}
+      className="w-full h-full object-cover rounded-md"
+      style={{ filter: 'grayscale(0.1) brightness(1.05)' }}
+    />
+  </motion.div>
 );
-
 
 // ---------- Enhanced UI Components (Επαναφορά Font) ----------
 
@@ -187,7 +186,7 @@ const Section = ({ id, title, subtitle, className = '', children, withGradient =
           variants={stagger}
         >
           {/* Επαναφορά στην αρχική H2 */}
-          <motion.h2 
+          <motion.h2
             className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-pink-600 via-rose-500 to-red-500 bg-clip-text text-transparent mb-4"
             variants={fadeInUp}
             transition={{ type: 'spring', stiffness: 100, damping: 20 }}
@@ -257,8 +256,8 @@ const FeatureCard = ({ title, desc, icon, gradient, i }) => (
       <motion.h3
         className="text-2xl font-bold mb-3 text-gray-900 dark:text-white"
         whileHover={{
-            scale: 1.05,
-            transition: { duration: 0.2 },
+          scale: 1.05,
+          transition: { duration: 0.2 },
         }}
       >
         {title}
@@ -387,7 +386,6 @@ const FloatingParticles = () => {
   );
 };
 
-
 // ---------- Main Component ----------
 const HomePage = () => {
   const { nickname } = useAppContext();
@@ -468,7 +466,7 @@ const HomePage = () => {
         };
 
         // Mock email sending for demonstration (Replace with actual emailjs.send if needed)
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // await emailjs.send(
         //   process.env.REACT_APP_EMAILJS_SERVICE_ID,
@@ -492,10 +490,8 @@ const HomePage = () => {
 
   return (
     <MotionConfig reducedMotion="user">
-      
       {/* Αφαίρεση της font-arcade class */}
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
-        
         {/* Enhanced Progress Bar */}
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 origin-left z-50 shadow-lg shadow-pink-500/50"
@@ -525,62 +521,57 @@ const HomePage = () => {
           />
 
           <div className="container mx-auto px-6 relative z-10 text-center">
-            
             {/* Title Block - Επαναφορά στην αρχική H1 */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-                <motion.h1
-                    className="text-4xl md:text-7xl font-black mb-4 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent drop-shadow-lg"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.8 }}
-                >
-                    Γράψε 100 στην Πληροφορική🎓
-                </motion.h1>
+              <motion.h1
+                className="text-4xl md:text-7xl font-black mb-4 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent drop-shadow-lg"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+              >
+                Γράψε 100 στην Πληροφορική🎓
+              </motion.h1>
 
-                <motion.p
-                    className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.8 }}
-                >
-                    Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας για
-                    τις Πανελλήνιες.
-                </motion.p>
+              <motion.p
+                className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+              >
+                Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας
+                για τις Πανελλήνιες.
+              </motion.p>
 
-                 <button
-                    className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
-                    onClick={() => { window.location.href = '/login'; }}
-                >
-                    Συνδέσου για να ξεκινήσεις
-                </button>
-                
+              <button
+                className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+                onClick={() => {
+                  window.location.href = '/login';
+                }}
+              >
+                Συνδέσου για να ξεκινήσεις
+              </button>
             </motion.div>
-            
-
-
 
             {/* Image Grid Container */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-16">
-                {heroImages.map((image, index) => (
-                    <AnimatedImageBox 
-                        key={index} 
-                        src={image.src} 
-                        alt={image.alt} 
-                        delay={image.delay}
-                        rotation={image.rotation}
-                        widthClass={index % 2 === 0 ? 'h-48 md:h-64' : 'h-36 md:h-52'}
-                    />
-                ))}
+              {heroImages.map((image, index) => (
+                <AnimatedImageBox
+                  key={index}
+                  src={image.src}
+                  alt={image.alt}
+                  delay={image.delay}
+                  rotation={image.rotation}
+                  widthClass={index % 2 === 0 ? 'h-48 md:h-64' : 'h-36 md:h-52'}
+                />
+              ))}
             </div>
-
           </div>
         </section>
         {/* -------------------------------------- */}
-
 
         {/* Features Section */}
         <Section
@@ -839,8 +830,6 @@ const HomePage = () => {
             </div>
           </motion.form>
         </Section>
-      
-      
       </div>
     </MotionConfig>
   );

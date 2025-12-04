@@ -17,79 +17,104 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import ProtectedRoute from '../components/ProtectedRoute';
 
 const routes = [
-    {
-        path: '/',
-        element: <HomePage />, // Δημόσια
-    },
-    {
+  // ═══════════════════════════════════════════════════════════════
+  // 🔓 PUBLIC ROUTES (Accessible by everyone)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    path: '/',
+    element: <HomePage />,
+  },
+  {
+    path: 'login',
+    element: <LoginPage />,
+  },
+  {
+    path: 'register',
+    element: <RegisterPage />,
+  },
+  // Informational pages usually stay public so users can read them before signing up
+  {
+    path: 'about',
+    element: <AboutPage />,
+  },
+  {
+    path: 'merch',
+    element: <MerchPage />,
+  },
+  {
+    path: 'privacy-policy',
+    element: <PrivacyPolicyPage />,
+  },
+  {
+    path: 'data',
+    element: <DataProtectionPage />,
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 🔒 USER PROTECTED ROUTES (Requires Login)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    element: <ProtectedRoute />, // Default: requireAdmin={false}
+    children: [
+      {
         path: 'notes',
-        element: <NotesPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
+        element: <NotesPage />,
+      },
+      {
         path: 'quiz',
-        element: <QuizPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
+        element: <QuizPage />,
+      },
+      {
         path: 'flashcards',
-        element: <FlashcardsPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
+        element: <FlashcardsPage />,
+      },
+      {
         path: 'leaderboard',
-        element: <LeaderboardPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
+        element: <LeaderboardPage />,
+      },
+      {
         path: 'algorithms',
-        element: <AlgorithmsPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
+        element: <AlgorithmsPage />,
+      },
+      {
         path: 'paliathemata',
-        element: <PaliathemataPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
+        element: <PaliathemataPage />,
+      },
+      {
         path: 'online',
-        element: <OnlinePage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
-        path: 'merch',
-        element: <MerchPage />, // Δημόσια
-    },
-    {
-        path: 'privacy-policy',
-        element: <PrivacyPolicyPage />, // Δημόσια
-    },
-    {
-        path: 'data',
-        element: <DataProtectionPage />, // Δημόσια
-    },
-    {
-        path: 'about',
-        element: <AboutPage />, // Δημόσια
-    },
-    {
+        element: <OnlinePage />,
+      },
+      {
         path: 'prosanatolismos',
-        element: <ProsanatolismosPage />, // Δημόσια (Πριν ήταν προστατευμένο)
-    },
-    {
-        path: 'login',
-        element: <LoginPage />, // Δημόσια
-    },
-    {
-        path: 'register',
-        element: <RegisterPage />, // Δημόσια
-    },
-    {
-        path: '*',
-        element: <div>404 - Η σελίδα δεν βρέθηκε</div>, // Δημόσια
-    },
-    {
-        element: <ProtectedRoute requireAdmin={true} />, // Wrap children
-        children: [
-            {
-                path: 'admin/dashboard',
-                element: <AdminDashboard />,
-            }
-        ]
-    }
+        element: <ProsanatolismosPage />,
+      },
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 🛡️ ADMIN PROTECTED ROUTES (Requires Role: 'admin')
+  // ═══════════════════════════════════════════════════════════════
+  {
+    element: <ProtectedRoute requireAdmin={true} />,
+    children: [
+      {
+        path: 'admin/dashboard',
+        element: <AdminDashboard />,
+      },
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // ⚠️ 404 CATCH ALL
+  // ═══════════════════════════════════════════════════════════════
+  {
+    path: '*',
+    element: (
+      <div className="min-h-screen flex items-center justify-center text-xl font-bold">
+        404 - Η σελίδα δεν βρέθηκε
+      </div>
+    ),
+  },
 ];
 
 export default routes;

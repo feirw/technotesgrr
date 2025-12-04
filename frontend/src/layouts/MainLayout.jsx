@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
@@ -11,6 +11,11 @@ import {
   Menu,
   X,
   GraduationCap,
+  LogOut,
+  LogIn,
+  UserPlus,
+  Compass,
+  ShoppingBag
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import ChatWidget from '../components/ChatWidget.jsx';
@@ -29,7 +34,7 @@ const NavButton = ({ to, children }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `relative py-2 px-4 rounded-xl font-semibold transition-all duration-200 ${
+      `relative py-2 px-3 rounded-xl font-semibold text-sm xl:text-base transition-all duration-200 whitespace-nowrap ${
         isActive
           ? 'text-white'
           : 'text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400'
@@ -86,45 +91,82 @@ const MobileNavButton = ({ to, children, icon: Icon, onClick }) => (
 const MainLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { nickname } = useAppContext();
+  const { user, logout } = useAuth(); // Access user state and logout function
   const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  const handleLogout = async () => {
+    await logout();
+    closeMenu();
+    navigate('/'); // Ensure redirect to home after logout
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
       
+      {/* Navbar Container */}
+      <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center py-4">
+            
             {/* Logo */}
-            <NavLink to="/" className="flex items-center gap-3 group">
-            
-              
+            <NavLink to="/" className="flex items-center gap-3 group shrink-0">
                 <img src={technotesLogo} alt="Technotesgr" className="w-10 h-10 pink object-contain" />
-              
-            
-                technotesgr
-              
+                <span className="font-bold text-gray-800 dark:text-white hidden sm:block">technotesgr</span>
             </NavLink>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
+              {/* --- PUBLIC LINKS (Visible to everyone) --- */}
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">About Us</NavButton>
-              {/* <NavButton to ="/login">Σύνδεση</NavButton> */}
-              <NavButton to ="/prosanatolismos">Προσανατολισμός</NavButton>
-              <NavButton to="/online">Online Μαθήματα</NavButton>
-              <NavButton to="/notes">Διαγωνίσματα</NavButton>
-              <NavButton to="/quiz">Quiz</NavButton>
-              <NavButton to="/flashcards">Flashcards</NavButton>
-              <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
-              <NavButton to="/algorithms">Algorithms</NavButton>
               <NavButton to="/merch">Σχολικά είδη</NavButton>
+
+              {/* --- AUTHENTICATED LINKS (Only for logged-in users) --- */}
+              {user ? (
+                <>
+                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
+                  
+                  <NavButton to="/prosanatolismos">Προσανατολισμός</NavButton>
+                  <NavButton to="/online">Online Μαθήματα</NavButton>
+                  <NavButton to="/notes">Διαγωνίσματα</NavButton>
+                  <NavButton to="/quiz">Quiz</NavButton>
+                  <NavButton to="/flashcards">Flashcards</NavButton>
+                  <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
+                  <NavButton to="/algorithms">Algorithms</NavButton>
+                  
+                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
+                  
+                  {/* Logout Button */}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 py-2 px-4 rounded-xl font-bold text-pink-600 border-2 border-pink-200 hover:bg-pink-50 transition-all text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Έξοδος
+                  </button>
+                </>
+              ) : (
+                /* --- GUEST LINKS (Only for non-logged-in users) --- */
+                <>
+                   <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
+                   <NavButton to="/login">Σύνδεση</NavButton>
+                   <NavLink 
+                      to="/register"
+                      className="py-2 px-4 bg-pink-600 text-white rounded-xl font-bold hover:bg-pink-700 transition-all text-sm shadow-md"
+                   >
+                      Εγγραφή
+                   </NavLink>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
             <motion.button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-3 rounded-xl text-white shadow-lg"
+              className="lg:hidden p-3 rounded-xl text-white shadow-lg shrink-0"
               style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -133,7 +175,7 @@ const MainLayout = () => {
             </motion.button>
           </div>
         </div>
-      
+      </div>
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -180,96 +222,83 @@ const MainLayout = () => {
                   </motion.button>
                 </div>
 
+                {/* User Info (Mobile) */}
+                {user && (
+                    <div className="mb-6 p-4 bg-pink-50 dark:bg-gray-800 rounded-2xl border border-pink-100 dark:border-gray-700">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Συνδεδεμένος ως:</p>
+                        <p className="font-bold text-gray-900 dark:text-white truncate">{user.email}</p>
+                    </div>
+                )}
+
                 {/* Menu Items */}
                 <motion.div
                   className="space-y-2"
                   initial="closed"
                   animate="open"
                   variants={{
-                    open: {
-                      transition: { staggerChildren: 0.07, delayChildren: 0.2 },
-                    },
-                    closed: {
-                      transition: { staggerChildren: 0.05, staggerDirection: -1 },
-                    },
+                    open: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } },
+                    closed: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
                   }}
                 >
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
-                      Αρχική
-                    </MobileNavButton>
+                  {/* --- PUBLIC LINKS (Mobile) --- */}
+                  <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                    <MobileNavButton to="/" icon={Home} onClick={closeMenu}>Αρχική</MobileNavButton>
                   </motion.div>
 
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
-                      Online Μαθήματα
-                    </MobileNavButton>
+                  {/* --- PROTECTED LINKS (Mobile) --- */}
+                  {user ? (
+                    <>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>Online Μαθήματα</MobileNavButton>
+                      </motion.div>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>Προσανατολισμός</MobileNavButton>
+                      </motion.div>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/notes" icon={BookOpen} onClick={closeMenu}>Διαγωνίσματα</MobileNavButton>
+                      </motion.div>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>Quiz</MobileNavButton>
+                      </motion.div>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>Flashcards</MobileNavButton>
+                      </motion.div>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>Algorithms Games</MobileNavButton>
+                      </motion.div>
+                      <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                        <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>Παλιά Θέματα</MobileNavButton>
+                      </motion.div>
+                    </>
+                  ) : (
+                    /* --- GUEST LINKS (Mobile) --- */
+                    <>
+                         <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                            <MobileNavButton to="/login" icon={LogIn} onClick={closeMenu}>Σύνδεση</MobileNavButton>
+                        </motion.div>
+                        <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                            <MobileNavButton to="/register" icon={UserPlus} onClick={closeMenu}>Εγγραφή</MobileNavButton>
+                        </motion.div>
+                    </>
+                  )}
+
+                  {/* Always Visible Lower Links */}
+                  <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}>
+                    <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>Σχολικά είδη</MobileNavButton>
                   </motion.div>
 
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/notes" icon={BookOpen} onClick={closeMenu}>
-                      Διαγωνίσματα
-                    </MobileNavButton>
-                  </motion.div>
-
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
-                      Quiz
-                    </MobileNavButton>
-                  </motion.div>
-
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
-                      Flashcards
-                    </MobileNavButton>
-                  </motion.div>
-
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
-                      Algorithms Games
-                    </MobileNavButton>
-                  </motion.div>
-
-                  <motion.div
-                    variants={{
-                      open: { y: 0, opacity: 1 },
-                      closed: { y: 20, opacity: 0 },
-                    }}
-                  >
-                    <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
-                      Παλιά Θέματα
-                    </MobileNavButton>
-                  </motion.div>
+                  {/* Logout Mobile */}
+                  {user && (
+                    <motion.div variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }} className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700">
+                        <button 
+                            onClick={handleLogout}
+                            className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-red-600 bg-red-50 hover:bg-red-100 transition-all font-bold"
+                        >
+                            <LogOut className="w-5 h-5" />
+                            Έξοδος
+                        </button>
+                    </motion.div>
+                  )}
                 </motion.div>
 
                 {/* Footer */}
@@ -289,18 +318,18 @@ const MainLayout = () => {
         )}
       </AnimatePresence>
 
-      {/* Main Content - grows to fill available space */}
+      {/* Main Content */}
       <main className="flex-grow">
         <Outlet />
       </main>
 
-      {/* Chat Widget - now accessible on all pages */}
-      <ChatWidget nickname={nickname} />
+      {/* Chat Widget - Only show if logged in (Optional preference) */}
+      {user && <ChatWidget nickname={nickname} />}
 
-      {/* Enhanced Footer */}
+      {/* Footer - THE LOWER PART */}
       <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">
         <div className="container mx-auto px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-          {/* --- Σχετικά με εμάς --- */}
+          {/* About Section */}
           <motion.div
             {...fadeIn}
             whileInView={{ opacity: 1, y: 0 }}
@@ -313,12 +342,11 @@ const MainLayout = () => {
             </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
-              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής
-              — σημειώσεις, quiz & διαδραστικά εργαλεία.
+              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής.
             </p>
           </motion.div>
 
-          {/* --- Επικοινωνία --- */}
+          {/* Social Links */}
           <motion.div
             {...fadeIn}
             whileInView={{ opacity: 1, y: 0 }}
@@ -330,33 +358,14 @@ const MainLayout = () => {
               Επικοινωνία
             </h3>
             <div className="space-y-3">
-              {[
-                {
-                  href: 'https://www.instagram.com/technotesgr/',
-                  label: 'Instagram: @technotesgr',
-                },
-                { href: 'https://www.tiktok.com/@technotesgr', label: 'TikTok: @technotesgr' },
-                {
-                  href: 'https://www.linkedin.com/company/technotesgr/',
-                  label: 'LinkedIn: technotesgr',
-                },
-              ].map((social) => (
-                <motion.a
-                  key={social.href}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 font-medium transition-transform duration-200"
-                  whileHover={{ x: 6, scale: 1.05 }}
-                >
-                  {social.label}
-                </motion.a>
-              ))}
+              <a href="https://www.instagram.com/technotesgr/" target="_blank" rel="noopener noreferrer" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors">Instagram: @technotesgr</a>
+              <a href="https://www.tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors">TikTok: @technotesgr</a>
+              <a href="https://www.linkedin.com/company/technotesgr/" target="_blank" rel="noopener noreferrer" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors">LinkedIn: technotesgr</a>
             </div>
           </motion.div>
 
-          {/* --- Όροι και Δεδομένα --- */}
-          <motion.div
+           {/* Legal Links */}
+           <motion.div
             {...fadeIn}
             whileInView={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 30 }}
@@ -364,36 +373,20 @@ const MainLayout = () => {
             viewport={{ once: true }}
           >
             <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
-              Όροι και Δεδομένα
+              Νομικά
             </h3>
             <div className="space-y-2">
-              {[
-                { href: '/privacy-policy', label: 'Όροι Χρήσης & Πολιτική Απορρήτου' },
-                { href: '/data', label: 'Προσωπικά Δεδομένα' },
-              ].map((link) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 font-medium transition-transform duration-200"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {link.label}
-                </motion.a>
-              ))}
+                <a href="/privacy-policy" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600">Πολιτική Απορρήτου</a>
+                <a href="/data" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600">Προσωπικά Δεδομένα</a>
             </div>
           </motion.div>
         </div>
 
-        {/* --- Κάτω μέρος --- */}
-        <div className="bg-gradient-to-r from-pink-100/40 to-rose-100/40 dark:from-gray-800/40 dark:to-purple-900/30 backdrop-blur border-t border-pink-200 dark:border-gray-700 py-6">
-          <div className="container mx-auto px-6 text-center">
-            <p className="text-gray-700 dark:text-gray-300 font-medium mb-2">
-              © {currentYear} technotesgr. All rights reserved.
-            </p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Made with{' '}
+        {/* Copyright */}
+        <div className="bg-white/40 dark:bg-black/20 py-4 text-center border-t border-pink-100 dark:border-gray-800">
+             <p className="text-sm text-gray-600 dark:text-gray-400">© {currentYear} technotesgr. All rights reserved.</p>
+             <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+              Made with {' '}
               <motion.span
                 className="inline-block text-pink-600"
                 animate={{ scale: [1, 1.3, 1] }}
@@ -401,7 +394,7 @@ const MainLayout = () => {
               >
                 ♡
               </motion.span>{' '}
-              by{' '}
+              by {' '}
               <span className="font-semibold">
                 <motion.a
                   href="https://github.com/feirw"
@@ -431,7 +424,6 @@ const MainLayout = () => {
                 </motion.a>
               </span>
             </p>
-          </div>
         </div>
       </footer>
     </div>

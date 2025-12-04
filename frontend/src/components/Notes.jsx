@@ -24,7 +24,7 @@ const Palia = () => {
     { id: 2, name: 'Δομές Επιλογής', color: '#f43f5e', examCount: 2 },
     { id: 3, name: 'Δομές Επανάληψης', color: '#fb7185', examCount: 28 },
     { id: 4, name: 'Πίνακες', color: '#f472b6', examCount: 27 },
-    { id: 6, name: 'Υποπρογράμματα', color: '#db2777', examCount: 3},
+    { id: 6, name: 'Υποπρογράμματα', color: '#db2777', examCount: 3 },
     { id: 15, name: 'Όλη η ύλη', color: '#ec4899', examCount: 38 },
   ];
 
@@ -32,7 +32,7 @@ const Palia = () => {
   const getSubExamsForCategory = (categoryId) => {
     const category = examCategories.find((cat) => cat.id === categoryId);
     if (!category) return [];
-    
+
     return Array.from({ length: category.examCount }, (_, i) => ({
       id: i + 1,
       name: `Διαγώνισμα ${i + 1}`,

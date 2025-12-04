@@ -31,13 +31,15 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { session } = await import('../../utils/supabaseClient').then(m => m.supabase.auth.getSession());
+        const { session } = await import('../../utils/supabaseClient').then((m) =>
+          m.supabase.auth.getSession()
+        );
         const token = session?.session?.access_token;
 
         const response = await fetch('http://localhost:8001/api/admin/dashboard', {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!response.ok) throw new Error('Failed to fetch admin data');
@@ -54,60 +56,62 @@ const AdminDashboard = () => {
     fetchStats();
   }, []);
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent"></div>
-    </div>
-  );
+      </div>
+    );
 
-  if (error) return (
-    <div className="p-8 text-center text-red-500 bg-red-50 rounded-xl m-8 border border-red-200">
+  if (error)
+    return (
+      <div className="p-8 text-center text-red-500 bg-red-50 rounded-xl m-8 border border-red-200">
         <AlertTriangle className="w-12 h-12 mx-auto mb-2" />
         {error}
-    </div>
-  );
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
-        
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-2">
             Admin Dashboard
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Καλωσόρισες, <span className="font-bold text-pink-600">{user?.username || user?.email}</span>
+            Καλωσόρισες,{' '}
+            <span className="font-bold text-pink-600">{user?.username || user?.email}</span>
           </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <StatCard 
-            title="Εγγεγραμμένοι Χρήστες" 
-            value={stats?.total_users || 0} 
-            icon={Users} 
-            color="bg-blue-500 text-blue-500" 
-            delay={0.1} 
+          <StatCard
+            title="Εγγεγραμμένοι Χρήστες"
+            value={stats?.total_users || 0}
+            icon={Users}
+            color="bg-blue-500 text-blue-500"
+            delay={0.1}
           />
-          <StatCard 
-            title="Συνολικές Απαντήσεις" 
-            value={stats?.total_submissions || 0} 
-            icon={CheckCircle} 
-            color="bg-green-500 text-green-500" 
-            delay={0.2} 
+          <StatCard
+            title="Συνολικές Απαντήσεις"
+            value={stats?.total_submissions || 0}
+            icon={CheckCircle}
+            color="bg-green-500 text-green-500"
+            delay={0.2}
           />
-          <StatCard 
-            title="Ερωτήσεις στη Βάση" 
-            value={stats?.total_questions || 0} 
-            icon={FileText} 
-            color="bg-purple-500 text-purple-500" 
-            delay={0.3} 
+          <StatCard
+            title="Ερωτήσεις στη Βάση"
+            value={stats?.total_questions || 0}
+            icon={FileText}
+            color="bg-purple-500 text-purple-500"
+            delay={0.3}
           />
         </div>
 
         {/* Recent Activity Table */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
@@ -119,25 +123,38 @@ const AdminDashboard = () => {
               Πρόσφατη Δραστηριότητα
             </h3>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Χρήστης</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Πόντοι</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Question ID</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Ημερομηνία</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Χρήστης
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Πόντοι
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Question ID
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Ημερομηνία
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {stats?.recent_activity?.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <tr
+                    key={idx}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {item.nickname}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${item.points_earned > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${item.points_earned > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                      >
                         {item.points_earned > 0 ? `+${item.points_earned}` : '0'}
                       </span>
                     </td>
@@ -146,7 +163,10 @@ const AdminDashboard = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-gray-500 text-sm">
                       {new Date(item.submitted_at).toLocaleDateString('el-GR', {
-                        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
                       })}
                     </td>
                   </tr>
@@ -162,7 +182,6 @@ const AdminDashboard = () => {
             </table>
           </div>
         </motion.div>
-
       </div>
     </div>
   );

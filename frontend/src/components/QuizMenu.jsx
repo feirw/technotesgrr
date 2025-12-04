@@ -1,6 +1,19 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, BookOpen, CheckCircle, Clock, TrendingUp, Filter, SortAsc, Award, Play, RotateCcw, Info } from 'lucide-react';
+import {
+  X,
+  Search,
+  BookOpen,
+  CheckCircle,
+  Clock,
+  TrendingUp,
+  Filter,
+  SortAsc,
+  Award,
+  Play,
+  RotateCcw,
+  Info,
+} from 'lucide-react';
 import { fetchAllQuizzes } from '../utils/quizUtils';
 
 const BRAND = '#fda8a9';
@@ -16,7 +29,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [viewMode, setViewMode] = useState('grid'); // grid, list
-  
+
   const dialogRef = useRef(null);
   const searchInputRef = useRef(null);
 
@@ -25,7 +38,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
     const load = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const data = await fetchAllQuizzes();
         const withProgress = (Array.isArray(data) ? data : []).map((quiz) => {
@@ -80,15 +93,16 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
     // Search filter
     if (q.trim()) {
       const searchTerm = q.toLowerCase();
-      result = result.filter(quiz => 
-        quiz.title.toLowerCase().includes(searchTerm) ||
-        quiz.description?.toLowerCase().includes(searchTerm)
+      result = result.filter(
+        (quiz) =>
+          quiz.title.toLowerCase().includes(searchTerm) ||
+          quiz.description?.toLowerCase().includes(searchTerm)
       );
     }
 
     // Progress filter
     if (filterBy !== 'all') {
-      result = result.filter(quiz => {
+      result = result.filter((quiz) => {
         if (filterBy === 'completed') return quiz.percent === 100;
         if (filterBy === 'inProgress') return quiz.percent > 0 && quiz.percent < 100;
         if (filterBy === 'notStarted') return quiz.percent === 0;
@@ -104,12 +118,14 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
     } else if (sortBy === 'recent') {
       // Sort by most recently answered (based on categoryAnswers timestamps)
       result.sort((a, b) => {
-        const aLastAnswer = Object.values(categoryAnswers[a.id] || {})
-          .map(ans => new Date(ans.timestamp || 0))
-          .sort((d1, d2) => d2 - d1)[0] || new Date(0);
-        const bLastAnswer = Object.values(categoryAnswers[b.id] || {})
-          .map(ans => new Date(ans.timestamp || 0))
-          .sort((d1, d2) => d2 - d1)[0] || new Date(0);
+        const aLastAnswer =
+          Object.values(categoryAnswers[a.id] || {})
+            .map((ans) => new Date(ans.timestamp || 0))
+            .sort((d1, d2) => d2 - d1)[0] || new Date(0);
+        const bLastAnswer =
+          Object.values(categoryAnswers[b.id] || {})
+            .map((ans) => new Date(ans.timestamp || 0))
+            .sort((d1, d2) => d2 - d1)[0] || new Date(0);
         return bLastAnswer - aLastAnswer;
       });
     }
@@ -119,16 +135,29 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
 
   // Statistics
   const stats = useMemo(() => {
-    const completed = quizzes.filter(q => q.percent === 100).length;
-    const inProgress = quizzes.filter(q => q.percent > 0 && q.percent < 100).length;
-    const notStarted = quizzes.filter(q => q.percent === 0).length;
+    const completed = quizzes.filter((q) => q.percent === 100).length;
+    const inProgress = quizzes.filter((q) => q.percent > 0 && q.percent < 100).length;
+    const notStarted = quizzes.filter((q) => q.percent === 0).length;
     const totalQuestions = quizzes.reduce((sum, q) => sum + q.total, 0);
     const answeredQuestions = quizzes.reduce((sum, q) => sum + q.answered, 0);
     const correctQuestions = quizzes.reduce((sum, q) => sum + (q.correctAnswers || 0), 0);
-    const overallProgress = totalQuestions ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
-    const accuracy = answeredQuestions ? Math.round((correctQuestions / answeredQuestions) * 100) : 0;
+    const overallProgress = totalQuestions
+      ? Math.round((answeredQuestions / totalQuestions) * 100)
+      : 0;
+    const accuracy = answeredQuestions
+      ? Math.round((correctQuestions / answeredQuestions) * 100)
+      : 0;
 
-    return { completed, inProgress, notStarted, totalQuestions, answeredQuestions, correctQuestions, overallProgress, accuracy };
+    return {
+      completed,
+      inProgress,
+      notStarted,
+      totalQuestions,
+      answeredQuestions,
+      correctQuestions,
+      overallProgress,
+      accuracy,
+    };
   }, [quizzes]);
 
   const getQuizStatus = (quiz) => {
@@ -145,7 +174,11 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
 
   const restartQuiz = (quiz, e) => {
     e.stopPropagation();
-    if (window.confirm(`Θέλεις να επαναρχίσεις το "${quiz.title}"; Θα χαθεί η πρόοδός σου σε αυτό το κεφάλαιο.`)) {
+    if (
+      window.confirm(
+        `Θέλεις να επαναρχίσεις το "${quiz.title}"; Θα χαθεί η πρόοδός σου σε αυτό το κεφάλαιο.`
+      )
+    ) {
       // Clear answers for this quiz
       const newAnswers = { ...categoryAnswers };
       delete newAnswers[quiz.id];
@@ -179,18 +212,14 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
           {/* Header */}
           <div className="sticky top-0 z-10 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <h3 className="text-2xl md:text-3xl font-black mb-1">
-                  📚 Επιλογή Κεφαλαίου
-                </h3>
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                <h3 className="text-2xl md:text-3xl font-black mb-1">📚 Επιλογή Κεφαλαίου</h3>
                 <p className="text-white/90 text-sm">
-                  {quizzes.length} διαθέσιμα κεφάλαια • {stats.answeredQuestions} συνολικές απαντήσεις
+                  {quizzes.length} διαθέσιμα κεφάλαια • {stats.answeredQuestions} συνολικές
+                  απαντήσεις
                 </p>
               </motion.div>
-              
+
               <motion.button
                 onClick={onClose}
                 className="p-2 rounded-full hover:bg-white/20 transition-colors"
@@ -217,7 +246,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                   </div>
                   <div className="text-2xl font-black">{stats.overallProgress}%</div>
                 </div>
-                
+
                 <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <TrendingUp className="w-4 h-4" />
@@ -225,7 +254,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                   </div>
                   <div className="text-2xl font-black">{stats.accuracy}%</div>
                 </div>
-                
+
                 <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <CheckCircle className="w-4 h-4" />
@@ -233,7 +262,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                   </div>
                   <div className="text-2xl font-black">{stats.completed}</div>
                 </div>
-                
+
                 <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <Clock className="w-4 h-4" />
@@ -241,7 +270,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                   </div>
                   <div className="text-2xl font-black">{stats.inProgress}</div>
                 </div>
-                
+
                 <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <BookOpen className="w-4 h-4" />
@@ -312,7 +341,9 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                             setShowSortMenu(false);
                           }}
                           className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors ${
-                            sortBy === option.value ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-700'
+                            sortBy === option.value
+                              ? 'bg-pink-100 text-pink-700 font-bold'
+                              : 'text-gray-700'
                           }`}
                         >
                           {option.label}
@@ -336,9 +367,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                   aria-label="Φίλτρα"
                 >
                   <Filter className="w-5 h-5" />
-                  {filterBy !== 'all' && (
-                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                  )}
+                  {filterBy !== 'all' && <span className="w-2 h-2 bg-red-500 rounded-full"></span>}
                   <span className="hidden md:inline">Φίλτρα</span>
                 </motion.button>
 
@@ -365,7 +394,9 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                               setShowFilterMenu(false);
                             }}
                             className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors flex items-center gap-2 ${
-                              filterBy === option.value ? 'bg-pink-100 text-pink-700 font-bold' : 'text-gray-700'
+                              filterBy === option.value
+                                ? 'bg-pink-100 text-pink-700 font-bold'
+                                : 'text-gray-700'
                             }`}
                           >
                             <Icon className="w-4 h-4" />
@@ -426,7 +457,9 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                   {q.trim() ? 'Δεν βρέθηκαν αποτελέσματα' : 'Δεν βρέθηκαν κεφάλαια'}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  {q.trim() ? 'Δοκίμασε διαφορετική αναζήτηση' : 'Κανένα κεφάλαιο διαθέσιμο αυτή τη στιγμή'}
+                  {q.trim()
+                    ? 'Δοκίμασε διαφορετική αναζήτηση'
+                    : 'Κανένα κεφάλαιο διαθέσιμο αυτή τη στιγμή'}
                 </p>
                 {(q.trim() || filterBy !== 'all') && (
                   <button
@@ -448,7 +481,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                 {processedQuizzes.map((quiz, i) => {
                   const status = getQuizStatus(quiz);
                   const StatusIcon = status.icon;
-                  
+
                   return (
                     <motion.div
                       key={quiz.id}
@@ -473,18 +506,20 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                         <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-rose-100 group-hover:from-pink-200 group-hover:to-rose-200 transition-all">
                           <BookOpen className="w-7 h-7 text-pink-600" />
                         </div>
-                        
+
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{ delay: Math.min(i * 0.05 + 0.4, 0.9) }}
                         >
-                          <div className={`
+                          <div
+                            className={`
                             flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold
                             ${status.color === 'green' ? 'bg-green-100 text-green-700' : ''}
                             ${status.color === 'blue' ? 'bg-blue-100 text-blue-700' : ''}
                             ${status.color === 'gray' ? 'bg-gray-100 text-gray-700' : ''}
-                          `}>
+                          `}
+                          >
                             <StatusIcon className="w-3 h-3" />
                             {status.label}
                           </div>
@@ -510,9 +545,11 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                             <Clock className="w-4 h-4" />
                             Ερωτήσεις
                           </span>
-                          <span className="font-bold">{quiz.answered}/{quiz.total}</span>
+                          <span className="font-bold">
+                            {quiz.answered}/{quiz.total}
+                          </span>
                         </div>
-                        
+
                         {quiz.answered > 0 && (
                           <div className="flex items-center justify-between">
                             <span className="text-gray-600 flex items-center gap-1">
@@ -524,13 +561,18 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                             </span>
                           </div>
                         )}
-                        
+
                         <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                           <span className="text-gray-600">Πρόοδος</span>
                           <span
                             className="font-black text-xl"
-                            style={{ 
-                              color: quiz.percent === 100 ? '#10b981' : quiz.percent > 0 ? BRAND : '#6b7280' 
+                            style={{
+                              color:
+                                quiz.percent === 100
+                                  ? '#10b981'
+                                  : quiz.percent > 0
+                                    ? BRAND
+                                    : '#6b7280',
                             }}
                           >
                             {quiz.percent}%
@@ -549,7 +591,7 @@ const QuizMenu = ({ onSelect, onClose, categoryAnswers = {} }) => {
                           <Play className="w-4 h-4" />
                           {quiz.percent > 0 ? 'Συνέχεια' : 'Έναρξη'}
                         </motion.button>
-                        
+
                         {quiz.answered > 0 && (
                           <motion.button
                             onClick={(e) => restartQuiz(quiz, e)}

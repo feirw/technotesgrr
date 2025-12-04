@@ -134,8 +134,8 @@ const PaliathemataPage = () => {
     mode === 'kanonikes'
       ? KANONIKES_YEARS
       : mode === 'epanaliptikes'
-      ? EPANALIPTIKES_YEARS
-      : OEFE_YEARS;
+        ? EPANALIPTIKES_YEARS
+        : OEFE_YEARS;
   const uniqueYears = Array.from(new Set(allYears)).sort((a, b) => b - a); // Reverse chronological
 
   // Filter years based on search

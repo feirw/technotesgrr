@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, CheckCircle, XCircle, Trophy, AlertCircle, SkipForward, Flag, Lightbulb } from 'lucide-react';
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle,
+  XCircle,
+  Trophy,
+  AlertCircle,
+  SkipForward,
+  Flag,
+  Lightbulb,
+} from 'lucide-react';
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
@@ -81,49 +92,52 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, current, quiz, selected, question]);
 
-  const handleSelect = useCallback(async (idx) => {
-    if (selected != null || !onQuestionAnswered || loading) return;
+  const handleSelect = useCallback(
+    async (idx) => {
+      if (selected != null || !onQuestionAnswered || loading) return;
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const nickname = localStorage.getItem('nickname') || 'Anonymous';
-      
-      const response = await fetch('http://localhost:8001/api/quiz/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nickname,
-          question_id: question.id,
-          selected_answer: idx,
-        }),
-      });
+      try {
+        const nickname = localStorage.getItem('nickname') || 'Anonymous';
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch('http://localhost:8001/api/quiz/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nickname,
+            question_id: question.id,
+            selected_answer: idx,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        onQuestionAnswered(quiz.id, current, idx, result.correct, result.points_earned);
+
+        // Auto-advance to next question after a delay (if not last question and answer is correct)
+        if (!isLastQuestion && result.correct) {
+          setTimeout(() => {
+            handleNext();
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('Error submitting answer:', error);
+        setError('Σφάλμα κατά την υποβολή της απάντησης. Δοκίμασε ξανά.');
+      } finally {
+        setLoading(false);
       }
-
-      const result = await response.json();
-      onQuestionAnswered(quiz.id, current, idx, result.correct, result.points_earned);
-
-      // Auto-advance to next question after a delay (if not last question and answer is correct)
-      if (!isLastQuestion && result.correct) {
-        setTimeout(() => {
-          handleNext();
-        }, 2000);
-      }
-    } catch (error) {
-      console.error('Error submitting answer:', error);
-      setError('Σφάλμα κατά την υποβολή της απάντησης. Δοκίμασε ξανά.');
-    } finally {
-      setLoading(false);
-    }
-  }, [selected, onQuestionAnswered, loading, question, quiz, current, isLastQuestion]);
+    },
+    [selected, onQuestionAnswered, loading, question, quiz, current, isLastQuestion]
+  );
 
   const handleNext = useCallback(() => {
     if (current < quiz.questions.length - 1) {
-      setCurrent(p => p + 1);
+      setCurrent((p) => p + 1);
       setShowExplanation(false);
       setError(null);
     } else if (isLastQuestion) {
@@ -133,7 +147,7 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
 
   const handlePrevious = useCallback(() => {
     if (current > 0) {
-      setCurrent(p => p - 1);
+      setCurrent((p) => p - 1);
       setShowExplanation(false);
       setError(null);
     }
@@ -146,7 +160,7 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
   }, []);
 
   const toggleFlag = useCallback(() => {
-    setFlaggedQuestions(prev => {
+    setFlaggedQuestions((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(current)) {
         newSet.delete(current);
@@ -199,16 +213,16 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                   ],
                 }}
                 initial={{ y: 0, opacity: 1, rotate: 0 }}
-                animate={{ 
-                  y: window.innerHeight + 100, 
-                  opacity: 0, 
+                animate={{
+                  y: window.innerHeight + 100,
+                  opacity: 0,
                   rotate: 360 * (Math.random() > 0.5 ? 1 : -1),
-                  x: (Math.random() - 0.5) * 200
+                  x: (Math.random() - 0.5) * 200,
                 }}
-                transition={{ 
-                  duration: 2 + Math.random() * 2, 
+                transition={{
+                  duration: 2 + Math.random() * 2,
                   delay: Math.random() * 0.5,
-                  ease: 'easeOut'
+                  ease: 'easeOut',
                 }}
               />
             ))}
@@ -266,9 +280,7 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                     </motion.div>
                   )}
                   {unansweredCount > 0 && (
-                    <span className="text-sm text-gray-500">
-                      {unansweredCount} αναπάντητες
-                    </span>
+                    <span className="text-sm text-gray-500">{unansweredCount} αναπάντητες</span>
                   )}
                 </div>
               </div>
@@ -278,7 +290,9 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                 <motion.button
                   onClick={toggleFlag}
                   className={`p-2 rounded-full transition-colors ${
-                    isFlagged ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    isFlagged
+                      ? 'bg-red-100 text-red-600'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -370,14 +384,14 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                         ${isRevealed ? '' : 'hover:transform hover:scale-[1.01]'}
                       `}
                       initial={{ opacity: 0, x: -30 }}
-                      animate={{ 
-                        opacity: 1, 
+                      animate={{
+                        opacity: 1,
                         x: 0,
-                        scale: isRevealed && isSelected ? [1, 1.02, 1] : 1
+                        scale: isRevealed && isSelected ? [1, 1.02, 1] : 1,
                       }}
-                      transition={{ 
+                      transition={{
                         delay: idx * 0.08,
-                        scale: { duration: 0.3 }
+                        scale: { duration: 0.3 },
                       }}
                       whileHover={!isRevealed ? { x: 6 } : {}}
                       whileTap={!isRevealed ? { scale: 0.98 } : {}}
@@ -468,8 +482,6 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
               )}
             </AnimatePresence>
 
-          
-
             {/* Navigation */}
             <div className="flex justify-between items-center pt-6 border-t-2 border-pink-100">
               <motion.button
@@ -477,9 +489,10 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                 disabled={current === 0}
                 className={`
                   flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all
-                  ${current === 0 
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                    : 'bg-white text-gray-700 border-2 border-pink-200 hover:border-pink-400 hover:shadow-lg'
+                  ${
+                    current === 0
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-gray-700 border-2 border-pink-200 hover:border-pink-400 hover:shadow-lg'
                   }
                 `}
                 whileHover={current > 0 ? { scale: 1.05, x: -4 } : {}}
@@ -495,7 +508,7 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                 {quiz.questions.map((_, idx) => {
                   const isAnswered = selectedAnswers?.[idx] !== undefined;
                   const isFlaggedQ = flaggedQuestions.has(idx);
-                  
+
                   return (
                     <button
                       key={idx}
@@ -534,12 +547,15 @@ const QuizDialog = ({ quiz, isOpen, onClose, onQuestionAnswered, selectedAnswers
                 aria-label={isLastQuestion ? 'Ολοκλήρωση' : 'Επόμενη ερώτηση'}
               >
                 {isLastQuestion ? 'Ολοκλήρωση' : 'Επόμενη'}
-                {isLastQuestion ? <CheckCircle className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+                {isLastQuestion ? (
+                  <CheckCircle className="w-5 h-5" />
+                ) : (
+                  <ChevronRight className="w-5 h-5" />
+                )}
               </motion.button>
             </div>
 
             {/* Keyboard Shortcuts Hint */}
-           
           </div>
         </motion.div>
       </div>

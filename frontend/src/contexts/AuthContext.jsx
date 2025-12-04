@@ -16,11 +16,7 @@ export const AuthProvider = ({ children }) => {
   // Helper: Fetch extra details (username, role, progress) from 'profiles' table
   const fetchProfile = async (userId) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
       if (error) {
         console.error('Error fetching profile:', error);
@@ -36,8 +32,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // 1. Check active session on startup
     const initializeAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (session?.user) {
         const profile = await fetchProfile(session.user.id);
         // Combine Auth data (email, id) with Database data (username, role, progress)
@@ -49,7 +47,9 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
 
     // 2. Listen for login/logout events automatically
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
         const profile = await fetchProfile(session.user.id);
         setUser({ ...session.user, ...profile });
@@ -101,8 +101,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = {
-    user,                           // Contains id, email, username, role, quiz_progress
-    role: user?.role || 'user',     // Shortcut for role
+    user, // Contains id, email, username, role, quiz_progress
+    role: user?.role || 'user', // Shortcut for role
     isAdmin: user?.role === 'admin',
     loading,
     login,
@@ -110,9 +110,5 @@ export const AuthProvider = ({ children }) => {
     logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };

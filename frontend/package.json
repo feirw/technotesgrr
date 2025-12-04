@@ -2,12 +2,10 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8001",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@supabase/supabase-js": "^2.86.2",
     "axios": "^1.8.4",
-    "cra-template": "1.2.0",
     "dotenv": "^17.2.3",
     "lucide-react": "^0.523.0",
     "motion": "^12.23.12",
@@ -19,18 +17,16 @@
     "react-pdf": "^10.0.1",
     "react-quizlet-flashcard": "^3.0.0",
     "react-router-dom": "^7.6.3",
-    "react-scripts": "^5.0.1",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
     "three": "^0.181.0",
     "vanta": "^0.5.24"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss}\"",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "browserslist": {
     "production": [
@@ -47,13 +43,11 @@
   "devDependencies": {
     "@eslint/js": "9.23.0",
     "@tailwindcss/typography": "^0.5.19",
+    "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.20",
-    "eslint": "9.23.0",
-    "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-jsx-a11y": "6.10.2",
-    "eslint-plugin-react": "7.37.4",
     "globals": "15.15.0",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "vite": "^7.2.6"
   }
 }
