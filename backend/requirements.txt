@@ -4,6 +4,3 @@ uvicorn==0.35.0
 black
 google-genai
 python-dotenv
-passlib[bcrypt]
-python-jose[cryptography]
-python-multipart
