@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useId, useMemo, useState, Suspense } from 'react';
-import { useAuth } from '../contexts/AuthContext'; // Updated import
+import React, { useCallback, useEffect, useId, useState, Suspense } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
   motion,
@@ -11,19 +11,51 @@ import {
   useSpring,
 } from 'framer-motion';
 
-// Lazy-load heavier components
-const SliderCard = React.lazy(() => import('../components/SliderCard.jsx'));
+// --- Types & Interfaces ---
 
-// ---------- MOCK IMAGE DATA ----------
-const heroImages = [
+interface ContactFormState {
+  firstName: string;
+  lastName: string;
+  email: string;
+  message: string;
+  website: string;
+}
+
+interface HeroImage {
+  src: string;
+  alt: string;
+  delay: number;
+  rotation: number;
+}
+
+interface Review {
+  name: string;
+  rating: number;
+  description: string;
+}
+
+interface Feature {
+  title: string;
+  desc: string;
+  icon: string;
+  gradient: string;
+}
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+// ---------- MOCK DATA ----------
+
+const heroImages: HeroImage[] = [
   { src: '/images/1.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
   { src: '/images/2.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
   { src: '/images/3.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
   { src: '/images/4.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
 ];
 
-// ---------- Mock data ----------
-const reviewsData = [
+const reviewsData: Review[] = [
   {
     name: 'Μαρία Π.',
     rating: 5,
@@ -55,7 +87,7 @@ const reviewsData = [
   },
 ];
 
-const featuresData = [
+const featuresData: Feature[] = [
   {
     title: 'Online Καταγεγραμμένα Μαθήματα',
     desc: 'Καλύπτουν σε βάθος τη θεωρία,μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
@@ -76,8 +108,7 @@ const featuresData = [
   },
 ];
 
-// FAQ Data
-const faqData = [
+const faqData: FaqItem[] = [
   {
     question: 'Είναι δωρεάν η πλατφόρμα;',
     answer:
@@ -110,7 +141,7 @@ const faqData = [
   },
 ];
 
-// ---------- Enhanced Motion variants ----------
+// ---------- Motion Variants ----------
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
@@ -130,11 +161,26 @@ const stagger = {
   },
 };
 
-// **Component: Animated Image Box**
-const AnimatedImageBox = ({ src, alt, delay, rotation, widthClass }) => (
+// ---------- Sub-Components ----------
+
+interface AnimatedImageBoxProps {
+  src: string;
+  alt: string;
+  delay: number;
+  rotation: number;
+  widthClass: string;
+}
+
+const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
+  src,
+  alt,
+  delay,
+  rotation,
+  widthClass,
+}) => (
   <motion.div
     className={`relative w-full h-auto bg-white/90 border-4 border-pink-500 rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
-    style={{ boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)' }} // Ροζ σκιά
+    style={{ boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)' }}
     initial={{ opacity: 0, scale: 0.8, rotate: rotation + 10 }}
     animate={{ opacity: 1, scale: 1, rotate: rotation }}
     transition={{
@@ -158,9 +204,23 @@ const AnimatedImageBox = ({ src, alt, delay, rotation, widthClass }) => (
   </motion.div>
 );
 
-// ---------- Enhanced UI Components ----------
+interface SectionProps {
+  id: string;
+  title?: string;
+  subtitle?: string;
+  className?: string;
+  children: React.ReactNode;
+  withGradient?: boolean;
+}
 
-const Section = ({ id, title, subtitle, className = '', children, withGradient = false }) => (
+const Section: React.FC<SectionProps> = ({
+  id,
+  title,
+  subtitle,
+  className = '',
+  children,
+  withGradient = false,
+}) => (
   <section id={id} className={`py-20 relative overflow-hidden ${className}`}>
     {withGradient && (
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pink-50/30 to-transparent dark:via-pink-900/10 pointer-events-none" />
@@ -198,7 +258,11 @@ const Section = ({ id, title, subtitle, className = '', children, withGradient =
   </section>
 );
 
-const FeatureCard = ({ title, desc, icon, gradient, i }) => (
+interface FeatureCardProps extends Feature {
+  i: number;
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, icon, gradient, i }) => (
   <motion.article
     className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-pink-200/50 dark:border-gray-700/50 overflow-hidden"
     aria-label={title}
@@ -255,7 +319,7 @@ const FeatureCard = ({ title, desc, icon, gradient, i }) => (
   </motion.article>
 );
 
-const StarRating = ({ value = 0 }) => {
+const StarRating: React.FC<{ value?: number }> = ({ value = 0 }) => {
   const clamped = Math.max(0, Math.min(5, Number(value) || 0));
   return (
     <div className="flex justify-center gap-1" aria-label={`Βαθμολογία ${clamped} από 5`}>
@@ -286,8 +350,11 @@ const StarRating = ({ value = 0 }) => {
   );
 };
 
-// FAQ Item Component
-const FAQItem = ({ question, answer, index }) => {
+interface FAQItemProps extends FaqItem {
+  index: number;
+}
+
+const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -340,7 +407,7 @@ const FAQItem = ({ question, answer, index }) => {
   );
 };
 
-const FloatingParticles = () => {
+const FloatingParticles: React.FC = () => {
   const particles = Array.from({ length: 20 });
 
   return (
@@ -373,23 +440,24 @@ const FloatingParticles = () => {
 };
 
 // ---------- Main Component ----------
-const HomePage = () => {
-  const { user } = useAuth(); // Replaces useAppContext
+
+const HomePage: React.FC = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Enhanced scroll progress bar
+  // Scroll Progress
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1]), {
     stiffness: 100,
     damping: 30,
   });
 
-  // Mouse tracking for parallax
+  // Mouse tracking for potential parallax (currently setup listeners only)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
@@ -398,13 +466,14 @@ const HomePage = () => {
   }, [mouseX, mouseY]);
 
   // Contact form state
-  const [contactForm, setContactForm] = useState({
+  const [contactForm, setContactForm] = useState<ContactFormState>({
     firstName: '',
     lastName: '',
     email: '',
     message: '',
     website: '',
   });
+
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
   const [contactError, setContactError] = useState('');
@@ -416,12 +485,15 @@ const HomePage = () => {
   const successId = useId();
   const errorId = useId();
 
-  const handleContactInputChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setContactForm((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  const handleContactInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      setContactForm((prev) => ({ ...prev, [name]: value }));
+    },
+    []
+  );
 
-  const validate = useCallback(() => {
+  const validate = useCallback((): string | null => {
     if (contactForm.website) return 'Spam detected.';
     if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim())
       return 'Συμπλήρωσε όνομα, email και μήνυμα.';
@@ -431,7 +503,7 @@ const HomePage = () => {
   }, [contactForm]);
 
   const handleContactSubmit = useCallback(
-    async (e) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       setContactError('');
       const err = validate();
@@ -448,7 +520,13 @@ const HomePage = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         setContactSuccess(true);
-        setContactForm({ firstName: '', lastName: '', email: '', message: '', website: '' });
+        setContactForm({
+          firstName: '',
+          lastName: '',
+          email: '',
+          message: '',
+          website: '',
+        });
         setTimeout(() => setContactSuccess(false), 5000);
       } catch (err) {
         console.error('Error:', err);
@@ -463,7 +541,7 @@ const HomePage = () => {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
-        {/* Enhanced Progress Bar */}
+        {/* Progress Bar */}
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 origin-left z-50 shadow-lg shadow-pink-500/50"
           style={{ scaleX }}

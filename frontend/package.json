@@ -16,7 +16,7 @@
     "react-pageflip": "^2.0.3",
     "react-pdf": "^10.0.1",
     "react-quizlet-flashcard": "^3.0.0",
-    "react-router-dom": "^7.6.3",
+    "react-router-dom": "^7.10.1",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
     "three": "^0.181.0",
