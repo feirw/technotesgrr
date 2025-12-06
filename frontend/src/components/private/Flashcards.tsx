@@ -1,0 +1,260 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+// @ts-ignore - Assuming types are not available for this library
+import { FlashcardArray } from 'react-quizlet-flashcard';
+import { ArrowLeft, BookOpen, Zap } from 'lucide-react';
+
+// --- Types & Interfaces ---
+
+interface RawFlashcard {
+  id: number;
+  category: string;
+  question: string;
+  answer: string;
+}
+
+interface BackendCategoriesResponse {
+  flashcard_categories: string[];
+}
+
+interface BackendFlashcardsResponse {
+  flashcards: RawFlashcard[];
+}
+
+interface FlashcardItem {
+  id: number | string;
+  front: string;
+  back: string;
+}
+
+interface FlashcardSet {
+  id: string;
+  title: string;
+  questions: FlashcardItem[];
+}
+
+// Updated interface to include style
+interface LibCard {
+  id: number;
+  frontHTML: React.ReactNode;
+  backHTML: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+// --- Constants ---
+
+const BACKEND_URL = 'http://localhost:8001';
+const BRAND = '#fda8a9';
+// const BRAND_DARK = '#f88b8c';
+
+const Flashcards: React.FC = () => {
+  const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
+  const [selectedSetIndex, setSelectedSetIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    fetchFlashcardData();
+  }, []);
+
+  const fetchFlashcardData = async () => {
+    setLoading(true);
+    try {
+      // Fetch Categories
+      const categoriesResponse = await fetch(`${BACKEND_URL}/api/categories`);
+      if (!categoriesResponse.ok) throw new Error('Failed to fetch categories');
+      const categoriesData: BackendCategoriesResponse = await categoriesResponse.json();
+
+      // Fetch Flashcards
+      const flashcardsResponse = await fetch(`${BACKEND_URL}/api/flashcards`);
+      if (!flashcardsResponse.ok) throw new Error('Failed to fetch flashcards');
+      const flashcardsData: BackendFlashcardsResponse = await flashcardsResponse.json();
+
+      const flashcards = flashcardsData.flashcards || [];
+      const categories = categoriesData.flashcard_categories || [];
+
+      // Group flashcards by category
+      const sets: FlashcardSet[] = categories.map((category) => {
+        const categoryCards = flashcards.filter((card) => card.category === category);
+        return {
+          id: category.toLowerCase().replace(/\s+/g, '-'),
+          title: category,
+          questions: categoryCards.map((card) => ({
+            id: card.id,
+            front: card.question,
+            back: card.answer,
+          })),
+        };
+      });
+
+      setFlashcardSets(sets);
+    } catch (err) {
+      console.error('Error fetching flashcard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Define the style object for the cards
+  const cardStyle: React.CSSProperties = {
+    width: 500,
+    height: 350,
+    border: `3px solid ${BRAND}`,
+    borderRadius: '1.5rem',
+    background: '#fff',
+    boxShadow: '0 10px 40px rgba(253, 168, 169, 0.2)',
+    // Center content alignment is often handled by the library, but Flexbox inside HTML helps
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  // Transform data for the library
+  const selectedCards: LibCard[] =
+    selectedSetIndex !== null && flashcardSets[selectedSetIndex]
+      ? flashcardSets[selectedSetIndex].questions.map((card, idx) => ({
+          id: idx + 1,
+          frontHTML: (
+            <div className="flex h-full w-full items-center justify-center text-center text-xl font-semibold p-6">
+              {card.front}
+            </div>
+          ),
+          backHTML: (
+            <div className="flex h-full w-full items-center justify-center text-center text-xl p-6">
+              {card.back}
+            </div>
+          ),
+          // FIXED: Pass the style here for each card
+          style: cardStyle,
+        }))
+      : [];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 flex items-center justify-center">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <motion.div
+            className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4"
+            style={{ borderColor: BRAND }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          />
+          <p className="text-gray-600 font-semibold">Φόρτωση Flashcards...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+            ⚡ Flashcards
+          </h1>
+          <p className="text-gray-600 text-lg">Επίλεξε κατηγορία και ξεκίνα την εξάσκηση!</p>
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {/* Category Selection */}
+          {selectedSetIndex === null ? (
+            <motion.div
+              key="categories"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              {flashcardSets.map((set, index) => (
+                <motion.button
+                  key={set.id}
+                  onClick={() => setSelectedSetIndex(index)}
+                  className="group relative p-4 rounded-2xl bg-white border-2 border-pink-200 hover:border-pink-400 hover:shadow-2xl transition-all text-left overflow-hidden"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -6, scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center group-hover:from-pink-200 group-hover:to-rose-200 transition-all">
+                      <BookOpen className="w-6 h-6 text-pink-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-sm text-gray-800 group-hover:text-pink-600 transition-colors">
+                        {set.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">{set.questions.length} κάρτες</span>
+                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-pink-100 to-rose-100">
+                      <Zap className="w-4 h-4 text-pink-600" />
+                      <span className="font-bold text-pink-600">Start</span>
+                    </div>
+                  </div>
+
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </motion.button>
+              ))}
+            </motion.div>
+          ) : (
+            /* Flashcard View */
+            <motion.div
+              key="flashcards"
+              className="flex flex-col items-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <motion.button
+                onClick={() => setSelectedSetIndex(null)}
+                className="mb-6 flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
+                whileHover={{ scale: 1.05, x: -4 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Πίσω
+              </motion.button>
+
+              <motion.div
+                className="flex justify-center w-full mb-8"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {selectedCards.length > 0 ? (
+                  /* FIXED: Removed 'style' prop from FlashcardArray */
+                  <FlashcardArray cards={selectedCards} />
+                ) : (
+                  <div className="bg-white rounded-3xl p-8 shadow-2xl text-center border-2 border-pink-200">
+                    <p className="text-gray-500">Δεν υπάρχουν διαθέσιμα flashcards.</p>
+                  </div>
+                )}
+              </motion.div>
+
+              <motion.div
+                className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 max-w-md"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <p className="text-center text-gray-600">
+                  💡 <strong>Tip:</strong> Κάνε κλικ στην κάρτα για να τη γυρίσεις!
+                </p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+export default Flashcards;
