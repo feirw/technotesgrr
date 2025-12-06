@@ -5,9 +5,11 @@ This website was created with the goal of helping high school students (3rd grad
 ## How to run locally
 
 ## Frontend Setup
+If you don't have Bun installed, run `curl -fsSL https://bun.sh/install | bash` and then restart your shell.
+
 1. Navigate to frontend directory: `cd frontend`
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
+2. Install dependencies: `bun install`
+3. Start the development server: `bun run dev`
 
 ## Backend Setup
 4. Navigate to backend directory: `cd backend`
