@@ -46,6 +46,7 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@types/react-slick": "^0.23.13",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.20",
     "globals": "15.15.0",

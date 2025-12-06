@@ -110,16 +110,17 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth(); // Destructure loading here
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
 
-  const handleLogout = async () => {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default link behavior
     await logout();
     closeMenu();
-    navigate('/');
+    navigate('/login');
   };
 
   return (
@@ -146,11 +147,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">About Us</NavButton>
               <NavButton to="/merch">Σχολικά είδη</NavButton>
-
-              {/* --- AUTHENTICATED LINKS (Only for logged-in users) --- */}
-              {user ? (
+              <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
+              {/* --- LOADING STATE --- */}
+              {loading ? (
+                // Skeleton Loader for Navbar while checking Auth
+                <div className="flex gap-2 animate-pulse">
+                  <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                  <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                </div>
+              ) : user ? (
+                /* --- LOGGED IN LINKS --- */
                 <>
-                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
                   <NavButton to="/prosanatolismos">Προσανατολισμός</NavButton>
                   <NavButton to="/online">Online Μαθήματα</NavButton>
                   <NavButton to="/notes">Διαγωνίσματα</NavButton>
@@ -159,7 +166,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
                   <NavButton to="/algorithms">Algorithms</NavButton>
                   <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
-                  {/* Logout Button */}
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-2 py-2 px-4 rounded-xl font-bold text-pink-600 border-2 border-pink-200 hover:bg-pink-50 transition-all text-sm"
@@ -169,9 +175,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </button>
                 </>
               ) : (
-                /* --- GUEST LINKS (Only for non-logged-in users) --- */
+                /* --- GUEST LINKS --- */
                 <>
-                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div> {/* Divider */}
                   <NavButton to="/login">Σύνδεση</NavButton>
                   <NavLink
                     to="/register"
@@ -243,14 +248,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
 
                 {/* User Info (Mobile) */}
-                {user && (
+                {loading ? (
+                  <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl animate-pulse">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2"></div>
+                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                  </div>
+                ) : user ? (
                   <div className="mb-6 p-4 bg-pink-50 dark:bg-gray-800 rounded-2xl border border-pink-100 dark:border-gray-700">
                     <p className="text-sm text-gray-500 dark:text-gray-400">Συνδεδεμένος ως:</p>
                     <p className="font-bold text-gray-900 dark:text-white truncate">
                       {user.username || user.email}
                     </p>
                   </div>
-                )}
+                ) : null}
 
                 {/* Menu Items */}
                 <motion.div
@@ -271,8 +281,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     </MobileNavButton>
                   </motion.div>
 
-                  {/* --- PROTECTED LINKS (Mobile) --- */}
-                  {user ? (
+                  {/* --- CONDITIONAL LINKS (Mobile) --- */}
+                  {loading ? (
+                    // Simple skeleton for mobile links
+                    <div className="space-y-4 py-4 opacity-50">
+                      <div className="h-10 bg-gray-100 rounded-xl"></div>
+                      <div className="h-10 bg-gray-100 rounded-xl"></div>
+                      <div className="h-10 bg-gray-100 rounded-xl"></div>
+                    </div>
+                  ) : user ? (
                     <>
                       <motion.div
                         variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}
@@ -354,7 +371,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </motion.div>
 
                   {/* Logout Mobile */}
-                  {user && (
+                  {user && !loading && (
                     <motion.div
                       variants={{ open: { y: 0, opacity: 1 }, closed: { y: 20, opacity: 0 } }}
                       className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700"

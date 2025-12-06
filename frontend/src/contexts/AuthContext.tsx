@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/utils/supabaseClient';
+import { useNavigate } from 'react-router-dom';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
 // --- Types ---
+
 export type UserRole = 'admin' | 'user' | null;
 
 export interface UserProfile extends Omit<SupabaseUser, 'role'> {
@@ -24,69 +26,94 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-// This hook export causes the HMR warning, but it is safe to ignore for now.
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Helper to get profile data
-  const fetchProfile = async (userId: string): Promise<Partial<UserProfile> | null> => {
+  // Track initialization to avoid double-fetching the initial session
+  const isInitialized = useRef(false);
+
+  // --- Helper: Safe Profile Fetch ---
+  const fetchProfileSafe = useCallback(async (baseUser: SupabaseUser): Promise<UserProfile> => {
     try {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', baseUser.id)
+        .single();
 
       if (error) {
-        console.warn('Profile fetch warning (new user?):', error.message);
-        return null;
+        console.warn('⚠️ Could not fetch profile data. Using basic auth data.', error.message);
+        return {
+          ...baseUser,
+          username: baseUser.email?.split('@')[0] || 'User',
+          role: 'user',
+        } as UserProfile;
       }
-      return data;
-    } catch (err) {
-      console.error('Profile fetch error:', err);
-      return null;
+
+      return { ...baseUser, ...data } as UserProfile;
+    } catch (e) {
+      console.error('❌ Unexpected error fetching profile:', e);
+      return baseUser as UserProfile;
     }
-  };
+  }, []);
 
   useEffect(() => {
-    let mounted = true;
-
+    // 1. Initial Session Check (Run once)
     const initializeAuth = async () => {
+      if (isInitialized.current) return;
+      isInitialized.current = true;
+
       try {
         const {
           data: { session },
+          error,
         } = await supabase.auth.getSession();
-        if (mounted && session?.user) {
-          const profile = await fetchProfile(session.user.id);
-          if (mounted) setUser({ ...session.user, ...profile } as UserProfile);
+        if (error) throw error;
+
+        if (session?.user) {
+          const profile = await fetchProfileSafe(session.user);
+          setUser(profile);
         }
-      } catch (error) {
-        console.error('Auth Init Error:', error);
+      } catch (err) {
+        // console.error("Auth init error:", err);
       } finally {
-        if (mounted) setLoading(false);
+        setLoading(false);
       }
     };
 
     initializeAuth();
 
+    // 2. Real-time Subscription (Must run on every mount/unmount cycle)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
+      console.log(`🔔 Auth Event: ${event}`);
 
-      if (event === 'SIGNED_IN' && session?.user) {
-        // Optional: set loading true briefly if you want to prevent UI flicker
-        const profile = await fetchProfile(session.user.id);
-        if (mounted) setUser({ ...session.user, ...profile } as UserProfile);
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        if (session?.user) {
+          // Only show loading if we are essentially logging in (user was null)
+          // or if we want to force a UI refresh.
+          if (!user) setLoading(true);
+
+          const profile = await fetchProfileSafe(session.user);
+          setUser(profile);
+          setLoading(false);
+        }
       } else if (event === 'SIGNED_OUT') {
-        if (mounted) setUser(null);
+        setUser(null);
+        setLoading(false);
       }
     });
 
+    // Cleanup subscription
     return () => {
-      mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchProfileSafe, user]); // Added user dependency to check state inside listener if needed
 
   const login = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -105,6 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    navigate('/login');
   };
 
   const value = {
@@ -117,7 +145,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-export default AuthContext;
