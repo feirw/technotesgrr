@@ -1,6 +1,4 @@
-The project is still under constraction :)))
-
-# High School Informatics Hub
+# High School Informatics Hub [WIP]
 
 This website was created with the goal of helping high school students (3rd grade of Lyceum) better understand and engage with the Informatics course, especially in preparation for national exams in Greece.
 
@@ -8,8 +6,8 @@ This website was created with the goal of helping high school students (3rd grad
 
 ## Frontend Setup
 1. Navigate to frontend directory: `cd frontend`
-2. Install dependencies: `yarn install`
-3. Start the development server: `yarn start`
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
 
 ## Backend Setup
 4. Navigate to backend directory: `cd backend`
@@ -20,7 +18,7 @@ This website was created with the goal of helping high school students (3rd grad
 
 
 ## Access the Website
-Open your browser and navigate to `http://localhost:3000`.
+Open your browser and navigate to `http://localhost:5173`.
 
 Now you can explore the website and its features!
 
@@ -65,8 +63,6 @@ Contributions, issues and feature requests are welcome!
 
 Give a ⭐️ if this project helped you!
 
-## Big thanks to :
+## Acknowledgements
 
-``https://github.com/ABSanthosh``
- 
-for the flashcards' code in ReactJS.
+Special thanks to [ABSanthosh](https://github.com/ABSanthosh) for the flashcards implementation in ReactJS.
