@@ -13,7 +13,7 @@ import Palia from '@/components/private/Palia';
 // 🦕 TYPES & INTERFACES
 // ═══════════════════════════════════════════════════════════════
 
-type ExamMode = 'kanonikes' | 'epanaliptikes' | 'oefe';
+type ExamMode = 'kanonikes' | 'epanaliptikes' | 'oefe-a' | 'oefe-b';
 
 interface YearCardProps {
   year: number;
@@ -37,10 +37,16 @@ const EPANALIPTIKES_YEARS: number[] = [
   2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
 ];
 
-const OEFE_YEARS: number[] = [
-  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
+const OEFE_YEARS2: number[] = [
+  2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
   2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
 ];
+
+const OEFE_YEARS1: number[] = [
+  2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
+];
+
+
 
 // ═══════════════════════════════════════════════════════════════
 // 🎴 YEAR CARD COMPONENT
@@ -53,8 +59,10 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
         return 'Κανονικές';
       case 'epanaliptikes':
         return 'Επαναληπτικές';
-      case 'oefe':
-        return 'ΟΕΦΕ';
+      case 'oefe-a':
+        return 'ΟΕΦΕ Ά ΦΑΣΗ';
+      case 'oefe-b':
+        return 'ΟΕΦΕ Β ΦΑΣΗ';
       default:
         return '';
     }
@@ -131,12 +139,7 @@ const PaliathemataPage: React.FC = () => {
   // ═══════════════════════════════════════════════════════════════
 
   const allYears: number[] =
-    mode === 'kanonikes'
-      ? KANONIKES_YEARS
-      : mode === 'epanaliptikes'
-        ? EPANALIPTIKES_YEARS
-        : OEFE_YEARS;
-
+    mode === 'kanonikes' ? KANONIKES_YEARS : mode === 'epanaliptikes' ? EPANALIPTIKES_YEARS : mode === 'oefe-a' ? OEFE_YEARS1 : mode === 'oefe-b' ? OEFE_YEARS2 : [];
   const uniqueYears = Array.from(new Set(allYears)).sort((a, b) => b - a); // Reverse chronological
 
   // Filter years based on search
@@ -252,12 +255,16 @@ const PaliathemataPage: React.FC = () => {
               <div className="text-pink-100">Επαναληπτικές Περίοδοι</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold">{OEFE_YEARS.length}</div>
-              <div className="text-pink-100">ΟΕΦΕ</div>
+              <div className="text-4xl font-bold">{OEFE_YEARS1.length}</div>
+              <div className="text-pink-100">ΟΕΦΕ Ά ΦΑΣΗ</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold">{OEFE_YEARS2.length}</div>
+              <div className="text-pink-100">ΟΕΦΕ ΄Β ΦΑΣΗ</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold">
-                {KANONIKES_YEARS.length + EPANALIPTIKES_YEARS.length + OEFE_YEARS.length}
+                {KANONIKES_YEARS.length + EPANALIPTIKES_YEARS.length + OEFE_YEARS1.length + OEFE_YEARS2.length}
               </div>
               <div className="text-pink-100">Σύνολο Θεμάτων</div>
             </div>
@@ -338,21 +345,21 @@ const PaliathemataPage: React.FC = () => {
 
               <motion.button
                 role="tab"
-                aria-selected={mode === 'oefe'}
+                aria-selected={mode === 'oefe-a'}
                 className={`
                   relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
-                    mode === 'oefe'
+                    mode === 'oefe-a'
                       ? 'text-white'
                       : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
-                onClick={() => handleModeChange('oefe')}
+                onClick={() => handleModeChange('oefe-a')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {mode === 'oefe' && (
+                {mode === 'oefe-a' && (
                   <motion.div
                     className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
                     layoutId="activeTabIndicator"
@@ -361,8 +368,39 @@ const PaliathemataPage: React.FC = () => {
                 )}
                 <div className="relative z-20 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  ΟΕΦΕ
-                  <span className="ml-1 text-xs opacity-75">({OEFE_YEARS.length})</span>
+                  ΟΕΦΕ Ά ΦΑΣΗ
+                  <span className="ml-1 text-xs opacity-75">({OEFE_YEARS1.length})</span>
+                </div>
+              </motion.button>
+
+
+               <motion.button
+                role="tab"
+                aria-selected={mode === 'oefe-b'}
+                className={`
+                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
+                  focus:outline-none focus:ring-2 focus:ring-pink-500
+                  ${
+                    mode === 'oefe-b'
+                      ? 'text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
+                  }
+                `}
+                onClick={() => handleModeChange('oefe-b')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {mode === 'oefe-b' && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                    layoutId="activeTabIndicator"
+                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                  />
+                )}
+                <div className="relative z-20 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  ΟΕΦΕ Β' ΦΑΣΗ
+                  <span className="ml-1 text-xs opacity-75">({OEFE_YEARS2.length})</span>
                 </div>
               </motion.button>
             </div>

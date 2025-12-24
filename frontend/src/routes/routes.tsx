@@ -10,7 +10,7 @@ import PrivacyPolicyPage from '@/pages/public/PrivacyPolicyPage';
 import DataProtectionPage from '@/pages/public/DataProtectionPage';
 
 // User Pages (Protected)
-import NotesPage from '@/pages/private/NotesPage';
+// import NotesPage from '@/pages/private/NotesPage';
 import QuizPage from '@/pages/private/QuizPage';
 import FlashcardsPage from '@/pages/private/FlashcardsPage';
 import LeaderboardPage from '@/pages/public/LeaderboardPage';
@@ -74,59 +74,59 @@ const routes: RouteConfig[] = [
   // ═══════════════════════════════════════════════════════════════
   // 🔒 USER ROUTES (Requires Login)
   // ═══════════════════════════════════════════════════════════════
-  {
-    path: '/notes',
-    element: <NotesPage />,
-    protected: true,
-    roles: ['user', 'admin'],
-  },
+
+    // path: '/notes',
+    // element: <NotesPage />,
+    // // protected: true,
+    // // roles: ['user', 'admin'],
+  
   {
     path: '/quiz',
     element: <QuizPage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/flashcards',
     element: <FlashcardsPage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/leaderboard',
     element: <LeaderboardPage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/algorithms',
     element: <AlgorithmsPage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/paliathemata',
     element: <PaliathemataPage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/online',
     element: <OnlinePage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/prosanatolismos',
     element: <ProsanatolismosPage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
   {
     path: '/profile',
     element: <ProfilePage />,
-    protected: true,
-    roles: ['user', 'admin'],
+    // protected: true,
+    // roles: ['user', 'admin'],
   },
 
   // ═══════════════════════════════════════════════════════════════

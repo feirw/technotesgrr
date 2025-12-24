@@ -25,7 +25,7 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    // 1. Basic Validation
+    // Validation
     if (formData.password !== formData.confirmPassword) {
       return setError('Οι κωδικοί πρόσβασης δεν ταιριάζουν.');
     }
@@ -39,23 +39,18 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      // 2. Call Signup from Context
-      // This triggers the Supabase Auth + The SQL Trigger for the 'profiles' table
       await signup(formData.email, formData.password, formData.username);
-
       setSuccess(true);
-
-      // Optional: Redirect after a delay if email confirmation is disabled
-      // If email confirmation is ENABLED in Supabase, the user can't login yet.
-      // So we usually just show the success message.
     } catch (err: any) {
-      console.error(err);
+      console.error('Registration error:', err);
       const message = err.message || '';
 
       if (message.includes('User already registered')) {
         setError('Αυτό το email χρησιμοποιείται ήδη.');
       } else if (message.includes('Password should be')) {
         setError('Ο κωδικός είναι πολύ αδύναμος.');
+      } else if (message.includes('fetch')) {
+        setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet σας.');
       } else {
         setError('Προέκυψε σφάλμα κατά την εγγραφή. Δοκιμάστε ξανά.');
       }
@@ -64,18 +59,24 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  // If registration was successful, show success view
+  // Success screen
   if (success) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
           className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-green-100 dark:border-green-900 text-center"
         >
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <motion.div 
+            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          >
             <CheckCircle className="w-10 h-10 text-green-600" />
-          </div>
+          </motion.div>
           <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-4">
             Η εγγραφή ολοκληρώθηκε!
           </h2>
@@ -100,12 +101,17 @@ const RegisterPage: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-pink-100 dark:border-gray-700"
       >
         <header className="text-center mb-8">
-          <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <motion.div 
+            className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <UserPlus className="w-8 h-8 text-pink-600" />
-          </div>
+          </motion.div>
           <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-2">
             Δημιουργία Λογαριασμού
           </h1>
@@ -119,6 +125,7 @@ const RegisterPage: React.FC = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
                 className="flex items-center p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl mb-4"
               >
                 <AlertTriangle className="w-5 h-5 mr-2 flex-shrink-0" />
@@ -143,6 +150,7 @@ const RegisterPage: React.FC = () => {
                 placeholder="π.χ. CyberStudent24"
                 required
                 minLength={3}
+                disabled={loading}
               />
             </div>
           </div>
@@ -160,6 +168,7 @@ const RegisterPage: React.FC = () => {
                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
                 placeholder="name@example.com"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -180,6 +189,7 @@ const RegisterPage: React.FC = () => {
                 placeholder="Τουλάχιστον 6 χαρακτήρες"
                 required
                 minLength={6}
+                disabled={loading}
               />
             </div>
           </div>
@@ -199,24 +209,34 @@ const RegisterPage: React.FC = () => {
                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
                 placeholder="Ξανά τον κωδικό"
                 required
+                disabled={loading}
               />
             </div>
           </div>
 
-          <button
+          <motion.button
             type="submit"
             disabled={loading}
-            className="w-full py-4 mt-2 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            whileHover={{ scale: loading ? 1 : 1.02 }}
+            whileTap={{ scale: loading ? 1 : 0.98 }}
+            className="w-full py-4 mt-2 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
-              'Εγγραφή...'
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                />
+                Εγγραφή...
+              </>
             ) : (
               <>
                 Εγγραφή
                 <ArrowRight className="w-5 h-5" />
               </>
             )}
-          </button>
+          </motion.button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 text-center">

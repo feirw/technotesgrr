@@ -11,31 +11,42 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const { login } = useAuth();
-  // Note: We don't manually navigate here. We let AuthRedirectHandler or the Context listener handle it.
-  // This prevents the "Protected Route Kickback" loop.
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    // Safety timeout - stop loading after 15 seconds
+    const safetyTimeout = setTimeout(() => {
+      setLoading(false);
+      setError('Η σύνδεση κράτησε πολύ. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
+    }, 15000);
+
     try {
+      console.log('🚀 Attempting login...');
       await login(email, password);
-      // Success! We do NOT set loading(false) here.
-      // We keep the button spinning until the AuthRedirectHandler detects the user
-      // and sends us to the /profile page.
+      clearTimeout(safetyTimeout);
+      // Login successful - AuthContext will handle navigation
+      console.log('✅ Login completed');
     } catch (err: any) {
-      console.error(err);
-      setLoading(false); // Only stop loading if there is an error
+      clearTimeout(safetyTimeout);
+      console.error('❌ Login error:', err);
+      setLoading(false);
 
       const message = err?.message || '';
 
-      if (message.includes('Invalid login credentials')) {
+      // Map error messages to user-friendly Greek
+      if (message.includes('Invalid login credentials') || message.includes('Invalid')) {
         setError('Λάθος email ή κωδικός πρόσβασης.');
       } else if (message.includes('Email not confirmed')) {
-        setError('Παρακαλώ επιβεβαιώστε το email σας.');
+        setError('Παρακαλώ επιβεβαιώστε το email σας πριν συνδεθείτε.');
+      } else if (message.includes('fetch') || message.includes('network') || message.includes('timeout')) {
+        setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet και τα Supabase credentials.');
+      } else if (message.includes('authentication') || message.includes('σύστημα')) {
+        setError('Το σύστημα authentication δεν είναι ρυθμισμένο. Επικοινωνήστε με τον διαχειριστή.');
       } else {
-        setError('Προέκυψε σφάλμα σύνδεσης.');
+        setError(message || 'Προέκυψε σφάλμα σύνδεσης. Δοκιμάστε ξανά.');
       }
     }
   };
@@ -45,12 +56,17 @@ const LoginPage: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-pink-100 dark:border-gray-700"
       >
         <header className="text-center mb-8">
-          <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <motion.div
+            className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
             <LogIn className="w-8 h-8 text-pink-600" />
-          </div>
+          </motion.div>
           <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-2">Welcome Back</h1>
           <p className="text-gray-500 dark:text-gray-400">
             Συνδέσου για να δεις την πρόοδο των Quiz σου
@@ -62,10 +78,19 @@ const LoginPage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="flex items-center p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl"
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-start p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl"
             >
-              <AlertTriangle className="w-5 h-5 mr-2 flex-shrink-0" />
-              <p className="text-sm font-medium">{error}</p>
+              <AlertTriangle className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium">{error}</p>
+                {error.includes('σύστημα') && (
+                  <p className="text-xs mt-1 opacity-75">
+                    Προσθέστε Supabase credentials στο .env file
+                  </p>
+                )}
+              </div>
             </motion.div>
           )}
 
@@ -80,6 +105,8 @@ const LoginPage: React.FC = () => {
                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
                 placeholder="name@example.com"
                 required
+                disabled={loading}
+                autoComplete="email"
               />
             </div>
           </div>
@@ -97,24 +124,35 @@ const LoginPage: React.FC = () => {
                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
                 placeholder="••••••••"
                 required
+                disabled={loading}
+                autoComplete="current-password"
               />
             </div>
           </div>
 
-          <button
+          <motion.button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            whileHover={{ scale: loading ? 1 : 1.02 }}
+            whileTap={{ scale: loading ? 1 : 0.98 }}
+            className="w-full py-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
-              'Σύνδεση...'
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                />
+                Σύνδεση...
+              </>
             ) : (
               <>
                 Είσοδος
                 <ArrowRight className="w-5 h-5" />
               </>
             )}
-          </button>
+          </motion.button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 text-center">

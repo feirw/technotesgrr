@@ -8,20 +8,20 @@ const AuthRedirectHandler = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Don't do anything while loading
     if (loading) return;
 
-    // 1. Logged-in users should not see Login or Register pages
+    // Define auth pages
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
+    // If user is logged in and trying to access login/register pages
     if (user && isAuthPage) {
-      // If Admin, go to dashboard, otherwise profile
+      // Redirect based on role
       const destination = isAdmin ? '/admin' : '/profile';
+      console.log(`✅ User logged in, redirecting from ${location.pathname} to ${destination}`);
       navigate(destination, { replace: true });
     }
-
-    // Note: We do NOT handle "Non-logged in users accessing protected pages" here.
-    // That is handled securely by your <ProtectedRoute /> component.
-  }, [user, loading, isAdmin, location, navigate]);
+  }, [user, loading, isAdmin, location.pathname, navigate]);
 
   return null; // This component renders nothing
 };
