@@ -138,38 +138,7 @@ const ProfilePage: React.FC = () => {
                   </div>
 
                   {/* Edit Buttons (Desktop) */}
-                  <div className="hidden md:flex gap-2">
-                    {isEditing ? (
-                      <>
-                        <button
-                          onClick={handleUpdateProfile}
-                          disabled={loading}
-                          className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold transition-all shadow-md disabled:opacity-50"
-                        >
-                          <Save className="w-4 h-4" />
-                          {loading ? '...' : 'Αποθήκευση'}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setIsEditing(false);
-                            setNewUsername(user?.username || '');
-                          }}
-                          className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold transition-all"
-                        >
-                          <X className="w-4 h-4" />
-                          Ακύρωση
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-pink-50 dark:bg-gray-700 hover:bg-pink-100 text-pink-600 dark:text-pink-400 rounded-xl font-bold transition-all border border-pink-200 dark:border-gray-600"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                        Επεξεργασία
-                      </button>
-                    )}
-                  </div>
+                  
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-4">
@@ -222,41 +191,9 @@ const ProfilePage: React.FC = () => {
 
             {/* 🏆 Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 border-t border-gray-100 dark:border-gray-700 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-              <div className="p-6 text-center hover:bg-white dark:hover:bg-gray-700 transition-colors">
-                <div className="w-12 h-12 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-3">
-                  <Trophy className="w-6 h-6 text-yellow-600" />
-                </div>
-                <div className="text-3xl font-black text-gray-900 dark:text-white">
-                  {totalQuizzesStarted}
-                </div>
-                <div className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                  Quiz Started
-                </div>
-              </div>
+            
 
-              <div className="p-6 text-center hover:bg-white dark:hover:bg-gray-700 transition-colors">
-                <div className="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-3">
-                  <Star className="w-6 h-6 text-green-600" />
-                </div>
-                <div className="text-3xl font-black text-gray-900 dark:text-white">
-                  {totalQuestionsAnswered * 10}
-                </div>
-                <div className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                  Total Points (Est)
-                </div>
-              </div>
-
-              <div className="p-6 text-center hover:bg-white dark:hover:bg-gray-700 transition-colors">
-                <div className="w-12 h-12 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-3">
-                  <Zap className="w-6 h-6 text-purple-600" />
-                </div>
-                <div className="text-3xl font-black text-gray-900 dark:text-white">
-                  {totalQuestionsAnswered}
-                </div>
-                <div className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                  Questions Answered
-                </div>
-              </div>
+          
             </div>
           </div>
 

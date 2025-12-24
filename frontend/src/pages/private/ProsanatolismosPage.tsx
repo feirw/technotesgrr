@@ -555,60 +555,8 @@ const Prosanatolismospage: React.FC = () => {
         </div>
       </div>
 
-      {/* Πίνακας Αναφοράς */}
-      <div className="mt-16">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 border-b pb-3 border-gray-300 dark:border-gray-700">
-          Αναλυτική Επισκόπηση Κατευθύνσεων
-        </h2>
-        <div className="overflow-x-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-inner">
-          <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
-            <thead className="bg-gray-200 dark:bg-gray-700">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-extrabold text-gray-700 uppercase tracking-wider dark:text-gray-300">
-                  Κωδ.
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-extrabold text-gray-700 uppercase tracking-wider dark:text-gray-300">
-                  Κατεύθυνση
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-extrabold text-gray-700 uppercase tracking-wider dark:text-gray-300">
-                  Προσανατολισμός Μαθημάτων
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-800 dark:text-gray-200">
-              {CATEGORY_NAMES.map((name) => (
-                <tr
-                  key={name}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-150"
-                >
-                  <td className="px-4 py-4 whitespace-nowrap font-extrabold">{name}</td>
-                  <td className="px-6 py-4 whitespace-normal font-semibold">
-                    {RESULTS_MAPPING[name].title}
-                  </td>
-                  <td className="px-6 py-4 whitespace-normal text-sm">
-                    {name === 'INFO' &&
-                      'Υψηλή βαρύτητα στην Πληροφορική, Μαθηματικά & Διοίκηση (ΔΕΤ).'}
-                    {name === 'FIN' &&
-                      'Απαιτεί μεγάλη ακρίβεια, Μαθηματική ανάλυση και γνώσεις Λογιστικής & Χρηματοοικονομικής.'}
-                    {name === 'DIOIK' &&
-                      'Εστιάζει στη Διοίκηση Ανθρώπων, Marketing και Στρατηγική Επιχειρήσεων.'}
-                    {name === 'OIK' &&
-                      'Έμφαση στη Θεωρία και την Ακαδημαϊκή/Ερευνητική Κατανόηση των Οικονομικών Φαινομένων.'}
-                    {name === 'SERV' &&
-                      'Πολύ υψηλές βάσεις. Απαιτείται συνήθως Ειδικό Μάθημα Ξένης Γλώσσας.'}
-                    {name === 'PEDAGOGIKA' &&
-                      'Εκπαίδευση, φροντίδα και καθοδήγηση. Καλύπτει Δημοτική/Προσχολική Εκπαίδευση.'}
-                    {name === 'SOMATA' &&
-                      'Δράση, πειθαρχία, φυσική ετοιμότητα. Απαιτούνται Αγωνίσματα και Υγειονομικά.'}
-                    {name === 'TEXNES' &&
-                      'Καλλιτεχνική έκφραση και Design. Απαιτούνται Ειδικά Μαθήματα (Μουσική/Σχέδιο).'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      
+    
     </div>
   );
 };

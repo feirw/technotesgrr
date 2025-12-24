@@ -214,8 +214,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
               <NavButton to="/">Αρχική</NavButton>
-              <NavButton to="/about">About Us</NavButton>
-              <NavButton to="/merch">Σχολικά είδη</NavButton>
+              <NavButton to="/about">About us</NavButton>
+              <NavButton to="/merch">Η Ατζέντα</NavButton>
               
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
@@ -230,7 +230,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <NavButton to="/quiz">Quiz</NavButton>
                   <NavButton to="/flashcards">Flashcards</NavButton>
                   <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
-                  <NavButton to="/algorithms">Algorithms</NavButton>
+                  <NavButton to="/algorithms">Αλγόριθμοι</NavButton>
                   <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
                   <ProfileDropdown />
                 </>
