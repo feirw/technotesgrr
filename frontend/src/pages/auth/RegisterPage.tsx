@@ -69,11 +69,11 @@ const RegisterPage: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-green-100 dark:border-green-900 text-center"
         >
-          <motion.div 
+          <motion.div
             className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
           >
             <CheckCircle className="w-10 h-10 text-green-600" />
           </motion.div>
@@ -105,10 +105,10 @@ const RegisterPage: React.FC = () => {
         className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-pink-100 dark:border-gray-700"
       >
         <header className="text-center mb-8">
-          <motion.div 
+          <motion.div
             className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4"
             whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{ type: 'spring', stiffness: 300 }}
           >
             <UserPlus className="w-8 h-8 text-pink-600" />
           </motion.div>
@@ -225,7 +225,7 @@ const RegisterPage: React.FC = () => {
               <>
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                 />
                 Εγγραφή...

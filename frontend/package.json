@@ -4,10 +4,13 @@
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@radix-ui/react-select": "^2.2.6",
     "@supabase/supabase-js": "^2.86.2",
     "axios": "^1.8.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dotenv": "^17.2.3",
-    "lucide-react": "^0.523.0",
+    "lucide-react": "^0.562.0",
     "motion": "^12.23.12",
     "prettier": "^3.6.0",
     "react": "^19.0.0",
@@ -19,6 +22,8 @@
     "react-router-dom": "^7.10.1",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "three": "^0.181.0",
     "vanta": "^0.5.24"
   },

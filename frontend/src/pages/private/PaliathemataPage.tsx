@@ -38,15 +38,11 @@ const EPANALIPTIKES_YEARS: number[] = [
 ];
 
 const OEFE_YEARS2: number[] = [
-  2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
-  2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
+  2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021,
+  2022, 2023, 2024, 2025,
 ];
 
-const OEFE_YEARS1: number[] = [
-  2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
-];
-
-
+const OEFE_YEARS1: number[] = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
 // ═══════════════════════════════════════════════════════════════
 // 🎴 YEAR CARD COMPONENT
@@ -139,7 +135,15 @@ const PaliathemataPage: React.FC = () => {
   // ═══════════════════════════════════════════════════════════════
 
   const allYears: number[] =
-    mode === 'kanonikes' ? KANONIKES_YEARS : mode === 'epanaliptikes' ? EPANALIPTIKES_YEARS : mode === 'oefe-a' ? OEFE_YEARS1 : mode === 'oefe-b' ? OEFE_YEARS2 : [];
+    mode === 'kanonikes'
+      ? KANONIKES_YEARS
+      : mode === 'epanaliptikes'
+        ? EPANALIPTIKES_YEARS
+        : mode === 'oefe-a'
+          ? OEFE_YEARS1
+          : mode === 'oefe-b'
+            ? OEFE_YEARS2
+            : [];
   const uniqueYears = Array.from(new Set(allYears)).sort((a, b) => b - a); // Reverse chronological
 
   // Filter years based on search
@@ -264,7 +268,10 @@ const PaliathemataPage: React.FC = () => {
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold">
-                {KANONIKES_YEARS.length + EPANALIPTIKES_YEARS.length + OEFE_YEARS1.length + OEFE_YEARS2.length}
+                {KANONIKES_YEARS.length +
+                  EPANALIPTIKES_YEARS.length +
+                  OEFE_YEARS1.length +
+                  OEFE_YEARS2.length}
               </div>
               <div className="text-pink-100">Σύνολο Θεμάτων</div>
             </div>
@@ -373,8 +380,7 @@ const PaliathemataPage: React.FC = () => {
                 </div>
               </motion.button>
 
-
-               <motion.button
+              <motion.button
                 role="tab"
                 aria-selected={mode === 'oefe-b'}
                 className={`

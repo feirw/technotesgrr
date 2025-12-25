@@ -138,7 +138,6 @@ const ProfilePage: React.FC = () => {
                   </div>
 
                   {/* Edit Buttons (Desktop) */}
-                  
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-4">
@@ -190,11 +189,7 @@ const ProfilePage: React.FC = () => {
             )}
 
             {/* 🏆 Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 border-t border-gray-100 dark:border-gray-700 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-            
-
-          
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 border-t border-gray-100 dark:border-gray-700 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700 bg-gray-50/50 dark:bg-gray-800/50"></div>
           </div>
 
           {/* 👇 Action Buttons */}

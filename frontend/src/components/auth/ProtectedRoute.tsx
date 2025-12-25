@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, c
           <motion.div
             className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
           <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>

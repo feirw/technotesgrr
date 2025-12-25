@@ -46,9 +46,7 @@ const DiagnosticsPage: React.FC = () => {
           const start = Date.now();
           const { data, error } = await Promise.race([
             supabase.auth.getSession(),
-            new Promise<any>((_, reject) =>
-              setTimeout(() => reject(new Error('Timeout')), 5000)
-            ),
+            new Promise<any>((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000)),
           ]);
           const duration = Date.now() - start;
 
@@ -241,8 +239,10 @@ const DiagnosticsPage: React.FC = () => {
                     <li className="flex items-start gap-2">
                       <span>⚠️</span>
                       <span>
-                        <strong>Mock Mode Active:</strong> Create a <code className="bg-gray-200 dark:bg-gray-800 px-1 rounded">.env</code> file in the
-                        frontend directory with your Supabase credentials to enable authentication.
+                        <strong>Mock Mode Active:</strong> Create a{' '}
+                        <code className="bg-gray-200 dark:bg-gray-800 px-1 rounded">.env</code> file
+                        in the frontend directory with your Supabase credentials to enable
+                        authentication.
                       </span>
                     </li>
                   )}
@@ -253,7 +253,9 @@ const DiagnosticsPage: React.FC = () => {
                       <span>❌</span>
                       <span>
                         <strong>Backend Not Running:</strong> Start the backend with{' '}
-                        <code className="bg-gray-200 dark:bg-gray-800 px-1 rounded">cd backend && python server.py</code>
+                        <code className="bg-gray-200 dark:bg-gray-800 px-1 rounded">
+                          cd backend && python server.py
+                        </code>
                       </span>
                     </li>
                   )}
@@ -268,9 +270,7 @@ const DiagnosticsPage: React.FC = () => {
                       </span>
                     </li>
                   )}
-                  {testResults.tests.every(
-                    (t) => t.status === 'pass' || t.status === 'skip'
-                  ) && (
+                  {testResults.tests.every((t) => t.status === 'pass' || t.status === 'skip') && (
                     <li className="flex items-start gap-2">
                       <span>✅</span>
                       <span>

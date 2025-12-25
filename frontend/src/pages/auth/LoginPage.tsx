@@ -41,10 +41,16 @@ const LoginPage: React.FC = () => {
         setError('Λάθος email ή κωδικός πρόσβασης.');
       } else if (message.includes('Email not confirmed')) {
         setError('Παρακαλώ επιβεβαιώστε το email σας πριν συνδεθείτε.');
-      } else if (message.includes('fetch') || message.includes('network') || message.includes('timeout')) {
+      } else if (
+        message.includes('fetch') ||
+        message.includes('network') ||
+        message.includes('timeout')
+      ) {
         setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet και τα Supabase credentials.');
       } else if (message.includes('authentication') || message.includes('σύστημα')) {
-        setError('Το σύστημα authentication δεν είναι ρυθμισμένο. Επικοινωνήστε με τον διαχειριστή.');
+        setError(
+          'Το σύστημα authentication δεν είναι ρυθμισμένο. Επικοινωνήστε με τον διαχειριστή.'
+        );
       } else {
         setError(message || 'Προέκυψε σφάλμα σύνδεσης. Δοκιμάστε ξανά.');
       }

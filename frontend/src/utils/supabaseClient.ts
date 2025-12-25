@@ -5,8 +5,10 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Check if environment variables are missing
-const hasValidConfig = supabaseUrl && supabaseAnonKey && 
-  supabaseUrl !== 'https://placeholder.supabase.co' && 
+const hasValidConfig =
+  supabaseUrl &&
+  supabaseAnonKey &&
+  supabaseUrl !== 'https://placeholder.supabase.co' &&
   supabaseAnonKey !== 'placeholder_key';
 
 if (!hasValidConfig) {
@@ -19,7 +21,7 @@ if (!hasValidConfig) {
 
 // Create client with fallback values
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co', 
+  supabaseUrl || 'https://placeholder.supabase.co',
   supabaseAnonKey || 'placeholder_key'
 );
 

@@ -343,8 +343,6 @@ const AboutPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      
     </div>
   );
 };

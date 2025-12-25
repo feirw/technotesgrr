@@ -58,11 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const profilePromise = Promise.resolve(
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', baseUser.id)
-          .single()
+        supabase.from('profiles').select('*').eq('id', baseUser.id).single()
       );
 
       const { data, error } = await withTimeout<{ data: any; error: any }>(profilePromise, 5000);
@@ -76,7 +72,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } as UserProfile;
       }
 
-      return { ...baseUser, ...data } as UserProfile;
+      console.log('📋 Profile data fetched:', {
+        userId: baseUser.id,
+        role: data?.role,
+        roleType: typeof data?.role,
+        username: data?.username,
+        fullData: data,
+      });
+
+      // Ensure role is properly extracted and normalized
+      const roleValue = data?.role;
+      let normalizedRole: UserRole = 'user';
+      if (roleValue) {
+        const lowerRole = String(roleValue).toLowerCase();
+        if (lowerRole === 'admin') {
+          normalizedRole = 'admin';
+        } else if (lowerRole === 'user') {
+          normalizedRole = 'user';
+        }
+      }
+
+      const profile = {
+        ...baseUser,
+        ...data,
+        role: normalizedRole,
+      } as UserProfile;
+
+      console.log('✅ Final profile object:', {
+        userId: profile.id,
+        role: profile.role,
+        roleFromData: roleValue,
+        isAdmin: profile.role === 'admin',
+      });
+
+      return profile;
     } catch (e) {
       console.error('❌ Profile fetch error:', e);
       return {
@@ -109,7 +138,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       try {
         const sessionPromise = supabase.auth.getSession();
-        const { data: { session }, error } = await withTimeout(sessionPromise, 3000);
+        const {
+          data: { session },
+          error,
+        } = await withTimeout(sessionPromise, 3000);
 
         if (error) throw error;
 
@@ -133,7 +165,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log(`🔔 Auth Event: ${event}`);
 
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
@@ -159,7 +193,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (isMockMode) {
       console.error('❌ Cannot login - Supabase not configured');
-      throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο. Παρακαλώ προσθέστε Supabase credentials στο .env file.');
+      throw new Error(
+        'Το σύστημα authentication δεν είναι ρυθμισμένο. Παρακαλώ προσθέστε Supabase credentials στο .env file.'
+      );
     }
 
     try {
@@ -177,21 +213,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data.user) {
         const profile = await fetchProfileSafe(data.user);
         setUser(profile);
-        
+
         // Small delay to ensure state update
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         console.log('✅ Redirecting to profile...');
         navigate('/profile', { replace: true });
       }
     } catch (error: any) {
       console.error('❌ Login failed:', error);
-      
+
       // Re-throw with better message
       if (error.message === 'Request timeout') {
         throw new Error('Η σύνδεση με το server κράτησε πολύ. Ελέγξτε τη σύνδεσή σας.');
       }
-      
+
       throw error;
     }
   };
@@ -211,24 +247,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       const { error } = await withTimeout(signupPromise, 10000);
-      
+
       if (error) throw error;
-      
+
       console.log('✅ Signup successful');
     } catch (error: any) {
       console.error('❌ Signup failed:', error);
-      
+
       if (error.message === 'Request timeout') {
         throw new Error('Η εγγραφή κράτησε πολύ. Δοκιμάστε ξανά.');
       }
-      
+
       throw error;
     }
   };
 
   const logout = async () => {
     console.log('👋 Logging out...');
-    
+
     if (!isMockMode) {
       try {
         await withTimeout(supabase.auth.signOut(), 5000);
@@ -236,15 +272,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Logout error:', e);
       }
     }
-    
+
     setUser(null);
     navigate('/login', { replace: true });
   };
 
-  const value = {
-    user,
-    role: user?.role || null,
-    isAdmin: user?.role === 'admin',
+  // Normalize role to lowercase for comparison (in case DB has 'Admin' instead of 'admin')
+  let normalizedRole: UserRole = user?.role || null;
+  if (normalizedRole) {
+    const lowerRole = normalizedRole.toLowerCase();
+    if (lowerRole === 'admin') {
+      normalizedRole = 'admin';
+    } else if (lowerRole === 'user') {
+      normalizedRole = 'user';
+    }
+  }
+
+  const value: AuthContextType = {
+    user: user ? { ...user, role: normalizedRole } : null,
+    role: normalizedRole,
+    isAdmin: normalizedRole === 'admin',
     loading,
     login,
     signup,

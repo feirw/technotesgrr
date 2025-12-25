@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
-  BookOpen,
   Trophy,
   Brain,
   Code,
@@ -19,6 +18,7 @@ import {
   LucideIcon,
   User,
   ChevronDown,
+  Shield,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
@@ -31,7 +31,7 @@ const fadeIn = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.6 }
+  transition: { duration: 0.6 },
 };
 
 // --- Interfaces ---
@@ -112,7 +112,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
 );
 
 const ProfileDropdown: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -157,15 +157,35 @@ const ProfileDropdown: React.FC = () => {
                 <p className="text-sm opacity-80 truncate">{user.email}</p>
               </div>
               <div className="p-2 space-y-1">
-                <motion.button 
-                  onClick={() => { navigate('/profile'); setIsOpen(false); }} 
+                <motion.button
+                  onClick={() => {
+                    navigate('/profile');
+                    setIsOpen(false);
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-pink-50 dark:hover:bg-gray-700 transition-all text-gray-700 dark:text-gray-200"
                   whileHover={{ x: 5 }}
                 >
-                  <User size={18} className="text-pink-600" /> <span className="font-semibold">Προφίλ</span>
+                  <User size={18} className="text-pink-600" />{' '}
+                  <span className="font-semibold">Προφίλ</span>
                 </motion.button>
-                <motion.button 
-                  onClick={async () => { await logout(); setIsOpen(false); navigate('/login'); }} 
+                {isAdmin && (
+                  <motion.button
+                    onClick={() => {
+                      navigate('/admin');
+                      setIsOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all text-purple-600 dark:text-purple-400"
+                    whileHover={{ x: 5 }}
+                  >
+                    <Shield size={18} /> <span className="font-semibold">Admin Dashboard</span>
+                  </motion.button>
+                )}
+                <motion.button
+                  onClick={async () => {
+                    await logout();
+                    setIsOpen(false);
+                    navigate('/login');
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-red-600"
                   whileHover={{ x: 5 }}
                 >
@@ -192,7 +212,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
-      
       {/* Navbar Container */}
       <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
         <div className="container mx-auto px-6">
@@ -214,9 +233,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
               <NavButton to="/">Αρχική</NavButton>
-              <NavButton to="/about">About us</NavButton>
+              <NavButton to="/about">Σχετικά με εμάς</NavButton>
               <NavButton to="/merch">Η Ατζέντα</NavButton>
-              
+
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
               {loading ? (
@@ -296,31 +315,60 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 )}
 
                 <div className="space-y-2">
-                  <MobileNavButton to="/" icon={Home} onClick={closeMenu}>Αρχική</MobileNavButton>
-                  
+                  <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
+                    Αρχική
+                  </MobileNavButton>
+
                   {user ? (
                     <>
-                      <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>Προσανατολισμός</MobileNavButton>
-                      <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>Online Μαθήματα</MobileNavButton>
-                      <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>Quiz</MobileNavButton>
-                      <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>Flashcards</MobileNavButton>
-                      <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>Algorithms</MobileNavButton>
-                      <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>Παλιά Θέματα</MobileNavButton>
-                      <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>Προφίλ</MobileNavButton>
+                      <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
+                        Προσανατολισμός
+                      </MobileNavButton>
+                      <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
+                        Online Μαθήματα
+                      </MobileNavButton>
+                      <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
+                        Quiz
+                      </MobileNavButton>
+                      <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
+                        Flashcards
+                      </MobileNavButton>
+                      <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
+                        Algorithms
+                      </MobileNavButton>
+                      <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
+                        Παλιά Θέματα
+                      </MobileNavButton>
+                      <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>
+                        Προφίλ
+                      </MobileNavButton>
                       <div className="pt-4 mt-4 border-t border-gray-100">
-                         <button onClick={async () => { await logout(); closeMenu(); navigate('/login'); }} className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-red-600 bg-red-50 font-bold">
+                        <button
+                          onClick={async () => {
+                            await logout();
+                            closeMenu();
+                            navigate('/login');
+                          }}
+                          className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-red-600 bg-red-50 font-bold"
+                        >
                           <LogOut size={20} /> Έξοδος
-                         </button>
+                        </button>
                       </div>
                     </>
                   ) : (
                     <>
-                      <MobileNavButton to="/login" icon={LogIn} onClick={closeMenu}>Σύνδεση</MobileNavButton>
-                      <MobileNavButton to="/register" icon={UserPlus} onClick={closeMenu}>Εγγραφή</MobileNavButton>
+                      <MobileNavButton to="/login" icon={LogIn} onClick={closeMenu}>
+                        Σύνδεση
+                      </MobileNavButton>
+                      <MobileNavButton to="/register" icon={UserPlus} onClick={closeMenu}>
+                        Εγγραφή
+                      </MobileNavButton>
                     </>
                   )}
                   <div className="my-2 border-t border-gray-100 dark:border-gray-800" />
-                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>Σχολικά είδη</MobileNavButton>
+                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
+                    Σχολικά είδη
+                  </MobileNavButton>
                 </div>
               </div>
             </motion.div>
@@ -329,9 +377,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-grow relative z-10">
-        {children}
-      </main>
+      <main className="flex-grow relative z-10">{children}</main>
 
       {/* Footer */}
       <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">
@@ -341,24 +387,58 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               Σχετικά με εμάς 🎓
             </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής.
+              Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
+              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής.
             </p>
           </motion.div>
 
           <motion.div {...fadeIn} transition={{ delay: 0.2 }}>
-            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">Επικοινωνία</h3>
+            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Επικοινωνία
+            </h3>
             <div className="space-y-3">
-              <a href="https://instagram.com/technotesgr" target="_blank" rel="noopener noreferrer" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors">Instagram: @technotesgr</a>
-              <a href="https://tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors">TikTok: @technotesgr</a>
-              <a href="https://www.linkedin.com/company/technotesgr/" target="_blank" rel="noopener noreferrer" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors">LinkedIn: technotesgr</a>
+              <a
+                href="https://instagram.com/technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
+              >
+                Instagram: @technotesgr
+              </a>
+              <a
+                href="https://tiktok.com/@technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
+              >
+                TikTok: @technotesgr
+              </a>
+              <a
+                href="https://www.linkedin.com/company/technotesgr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
+              >
+                LinkedIn: technotesgr
+              </a>
             </div>
           </motion.div>
 
           <motion.div {...fadeIn} transition={{ delay: 0.3 }}>
             <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">Νομικά</h3>
             <div className="space-y-2">
-              <NavLink to="/privacy-policy" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600">Πολιτική Απορρήτου</NavLink>
-              <NavLink to="/data" className="block text-gray-600 dark:text-gray-300 hover:text-pink-600">Προσωπικά Δεδομένα</NavLink>
+              <NavLink
+                to="/privacy-policy"
+                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600"
+              >
+                Πολιτική Απορρήτου
+              </NavLink>
+              <NavLink
+                to="/data"
+                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600"
+              >
+                Προσωπικά Δεδομένα
+              </NavLink>
             </div>
           </motion.div>
         </div>
@@ -368,8 +448,43 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             © {currentYear} technotesgr. All rights reserved.
           </p>
           <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
-            Made with <motion.span className="inline-block text-pink-600" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1, repeat: Infinity }}>♡</motion.span> by{' '}
-            <span className="font-semibold text-pink-600">feirw, a-reynbaw & mgiannopoulos24</span>
+            Made with{' '}
+            <motion.span
+              className="inline-block text-pink-600"
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              ♡
+            </motion.span>{' '}
+            by{' '}
+            <span className="font-semibold text-pink-600">
+              <a
+                href="https://github.com/feirw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                feirw
+              </a>
+              ,{' '}
+              <a
+                href="https://github.com/a-reynbaw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                a-reynbaw
+              </a>{' '}
+              &{' '}
+              <a
+                href="https://github.com/mgiannopoulos24"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                mgiannopoulos24
+              </a>
+            </span>
           </p>
         </div>
       </footer>

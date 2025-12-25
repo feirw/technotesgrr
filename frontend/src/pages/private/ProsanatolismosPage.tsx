@@ -554,9 +554,6 @@ const Prosanatolismospage: React.FC = () => {
           </button>
         </div>
       </div>
-
-      
-    
     </div>
   );
 };
