@@ -41,21 +41,20 @@ const skillsData: SkillItem[] = [
   {
     icon: '❤️',
     title: 'Πάθος',
-    desc: 'Λατρεύω την εκπαίδευση και τον προγραμματισμό, και θέλω να τα μοιραστώ με τον κόσμο.',
+    desc: 'Λατρεύω την εκπαίδευση και μελλοντικά θέλω να ασχοληθώ με την διδακτική της πληροφορικής',
   },
   {
     icon: '🤝',
     title: 'Κοινότητα',
-    desc: 'Πιστεύω στη δύναμη της κοινότητας και της συνεργασίας για καλύτερα αποτελέσματα.',
+    desc: 'Πιστεύω στη δύναμη της συνεργασίας μεταξύ των μαθητών για την βελτίωση των επιδόσεών τους',
   },
 ];
 
 const funFactsData: string[] = [
   'Λατρεύω να μιλάω και να μεταδίδω την γνώση μου στους άλλους.',
   'Πηγαίνω συνέχεια σε events σχετικά με την τεχνολογία και την εκπαίδευση.',
-  'Διαβάζω συνεχώς για νέες τεχνολογίες και frameworks.',
-  'Ονειρεύομαι να γίνω καθηγήτρια πληροφορικής.',
-  'Μου αρέσει να τρωω γλυκά όσο προγραμματίζω!',
+  'Διαβάζω συνεχώς για νέες τεχνολογίες και εφαρμογές τους στην διδακτική.',
+  'Ονειρεύομαι να γίνω καθηγήτρια πληροφορικής σε πρότυπο σχολείο.',
 ];
 
 // --- Component ---
@@ -345,35 +344,7 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Decorative Bottom Section */}
-      <section className="py-12 bg-gradient-to-r from-pink-100/40 to-rose-100/40 dark:from-gray-800/40 dark:to-purple-900/30">
-        <div className="container mx-auto px-6 text-center">
-          <motion.p
-            className="text-gray-700 dark:text-gray-300 text-lg"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            Ευχαριστώ που διαβάσατε για εμένα! 🙏
-          </motion.p>
-          <motion.p
-            className="text-pink-600 dark:text-pink-400 font-bold mt-2"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            Made with{' '}
-            <motion.span
-              className="inline-block"
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              ♡
-            </motion.span>
-          </motion.p>
-        </div>
-      </section>
+      
     </div>
   );
 };

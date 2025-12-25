@@ -22,6 +22,7 @@ import ProfilePage from '@/pages/private/ProfilePage';
 import NotFound from '@/pages/other/NotFound';
 import NotAuthorized from '@/pages/other/NotAuthorized';
 
+import SchoolsPage from '@/pages/private/SchoolsPage';
 // Admin Pages
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 
@@ -128,6 +129,14 @@ const routes: RouteConfig[] = [
     // protected: true,
     // roles: ['user', 'admin'],
   },
+   {
+    path: '/sxoles',
+    element: <SchoolsPage />,
+    // protected: true,
+    // roles: ['user', 'admin'],
+  },
+  
+
 
   // ═══════════════════════════════════════════════════════════════
   // 🛡️ ADMIN ROUTES

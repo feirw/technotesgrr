@@ -226,6 +226,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               ) : user ? (
                 <>
                   <NavButton to="/prosanatolismos">Προσανατολισμός</NavButton>
+                  <NavButton to="/sxoles">Σχολές</NavButton>
                   <NavButton to="/online">Online Μαθήματα</NavButton>
                   <NavButton to="/quiz">Quiz</NavButton>
                   <NavButton to="/flashcards">Flashcards</NavButton>
