@@ -108,7 +108,6 @@ const ProfilePage: React.FC = () => {
                       user?.email?.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                
               </div>
 
               {/* User Info */}
