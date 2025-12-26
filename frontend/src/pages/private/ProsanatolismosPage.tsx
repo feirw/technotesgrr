@@ -486,7 +486,7 @@ const Prosanatolismospage: React.FC = () => {
           </h2>
           <p className="text-xl text-gray-800 dark:text-gray-200 mb-8 text-center font-extrabold">
             {results.tiedCategories.length === 1
-              ? `Η κυρίαρχη επαγγελματική σας κλίση είναι: **${RESULTS_MAPPING[results.topCategory].title}**`
+              ? `Η κυρίαρχη επαγγελματική σας κλίση είναι: ${RESULTS_MAPPING[results.topCategory].title}`
               : `Υπάρχει ισοπαλία ανάμεσα σε περισσότερες κατευθύνσεις. Η υψηλότερη βαθμολογία σας είναι: ${results.tiedCategories.map((cat) => RESULTS_MAPPING[cat].title.split(' ')[0]).join(', ')}.`}
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

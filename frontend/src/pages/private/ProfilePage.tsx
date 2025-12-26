@@ -108,9 +108,7 @@ const ProfilePage: React.FC = () => {
                       user?.email?.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <div className="absolute bottom-2 right-2 bg-gray-900 text-white p-2 rounded-full cursor-pointer hover:bg-pink-600 transition-colors shadow-md">
-                  <Camera className="w-4 h-4" />
-                </div>
+                
               </div>
 
               {/* User Info */}
