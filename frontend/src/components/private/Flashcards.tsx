@@ -156,7 +156,6 @@ const Flashcards: React.FC = () => {
           <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
             ⚡ Flashcards
           </h1>
-          <p className="text-gray-600 text-lg">Επίλεξε κατηγορία και ξεκίνα την εξάσκηση!</p>
         </motion.div>
 
         <AnimatePresence mode="wait">

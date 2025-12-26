@@ -49,10 +49,10 @@ interface FaqItem {
 // ---------- MOCK DATA ----------
 
 const heroImages: HeroImage[] = [
-  { src: '/images/1.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
-  { src: '/images/2.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
-  { src: '/images/3.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
-  { src: '/images/4.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
+  { src: '/images/panellinies.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
+  { src: '/images/grades.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
+  { src: '/images/cat.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
+  { src: '/images/diav.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
 ];
 
 const reviewsData: Review[] = [
@@ -91,19 +91,19 @@ const featuresData: Feature[] = [
   {
     title: 'Online Καταγεγραμμένα Μαθήματα',
     desc: 'Καλύπτουν σε βάθος τη θεωρία,μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
-    icon: '📚',
+    icon: '👩🏻‍💻',
     gradient: 'from-pink-500 to-rose-500',
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
-    icon: '🎯',
+    icon: '💡',
     gradient: 'from-purple-500 to-indigo-500',
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
-    icon: '🧠',
+    icon: '📝',
     gradient: 'from-blue-500 to-cyan-500',
   },
 ];
@@ -112,7 +112,7 @@ const faqData: FaqItem[] = [
   {
     question: 'Είναι δωρεάν η πλατφόρμα;',
     answer:
-      "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις. Μελλοντικά θα προστεθεί ένα merch site με σχολικά είδη για την υποστήριξη της πλατφόρμας. ",
+      "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις.",
   },
   {
     question: 'Καλύπτει όλη την ύλη της Πληροφορικής;',
@@ -278,7 +278,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, icon, gradient, 
     whileHover={{
       y: -10,
       scale: 1.02,
-      boxShadow: '0 25px 50px -12px rgba(236, 72, 153, 0.4)',
+      boxShadow: '0 25px 50px -12px rgba(135, 18, 76, 0.4)',
       transition: { duration: 0.3 },
     }}
   >
@@ -582,7 +582,7 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-                Γράψε 100 στην Πληροφορική🎓
+                Γράψε 100 στην Πληροφορική
               </motion.h1>
 
               <motion.p
@@ -596,7 +596,7 @@ const HomePage: React.FC = () => {
               </motion.p>
 
               <button
-                className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+                className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
                 onClick={() => navigate(user ? '/quiz' : '/login')}
               >
                 {user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}
@@ -694,7 +694,6 @@ const HomePage: React.FC = () => {
         <Section
           id="faq"
           title="Συχνές Ερωτήσεις"
-          subtitle="Απαντήσεις στις πιο κοινές απορίες σου"
           withGradient
         >
           <div className="max-w-3xl mx-auto space-y-4">

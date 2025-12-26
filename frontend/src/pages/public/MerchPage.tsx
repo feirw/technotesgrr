@@ -12,7 +12,7 @@ import {
 
 const MerchPage: React.FC = () => {
   // Αντικατάστησε το link με το δικό σου Vinted προφίλ
-  const vintedLink = 'https://www.vinted.gr/member/YOUR_PROFILE_ID';
+  const vintedLink = 'https://www.vinted.gr/member/226166662';
 
   return (
     <div className="min-h-screen bg-[#fff5f7] dark:bg-gray-900 overflow-x-hidden text-gray-800 dark:text-gray-100">
@@ -67,7 +67,7 @@ const MerchPage: React.FC = () => {
       <section className="py-20 px-6 bg-white/60 dark:bg-white/5 backdrop-blur-lg">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black mb-4 italic text-pink-600">
+            <h2 className="text-4xl font-black mb-4 text-pink-600">
               Γιατί είναι απαραίτητη;
             </h2>
           </div>
@@ -121,11 +121,9 @@ const MerchPage: React.FC = () => {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto bg-gradient-to-r from-pink-500 to-rose-400 p-12 rounded-[3rem] text-white shadow-2xl text-center relative overflow-hidden"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-20 rotate-12">
-            <ShoppingBag size={200} />
-          </div>
+         
 
-          <h2 className="text-4xl md:text-5xl font-black mb-6 relative z-10 italic">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 relative z-10 ">
             Βάλε τις Πανελλήνιες σε μια τάξη...Σήμερα!
           </h2>
           <p className="text-xl text-pink-50 mb-10 relative z-10 opacity-90 font-medium">
