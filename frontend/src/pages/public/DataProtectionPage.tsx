@@ -46,7 +46,6 @@ const DataProtectionPage: React.FC = () => {
       </p>
       <ul className="list-disc list-inside ml-4">
         <li>Δεν χρησιμοποιεί cookies ή παρόμοιες τεχνολογίες.</li>
-        <li>Δεν ζητά στοιχεία επικοινωνίας, όπως ονόματα, email ή τηλέφωνα.</li>
         <li>Δεν πραγματοποιεί στατιστική ή διαφημιστική ανάλυση επισκεψιμότητας.</li>
       </ul>
 

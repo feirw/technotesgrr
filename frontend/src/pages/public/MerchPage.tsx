@@ -63,12 +63,52 @@ const MerchPage: React.FC = () => {
         </div>
       </section>
 
+
+      {/*images of the agenda*/} 
+      <section className="py-20 px-6 bg-red dark:bg-purple/5 backdrop-blur-lg">
+      <div className="text-center mb-16">
+            <h2 className="text-4xl font-black mb-4 text-pink-600">
+              Μερικές σελίδες από την Ατζέντα!            </h2>
+          </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        {[
+        {
+          image: "/images/6.png"
+        },
+        {
+          image: "/images/15.png"
+        },
+        {
+          image: "/images/20.png"
+        },
+        {
+          image: "/images/27.png"
+        },
+        ].map((feature, i) => (
+        <motion.div
+          key={i}
+          whileHover={{ y: -10 }}
+          className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-pink-50 dark:border-gray-700 text-center"
+        >
+          <img src={feature.image} alt={`Image ${i + 1}`} />
+        </motion.div>
+        ))}
+
+              
+            
+          </div>
+      
+      </section>
+
+
+
       {/* ✨ Features Section */}
       <section className="py-20 px-6 bg-white/60 dark:bg-white/5 backdrop-blur-lg">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black mb-4 text-pink-600">
-              Γιατί είναι απαραίτητη;
+              Γιατί σου είναι απαραίτητη;
             </h2>
           </div>
 

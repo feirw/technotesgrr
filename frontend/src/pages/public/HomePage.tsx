@@ -57,7 +57,7 @@ const heroImages: HeroImage[] = [
 
 const reviewsData: Review[] = [
   {
-    name: 'Μαρία Π.',
+    name: 'Ρία Κ.',
     rating: 5,
     description:
       'Οι σημειώσεις είναι εξαιρετικές! Με βοήθησαν πάρα πολύ να κατανοήσω την ύλη της πληροφορικής. Το quiz είναι διασκεδαστικό και εκπαιδευτικό!',
@@ -98,13 +98,13 @@ const featuresData: Feature[] = [
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
     icon: '💡',
-    gradient: 'from-purple-500 to-indigo-500',
+    gradient: 'from-pink-500 to-pink-700',
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
     icon: '📝',
-    gradient: 'from-blue-500 to-cyan-500',
+    gradient: 'from-pink-500 to-pink-600',
   },
 ];
 

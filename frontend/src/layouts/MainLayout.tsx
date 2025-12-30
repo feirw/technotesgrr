@@ -19,6 +19,7 @@ import {
   User,
   ChevronDown,
   Shield,
+  School2Icon,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
@@ -324,6 +325,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
                         Προσανατολισμός
                       </MobileNavButton>
+                      <MobileNavButton to ="/sxoles" icon={School2Icon} onClick={closeMenu} >
+                       Σχολές
+                      </MobileNavButton>
+
                       <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                         Online Μαθήματα
                       </MobileNavButton>
@@ -367,7 +372,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   )}
                   <div className="my-2 border-t border-gray-100 dark:border-gray-800" />
                   <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
-                    Σχολικά είδη
+                    Ατζέντα
                   </MobileNavButton>
                 </div>
               </div>
@@ -388,7 +393,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
-              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές Πληροφορικής.
+              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές στο μάθημα της Πληροφορικής.
             </p>
           </motion.div>
 
