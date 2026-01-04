@@ -19,40 +19,67 @@ const RegisterPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError(''); // Καθαρισμός σφάλματος κατά την πληκτρολόγηση
+  };
+
+  const validateForm = () => {
+    // 1. Email Client-side Validation (Regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email.');
+      return false;
+    }
+
+    // 2. Password Match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Οι κωδικοί πρόσβασης δεν ταιριάζουν.');
+      return false;
+    }
+
+    // 3. Password Length
+    if (formData.password.length < 6) {
+      setError('Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.');
+      return false;
+    }
+
+    // 4. Username Length
+    if (formData.username.trim().length < 3) {
+      setError('Το Username πρέπει να έχει τουλάχιστον 3 χαρακτήρες.');
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // Validation
-    if (formData.password !== formData.confirmPassword) {
-      return setError('Οι κωδικοί πρόσβασης δεν ταιριάζουν.');
-    }
-    if (formData.password.length < 6) {
-      return setError('Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.');
-    }
-    if (formData.username.length < 3) {
-      return setError('Το Username πρέπει να έχει τουλάχιστον 3 χαρακτήρες.');
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
 
     try {
+      // Υποθέτουμε ότι το signup επιστρέφει error αν αποτύχει η δημιουργία
       await signup(formData.email, formData.password, formData.username);
       setSuccess(true);
     } catch (err: any) {
       console.error('Registration error:', err);
+      
+      // 5. Βελτιωμένο Error Handling
       const message = err.message || '';
-
-      if (message.includes('User already registered')) {
+      
+      if (message.includes('User already registered') || message.includes('already exists')) {
         setError('Αυτό το email χρησιμοποιείται ήδη.');
       } else if (message.includes('Password should be')) {
         setError('Ο κωδικός είναι πολύ αδύναμος.');
-      } else if (message.includes('fetch')) {
+      } else if (message.includes('fetch') || message.includes('network')) {
         setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet σας.');
+      } else if (message.includes('confirmation')) {
+        // Ειδική περίπτωση για αποτυχία αποστολής email
+        setError('Ο λογαριασμός δημιουργήθηκε, αλλά υπήρξε πρόβλημα με το email επιβεβαίωσης. Επικοινωνήστε με την υποστήριξη.');
       } else {
-        setError('Προέκυψε σφάλμα κατά την εγγραφή. Δοκιμάστε ξανά.');
+        setError(err.message || 'Προέκυψε σφάλμα κατά την εγγραφή. Δοκιμάστε ξανά.');
       }
     } finally {
       setLoading(false);
@@ -119,7 +146,7 @@ const RegisterPage: React.FC = () => {
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             {error && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -146,10 +173,9 @@ const RegisterPage: React.FC = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none transition-all dark:text-white"
                 placeholder="π.χ. CyberStudent24"
                 required
-                minLength={3}
                 disabled={loading}
               />
             </div>
@@ -165,7 +191,7 @@ const RegisterPage: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none transition-all dark:text-white"
                 placeholder="name@example.com"
                 required
                 disabled={loading}
@@ -185,10 +211,9 @@ const RegisterPage: React.FC = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none transition-all dark:text-white"
                 placeholder="Τουλάχιστον 6 χαρακτήρες"
                 required
-                minLength={6}
                 disabled={loading}
               />
             </div>
@@ -206,7 +231,7 @@ const RegisterPage: React.FC = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all dark:text-white"
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none transition-all dark:text-white"
                 placeholder="Ξανά τον κωδικό"
                 required
                 disabled={loading}

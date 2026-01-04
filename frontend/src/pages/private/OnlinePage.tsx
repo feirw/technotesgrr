@@ -26,8 +26,8 @@ const LESSONS: Lesson[] = [
     description: 'Η έννοια του προβλήματος, Κατανόηση και Δομή προβλήματος, Καθορισμός Απαιτήσεων.',
     duration: '45 λεπτά',
     category: 'Θεωρητικά Μαθήματα',
-    thumbnail: '/images/1.jpg',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    thumbnail: '/images/m.png',
+    videoUrl: 'https://www.youtube.com/embed/Ht2-2PMPvcY?si=whQ8m8fFoQJbt21n',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
     views: 1500,
@@ -47,7 +47,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 1024,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 3,
@@ -62,7 +62,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 756,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 4,
@@ -76,7 +76,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 1100,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 5,
@@ -90,7 +90,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 890,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 6,
@@ -104,7 +104,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 7,
@@ -118,7 +118,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 8,
@@ -132,7 +132,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
   {
     id: 9,
@@ -146,7 +146,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 645,
     level: 'Easy',
-    locked: false,
+    locked: true,
   },
 
   // ═══════════════════════════════════════════════════════════════
@@ -167,7 +167,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 543,
     level: 'Medium',
-    locked: false,
+    locked: true,
   },
   {
     id: 11,
@@ -182,7 +182,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 489,
     level: 'Medium',
-    locked: false,
+    locked: true,
   },
   {
     id: 12,
@@ -197,7 +197,7 @@ const LESSONS: Lesson[] = [
     instructor: 'Ελένη Ζαφείρη',
     views: 612,
     level: 'Medium',
-    locked: false,
+    locked: true,
   },
   {
     id: 13,
@@ -1163,7 +1163,7 @@ const OnlinePage: React.FC = () => {
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4">
               <div className="text-3xl font-black">{unlockedLessons}</div>
-              <div className="text-sm text-pink-100">Δωρεάν 🎁</div>
+              <div className="text-sm text-pink-100">Διαθέσιμα 🎁</div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4">
               <div className="text-3xl font-black">{lockedLessons}</div>

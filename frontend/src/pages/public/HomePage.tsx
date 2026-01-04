@@ -7,7 +7,6 @@ import {
   useTransform,
   MotionConfig,
   AnimatePresence,
-  useMotionValue,
   useSpring,
 } from 'framer-motion';
 
@@ -90,7 +89,7 @@ const reviewsData: Review[] = [
 const featuresData: Feature[] = [
   {
     title: 'Online Καταγεγραμμένα Μαθήματα',
-    desc: 'Καλύπτουν σε βάθος τη θεωρία,μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
+    desc: 'Καλύπτουν σε βάθος τη θεωρία, μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
     icon: '👩🏻‍💻',
     gradient: 'from-pink-500 to-rose-500',
   },
@@ -122,17 +121,17 @@ const faqData: FaqItem[] = [
   {
     question: 'Πώς μπορώ να παρακολουθήσω την πρόοδό μου;',
     answer:
-      'Μέσα από τα quiz και τα flashcards μπορείς να δεις τις απαντήσεις σου και να εντοπίσεις τα σημεία που χρειάζονται περισσότερη μελέτη. Κάθε quiz σου δίνει άμεσο feedback. Αν δυσκολεύεσαι πολύ με κάτι μπορείς να επικοινωνήσεις μαζί μας για επιπλέον βοήθεια!',
+      'Μέσα από τα quiz και τα flashcards μπορείς να δεις τις απαντήσεις σου και να εντοπίσεις τα σημεία που χρειάζονται περισσότερη μελέτη. Κάθε quiz σου δίνει άμεσο feedback.',
   },
   {
     question: 'Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό μου;',
     answer:
-      'Απολύτως! Η πλατφόρμα είναι πλήρως responsive και λειτουργεί άψογα σε κινητά, tablets και υπολογιστές. Μπορείς να μελετάς όπου και όποτε θέλεις!',
+      'Απολύτως! Η πλατφόρμα είναι πλήρως responsive και λειτουργεί άψογα σε κινητά, tablets και υπολογιστές.',
   },
   {
     question: 'Πόσο συχνά ενημερώνεται το περιεχόμενο;',
     answer:
-      'Ενημερώνουμε τακτικά το περιεχόμενο με νέα quiz, flashcards και βελτιωμένες σημειώσεις. Παρακολουθούμε επίσης τις τάσεις των Πανελλαδικών για να προσθέτουμε σχετικό υλικό.',
+      'Ενημερώνουμε τακτικά το περιεχόμενο με νέα quiz, flashcards και βελτιωμένες σημειώσεις.',
   },
   {
     question: 'Μπορώ να κάνω ερωτήσεις αν δυσκολευτώ;',
@@ -284,8 +283,6 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, icon, gradient, 
   >
     <motion.div
       className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-      initial={{ scale: 0.8, rotate: 45 }}
-      whileHover={{ scale: 1, rotate: 0 }}
     />
 
     <div
@@ -330,11 +327,6 @@ const StarRating: React.FC<{ value?: number }> = ({ value = 0 }) => {
           aria-hidden="true"
           initial={{ scale: 0, rotate: -180, opacity: 0 }}
           animate={{ scale: 1, rotate: 0, opacity: 1 }}
-          whileHover={{
-            scale: 1.3,
-            rotate: 360,
-            transition: { duration: 0.4 },
-          }}
           transition={{
             type: 'spring',
             stiffness: 260,
@@ -345,7 +337,6 @@ const StarRating: React.FC<{ value?: number }> = ({ value = 0 }) => {
           ★
         </motion.span>
       ))}
-      <span className="sr-only">{clamped}/5</span>
     </div>
   );
 };
@@ -452,19 +443,6 @@ const HomePage: React.FC = () => {
     damping: 30,
   });
 
-  // Mouse tracking for potential parallax (currently setup listeners only)
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-
   // Contact form state
   const [contactForm, setContactForm] = useState<ContactFormState>({
     firstName: '',
@@ -485,20 +463,27 @@ const HomePage: React.FC = () => {
   const successId = useId();
   const errorId = useId();
 
+  // 1. Διόρθωση Contact Form: Καθαρισμός error όταν πληκτρολογεί
   const handleContactInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
       setContactForm((prev) => ({ ...prev, [name]: value }));
+      if (contactError) setContactError(''); // Reset error on change
     },
-    []
+    [contactError]
   );
 
+  // 2. Διόρθωση Form Validation: Email pattern check
   const validate = useCallback((): string | null => {
     if (contactForm.website) return 'Spam detected.';
     if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim())
       return 'Συμπλήρωσε όνομα, email και μήνυμα.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email))
-      return 'Το email δεν φαίνεται έγκυρο.';
+    
+    // Πιο αυστηρό email regex για client-side validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(contactForm.email))
+      return 'Το email δεν φαίνεται έγκυρο. Παρακαλώ ελέγξτε τη μορφή (π.χ. user@example.com).';
+      
     return null;
   }, [contactForm]);
 
@@ -515,10 +500,7 @@ const HomePage: React.FC = () => {
       setContactSubmitting(true);
 
       try {
-        // Here you would typically call your backend API or EmailJS
-        // For now, we simulate success
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
         setContactSuccess(true);
         setContactForm({
           firstName: '',
@@ -541,7 +523,6 @@ const HomePage: React.FC = () => {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
-        {/* Progress Bar */}
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 origin-left z-50 shadow-lg shadow-pink-500/50"
           style={{ scaleX }}
@@ -550,8 +531,6 @@ const HomePage: React.FC = () => {
         {/* 🚀 HERO SECTION 🚀 */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 md:py-0">
           <FloatingParticles />
-
-          {/* Animated gradient background */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-br from-pink-100 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900"
             animate={{
@@ -562,20 +541,11 @@ const HomePage: React.FC = () => {
                 'linear-gradient(to bottom right, #fce7f3, #ffe4e6, #fee2e2)',
               ],
             }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
           />
 
           <div className="container mx-auto px-6 relative z-10 text-center">
-            {/* Title Block */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
               <motion.h1
                 className="text-4xl md:text-7xl font-black mb-4 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent drop-shadow-lg"
                 initial={{ opacity: 0, y: 30 }}
@@ -591,8 +561,7 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
               >
-                Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας
-                για τις Πανελλήνιες.
+                Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας για τις Πανελλήνιες.
               </motion.p>
 
               <button
@@ -603,7 +572,6 @@ const HomePage: React.FC = () => {
               </button>
             </motion.div>
 
-            {/* Image Grid Container */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-16">
               {heroImages.map((image, index) => (
                 <AnimatedImageBox
@@ -620,19 +588,8 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Features Section */}
-        <Section
-          id="features"
-          title="Τι προσφέρουμε;"
-          subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες"
-          withGradient
-        >
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12"
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+        <Section id="features" title="Τι προσφέρουμε;" subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες" withGradient>
+          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12" variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }}>
             {featuresData.map((feat, idx) => (
               <FeatureCard key={feat.title} {...feat} i={idx} />
             ))}
@@ -640,50 +597,14 @@ const HomePage: React.FC = () => {
         </Section>
 
         {/* Reviews Section */}
-        <Section
-          id="reviews"
-          title="Τι λένε οι μαθητές μας;"
-          className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10"
-        >
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center py-20">
-                <motion.div
-                  className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                />
-              </div>
-            }
-          >
-            <motion.div
-              className="max-w-5xl mx-auto space-y-8"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
+        <Section id="reviews" title="Τι λένε οι μαθητές μας;" className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10">
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>}>
+            <motion.div className="max-w-5xl mx-auto space-y-8" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
               {reviewsData.map((review, idx) => (
-                <motion.div
-                  key={idx}
-                  className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50"
-                  initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ delay: idx * 0.1, duration: 0.6 }}
-                  whileHover={{
-                    scale: 1.02,
-                    boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)',
-                    transition: { duration: 0.3 },
-                  }}
-                >
+                <motion.div key={idx} className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50" initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: idx * 0.1, duration: 0.6 }} whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)' }}>
                   <StarRating value={review.rating} />
-                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-lg leading-relaxed italic">
-                    "{review.description}"
-                  </p>
-                  <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">
-                    — {review.name}
-                  </p>
+                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-lg leading-relaxed italic">"{review.description}"</p>
+                  <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">— {review.name}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -691,74 +612,28 @@ const HomePage: React.FC = () => {
         </Section>
 
         {/* FAQ Section */}
-        <Section
-          id="faq"
-          title="Συχνές Ερωτήσεις"
-          withGradient
-        >
+        <Section id="faq" title="Συχνές Ερωτήσεις" withGradient>
           <div className="max-w-3xl mx-auto space-y-4">
-            {faqData.map((faq, index) => (
-              <FAQItem key={index} {...faq} index={index} />
-            ))}
+            {faqData.map((faq, index) => (<FAQItem key={index} {...faq} index={index} />))}
           </div>
         </Section>
 
         {/* Contact Section */}
-        <Section
-          id="contact"
-          title="Επικοινώνησε μαζί μας"
-          subtitle="Έχεις απορίες ή προτάσεις; Στείλε μας μήνυμα!"
-          withGradient
-        >
-          <motion.form
-            onSubmit={handleContactSubmit}
-            className="max-w-2xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            {/* Honeypot */}
-            <input
-              type="text"
-              name="website"
-              value={contactForm.website}
-              onChange={handleContactInputChange}
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              className="sr-only"
-            />
+        <Section id="contact" title="Επικοινώνησε μαζί μας" subtitle="Έχεις απορίες ή προτάσεις; Στείλε μας μήνυμα!" withGradient>
+          <motion.form onSubmit={handleContactSubmit} className="max-w-2xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+            <input type="text" name="website" value={contactForm.website} onChange={handleContactInputChange} tabIndex={-1} autoComplete="off" aria-hidden="true" className="sr-only" />
 
-            {/* Success Message */}
             <AnimatePresence>
               {contactSuccess && (
-                <motion.div
-                  id={successId}
-                  role="alert"
-                  className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg"
-                  initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                >
-                  <p className="text-green-700 dark:text-green-300 font-semibold">
-                    ✓ Το μήνυμά σου στάλθηκε επιτυχώς!
-                  </p>
+                <motion.div id={successId} role="alert" className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                  <p className="text-green-700 dark:text-green-300 font-semibold">✓ Το μήνυμά σου στάλθηκε επιτυχώς!</p>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Error Message */}
             <AnimatePresence>
               {contactError && (
-                <motion.div
-                  id={errorId}
-                  role="alert"
-                  className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 rounded-lg"
-                  initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                >
+                <motion.div id={errorId} role="alert" className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 rounded-lg" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                   <p className="text-red-700 dark:text-red-300 font-semibold">{contactError}</p>
                 </motion.div>
               )}
@@ -766,110 +641,43 @@ const HomePage: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label
-                  htmlFor={firstId}
-                  className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
-                >
-                  Όνομα *
-                </label>
-                <motion.input
-                  id={firstId}
-                  name="firstName"
-                  value={contactForm.firstName}
-                  onChange={handleContactInputChange}
-                  required
-                  autoComplete="given-name"
-                  className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
-                  placeholder="π.χ. Μαρία"
-                  whileFocus={{ scale: 1.02, borderColor: '#ec4899' }}
-                  transition={{ duration: 0.2 }}
-                />
+                <label htmlFor={firstId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Όνομα *</label>
+                <motion.input id={firstId} name="firstName" value={contactForm.firstName} onChange={handleContactInputChange} required autoComplete="given-name" className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all" placeholder="π.χ. Μαρία" whileFocus={{ scale: 1.02 }} />
               </div>
               <div>
-                <label
-                  htmlFor={lastId}
-                  className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
-                >
-                  Επώνυμο
-                </label>
-                <motion.input
-                  id={lastId}
-                  name="lastName"
-                  value={contactForm.lastName}
-                  onChange={handleContactInputChange}
-                  autoComplete="family-name"
-                  className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
-                  placeholder="π.χ. Παπαδοπούλου"
-                  whileFocus={{ scale: 1.02, borderColor: '#ec4899' }}
-                  transition={{ duration: 0.2 }}
-                />
+                <label htmlFor={lastId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Επώνυμο</label>
+                <motion.input id={lastId} name="lastName" value={contactForm.lastName} onChange={handleContactInputChange} autoComplete="family-name" className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all" placeholder="π.χ. Παπαδοπούλου" whileFocus={{ scale: 1.02 }} />
               </div>
             </div>
 
             <div className="mt-6">
-              <label
-                htmlFor={emailId}
-                className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
-              >
-                Email *
-              </label>
-              <motion.input
-                id={emailId}
-                name="email"
-                type="email"
-                value={contactForm.email}
-                onChange={handleContactInputChange}
-                required
-                inputMode="email"
-                autoComplete="email"
-                className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
-                placeholder="name@example.com"
-                whileFocus={{ scale: 1.02, borderColor: '#ec4899' }}
-                transition={{ duration: 0.2 }}
+              <label htmlFor={emailId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Email *</label>
+              {/* 3. Client-side email validation via type and pattern */}
+              <motion.input 
+                id={emailId} 
+                name="email" 
+                type="email" 
+                value={contactForm.email} 
+                onChange={handleContactInputChange} 
+                required 
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                inputMode="email" 
+                autoComplete="email" 
+                className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all" 
+                placeholder="name@example.com" 
+                whileFocus={{ scale: 1.02 }} 
               />
             </div>
 
             <div className="mt-6">
-              <label
-                htmlFor={msgId}
-                className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
-              >
-                Μήνυμα *
-              </label>
-              <motion.textarea
-                id={msgId}
-                name="message"
-                rows={6}
-                value={contactForm.message}
-                onChange={handleContactInputChange}
-                required
-                className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-y transition-all"
-                placeholder="Γράψε εδώ την απορία/πρότασή σου…"
-                whileFocus={{ scale: 1.01, borderColor: '#ec4899' }}
-                transition={{ duration: 0.2 }}
-              />
+              <label htmlFor={msgId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Μήνυμα *</label>
+              <motion.textarea id={msgId} name="message" rows={6} value={contactForm.message} onChange={handleContactInputChange} required className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white resize-y transition-all" placeholder="Γράψε εδώ την απορία/πρότασή σου…" whileFocus={{ scale: 1.01 }} />
             </div>
 
             <div className="mt-8 flex items-center gap-4">
-              <motion.button
-                type="submit"
-                disabled={contactSubmitting}
-                className="relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: '0 20px 40px rgba(236, 72, 153, 0.4)',
-                }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="relative z-10">
-                  {contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}
-                </span>
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-500"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
+              <motion.button type="submit" disabled={contactSubmitting} className="relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <span className="relative z-10">{contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}</span>
+                <motion.div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-500" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ duration: 0.3 }} />
               </motion.button>
               <p className="text-sm text-gray-500 dark:text-gray-400">* Υποχρεωτικά πεδία</p>
             </div>

@@ -196,7 +196,7 @@ const ALL_SCHOOLS: School[] = [
     requirements: 'Ξένη Γλώσσα',
   },
   {
-    id: '613',
+    id: '616',
     name: 'Αστε Ρόδου (ΑΣΤΕΡ)',
     uni: 'ΑΣΤΕ',
     city: 'Ρόδος',
@@ -1065,7 +1065,7 @@ const ALL_SCHOOLS: School[] = [
     name: 'Στατιστικής και Ασφαλιστικής Επιστήμης',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 14440,
+    points: 13070,
     ebe: '12.6',
     category: 'Στατιστική',
   },
@@ -1829,7 +1829,7 @@ const ALL_SCHOOLS: School[] = [
   },
 ];
 
-const BasesPage: React.FC = () => {
+const SchoolsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [activeCity, setActiveCity] = useState('Όλες');
 
@@ -1999,4 +1999,4 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => (
   </motion.div>
 );
 
-export default BasesPage;
+export default SchoolsPage;

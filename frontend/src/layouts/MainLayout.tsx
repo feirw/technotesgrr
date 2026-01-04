@@ -426,6 +426,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 LinkedIn: technotesgr
               </a>
+              <a
+                href="https://www.youtube.com/@technotesgr-elenizafeiri"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
+              >
+                YouTube: technotesgr
+              </a>
             </div>
           </motion.div>
 

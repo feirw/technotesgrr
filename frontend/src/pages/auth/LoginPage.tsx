@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LogIn, Mail, Lock, AlertTriangle, UserPlus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,55 +9,83 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  
+  // 1. Ref για την αποφυγή update σε unmounted component
+  const isMounted = useRef(true);
+  // 2. Ref για το timeout ώστε να είναι προσβάσιμο παντού
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { login } = useAuth();
+
+  // Cleanup effect για το unmount
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    // Καθαρισμός προηγούμενου timeout αν υπάρχει
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     // Safety timeout - stop loading after 15 seconds
-    const safetyTimeout = setTimeout(() => {
-      setLoading(false);
-      setError('Η σύνδεση κράτησε πολύ. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
+    timeoutRef.current = setTimeout(() => {
+      if (isMounted.current) {
+        setLoading(false);
+        setError('Η σύνδεση κράτησε πολύ. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
+      }
     }, 15000);
 
     try {
       console.log('🚀 Attempting login...');
       await login(email, password);
-      clearTimeout(safetyTimeout);
-      // Login successful - AuthContext will handle navigation
-      console.log('✅ Login completed');
+      
+      // 3. Ρητή επιτυχία
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      
+      if (isMounted.current) {
+        setLoading(false); // Ρητή κλήση setLoading(false)
+        console.log('✅ Login completed');
+      }
     } catch (err: any) {
-      clearTimeout(safetyTimeout);
-      console.error('❌ Login error:', err);
-      setLoading(false);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      
+      if (isMounted.current) {
+        console.error('❌ Login error:', err);
+        setLoading(false);
 
-      const message = err?.message || '';
+        const message = err?.message || '';
 
-      // Map error messages to user-friendly Greek
-      if (message.includes('Invalid login credentials') || message.includes('Invalid')) {
-        setError('Λάθος email ή κωδικός πρόσβασης.');
-      } else if (message.includes('Email not confirmed')) {
-        setError('Παρακαλώ επιβεβαιώστε το email σας πριν συνδεθείτε.');
-      } else if (
-        message.includes('fetch') ||
-        message.includes('network') ||
-        message.includes('timeout')
-      ) {
-        setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet και τα Supabase credentials.');
-      } else if (message.includes('authentication') || message.includes('σύστημα')) {
-        setError(
-          'Το σύστημα authentication δεν είναι ρυθμισμένο. Επικοινωνήστε με τον διαχειριστή.'
-        );
-      } else {
-        setError(message || 'Προέκυψε σφάλμα σύνδεσης. Δοκιμάστε ξανά.');
+        // Map error messages to user-friendly Greek
+        if (message.includes('Invalid login credentials') || message.includes('Invalid')) {
+          setError('Λάθος email ή κωδικός πρόσβασης.');
+        } else if (message.includes('Email not confirmed')) {
+          setError('Παρακαλώ επιβεβαιώστε το email σας πριν συνδεθείτε.');
+        } else if (
+          message.includes('fetch') ||
+          message.includes('network') ||
+          message.includes('timeout')
+        ) {
+          setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet και τα Supabase credentials.');
+        } else if (message.includes('authentication') || message.includes('σύστημα')) {
+          setError(
+            'Το σύστημα authentication δεν είναι ρυθμισμένο. Επικοινωνήστε με τον διαχειριστή.'
+          );
+        } else {
+          setError(message || 'Προέκυψε σφάλμα σύνδεσης. Δοκιμάστε ξανά.');
+        }
       }
     }
   };
 
   return (
+    // ... Το υπόλοιπο JSX παραμένει το ίδιο ...
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
