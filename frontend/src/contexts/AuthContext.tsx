@@ -117,13 +117,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
-    // CRITICAL: Maximum 2 second loading timeout
+    // Increased timeout for better session restoration support
+    // This gives more time for the session to be restored on slower connections
     loadingTimeoutRef.current = setTimeout(() => {
       if (loading) {
-        console.warn('⚠️ Auth loading timeout - forcing to false');
+        console.warn('⚠️ Auth loading timeout - forcing to false after 5 seconds');
         setLoading(false);
       }
-    }, 2000);
+    }, 5000);
 
     const initializeAuth = async () => {
       if (isInitialized.current) return;
@@ -137,20 +138,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
+        // Use getSession which is synchronous and checks localStorage first
         const sessionPromise = supabase.auth.getSession();
         const {
           data: { session },
           error,
-        } = await withTimeout(sessionPromise, 3000);
+        } = await withTimeout(sessionPromise, 4000);
 
-        if (error) throw error;
+        if (error) {
+          console.warn('⚠️ Session fetch error (non-critical):', error.message);
+          // Don't throw - allow the app to continue
+        }
 
         if (session?.user) {
           const profile = await fetchProfileSafe(session.user);
           setUser(profile);
+          console.log('✅ Session restored on page load');
+        } else {
+          console.log('ℹ️ No active session found');
         }
       } catch (err) {
         console.error('Auth init error:', err);
+        // Don't block the app - set loading to false so user can see what's happening
       } finally {
         if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
         setLoading(false);
@@ -217,8 +226,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Small delay to ensure state update
         await new Promise((resolve) => setTimeout(resolve, 100));
 
-        console.log('✅ Redirecting to profile...');
-        navigate('/profile', { replace: true });
+        // Don't redirect here - let the AuthRedirectHandler or the component handle it
+        // This allows the user to stay on their intended page after login
+        console.log('✅ Login successful, user state updated');
       }
     } catch (error: any) {
       console.error('❌ Login failed:', error);

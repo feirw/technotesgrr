@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Code,
   Briefcase,
@@ -10,6 +10,7 @@ import {
   CheckCircle,
   GraduationCap,
   LucideIcon,
+  RotateCcw,
 } from 'lucide-react';
 
 /**
@@ -73,17 +74,17 @@ const QUESTIONS: Record<number, string> = {
   // ΕΝΟΤΗΤΑ ΣΤ: ΣΩΜΑΤΑ ΑΣΦΑΛΕΙΑΣ & ΕΦΑΑ (SOMATA)
   16: 'Με ελκύει η στρατιωτική/αστυνομική ζωή, η πειθαρχία και η ιεραρχία.',
   17: 'Έχω εξαιρετική φυσική κατάσταση και θα με ενδιέφερε μια καριέρα που απαιτεί σωματική ετοιμότητα.',
-  18: 'Θέλω μια καριέρα με σαφείς ρόλους, προσφορά στην πατρίδα/ασφάλεια και σταθερότητα (Στρατός, Αστυνομία, Πυροσβεστική).',
-  19: 'Με ενδιαφέρει η εκγύμναση και η προπόνηση αθλητών (Επιστήμη Φυσικής Αγωγής & Αθλητισμού - ΕΦΑΑ).',
+  18: 'Θέλω μια καριέρα με σαφείς ρόλους, προσφορά στην πατρίδα/ασφάλεια και σταθερότητα.',
+  19: 'Με ενδιαφέρει η εκγύμναση και η προπόνηση αθλητών.',
   // ΕΝΟΤΗΤΑ Ζ: ΠΑΙΔΑΓΩΓΙΚΑ (PEDAGOGIKA)
-  20: 'Με ενδιαφέρει η διδασκαλία και η φροντίδα παιδιών προσχολικής ή σχολικής ηλικίας (Δημοτικό/Νηπιαγωγείο).',
+  20: 'Με ενδιαφέρει η διδασκαλία και η φροντίδα παιδιών προσχολικής ή σχολικής ηλικίας .',
   21: 'Έχω υπομονή, ενσυναίσθηση και θέλω να συμβάλλω στη γνωστική ανάπτυξη των μαθητών.',
   22: 'Ενδιαφέρομαι για την Ειδική Αγωγή και τη στήριξη μαθητών με ιδιαίτερες ανάγκες.',
   23: 'Προτιμώ μια καριέρα όπου ο κύριος ρόλος μου είναι η εκπαίδευση και η καθοδήγηση.',
   // ΕΝΟΤΗΤΑ Η: ΤΕΧΝΕΣ & ΚΑΛΛΙΤΕΧΝΙΚΕΣ ΣΧΟΛΕΣ (TEXNES)
-  24: 'Έχω έντονο καλλιτεχνικό ενδιαφέρον (π.χ. Μουσική, Θέατρο, Σχέδιο) και θέλω να το σπουδάσω.',
+  24: 'Έχω έντονο καλλιτεχνικό ενδιαφέρον και θέλω να το σπουδάσω.',
   25: 'Με ενδιαφέρει η τεχνική πλευρά της τέχνης, όπως ο Ήχος, η Εικόνα, η Φωτογραφία ή ο Κινηματογράφος.',
-  26: 'Είμαι έτοιμος/η να εξεταστώ σε ειδικά μαθήματα (π.χ. Αρμονία, Σχέδιο) για την εισαγωγή μου.',
+  26: 'Είμαι έτοιμος/η να εξεταστώ σε ειδικά μαθήματα για την εισαγωγή μου.',
   27: 'Η δημιουργία οπτικών έργων (design, γραφιστική) ή η εσωτερική αρχιτεκτονική με ελκύει.',
   // ΕΝΟΤΗΤΑ Θ: ΓΕΝΙΚΕΣ ΠΡΟΤΙΜΗΣΕΙΣ
   28: 'Η επιλογή μου θα πρέπει να οδηγήσει σε επάγγελμα με υψηλή ζήτηση και υψηλές αποδοχές.',
@@ -95,15 +96,71 @@ const QUESTIONS: Record<number, string> = {
   34: 'Ενδιαφέρομαι για την ανακύκλωση, τη βιώσιμη ανάπτυξη και το περιβάλλον.',
   35: 'Με ενδιαφέρει να ασχοληθώ με την ανάλυση κινδύνου και την ασφαλιστική επιστήμη.',
   36: 'Προτιμώ τη δουλειά γραφείου και τη συστηματική ανάλυση έναντι των εξωτερικών ή απαιτητικών φυσικά εργασιών.',
-  37: 'Μου αρέσει να δουλεύω με παιδιά (Παιδαγωγικά) και με ενδιαφέρει η ψυχολογία της ανάπτυξης.',
-  38: 'Η δημιουργία (π.χ. σκηνοθεσία, σύνθεση) είναι πιο σημαντική από την ερμηνεία ενός έτοιμου ρόλου.',
+  37: 'Μου αρέσει να δουλεύω με παιδιά και με ενδιαφέρει η ψυχολογία της ανάπτυξης.',
+  38: 'Η δημιουργία είναι πιο σημαντική από την ερμηνεία ενός έτοιμου ρόλου.',
   39: 'Η ιδέα της ένταξης σε ένα Σώμα με αυστηρούς κανονισμούς μου προσφέρει ασφάλεια.',
   40: 'Θα προτιμούσα μια καριέρα που συνδυάζει Οικονομία/Διοίκηση με τη Ναυτιλία/Διεθνείς Σχέσεις.',
-  41: 'Είμαι οργανωτικός/ή και με ενδιαφέρει η μεθοδική καταγραφή (π.χ. Αρχειονομία, Βιβλιοθηκονομία).',
+  41: 'Είμαι οργανωτικός/ή και με ενδιαφέρει η μεθοδική καταγραφή.',
   42: 'Έχω καλή αίσθηση του χώρου και με ενδιαφέρει η αρχιτεκτονική ή ο σχεδιασμός προϊόντων.',
   43: 'Η επιλογή σχολής πρέπει να είναι μια από τις πιο ανταγωνιστικές και υψηλόβαθμες (βάσει μορίων).',
-  44: 'Είμαι καλός/ή στην ιστορία, τη φιλοσοφία και τη θεωρητική ανάλυση (Ιστορίας και Φιλοσοφίας της Επιστήμης).',
+  44: 'Είμαι καλός/ή στην ιστορία, τη φιλοσοφία και τη θεωρητική ανάλυση.',
   45: 'Η δημόσια διοίκηση και η νομική/κοινωνική πολιτική με ελκύουν.',
+  // ΕΝΟΤΗΤΑ Ι: ΧΑΡΑΚΤΗΡΑΣ & ΠΡΟΣΩΠΙΚΟΤΗΤΑ
+  46: 'Είμαι οργανωτικός/ή και μου αρέσει να έχω τα πάντα σε τάξη και προγραμματισμένα.',
+  47: 'Προτιμώ να δουλεύω μόνος/η μου παρά σε ομάδα.',
+  48: 'Είμαι άτομο που λαμβάνει γρήγορες αποφάσεις και δεν με πτοεί η αλλαγή.',
+  49: 'Μου αρέσει να βοηθώ άλλους και να λύνω τα προβλήματά τους.',
+  50: 'Είμαι περιπετειώδης τύπος και μου αρέσει να δοκιμάζω νέα πράγματα.',
+  51: 'Προτιμώ τη σταθερότητα και την ασφάλεια έναντι της αβεβαιότητας.',
+  52: 'Είμαι δημιουργικός/ή και μου αρέσει να φαντασιώνω και να σχεδιάζω.',
+  53: 'Μου αρέσει να ασχολούμαι με πολλά διαφορετικά πράγματα ταυτόχρονα.',
+  54: 'Είμαι λεπτολόγος/ος και προσεκτικός/ή στις λεπτομέρειες.',
+  55: 'Προτιμώ να ακολουθώ καθορισμένες διαδικασίες και κανόνες.',
+  56: 'Είμαι κοινωνικός/ή και μου αρέσει να συνεργάζομαι με άλλους.',
+  57: 'Μου αρέσει να αναλύω προβλήματα βαθιά πριν πάρω αποφάσεις.',
+  58: 'Είμαι αμφιθυμικός/ή και μου αρέσει να κάνω παρέα με πολλούς ανθρώπους.',
+  59: 'Προτιμώ να έχω πολύ προσωπικό χρόνο και χώρο.',
+  60: 'Είμαι ανταγωνιστικός/ή και θέλω να είμαι ο καλύτερος/η σε ότι κάνω.',
+  61: 'Μου αρέσει να διδάσκω και να εξηγώ πράγματα σε άλλους.',
+  62: 'Είμαι ευέλικτος/η και προσαρμόζομαι εύκολα σε νέες καταστάσεις.',
+  63: 'Προτιμώ να έχω καθαρό, οργανωμένο χώρο εργασίας.',
+  64: 'Μου αρέσει να εκφράζω τον εαυτό μου μέσα από την τέχνη ή τη δημιουργία.',
+  65: 'Είμαι πρακτικός/ή και προτιμώ να δω άμεσα τα αποτελέσματα της δουλειάς μου.',
+  66: 'Μου αρέσει να μελετάω και να εμβαθύνω σε ένα θέμα για πολύ ώρα.',
+  67: 'Είμαι ενεργητικός/ή και προτιμώ να είμαι σε κίνηση.',
+  68: 'Μου αρέσει να έχω έναν ηγέτη που μου δίνει σαφείς οδηγίες.',
+  69: 'Είμαι αυτόνομος/η και προτιμώ να παίρνω τις δικές μου αποφάσεις.',
+  70: 'Μου αρέσει να βλέπω τη δουλειά μου να έχει άμεση επίδραση στους ανθρώπους.',
+  71: 'Είμαι υπομονετικός/ή και μου αρέσει να δουλεύω σε μακροπρόθεσμα έργα.',
+  72: 'Προτιμώ να εργάζομαι σε ένα ήσυχο, ήρεμο περιβάλλον.',
+  73: 'Μου αρέσει να λύνω προβλήματα που απαιτούν λογική και ανάλυση.',
+  74: 'Είμαι ευαίσθητος/η και μου αρέσει να κατανοώ τα συναισθήματα των άλλων.',
+  75: 'Προτιμώ να έχω έναν ρουτίνα και προβλέψιμο πρόγραμμα.',
+  76: 'Μου αρέσει να πειραματίζομαι και να δοκιμάζω διαφορετικές λύσεις.',
+  77: 'Είμαι φιλόδοξος/η και θέλω να φτάσω ψηλά στην καριέρα μου.',
+  78: 'Μου αρέσει να δουλεύω σε ένα δυναμικό, γρήγορο περιβάλλον.',
+  79: 'Είμαι συστηματικός/ή και προτιμώ να ακολουθώ μια μέθοδο.',
+  80: 'Μου αρέσει να δημιουργώ κάτι από το μηδέν.',
+  81: 'Είμαι καλός/ή στη διαπραγμάτευση και στην επικοινωνία.',
+  82: 'Προτιμώ να εστιάζω σε ένα έργο τη φορά παρά να κάνω πολλά ταυτόχρονα.',
+  83: 'Μου αρέσει να βλέπω άμεσα τα αποτελέσματα των επιλογών μου.',
+  84: 'Είμαι οργανωτικός/ή και προτιμώ να έχω ένα σχέδιο πριν ξεκινήσω.',
+  85: 'Μου αρέσει να μαθαίνω νέα πράγματα συνεχώς.',
+  86: 'Είμαι ομαδικός/ή παίκτης και μου αρέσει να συνεργάζομαι.',
+  87: 'Προτιμώ να έχω ευκαιρίες για προσωπική ανάπτυξη και ανέλιξη.',
+  88: 'Μου αρέσει να είμαι υπεύθυνος/η για αποτελέσματα και να έχω ελευθερία.',
+  89: 'Είμαι προσεκτικός/ή και προτιμώ να σκεφτώ καλά πριν ενεργήσω.',
+  90: 'Μου αρέσει να βοηθάω άλλους να αναπτυχθούν και να μάθουν.',
+  91: 'Είμαι ανεξάρτητος/η και δεν μου αρέσει να με ελέγχουν συνεχώς.',
+  92: 'Προτιμώ να έχω σταθερό εισόδημα και ασφάλεια εργασίας.',
+  93: 'Μου αρέσει να αντιμετωπίζω προκλήσεις και να λύνω δύσκολα προβλήματα.',
+  94: 'Είμαι ισορροπημένος/η και προτιμώ μια σταθερή ζωή.',
+  95: 'Μου αρέσει να έχω επαφή με πολλά διαφορετικά άτομα.',
+  96: 'Είμαι αυτοπειθαρχημένος/η και μου αρέσει να ορίζω τους δικούς μου στόχους.',
+  97: 'Προτιμώ να δουλεύω σε ένα περιβάλλον με σαφείς κανόνες και ρόλους.',
+  98: 'Μου αρέσει να βλέπω πώς η δουλειά μου συνεισφέρει σε κάτι μεγαλύτερο.',
+  99: 'Είμαι καινοτόμος/η και μου αρέσει να εισάγω νέες ιδέες.',
+  100: 'Προτιμώ να έχω μια καριέρα που μου επιτρέπει να εξισορροπώ την προσωπική και επαγγελματική ζωή.',
 };
 
 // 2. Πίνακας Βαθμολόγησης (Συντελεστές)
@@ -126,7 +183,7 @@ const SCORE_MATRIX: Record<number, number[]> = {
   15: [0, 0, 0, 0, 4, 0, 0, 0],
   16: [0, 0, 0, 0, 0, 0, 3, 0],
   17: [0, 0, 0, 0, 0, 0, 4, 0],
-  18: [0, 0, 0, 0, 0, 0, 0, 2],
+  18: [0, 0, 0, 0, 0, 0, 4, 0], // Σώματα Ασφαλείας (SOMATA) - διορθωμένο από TEXNES
   19: [3, 1, 1, 0, 0, 0, 0, 0],
   20: [0, 0, 0, 0, 0, 4, 0, 0],
   21: [0, 0, 0, 0, 0, 4, 0, 0],
@@ -154,6 +211,62 @@ const SCORE_MATRIX: Record<number, number[]> = {
   43: [1, 1, 1, 1, 1, 0, 2, 0],
   44: [0, 0, 0, 3, 0, 0, 0, 0],
   45: [0, 0, 0, 3, 0, 1, 1, 0],
+  // ΧΑΡΑΚΤΗΡΑΣ & ΠΡΟΣΩΠΙΚΟΤΗΤΑ (46-100)
+  46: [1, 2, 2, 1, 0, 1, 1, 0], // Οργανωτικότητα - FIN, DIOIK
+  47: [2, 2, 0, 2, 0, 0, 0, 2], // Μόνος - INFO, FIN, OIK, TEXNES
+  48: [1, 0, 3, 0, 2, 0, 1, 0], // Γρήγορες αποφάσεις - DIOIK, SERV
+  49: [0, 0, 1, 0, 1, 4, 0, 0], // Βοήθεια - PEDAGOGIKA, DIOIK, SERV
+  50: [2, 0, 2, 0, 3, 0, 2, 2], // Περιπετειώδης - SERV, DIOIK, TEXNES
+  51: [0, 3, 1, 2, 0, 1, 3, 0], // Σταθερότητα - FIN, OIK, SOMATA
+  52: [1, 0, 1, 0, 0, 0, 0, 4], // Δημιουργικός - TEXNES
+  53: [2, 1, 2, 1, 2, 0, 0, 1], // Πολλά ταυτόχρονα - INFO, DIOIK, SERV
+  54: [2, 4, 1, 2, 0, 1, 0, 0], // Λεπτολόγος - FIN, INFO, OIK
+  55: [1, 3, 2, 1, 0, 1, 3, 0], // Διαδικασίες - FIN, DIOIK, SOMATA
+  56: [1, 0, 3, 0, 3, 3, 1, 1], // Κοινωνικός - DIOIK, SERV, PEDAGOGIKA
+  57: [3, 2, 1, 4, 0, 0, 0, 0], // Βαθιά ανάλυση - INFO, OIK
+  58: [0, 0, 3, 0, 3, 3, 0, 1], // Εξωστρέφεια - DIOIK, SERV, PEDAGOGIKA
+  59: [3, 3, 0, 3, 0, 0, 0, 2], // Προσωπικός χώρος - INFO, FIN, OIK, TEXNES
+  60: [2, 1, 3, 1, 2, 0, 3, 2], // Ανταγωνιστικός - DIOIK, SOMATA
+  61: [1, 0, 2, 0, 1, 5, 0, 1], // Διδασκαλία - PEDAGOGIKA
+  62: [2, 1, 3, 0, 3, 1, 1, 2], // Ευέλικτος - DIOIK, SERV
+  63: [2, 3, 2, 1, 0, 1, 1, 0], // Οργανωμένος χώρος - FIN, DIOIK
+  64: [0, 0, 0, 0, 0, 0, 0, 5], // Έκφραση μέσω τέχνης - TEXNES
+  65: [2, 2, 3, 1, 2, 1, 2, 1], // Πρακτικός - DIOIK
+  66: [3, 2, 0, 4, 0, 0, 0, 1], // Μελέτη - INFO, OIK
+  67: [1, 0, 2, 0, 2, 0, 4, 0], // Ενεργητικός - SOMATA, SERV
+  68: [0, 1, 0, 0, 0, 1, 3, 0], // Ηγέτης - SOMATA
+  69: [3, 2, 2, 2, 2, 0, 0, 3], // Αυτόνομος - INFO, FIN, OIK
+  70: [1, 0, 2, 0, 2, 4, 1, 1], // Άμεση επίδραση - PEDAGOGIKA
+  71: [2, 3, 1, 3, 1, 2, 1, 2], // Υπομονετικός - FIN, OIK
+  72: [3, 4, 1, 3, 0, 1, 0, 2], // Ησυχία - FIN, OIK, INFO
+  73: [4, 3, 1, 3, 0, 0, 0, 0], // Λογική - INFO, FIN, OIK
+  74: [0, 0, 1, 0, 1, 4, 0, 1], // Ευαίσθητος - PEDAGOGIKA
+  75: [1, 3, 2, 2, 0, 2, 3, 0], // Ρουτίνα - FIN, SOMATA
+  76: [3, 1, 2, 1, 1, 0, 0, 3], // Πειραματισμός - INFO, TEXNES
+  77: [2, 2, 4, 1, 2, 0, 2, 2], // Φιλόδοξος - DIOIK
+  78: [2, 1, 3, 0, 3, 0, 2, 1], // Δυναμικό - DIOIK, SERV
+  79: [2, 4, 2, 2, 0, 1, 1, 0], // Συστηματικός - FIN, DIOIK
+  80: [3, 0, 2, 0, 1, 0, 0, 4], // Δημιουργία - INFO, TEXNES
+  81: [1, 1, 4, 0, 3, 1, 0, 0], // Διαπραγμάτευση - DIOIK, SERV
+  82: [2, 3, 1, 3, 0, 2, 1, 2], // Ένα έργο - FIN, OIK
+  83: [2, 2, 3, 1, 2, 1, 2, 1], // Άμεσα αποτελέσματα - DIOIK
+  84: [2, 3, 3, 2, 1, 1, 1, 0], // Σχέδιο - FIN, DIOIK
+  85: [3, 2, 2, 3, 2, 2, 1, 2], // Μάθηση - INFO, OIK
+  86: [1, 0, 4, 0, 3, 4, 1, 1], // Ομαδικός - DIOIK, PEDAGOGIKA, SERV
+  87: [2, 2, 4, 1, 2, 1, 2, 2], // Ανάπτυξη - DIOIK
+  88: [3, 2, 3, 2, 2, 0, 1, 2], // Ελευθερία - INFO, DIOIK
+  89: [2, 4, 1, 3, 0, 2, 1, 0], // Προσεκτικός - FIN, OIK
+  90: [0, 0, 2, 0, 1, 5, 0, 0], // Βοήθεια ανάπτυξη - PEDAGOGIKA
+  91: [3, 3, 1, 3, 1, 0, 0, 3], // Ανεξάρτητος - INFO, FIN, OIK
+  92: [1, 4, 2, 2, 1, 1, 3, 0], // Σταθερό εισόδημα - FIN, SOMATA
+  93: [3, 2, 3, 2, 2, 0, 2, 2], // Προκλήσεις - INFO, DIOIK
+  94: [1, 3, 1, 3, 0, 2, 3, 0], // Ισορροπία - FIN, OIK, SOMATA
+  95: [1, 0, 4, 0, 4, 3, 1, 1], // Επαφή με πολλούς - DIOIK, SERV, PEDAGOGIKA
+  96: [3, 2, 2, 3, 1, 1, 2, 2], // Αυτοπειθαρχημένος - INFO, OIK
+  97: [1, 3, 2, 2, 0, 2, 4, 0], // Σαφείς κανόνες - FIN, SOMATA
+  98: [1, 1, 3, 1, 2, 4, 2, 1], // Συνεισφορά - PEDAGOGIKA, DIOIK
+  99: [3, 1, 3, 1, 2, 0, 0, 3], // Καινοτόμος - INFO, DIOIK, TEXNES
+  100: [1, 2, 2, 1, 1, 3, 1, 2], // Ισορροπία ζωής - PEDAGOGIKA, DIOIK
 };
 
 // 3. Κατηγορίες και Πληροφορίες Αποτελεσμάτων
@@ -169,14 +282,26 @@ const CATEGORY_NAMES: CategoryKey[] = [
 ];
 
 const RECALCULATED_MAX_SCORES: Record<CategoryKey, number> = {
-  INFO: 170,
-  FIN: 155,
-  DIOIK: 140,
-  OIK: 125,
-  SERV: 110,
-  PEDAGOGIKA: 80,
-  SOMATA: 80,
-  TEXNES: 95,
+  INFO: 248, // 170 + 78 (from questions 46-100)
+  FIN: 287, // 155 + 132
+  DIOIK: 261, // 140 + 121
+  OIK: 235, // 125 + 110
+  SERV: 205, // 110 + 95
+  PEDAGOGIKA: 200, // 80 + 120
+  SOMATA: 153, // 80 + 73
+  TEXNES: 190, // 95 + 95
+};
+
+// Mapping για border colors (Tailwind CSS δεν υποστηρίζει dynamic classes)
+const BORDER_COLOR_MAP: Record<CategoryKey, string> = {
+  INFO: 'border-fuchsia-600',
+  FIN: 'border-pink-600',
+  DIOIK: 'border-rose-600',
+  OIK: 'border-red-500',
+  SERV: 'border-purple-600',
+  PEDAGOGIKA: 'border-pink-400',
+  SOMATA: 'border-rose-400',
+  TEXNES: 'border-fuchsia-700',
 };
 
 const RESULTS_MAPPING: Record<CategoryKey, CategoryData> = {
@@ -374,6 +499,8 @@ const RESULTS_MAPPING: Record<CategoryKey, CategoryData> = {
 // 🏗️ MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════
 
+const STORAGE_KEY = 'prosanatolismos_answers';
+
 const Prosanatolismospage: React.FC = () => {
   // Answers state: key is question ID (string from Object.keys), value is score
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -385,12 +512,55 @@ const Prosanatolismospage: React.FC = () => {
   const column1Questions = allQuestions.slice(0, questionsPerColumn);
   const column2Questions = allQuestions.slice(questionsPerColumn);
 
+  // Calculate progress
+  const answeredCount = Object.keys(answers).filter((qId) => answers[qId] !== undefined && !isNaN(answers[qId])).length;
+  const totalQuestions = allQuestions.length;
+  const progressPercentage = Math.round((answeredCount / totalQuestions) * 100);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setAnswers(parsed);
+      }
+    } catch (e) {
+      console.warn('Failed to load from localStorage:', e);
+    }
+  }, []);
+
+  // Save to localStorage whenever answers change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
+  }, [answers]);
+
   const handleChange = (questionId: string, score: number | string) => {
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: typeof score === 'string' ? parseInt(score, 10) : score,
-    }));
+    setAnswers((prevAnswers) => {
+      const newAnswers = {
+        ...prevAnswers,
+        [questionId]: typeof score === 'string' ? parseInt(score, 10) : score,
+      };
+      return newAnswers;
+    });
     setError('');
+  };
+
+  const handleReset = () => {
+    if (window.confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε όλες τις απαντήσεις σας;')) {
+      setAnswers({});
+      setResults(null);
+      setError('');
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        console.warn('Failed to clear localStorage:', e);
+      }
+    }
   };
 
   const calculateResults = () => {
@@ -399,7 +569,7 @@ const Prosanatolismospage: React.FC = () => {
       Object.keys(answers).length !== allQuestions.length ||
       allQuestions.some((qId) => answers[qId] === undefined || isNaN(answers[qId]))
     ) {
-      setError('Παρακαλώ απαντήστε και στις 45 ερωτήσεις για να δείτε τα αποτελέσματα.');
+      setError(`Παρακαλώ απαντήστε και στις ${totalQuestions} ερωτήσεις για να δείτε τα αποτελέσματα. Έχετε απαντήσει σε ${answeredCount} από ${totalQuestions}.`);
       setResults(null);
       return;
     }
@@ -470,12 +640,36 @@ const Prosanatolismospage: React.FC = () => {
     <div className="max-w-6xl mx-auto p-4 md:p-8 bg-white dark:bg-gray-900 min-h-screen">
       <header className="text-center mb-10 border-b pb-5 border-gray-200 dark:border-gray-700">
         <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white mb-3 flex items-center justify-center">
-          <div className="w-10 h-10 mr-4 text-rose-600" /> {/* Rose Accent */}
-          Επαγγελματικός Προσανατολισμός 4ο Πεδίo
+          Επαγγελματικός Προσανατολισμός 4ο Πεδίο
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400">
-          Ανακαλύψτε ποια από τις 8 εξειδικεύσεις σας ταιριάζει περισσότερο βάσει των 45 ερωτήσεων.
+        <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+          Ανακαλύψτε ποια από τις 8 εξειδικεύσεις σας ταιριάζει περισσότερο βάσει των {totalQuestions} ερωτήσεων.
         </p>
+        
+        {/* Progress Bar */}
+        <div className="max-w-2xl mx-auto mt-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Πρόοδος: {answeredCount} / {totalQuestions} ({progressPercentage}%)
+            </span>
+            {answeredCount > 0 && (
+              <button
+                onClick={handleReset}
+                className="text-xs text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-semibold flex items-center gap-1 transition-colors"
+                title="Επαναφορά όλων των απαντήσεων"
+              >
+                <RotateCcw className="w-3 h-3" />
+                Επαναφορά
+              </button>
+            )}
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-rose-500 to-pink-600 transition-all duration-300 ease-out"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+        </div>
       </header>
 
       {/* Ενότητα Αποτελεσμάτων */}
@@ -497,7 +691,6 @@ const Prosanatolismospage: React.FC = () => {
                   key={item.category}
                   category={item.category}
                   currentScore={item.score}
-                  results={results}
                 />
               ))}
           </div>
@@ -506,12 +699,16 @@ const Prosanatolismospage: React.FC = () => {
 
       {/* Κουίζ - Φόρμα Ερωτήσεων */}
       <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-        <p className="text-lg text-gray-700 dark:text-gray-300 mb-8 font-extrabold">
-          Επιλέξτε τον βαθμό συμφωνίας (1 έως 5) για κάθε δήλωση.
-          <span className="block font-normal text-sm text-gray-500 mt-1">
-            1: Διαφωνώ απόλυτα / 3: Ουδέτερο / 5: Συμφωνώ απόλυτα
-          </span>
-        </p>
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <p className="text-lg text-gray-700 dark:text-gray-300 font-extrabold">
+              Επιλέξτε τον βαθμό συμφωνίας (1 έως 5) για κάθε δήλωση.
+            </p>
+            <span className="block font-normal text-sm text-gray-500 mt-1">
+              1: Διαφωνώ απόλυτα / 3: Ουδέτερο / 5: Συμφωνώ απόλυτα
+            </span>
+          </div>
+        </div>
         <div className="grid lg:grid-cols-2 gap-x-10 gap-y-6">
           {/* Στήλη 1 */}
           <div>
@@ -548,10 +745,20 @@ const Prosanatolismospage: React.FC = () => {
           )}
           <button
             onClick={calculateResults}
-            className="px-10 py-4 bg-rose-600 text-white font-extrabold text-xl rounded-xl shadow-lg hover:bg-rose-700 transition duration-300 transform hover:scale-105 active:scale-95 tracking-wide"
+            disabled={answeredCount < totalQuestions}
+            className={`px-10 py-4 bg-rose-600 text-white font-extrabold text-xl rounded-xl shadow-lg transition duration-300 transform hover:scale-105 active:scale-95 tracking-wide ${
+              answeredCount < totalQuestions
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-rose-700'
+            }`}
           >
             Υπολογισμός Επαγγελματικής Κατεύθυνσης
           </button>
+          {answeredCount < totalQuestions && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              Απαιτούνται {totalQuestions - answeredCount} ακόμα απαντήσεις
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -565,7 +772,6 @@ const Prosanatolismospage: React.FC = () => {
 interface ResultCardProps {
   category: CategoryKey;
   currentScore: number;
-  results: CalculationResult;
 }
 
 const ResultCard: React.FC<ResultCardProps> = ({ category, currentScore }) => {
@@ -573,10 +779,11 @@ const ResultCard: React.FC<ResultCardProps> = ({ category, currentScore }) => {
   const IconComponent = data.icon;
   const maxPossibleScore = RECALCULATED_MAX_SCORES[category];
   const percentage = Math.min(100, Math.round((currentScore / maxPossibleScore) * 100));
+  const borderColor = BORDER_COLOR_MAP[category];
 
   return (
     <div
-      className={`p-6 border-t-8 border-${data.color.split('-')[1]}-600 rounded-lg shadow-2xl bg-gradient-to-br ${data.gradient} transition transform hover:scale-[1.02] duration-300`}
+      className={`p-6 border-t-8 ${borderColor} rounded-lg shadow-2xl bg-gradient-to-br ${data.gradient} transition transform hover:scale-[1.02] duration-300`}
     >
       <div className="flex items-center mb-4">
         <IconComponent className={`w-8 h-8 mr-3 ${data.color} flex-shrink-0`} />
@@ -602,9 +809,9 @@ const ResultCard: React.FC<ResultCardProps> = ({ category, currentScore }) => {
           Κορυφαίες Προτάσεις Σχολών:
         </p>
         <ul className="space-y-3">
-          {data.schools.map((school, index) => (
+          {data.schools.map((school) => (
             <li
-              key={index}
+              key={school.code}
               className="flex items-start text-sm bg-white dark:bg-gray-800 p-3 rounded-md shadow-inner"
             >
               <CheckCircle className={`w-4 h-4 mt-1 mr-2 ${data.color}`} />

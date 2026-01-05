@@ -8,15 +8,16 @@ const AuthRedirectHandler = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Don't do anything while loading
+    // Don't do anything while auth state is being restored (e.g., on page refresh)
     if (loading) return;
 
     // Define auth pages
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
-    // If user is logged in and trying to access login/register pages
+    // If user is logged in and trying to access login/register pages, redirect them
+    // This prevents logged-in users from seeing the login/register pages
     if (user && isAuthPage) {
-      // Redirect based on role
+      // Redirect based on role - but preserve the intended destination if they came from somewhere
       const destination = isAdmin ? '/admin' : '/profile';
       console.log(`✅ User logged in, redirecting from ${location.pathname} to ${destination}`);
       navigate(destination, { replace: true });

@@ -11,7 +11,8 @@ type ProtectedRouteProps = {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, children }) => {
   const { user, loading, isAdmin } = useAuth();
 
-  // Show loading spinner for maximum 2 seconds (handled by AuthContext timeout)
+  // Show loading spinner while auth state is being restored
+  // This happens on page refresh and initial load
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -21,23 +22,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, c
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400">Φόρτωση...</p>
         </div>
       </div>
     );
   }
 
-  // Auth finished, no user? -> Redirect to Login
-  if (!user) {
+  // Only redirect to login if loading is complete AND no user exists
+  // This ensures we don't redirect prematurely during session restoration
+  if (!loading && !user) {
     return <Navigate to="/login" replace />;
   }
 
   // User exists, check if admin access is required
-  if (requireAdmin && !isAdmin) {
+  if (user && requireAdmin && !isAdmin) {
     return <Navigate to="/not-authorized" replace />;
   }
 
-  // Access granted
+  // Access granted - render the protected content
   return <>{children}</>;
 };
 
