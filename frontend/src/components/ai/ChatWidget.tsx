@@ -5,17 +5,17 @@ import ReactMarkdown from 'react-markdown';
 
 // --- Types & Interfaces ---
 
-interface ChatWidgetProps {
+interface WidgetProps {
   nickname?: string;
 }
 
-interface ChatMessage {
+interface Message {
   role: 'bot' | 'user';
   content: string;
   ts: number;
 }
 
-interface ChatResponse {
+interface Response {
   reply: string;
 }
 
@@ -31,7 +31,7 @@ const BOT_WELCOME =
 // --- Helper Functions ---
 
 async function fetchBotReply(message: string): Promise<string> {
-  const response = await fetch(`${BACKEND_URL}/api/chat`, {
+  const response = await fetch(`${BACKEND_URL}/api/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message }),
@@ -41,7 +41,7 @@ async function fetchBotReply(message: string): Promise<string> {
     throw new Error('Server error');
   }
 
-  const data: ChatResponse = await response.json();
+  const data: Response = await response.json();
   return data.reply;
 }
 
@@ -64,12 +64,12 @@ const BotMessageContent: React.FC<{ content: string }> = ({ content }) => {
 
 // --- Main Component ---
 
-const ChatWidget: React.FC<ChatWidgetProps> = ({ nickname }) => {
+const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
   const [sending, setSending] = useState<boolean>(false);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', content: BOT_WELCOME, ts: Date.now() },
   ]);
 
@@ -98,7 +98,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ nickname }) => {
     if (!text || sending) return;
 
     setInput('');
-    const me: ChatMessage = { role: 'user', content: text, ts: Date.now() };
+    const me: Message = { role: 'user', content: text, ts: Date.now() };
 
     setMessages((prev) => [...prev, me]);
     setSending(true);
@@ -113,7 +113,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ nickname }) => {
 
       setMessages((prev) => [...prev, { role: 'bot', content, ts: Date.now() }]);
     } catch (err) {
-      console.error('Chat AI Error:', err);
+      console.error(' AI Error:', err);
       setMessages((prev) => [
         ...prev,
         {
@@ -153,7 +153,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ nickname }) => {
         )}
       </motion.button>
 
-      {/* Chat Panel */}
+      {/*  Panel */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -300,4 +300,4 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ nickname }) => {
   );
 };
 
-export default ChatWidget;
+export default Widget;

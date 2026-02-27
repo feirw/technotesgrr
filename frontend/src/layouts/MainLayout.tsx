@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import {
   Home,
   Trophy,
@@ -23,6 +24,7 @@ import {
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
+import ChatWidget from '@/components/ai/ChatWidget';
 
 // --- Constants & Animations ---
 const BRAND = '#fda8a9';
@@ -201,6 +203,7 @@ const ProfileDropdown: React.FC = () => {
   );
 };
 
+
 // --- Main Layout Component ---
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
@@ -213,6 +216,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
+      <ChatWidget />
       {/* Navbar Container */}
       <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
         <div className="container mx-auto px-6">

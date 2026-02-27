@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -80,6 +80,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   const [score, setScore] = useState<Score>({ correct: 0, total: 0 });
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
+  const autoAdvanceTimeoutRef = useRef<number | null>(null);
 
   // Determine selected answer for current question (if any)
   const selected = selectedAnswers?.[current] ?? null; // number | null
@@ -128,6 +129,15 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
       return () => clearTimeout(timer);
     }
   }, [allAnswered, isLastQuestion, selected]);
+
+  // Clear pending auto-advance timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimeoutRef.current) {
+        clearTimeout(autoAdvanceTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Keyboard navigation
   useEffect(() => {
@@ -199,8 +209,11 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
         // Auto-advance if correct and not last question
         if (!isLastQuestion && result.correct) {
-          setTimeout(() => {
-            // Check if component is still mounted/valid before moving
+          if (autoAdvanceTimeoutRef.current) {
+            clearTimeout(autoAdvanceTimeoutRef.current);
+          }
+          autoAdvanceTimeoutRef.current = window.setTimeout(() => {
+            // Check if index did not change externally before moving
             setCurrent((prev) => (prev === current ? prev + 1 : prev));
             setShowExplanation(false);
             setError(null);
