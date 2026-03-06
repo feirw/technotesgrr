@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Code,
   Briefcase,
@@ -11,7 +11,14 @@ import {
   GraduationCap,
   LucideIcon,
   RotateCcw,
+  Save,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/utils/supabaseClient';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -499,13 +506,37 @@ const RESULTS_MAPPING: Record<CategoryKey, CategoryData> = {
 // 🏗️ MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════
 
+/**
+ * Career Orientation (Prosanatolismos) Page
+ * 
+ * This page provides a comprehensive career orientation questionnaire with 100 questions.
+ * Users answer questions on a scale of 1-5, and results are calculated based on 8 career categories.
+ * 
+ * Features:
+ * - Auto-save to localStorage for progress preservation
+ * - Backend integration for result persistence
+ * - Real-time progress tracking
+ * - Detailed results with school recommendations
+ * - Responsive design for all devices
+ * - Error handling and user feedback
+ */
+
 const STORAGE_KEY = 'prosanatolismos_answers';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
 
 const Prosanatolismospage: React.FC = () => {
-  // Answers state: key is question ID (string from Object.keys), value is score
+  const { user } = useAuth();
+  
+  // Answers state: key is question ID (string from Object.keys), value is score (1-5)
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [error, setError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  
+  // Ref to track if component is mounted (prevents memory leaks)
+  const isMountedRef = useRef(true);
 
   const allQuestions = Object.keys(QUESTIONS);
   const questionsPerColumn = Math.ceil(allQuestions.length / 2);
@@ -517,156 +548,302 @@ const Prosanatolismospage: React.FC = () => {
   const totalQuestions = allQuestions.length;
   const progressPercentage = Math.round((answeredCount / totalQuestions) * 100);
 
-  // Load from localStorage on mount
+  // Initialize component mount status
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  /**
+   * Load saved answers from localStorage on component mount
+   * This preserves user progress across page refreshes
+   */
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        setAnswers(parsed);
+        // Validate parsed data
+        if (parsed && typeof parsed === 'object') {
+          setAnswers(parsed);
+        }
       }
     } catch (e) {
-      console.warn('Failed to load from localStorage:', e);
+      console.warn('⚠️ Failed to load from localStorage:', e);
     }
   }, []);
 
-  // Save to localStorage whenever answers change
+  /**
+   * Auto-save answers to localStorage whenever they change
+   * This ensures progress is never lost, even if the user closes the browser
+   */
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
-    } catch (e) {
-      console.warn('Failed to save to localStorage:', e);
+    if (Object.keys(answers).length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+      } catch (e) {
+        console.warn('⚠️ Failed to save to localStorage:', e);
+      }
     }
   }, [answers]);
 
-  const handleChange = (questionId: string, score: number | string) => {
+  /**
+   * Handle answer selection for a question
+   * Validates the score is between 1-5 and updates state
+   */
+  const handleChange = useCallback((questionId: string, score: number | string) => {
+    const numericScore = typeof score === 'string' ? parseInt(score, 10) : score;
+    
+    // Validate score range
+    if (isNaN(numericScore) || numericScore < 1 || numericScore > 5) {
+      console.warn(`Invalid score for question ${questionId}: ${score}`);
+      return;
+    }
+
     setAnswers((prevAnswers) => {
       const newAnswers = {
         ...prevAnswers,
-        [questionId]: typeof score === 'string' ? parseInt(score, 10) : score,
+        [questionId]: numericScore,
       };
       return newAnswers;
     });
+    
+    // Clear any previous errors when user makes a selection
     setError('');
-  };
+    setSuccessMessage('');
+  }, []);
 
-  const handleReset = () => {
+  /**
+   * Reset all answers and results
+   * Clears both state and localStorage
+   */
+  const handleReset = useCallback(() => {
     if (window.confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε όλες τις απαντήσεις σας;')) {
       setAnswers({});
       setResults(null);
       setError('');
+      setSuccessMessage('');
       try {
         localStorage.removeItem(STORAGE_KEY);
       } catch (e) {
-        console.warn('Failed to clear localStorage:', e);
+        console.warn('⚠️ Failed to clear localStorage:', e);
       }
     }
-  };
+  }, []);
 
-  const calculateResults = () => {
-    // 1. Έλεγχος αν απαντήθηκαν όλες οι ερωτήσεις
-    if (
-      Object.keys(answers).length !== allQuestions.length ||
-      allQuestions.some((qId) => answers[qId] === undefined || isNaN(answers[qId]))
-    ) {
-      setError(`Παρακαλώ απαντήστε και στις ${totalQuestions} ερωτήσεις για να δείτε τα αποτελέσματα. Έχετε απαντήσει σε ${answeredCount} από ${totalQuestions}.`);
+  /**
+   * Save results to backend database
+   * This allows users to access their results later and enables analytics
+   */
+  const saveResultsToBackend = useCallback(async (calculationResults: CalculationResult) => {
+    if (!user) {
+      console.warn('⚠️ User not authenticated, skipping backend save');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      // Get authentication token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('User not authenticated');
+      }
+
+      // Prepare data for backend
+      const submissionData = {
+        answers: answers,
+        results: {
+          final_scores: calculationResults.finalScores,
+          top_category: calculationResults.topCategory,
+          sorted_scores: calculationResults.sortedScores.map(({ category, score }) => ({
+            category,
+            score,
+          })),
+        },
+      };
+
+      // Send to backend
+      const response = await fetch(`${BACKEND_URL}/api/career-orientation/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      }
+
+      if (isMountedRef.current) {
+        setSuccessMessage('✅ Τα αποτελέσματα αποθηκεύτηκαν επιτυχώς!');
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          if (isMountedRef.current) {
+            setSuccessMessage('');
+          }
+        }, 5000);
+      }
+    } catch (err: any) {
+      console.error('❌ Error saving results to backend:', err);
+      // Don't show error to user - localStorage backup is sufficient
+      // Results are still displayed even if backend save fails
+    } finally {
+      if (isMountedRef.current) {
+        setIsSaving(false);
+      }
+    }
+  }, [user, answers]);
+
+  /**
+   * Calculate career orientation results based on user answers
+   * Validates all questions are answered, calculates scores, and saves to backend
+   */
+  const calculateResults = useCallback(async () => {
+    // 1. Validation: Check if all questions are answered
+    const unansweredQuestions = allQuestions.filter(
+      (qId) => answers[qId] === undefined || isNaN(answers[qId]) || answers[qId] < 1 || answers[qId] > 5
+    );
+
+    if (unansweredQuestions.length > 0) {
+      setError(
+        `Παρακαλώ απαντήστε και στις ${totalQuestions} ερωτήσεις για να δείτε τα αποτελέσματα. Έχετε απαντήσει σε ${answeredCount} από ${totalQuestions}.`
+      );
       setResults(null);
       return;
     }
 
-    // 2. Υπολογισμός συνολικών σκορ ανά κατηγορία
-    const initialScores: Record<CategoryKey, number> = {
-      INFO: 0,
-      FIN: 0,
-      DIOIK: 0,
-      OIK: 0,
-      SERV: 0,
-      PEDAGOGIKA: 0,
-      SOMATA: 0,
-      TEXNES: 0,
-    };
+    setIsCalculating(true);
+    setError('');
+    setSuccessMessage('');
 
-    const finalScores = allQuestions.reduce((acc, qId) => {
-      const score = answers[qId];
-      // Convert qId to number for MATRIX lookup
-      const numId = parseInt(qId, 10);
-      const weights = SCORE_MATRIX[numId];
+    try {
+      // 2. Calculate total scores per category using SCORE_MATRIX
+      // Each question contributes to multiple categories based on weights
+      const initialScores: Record<CategoryKey, number> = {
+        INFO: 0,
+        FIN: 0,
+        DIOIK: 0,
+        OIK: 0,
+        SERV: 0,
+        PEDAGOGIKA: 0,
+        SOMATA: 0,
+        TEXNES: 0,
+      };
 
-      if (weights) {
-        acc.INFO += score * weights[0];
-        acc.FIN += score * weights[1];
-        acc.DIOIK += score * weights[2];
-        acc.OIK += score * weights[3];
-        acc.SERV += score * weights[4];
-        acc.PEDAGOGIKA += score * weights[5];
-        acc.SOMATA += score * weights[6];
-        acc.TEXNES += score * weights[7];
+      const finalScores = allQuestions.reduce((acc, qId) => {
+        const score = answers[qId];
+        // Convert qId to number for SCORE_MATRIX lookup
+        const numId = parseInt(qId, 10);
+        const weights = SCORE_MATRIX[numId];
+
+        if (weights && weights.length === 8) {
+          // Multiply user's answer (1-5) by each category weight
+          acc.INFO += score * weights[0];
+          acc.FIN += score * weights[1];
+          acc.DIOIK += score * weights[2];
+          acc.OIK += score * weights[3];
+          acc.SERV += score * weights[4];
+          acc.PEDAGOGIKA += score * weights[5];
+          acc.SOMATA += score * weights[6];
+          acc.TEXNES += score * weights[7];
+        } else {
+          console.warn(`⚠️ Missing or invalid weights for question ${qId}`);
+        }
+
+        return acc;
+      }, initialScores);
+
+      // 3. Find top category and handle ties
+      let maxScore = -1;
+      const scoresArray = Object.entries(finalScores) as [CategoryKey, number][];
+
+      for (const [, score] of scoresArray) {
+        if (score > maxScore) {
+          maxScore = score;
+        }
       }
 
-      return acc;
-    }, initialScores);
+      const tiedCategories = scoresArray
+        .filter(([, score]) => score === maxScore)
+        .map(([category]) => category);
 
-    let maxScore = -1;
+      const sortedScores = scoresArray
+        .map(([category, score]) => ({ category, score }))
+        .sort((a, b) => b.score - a.score);
 
-    // Explicitly cast to entries of CategoryKey and number
-    const scoresArray = Object.entries(finalScores) as [CategoryKey, number][];
+      const calculationResults: CalculationResult = {
+        finalScores,
+        topCategory: sortedScores[0].category,
+        tiedCategories,
+        sortedScores,
+      };
 
-    for (const [, score] of scoresArray) {
-      if (score > maxScore) {
-        maxScore = score;
+      // 4. Update state with results
+      if (isMountedRef.current) {
+        setResults(calculationResults);
+        setError('');
+
+        // Scroll to top to show results
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 5. Save to backend (non-blocking)
+        saveResultsToBackend(calculationResults);
+      }
+    } catch (err: any) {
+      console.error('❌ Error calculating results:', err);
+      if (isMountedRef.current) {
+        setError('Προέκυψε σφάλμα κατά τον υπολογισμό των αποτελεσμάτων. Παρακαλώ δοκιμάστε ξανά.');
+      }
+    } finally {
+      if (isMountedRef.current) {
+        setIsCalculating(false);
       }
     }
-
-    const tiedCategories = scoresArray
-      .filter(([, score]) => score === maxScore)
-      .map(([category]) => category);
-
-    const sortedScores = scoresArray
-      .map(([category, score]) => ({ category, score }))
-      .sort((a, b) => b.score - a.score);
-
-    setResults({
-      finalScores,
-      topCategory: sortedScores[0].category,
-      tiedCategories,
-      sortedScores,
-    });
-    setError('');
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [allQuestions, answers, totalQuestions, answeredCount, saveResultsToBackend]);
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8 bg-white dark:bg-gray-900 min-h-screen">
-      <header className="text-center mb-10 border-b pb-5 border-gray-200 dark:border-gray-700">
-        <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white mb-3 flex items-center justify-center">
+    <div className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 bg-white dark:bg-gray-900 min-h-screen">
+      <header className="text-center mb-8 md:mb-10 border-b pb-4 md:pb-5 border-gray-200 dark:border-gray-700">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-3 flex items-center justify-center">
           Επαγγελματικός Προσανατολισμός 4ο Πεδίο
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-base md:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-4 px-2">
           Ανακαλύψτε ποια από τις 8 εξειδικεύσεις σας ταιριάζει περισσότερο βάσει των {totalQuestions} ερωτήσεων.
         </p>
         
         {/* Progress Bar */}
-        <div className="max-w-2xl mx-auto mt-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Πρόοδος: {answeredCount} / {totalQuestions} ({progressPercentage}%)
+        <div className="max-w-2xl mx-auto mt-4 md:mt-6 px-2">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+            <span className="text-sm md:text-base font-semibold text-gray-700 dark:text-gray-300">
+              Πρόοδος: <strong className="text-rose-600 dark:text-rose-400">{answeredCount}</strong> / {totalQuestions} ({progressPercentage}%)
             </span>
             {answeredCount > 0 && (
               <button
                 onClick={handleReset}
-                className="text-xs text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-semibold flex items-center gap-1 transition-colors"
+                className="text-xs md:text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-semibold flex items-center gap-1 transition-colors px-2 py-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
                 title="Επαναφορά όλων των απαντήσεων"
               >
-                <RotateCcw className="w-3 h-3" />
-                Επαναφορά
+                <RotateCcw className="w-3 h-3 md:w-4 md:h-4" />
+                <span className="hidden sm:inline">Επαναφορά</span>
+                <span className="sm:hidden">Reset</span>
               </button>
             )}
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-rose-500 to-pink-600 transition-all duration-300 ease-out"
-              style={{ width: `${progressPercentage}%` }}
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 md:h-3 overflow-hidden shadow-inner">
+            <motion.div
+              className="h-full bg-gradient-to-r from-rose-500 to-pink-600"
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercentage}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             />
           </div>
         </div>
@@ -698,18 +875,18 @@ const Prosanatolismospage: React.FC = () => {
       )}
 
       {/* Κουίζ - Φόρμα Ερωτήσεων */}
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <p className="text-lg text-gray-700 dark:text-gray-300 font-extrabold">
-              Επιλέξτε τον βαθμό συμφωνίας (1 έως 5) για κάθε δήλωση.
-            </p>
-            <span className="block font-normal text-sm text-gray-500 mt-1">
-              1: Διαφωνώ απόλυτα / 3: Ουδέτερο / 5: Συμφωνώ απόλυτα
-            </span>
+      <div className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+        <div className="mb-6 md:mb-8">
+          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 font-extrabold mb-2">
+            Επιλέξτε τον βαθμό συμφωνίας (1 έως 5) για κάθε δήλωση.
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">1: Διαφωνώ απόλυτα</span>
+            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">3: Ουδέτερο</span>
+            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">5: Συμφωνώ απόλυτα</span>
           </div>
         </div>
-        <div className="grid lg:grid-cols-2 gap-x-10 gap-y-6">
+        <div className="grid lg:grid-cols-2 gap-x-6 lg:gap-x-10 gap-y-4 md:gap-y-6">
           {/* Στήλη 1 */}
           <div>
             {column1Questions.map((qId) => (
@@ -736,27 +913,80 @@ const Prosanatolismospage: React.FC = () => {
           </div>
         </div>
 
-        {/* Submit Button & Error */}
-        <div className="mt-12 text-center">
-          {error && (
-            <p className="text-red-600 bg-red-100 dark:bg-red-900/40 border border-red-500 p-4 rounded-lg mb-4 font-bold transition-all duration-500">
-              🚨 {error}
-            </p>
-          )}
+        {/* Submit Button & Messages */}
+        <div className="mt-8 md:mt-12 text-center space-y-4">
+          {/* Success Message */}
+          <AnimatePresence>
+            {successMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mx-auto max-w-md"
+              >
+                <div className="flex items-center justify-center gap-2 text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/40 border border-green-500 p-4 rounded-lg font-semibold">
+                  <CheckCircle2 className="w-5 h-5" />
+                  {successMessage}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Error Message */}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mx-auto max-w-md"
+              >
+                <div className="flex items-start gap-2 text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/40 border border-red-500 p-4 rounded-lg font-semibold">
+                  <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Submit Button */}
           <button
-            onClick={calculateResults}
-            disabled={answeredCount < totalQuestions}
-            className={`px-10 py-4 bg-rose-600 text-white font-extrabold text-xl rounded-xl shadow-lg transition duration-300 transform hover:scale-105 active:scale-95 tracking-wide ${
-              answeredCount < totalQuestions
+            onClick={() => calculateResults()}
+            disabled={answeredCount < totalQuestions || isCalculating || isSaving}
+            className={`relative px-6 md:px-10 py-3 md:py-4 bg-rose-600 text-white font-extrabold text-base md:text-lg lg:text-xl rounded-xl shadow-lg transition duration-300 transform tracking-wide ${
+              answeredCount < totalQuestions || isCalculating || isSaving
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-rose-700'
+                : 'hover:scale-105 active:scale-95 hover:bg-rose-700'
             }`}
           >
-            Υπολογισμός Επαγγελματικής Κατεύθυνσης
+            {isCalculating ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Υπολογισμός...
+              </span>
+            ) : isSaving ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Αποθήκευση...
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <Save className="w-5 h-5" />
+                Υπολογισμός Επαγγελματικής Κατεύθυνσης
+              </span>
+            )}
           </button>
+
+          {/* Helper Text */}
           {answeredCount < totalQuestions && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              Απαιτούνται {totalQuestions - answeredCount} ακόμα απαντήσεις
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Απαιτούνται <strong className="text-rose-600 dark:text-rose-400">{totalQuestions - answeredCount}</strong> ακόμα απαντήσεις
+            </p>
+          )}
+          
+          {answeredCount === totalQuestions && !isCalculating && !isSaving && (
+            <p className="text-sm text-green-600 dark:text-green-400 mt-2 font-semibold">
+              ✅ Όλες οι ερωτήσεις έχουν απαντηθεί! Μπορείτε να υπολογίσετε τα αποτελέσματα.
             </p>
           )}
         </div>
@@ -839,6 +1069,12 @@ interface QuestionBlockProps {
   onChange: (qId: string, score: number) => void;
 }
 
+/**
+ * QuestionBlock Component
+ * 
+ * Displays a single question with 5-point scale answer options.
+ * Optimized for mobile, tablet, and desktop viewing.
+ */
 const QuestionBlock: React.FC<QuestionBlockProps> = ({
   qId,
   question,
@@ -848,16 +1084,22 @@ const QuestionBlock: React.FC<QuestionBlockProps> = ({
   const scoreOptions = [1, 2, 3, 4, 5];
 
   return (
-    <div className="mb-6 p-5 border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 shadow-md hover:shadow-lg transition duration-300">
-      <label className="block text-gray-800 dark:text-gray-200 font-semibold mb-3 text-md">
-        <span className="text-rose-600 dark:text-rose-400 font-extrabold mr-2">{qId}.</span>{' '}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-4 md:mb-6 p-4 md:p-5 border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 shadow-md hover:shadow-lg transition duration-300"
+    >
+      <label className="block text-gray-800 dark:text-gray-200 font-semibold mb-3 text-sm md:text-base">
+        <span className="text-rose-600 dark:text-rose-400 font-extrabold mr-2">{qId}.</span>
         {question}
       </label>
-      <div className="flex justify-between space-x-2 bg-white dark:bg-gray-900 p-2 rounded-lg shadow-inner">
+      <div className="flex justify-between gap-1 md:gap-2 bg-white dark:bg-gray-900 p-2 rounded-lg shadow-inner">
         {scoreOptions.map((score) => (
-          <div
+          <motion.div
             key={score}
-            className="flex flex-col items-center cursor-pointer transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-md"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex flex-col items-center cursor-pointer transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700 p-1 md:p-2 rounded-md flex-1"
             onClick={() => onChange(qId, score)}
           >
             <input
@@ -867,11 +1109,11 @@ const QuestionBlock: React.FC<QuestionBlockProps> = ({
               value={score}
               checked={selectedScore === score}
               onChange={(e) => onChange(qId, parseInt(e.target.value, 10))}
-              className="form-radio h-5 w-5 text-rose-600 dark:bg-gray-700 dark:border-gray-600 focus:ring-rose-500"
+              className="form-radio h-4 w-4 md:h-5 md:w-5 text-rose-600 dark:bg-gray-700 dark:border-gray-600 focus:ring-rose-500 cursor-pointer"
             />
             <label
               htmlFor={`q${qId}-${score}`}
-              className={`text-xs font-bold mt-1 ${
+              className={`text-xs md:text-sm font-bold mt-1 cursor-pointer ${
                 selectedScore === score
                   ? 'text-rose-600 dark:text-rose-400'
                   : 'text-gray-500 dark:text-gray-400'
@@ -879,10 +1121,10 @@ const QuestionBlock: React.FC<QuestionBlockProps> = ({
             >
               {score}
             </label>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

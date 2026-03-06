@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserPlus, Mail, Lock, User, AlertTriangle, ArrowRight, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+
+/**
+ * RegisterPage Component
+ * 
+ * Handles user registration/signup.
+ * Key features:
+ * - Client-side form validation
+ * - Creates user account and profile in database
+ * - Shows success screen with email confirmation instructions
+ * - Prevents logged-in users from accessing this page
+ * - Comprehensive error handling
+ */
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,34 +27,46 @@ const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const { signup } = useAuth();
+  const { signup, user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate('/profile', { replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (error) setError(''); // Καθαρισμός σφάλματος κατά την πληκτρολόγηση
   };
 
+  /**
+   * Validate form data before submission
+   * Returns true if all validations pass, false otherwise
+   */
   const validateForm = () => {
-    // 1. Email Client-side Validation (Regex)
+    // 1. Email format validation using regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email.');
       return false;
     }
 
-    // 2. Password Match
+    // 2. Password confirmation match
     if (formData.password !== formData.confirmPassword) {
       setError('Οι κωδικοί πρόσβασης δεν ταιριάζουν.');
       return false;
     }
 
-    // 3. Password Length
+    // 3. Password minimum length (Supabase requirement)
     if (formData.password.length < 6) {
       setError('Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.');
       return false;
     }
 
-    // 4. Username Length
+    // 4. Username minimum length
     if (formData.username.trim().length < 3) {
       setError('Το Username πρέπει να έχει τουλάχιστον 3 χαρακτήρες.');
       return false;
@@ -51,16 +75,22 @@ const RegisterPage: React.FC = () => {
     return true;
   };
 
+  /**
+   * Handle registration form submission
+   * Creates user account and shows success screen
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
+    // Validate form before submission
     if (!validateForm()) return;
 
     setLoading(true);
 
     try {
-      // Υποθέτουμε ότι το signup επιστρέφει error αν αποτύχει η δημιουργία
+      // Create user account via Supabase Auth
+      // Profile creation is handled by AuthContext (or database trigger)
       await signup(formData.email, formData.password, formData.username);
       setSuccess(true);
     } catch (err: any) {

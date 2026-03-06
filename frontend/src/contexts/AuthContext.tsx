@@ -1,7 +1,17 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { supabase, isMockMode } from '@/utils/supabaseClient';
-import { useNavigate } from 'react-router-dom';
 import { User as SupabaseUser } from '@supabase/supabase-js';
+
+/**
+ * Authentication Context
+ * 
+ * Handles user authentication, session management, and profile data.
+ * Key features:
+ * - Session restoration on page refresh
+ * - Login/logout functionality
+ * - User registration with profile creation
+ * - Role-based access control (admin/user)
+ */
 
 // --- Types ---
 
@@ -41,12 +51,17 @@ const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number): Promise<T> => 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
+  
+  // Track initialization to prevent duplicate session checks
   const isInitialized = useRef(false);
+  // Timeout ref for safety - ensures loading state doesn't hang forever
   const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // --- Helper: Safe Profile Fetch ---
+  /**
+   * Safely fetches user profile from database
+   * Falls back to default values if profile doesn't exist or fetch fails
+   * This ensures the app continues to work even if profile table has issues
+   */
   const fetchProfileSafe = useCallback(async (baseUser: SupabaseUser): Promise<UserProfile> => {
     if (isMockMode) {
       return {
@@ -57,14 +72,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      const profilePromise = Promise.resolve(
-        supabase.from('profiles').select('*').eq('id', baseUser.id).single()
-      );
-
+      // Fetch profile with timeout to prevent hanging
+      const profilePromise = supabase.from('profiles').select('*').eq('id', baseUser.id).single();
       const { data, error } = await withTimeout<{ data: any; error: any }>(profilePromise, 5000);
 
       if (error) {
         console.warn('⚠️ Could not fetch profile, using defaults:', error.message);
+        // Return default profile - allows app to continue functioning
         return {
           ...baseUser,
           username: baseUser.email?.split('@')[0] || 'User',
@@ -116,9 +130,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  /**
+   * Initialize authentication state on app load
+   * This effect runs once when the component mounts and:
+   * 1. Checks for existing session in localStorage (fast)
+   * 2. Restores user profile if session exists
+   * 3. Sets up listener for auth state changes
+   * 
+   * IMPORTANT: This does NOT redirect - that's handled by ProtectedRoute
+   * This ensures the current page is preserved on refresh
+   */
   useEffect(() => {
-    // Increased timeout for better session restoration support
-    // This gives more time for the session to be restored on slower connections
+    // Safety timeout - ensures loading state doesn't hang forever
     loadingTimeoutRef.current = setTimeout(() => {
       if (loading) {
         console.warn('⚠️ Auth loading timeout - forcing to false after 5 seconds');
@@ -127,6 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 5000);
 
     const initializeAuth = async () => {
+      // Prevent duplicate initialization
       if (isInitialized.current) return;
       isInitialized.current = true;
 
@@ -138,36 +162,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        // Use getSession which is synchronous and checks localStorage first
+        // getSession() checks localStorage first - this is synchronous and fast
+        // This is the key to preserving the current page on refresh
         const sessionPromise = supabase.auth.getSession();
         const {
           data: { session },
           error,
-        } = await withTimeout(sessionPromise, 4000);
+        } = await withTimeout(sessionPromise, 3000);
 
         if (error) {
           console.warn('⚠️ Session fetch error (non-critical):', error.message);
           // Don't throw - allow the app to continue
+          setLoading(false);
+          return;
         }
 
         if (session?.user) {
+          // Session exists - restore user profile
           const profile = await fetchProfileSafe(session.user);
           setUser(profile);
-          console.log('✅ Session restored on page load');
+          console.log('✅ Session restored on page load - user stays on current page');
         } else {
           console.log('ℹ️ No active session found');
         }
       } catch (err) {
-        console.error('Auth init error:', err);
+        console.error('❌ Auth init error:', err);
         // Don't block the app - set loading to false so user can see what's happening
       } finally {
+        // Always clear timeout and set loading to false
         if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
         setLoading(false);
       }
     };
 
+    // Start initialization
     initializeAuth();
 
+    // Setup auth state change listener
+    // This handles login/logout events AFTER initial load
     if (isMockMode) {
       return () => {
         if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
@@ -179,24 +211,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log(`🔔 Auth Event: ${event}`);
 
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        if (session?.user) {
-          const profile = await fetchProfileSafe(session.user);
-          setUser(profile);
+      // Only process events AFTER initial load is complete
+      // This prevents duplicate session restoration on page load
+      if (isInitialized.current) {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+          if (session?.user) {
+            const profile = await fetchProfileSafe(session.user);
+            setUser(profile);
+            setLoading(false);
+          }
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
           setLoading(false);
         }
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setLoading(false);
       }
     });
 
+    // Cleanup function
     return () => {
       if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
       subscription.unsubscribe();
     };
   }, [fetchProfileSafe]);
 
+  /**
+   * Login function
+   * Authenticates user with email and password
+   * Updates user state on success
+   * Does NOT redirect - that's handled by LoginPage component
+   */
   const login = async (email: string, password: string) => {
     console.log('🔐 Login attempt for:', email);
 
@@ -208,7 +251,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      // Login with 10 second timeout
+      // Attempt login with timeout
       const loginPromise = supabase.auth.signInWithPassword({ email, password });
       const { data, error } = await withTimeout(loginPromise, 10000);
 
@@ -220,20 +263,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('✅ Login successful');
 
       if (data.user) {
+        // Fetch user profile and update state
         const profile = await fetchProfileSafe(data.user);
         setUser(profile);
 
-        // Small delay to ensure state update
+        // Small delay to ensure state update propagates
         await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Don't redirect here - let the AuthRedirectHandler or the component handle it
+        // Note: Redirect is handled by LoginPage component
         // This allows the user to stay on their intended page after login
         console.log('✅ Login successful, user state updated');
       }
     } catch (error: any) {
       console.error('❌ Login failed:', error);
 
-      // Re-throw with better message
+      // Provide user-friendly error messages
       if (error.message === 'Request timeout') {
         throw new Error('Η σύνδεση με το server κράτησε πολύ. Ελέγξτε τη σύνδεσή σας.');
       }
@@ -242,6 +286,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  /**
+   * Signup function
+   * Creates new user account with email and password
+   * Also creates profile entry in database (handled by database trigger)
+   * 
+   * IMPORTANT: Supabase requires email confirmation by default
+   * User will receive confirmation email after signup
+   */
   const signup = async (email: string, password: string, username: string) => {
     console.log('📝 Signup attempt for:', email);
 
@@ -250,20 +302,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
+      // Create user account
+      // The username is stored in user_metadata
+      // A database trigger should create the profile entry automatically
       const signupPromise = supabase.auth.signUp({
         email,
         password,
-        options: { data: { username } },
+        options: {
+          data: { username },
+          // Optional: You can disable email confirmation for testing
+          // emailRedirectTo: `${window.location.origin}/login`
+        },
       });
 
-      const { error } = await withTimeout(signupPromise, 10000);
+      const { data, error } = await withTimeout(signupPromise, 10000);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Signup error:', error);
+        throw error;
+      }
+
+      // If profile creation is needed manually (if trigger doesn't exist)
+      // This would be done here, but typically handled by database trigger
+      if (data.user) {
+        try {
+          // Try to create profile if it doesn't exist
+          // This is a fallback if database trigger is not set up
+          const { error: profileError } = await supabase.from('profiles').insert({
+            id: data.user.id,
+            username: username,
+            email: email,
+            role: 'user',
+          });
+
+          if (profileError) {
+            // If profile already exists or other error, log but don't fail signup
+            console.warn('⚠️ Profile creation warning:', profileError.message);
+          }
+        } catch (profileErr) {
+          // Profile creation is optional - signup can still succeed
+          console.warn('⚠️ Profile creation failed (non-critical):', profileErr);
+        }
+      }
 
       console.log('✅ Signup successful');
     } catch (error: any) {
       console.error('❌ Signup failed:', error);
 
+      // Provide user-friendly error messages
       if (error.message === 'Request timeout') {
         throw new Error('Η εγγραφή κράτησε πολύ. Δοκιμάστε ξανά.');
       }
@@ -272,6 +358,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  /**
+   * Logout function
+   * Signs out user and clears session
+   * Note: Redirect is handled by the component calling logout
+   * This keeps navigation logic out of the context
+   */
   const logout = async () => {
     console.log('👋 Logging out...');
 
@@ -283,8 +375,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
+    // Clear user state
     setUser(null);
-    navigate('/login', { replace: true });
+    
+    // Note: Navigation is handled by the component that calls logout
+    // This keeps the context focused on auth state management
   };
 
   // Normalize role to lowercase for comparison (in case DB has 'Admin' instead of 'admin')

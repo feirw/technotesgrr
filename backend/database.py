@@ -1,4 +1,5 @@
 import os
+import json
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
@@ -172,3 +173,68 @@ def get_admin_stats():
                 "total_questions": question_count,
                 "recent_activity": recent_activity
             }
+
+def save_career_orientation_result(user_id: str, answers: dict, results: dict):
+    """
+    Save career orientation (prosanatolismos) results to database.
+    
+    Args:
+        user_id: The user's ID from Supabase auth
+        answers: Dictionary mapping question IDs to scores (1-5)
+        results: Dictionary containing calculated results:
+            - final_scores: Dict of category scores
+            - top_category: The top scoring category
+            - sorted_scores: List of sorted category scores
+    """
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            # Use JSONB for flexible storage of answers and results
+            cursor.execute(
+                """
+                INSERT INTO career_orientation_results 
+                (user_id, answers, final_scores, top_category, sorted_scores, completed_at)
+                VALUES (%s, %s::jsonb, %s::jsonb, %s, %s::jsonb, NOW())
+                ON CONFLICT (user_id) 
+                DO UPDATE SET 
+                    answers = EXCLUDED.answers,
+                    final_scores = EXCLUDED.final_scores,
+                    top_category = EXCLUDED.top_category,
+                    sorted_scores = EXCLUDED.sorted_scores,
+                    completed_at = NOW()
+                RETURNING id
+                """,
+                (
+                    user_id,
+                    json.dumps(answers),
+                    json.dumps(results.get('final_scores', {})),
+                    results.get('top_category'),
+                    json.dumps(results.get('sorted_scores', [])),
+                ),
+            )
+            result_id = cursor.fetchone()[0]
+        conn.commit()
+        return result_id
+
+def get_career_orientation_result(user_id: str):
+    """
+    Get the latest career orientation result for a user.
+    
+    Returns:
+        Dictionary with user's career orientation results or None if not found
+    """
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                """
+                SELECT id, answers, final_scores, top_category, sorted_scores, completed_at
+                FROM career_orientation_results
+                WHERE user_id = %s
+                ORDER BY completed_at DESC
+                LIMIT 1
+                """,
+                (user_id,),
+            )
+            row = cursor.fetchone()
+            if row:
+                return dict(row)
+            return None

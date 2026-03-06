@@ -30,7 +30,9 @@ from database import (
     get_quiz_by_id,
     save_contact_submission,
     get_admin_stats,
-    is_user_admin
+    is_user_admin,
+    save_career_orientation_result,
+    get_career_orientation_result
 )
 
 # Import Security Dependency
@@ -94,6 +96,10 @@ class ContactForm(BaseModel):
 
 class ChatMessage(BaseModel):
     message: str
+
+class CareerOrientationSubmission(BaseModel):
+    answers: dict  # Question ID -> Score (1-5)
+    results: dict  # Calculated results with final_scores, top_category, sorted_scores
 
 
 # --- Startup Event ---
@@ -291,6 +297,67 @@ async def contact_form(contact_data: ContactForm):
         )
 
 # --- ADMIN ROUTES ---
+
+@app.post("/api/career-orientation/submit")
+async def submit_career_orientation(
+    submission: CareerOrientationSubmission,
+    user = Depends(get_current_user)
+):
+    """
+    Save career orientation (prosanatolismos) results to database.
+    Protected route: Requires authentication.
+    """
+    try:
+        # Validate submission data
+        if not submission.answers or not submission.results:
+            raise HTTPException(
+                status_code=400, 
+                detail="Missing required data: answers and results are required"
+            )
+        
+        # Save to database
+        result_id = save_career_orientation_result(
+            user_id=user.id,
+            answers=submission.answers,
+            results=submission.results
+        )
+        
+        return {
+            "message": "Career orientation results saved successfully",
+            "result_id": result_id,
+            "saved_at": datetime.now().isoformat()
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error saving career orientation results: {str(e)}"
+        )
+
+@app.get("/api/career-orientation/result")
+async def get_career_orientation_result_endpoint(user = Depends(get_current_user)):
+    """
+    Get the latest career orientation result for the authenticated user.
+    Protected route: Requires authentication.
+    """
+    try:
+        result = get_career_orientation_result(user.id)
+        if result:
+            return {
+                "found": True,
+                "result": result
+            }
+        else:
+            return {
+                "found": False,
+                "message": "No career orientation results found for this user"
+            }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching career orientation result: {str(e)}"
+        )
 
 @app.get("/api/admin/dashboard")
 async def get_dashboard_stats(user = Depends(get_current_user)):

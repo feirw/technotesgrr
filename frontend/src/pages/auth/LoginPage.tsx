@@ -1,8 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LogIn, Mail, Lock, AlertTriangle, UserPlus, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Location } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+
+/**
+ * LoginPage Component
+ * 
+ * Handles user authentication/login.
+ * Key features:
+ * - Redirects to intended destination after successful login
+ * - Preserves location state from ProtectedRoute redirects
+ * - Prevents logged-in users from accessing this page
+ * - Comprehensive error handling with user-friendly messages
+ */
+
+interface LocationState {
+  from?: Location;
+}
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -15,7 +30,19 @@ const LoginPage: React.FC = () => {
   // 2. Ref για το timeout ώστε να είναι προσβάσιμο παντού
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { login } = useAuth();
+  const { login, user, loading: authLoading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Redirect if already logged in
+  // This prevents logged-in users from seeing the login page
+  useEffect(() => {
+    if (user && !authLoading) {
+      const state = location.state as LocationState | null;
+      const intendedDestination = state?.from?.pathname || '/profile';
+      navigate(intendedDestination, { replace: true });
+    }
+  }, [user, authLoading, location.state, navigate]);
 
   // Cleanup effect για το unmount
   useEffect(() => {
@@ -26,15 +53,19 @@ const LoginPage: React.FC = () => {
     };
   }, []);
 
+  /**
+   * Handle login form submission
+   * Authenticates user and redirects to intended destination
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    // Καθαρισμός προηγούμενου timeout αν υπάρχει
+    // Clear any existing timeout
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-    // Safety timeout - stop loading after 15 seconds
+    // Safety timeout - prevents infinite loading state
     timeoutRef.current = setTimeout(() => {
       if (isMounted.current) {
         setLoading(false);
@@ -46,12 +77,22 @@ const LoginPage: React.FC = () => {
       console.log('🚀 Attempting login...');
       await login(email, password);
       
-      // 3. Ρητή επιτυχία
+      // Clear timeout on success
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       
       if (isMounted.current) {
-        setLoading(false); // Ρητή κλήση setLoading(false)
+        setLoading(false);
         console.log('✅ Login completed');
+        
+        // Navigate to intended destination (from ProtectedRoute) or default to profile
+        // This preserves the user's intended navigation path
+        const state = location.state as LocationState | null;
+        const intendedDestination = state?.from?.pathname || '/profile';
+        
+        // Small delay to ensure auth state has propagated
+        setTimeout(() => {
+          navigate(intendedDestination, { replace: true });
+        }, 100);
       }
     } catch (err: any) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);

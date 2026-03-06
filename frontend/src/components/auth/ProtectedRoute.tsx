@@ -1,7 +1,18 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+
+/**
+ * ProtectedRoute Component
+ * 
+ * Protects routes that require authentication.
+ * Key features:
+ * - Shows loading spinner during session restoration (preserves current page on refresh)
+ * - Redirects to login only if no user exists AFTER loading completes
+ * - Preserves intended destination in location state for post-login redirect
+ * - Supports admin-only routes
+ */
 
 type ProtectedRouteProps = {
   requireAdmin?: boolean;
@@ -10,9 +21,12 @@ type ProtectedRouteProps = {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, children }) => {
   const { user, loading, isAdmin } = useAuth();
+  const location = useLocation();
 
-  // Show loading spinner while auth state is being restored
-  // This happens on page refresh and initial load
+  // CRITICAL: Show loading spinner while auth state is being restored
+  // This is the key to preserving the current page on refresh
+  // The session check happens in AuthContext, and we wait for it to complete
+  // before making any redirect decisions
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -30,8 +44,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, c
 
   // Only redirect to login if loading is complete AND no user exists
   // This ensures we don't redirect prematurely during session restoration
+  // The location state preserves where the user was trying to go
   if (!loading && !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // User exists, check if admin access is required
