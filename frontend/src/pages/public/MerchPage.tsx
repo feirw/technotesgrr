@@ -56,7 +56,7 @@ const MerchPage: React.FC = () => {
             <div className="relative bg-white dark:bg-gray-800 p-4 rounded-[2.5rem] shadow-2xl border border-pink-100 dark:border-gray-700 transform rotate-2 hover:rotate-0 transition-transform duration-500">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-gradient-to-tr from-pink-50 to-pink-200 dark:from-gray-700 dark:to-gray-600 flex flex-col items-center justify-center border-2 border-dashed border-pink-300">
                 {/* Visual Placeholder for the Agenda */}
-                <img src="/images/fro.jpg" alt="Logo" className="w-85 drop-shadow-2xl" />
+                <img src="/images/ag1.jpg" alt="Logo" className="w-85 drop-shadow-2xl" />
               </div>
             </div>
           </motion.div>
@@ -74,16 +74,16 @@ const MerchPage: React.FC = () => {
 
         {[
         {
-          image: "/images/6.png"
+          image: "/images/ag2.jpg"
         },
         {
-          image: "/images/15.png"
+          image: "/images/ag3.jpg"
         },
         {
-          image: "/images/20.png"
+          image: "/images/ag4.jpg"
         },
         {
-          image: "/images/27.png"
+          image: "/images/ag5.jpg"
         },
         ].map((feature, i) => (
         <motion.div

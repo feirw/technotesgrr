@@ -48,7 +48,7 @@ export const quizzes: Quiz[] = [
   },
   {
     id: 'quiz-3',
-    title: 'Δομές δεδομένων και Αλγόριθμοι',
+    title: 'Δομές δεδομένων - Πίνακες',
     number: '3',
     description: '',
     questions: quiz_chap3 as Question[],
