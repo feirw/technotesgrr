@@ -34,7 +34,7 @@ export interface Quiz {
 export const quizzes: Quiz[] = [
   {
     id: 'quiz-1',
-    title: 'Ανάλυση προβλήματος',
+    title: 'Το πρόβλημα',
     number: '1',
     description: '',
     questions: quiz_chap1 as Question[],
@@ -48,7 +48,7 @@ export const quizzes: Quiz[] = [
   },
   {
     id: 'quiz-3',
-    title: 'Δομές δεδομένων - Πίνακες',
+    title: 'Πίνακες - Αλγόριθμοι',
     number: '3',
     description: '',
     questions: quiz_chap3 as Question[],
