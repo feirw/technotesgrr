@@ -1,10 +1,13 @@
 """
-ai_service.py  –  Google Gemini backend για το TechNotesGR chatbot
------------------------------------------------------------------
-Απαιτήσεις:
-    pip install google-generativeai python-dotenv
+ai_service.py  –  Google Gemini για το TechNotesGR chatbot
+-----------------------------------------------------------
+Χρησιμοποιεί το νέο επίσημο SDK: google-genai (ΟΧΙ google-generativeai)
 
-.env αρχείο (στον ίδιο φάκελο με το server.py):
+Εγκατάσταση:
+    pip uninstall google-generativeai -y
+    pip install google-genai python-dotenv
+
+.env αρχείο:
     GEMINI_API_KEY=your_api_key_here
 """
 
@@ -13,9 +16,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import google.generativeai as genai
+# ✅ Νέο SDK - όχι το deprecated google.generativeai
+from google import genai
+from google.genai import types
 
-# ── Configuration ─────────────────────────────────────────────────────────────
+# ── API Key check ─────────────────────────────────────────────────────────────
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -25,59 +30,75 @@ if not GEMINI_API_KEY:
         "   Πρόσθεσε: GEMINI_API_KEY=your_api_key_here"
     )
 
-genai.configure(api_key=GEMINI_API_KEY)
+# ── Client ────────────────────────────────────────────────────────────────────
 
-# ── System prompt – προσαρμόζεται στο TechNotesGR ────────────────────────────
+client = genai.Client(api_key=GEMINI_API_KEY)
+
+# ── System prompt ─────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """
-Είσαι ο ψηφιακός βοηθός του TechNotesGR, μια εκπαιδευτική πλατφόρμα για το μάθημα ΑΕΠΠ 
-(Ανάπτυξη Εφαρμογών σε Προγραμματιστικό Περιβάλλον) της Γ' Λυκείου στην Ελλάδα.
+Εισαι ο ψηφιακος βοηθος του TechNotesGR, μια εκπαιδευτικη πλατφορμα για το μαθημα ΑΕΠΠ
+(Αναπτυξη Εφαρμογων σε Προγραμματιστικο Περιβαλλον) της Γ Λυκειου στην Ελλαδα.
 
-Ρόλος σου:
-- Απαντάς σε ερωτήσεις σχετικές με ΑΕΠΠ: αλγόριθμοι, δομές δεδομένων, προγραμματισμός, ΓΛΩΣΣΑ.
-- Βοηθάς μαθητές να καταλάβουν ύλη, να λύσουν ασκήσεις και να προετοιμαστούν για εξετάσεις.
-- Δίνεις πληροφορίες για τις λειτουργίες της πλατφόρμας: σημειώσεις, quiz, flashcards, leaderboard.
-- Απαντάς πάντα στα Ελληνικά, με φιλικό και ενθαρρυντικό τόνο.
-- Χρησιμοποιείς απλή γλώσσα κατάλληλη για μαθητές Λυκείου.
-- Αν δεν ξέρεις κάτι, το παραδέχεσαι ειλικρινά.
-- Δεν απαντάς σε άσχετα θέματα (πολιτική, ειδήσεις κ.λπ.).
+Ρολος σου:
+- Απαντας σε ερωτησεις σχετικες με ΑΕΠΠ: αλγοριθμοι, δομες δεδομενων, προγραμματισμος, ΓΛΩΣΣΑ.
+- Βοηθας μαθητες να καταλαβουν υλη, να λυσουν ασκησεις και να προετοιμαστουν για εξετασεις.
+- Δινεις πληροφοριες για τις λειτουργιες της πλατφορμας: σημειωσεις, quiz, flashcards, leaderboard.
+- Απαντας παντα στα Ελληνικα, με φιλικο και ενθαρρυντικο τονο.
+- Χρησιμοποιεις απλη γλωσσα καταλληλη για μαθητες Λυκειου.
+- Αν δεν ξερεις κατι, το παραδεχεσαι ειλικρινα.
+- Δεν απαντας σε ασχετα θεματα.
 
-Μορφοποίηση:
-- Χρησιμοποίησε markdown για κώδικα (```), λίστες και έντονο κείμενο όπου χρειάζεται.
-- Κράτα τις απαντήσεις συνοπτικές αλλά πλήρεις.
+Μορφοποιηση:
+- Χρησιμοποιησε markdown για κωδικα, λιστες και εντονο κειμενο οπου χρειαζεται.
+- Κρατα τις απαντησεις συνοπτικες αλλα πληρεις.
 """.strip()
 
-# ── Model init ────────────────────────────────────────────────────────────────
+# ── Chat history (in-memory) ──────────────────────────────────────────────────
 
-model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash",   # γρήγορο και δωρεάν tier
-    system_instruction=SYSTEM_PROMPT,
-)
-
-# ── Chat history (in-memory, per-process) ─────────────────────────────────────
-# Για πολύ-γύρη συνομιλία: κρατάμε ένα global history.
-# Αν θέλεις per-user history, πέρασέ το session_id από το frontend.
-
-_chat_session = model.start_chat(history=[])
-
+_history = []
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
 def get_ai_response(message: str) -> str:
-    """
-    Στέλνει μήνυμα στο Gemini και επιστρέφει την απάντηση ως string.
-    Σε περίπτωση σφάλματος επιστρέφει φιλικό μήνυμα λάθους.
-    """
+    global _history
+
     try:
-        response = _chat_session.send_message(message)
-        return response.text
+        _history.append(
+            types.Content(role="user", parts=[types.Part(text=message)])
+        )
 
-    except genai.types.BlockedPromptException:
-        return "⚠️ Το μήνυμά σου εμποδίστηκε από τα φίλτρα ασφαλείας. Δοκίμασε διαφορετική διατύπωση."
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=_history,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                max_output_tokens=1024,
+                temperature=0.7,
+            ),
+        )
 
-    except genai.types.StopCandidateException:
-        return "⚠️ Η απάντηση διακόπηκε. Παρακαλώ δοκίμασε ξανά."
+        reply = response.text
+
+        _history.append(
+            types.Content(role="model", parts=[types.Part(text=reply)])
+        )
+
+        # Κρατα μονο τα τελευταια 20 μηνυματα
+        if len(_history) > 20:
+            _history = _history[-20:]
+
+        return reply
 
     except Exception as e:
-        print(f"[ai_service] Gemini error: {e}")
-        return "😔 Δεν μπόρεσα να επεξεργαστώ το αίτημά σου αυτή τη στιγμή. Δοκίμασε ξανά σε λίγο."
+        error_str = str(e)
+        print(f"[ai_service] Gemini error: {error_str}")
+
+        if "429" in error_str or "quota" in error_str.lower():
+            return "Εχω πολλα αιτηματα αυτη τη στιγμη. Δοκιμασε ξανα σε λιγα δευτερολεπτα!"
+        if "403" in error_str or "API_KEY" in error_str:
+            return "Προβλημα με την αυθεντικοποιηση. Επικοινωνησε με τον διαχειριστη."
+        if "404" in error_str:
+            return "Το AI μοντελο δεν ειναι διαθεσιμο αυτη τη στιγμη."
+
+        return "Δεν μπορεσα να επεξεργαστω το αιτημα σου. Δοκιμασε ξανα σε λιγο."
