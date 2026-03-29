@@ -27,6 +27,9 @@ import {
   Sun,
   Moon,
   Map,
+  Heart,
+  Laugh,
+  Wind,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
@@ -63,6 +66,59 @@ interface MainLayoutProps {
 }
 
 // --- Components ---
+
+const PrepMenu: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const LinkItem: React.FC<{ to: string; label: string; icon: LucideIcon }> = ({ to, label, icon: Icon }) => (
+    <button
+      onClick={() => navigate(to)}
+      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200"
+    >
+      <Icon className="w-4 h-4 text-pink-600" />
+      <span className="font-semibold">{label}</span>
+    </button>
+  );
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400 inline-flex items-center gap-1"
+      >
+        Μάθηση
+        <ChevronDown className="w-4 h-4" />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="absolute right-0 mt-2 w-[560px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-pink-100 dark:border-gray-800 p-3 z-50"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <div className="grid grid-cols-2 gap-1">
+              <LinkItem to="/quiz" label="Quiz" icon={Trophy} />
+              <LinkItem to="/flashcards" label="Flashcards" icon={Brain} />
+              <LinkItem to="/progress-tracker" label="Progress Tracker" icon={Map} />
+              <LinkItem to="/study-timer" label="Study Timer" icon={Timer} />
+              <LinkItem to="/prosanatolismos" label="Προσανατολισμός" icon={Compass} />
+              <LinkItem to="/paliathemata" label="Παλιά Θέματα" icon={FileText} />
+              <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
+              <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
+              <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
+              <LinkItem to="/community" label="Community" icon={MessagesSquare} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const NavButton: React.FC<NavButtonProps> = ({ to, children }) => (
   <NavLink
@@ -223,6 +279,30 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const closeMenu = () => setIsMenuOpen(false);
 
+  // Global Panic Button (top-left)
+  const [showPanic, setShowPanic] = useState(false);
+  const [panicMsg, setPanicMsg] = useState<{ type: 'tip' | 'joke' | 'breath'; text: string }>({
+    type: 'tip',
+    text: '',
+  });
+  const panicMessages: Array<{ type: 'tip' | 'joke' | 'breath'; text: string }> = [
+    { type: 'tip', text: 'Δεν χρειάζεται να είμαι τέλειος — αρκεί να προσπαθώ.' },
+    { type: 'tip', text: 'Κάθε μέρα που διαβάζω, έρχομαι πιο κοντά στον στόχο μου.' },
+    { type: 'tip', text: 'Το άγχος είναι προσωρινό, οι προσπάθειές μου μένουν.' },
+    { type: 'tip', text: 'Μπορώ να τα καταφέρω — το έχω ξανακάνει σε δύσκολα.' },
+    { type: 'tip', text: 'Ένα βήμα τη φορά είναι αρκετό.' },
+    { type: 'tip', text: 'Δεν με καθορίζει ένα διαγώνισμα ή μια εξέταση.' },
+    { type: 'tip', text: 'Αξίζω, ανεξάρτητα από τους βαθμούς μου.' },
+    { type: 'tip', text: 'Η πρόοδος είναι πιο σημαντική από την τελειότητα.' },
+    { type: 'tip', text: 'Αν κουραστώ, κάνω διάλειμμα — δεν τα παρατάω.' },
+    { type: 'tip', text: 'Το μέλλον μου δεν κρίνεται μόνο από αυτή τη στιγμή.' },
+  ];
+  const triggerPanic = () => {
+    const pick = panicMessages[Math.floor(Math.random() * panicMessages.length)];
+    setPanicMsg(pick);
+    setShowPanic(true);
+  };
+
   // Retry pending quiz submissions globally when connection is restored.
   useEffect(() => {
     if (!user) return;
@@ -250,23 +330,34 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
-            <NavLink to="/" className="flex items-center gap-3 group shrink-0">
-              <motion.img
-                src={technotesLogo}
-                alt="Technotesgr"
-                className="w-10 h-10 object-contain"
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-              />
-              <span className="font-bold text-gray-800 dark:text-white hidden sm:block">
-                technotesgr
-              </span>
-            </NavLink>
+            <div className="flex items-center gap-3">
+              <NavLink to="/" className="flex items-center gap-3 group shrink-0">
+                <motion.img
+                  src={technotesLogo}
+                  alt="Technotesgr"
+                  className="w-10 h-10 object-contain"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                />
+                <span className="font-bold text-gray-800 dark:text-white hidden sm:block">
+                  technotesgr
+                </span>
+              </NavLink>
+            </div>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
+              {/* Panic Button moved right and enlarged */}
+              <button
+                onClick={triggerPanic}
+                className="mr-2 px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-black shadow-lg hover:shadow-xl"
+                title="Panic Button"
+                aria-label="Panic Button"
+              >
+                Panic Button
+              </button>
               <NavButton to="/">Αρχική</NavButton>
-              <NavButton to="/about">Σχετικά με εμάς</NavButton>
+              <NavButton to="/about">Σχετικά με εμένα</NavButton>
               <NavButton to="/gloglossa">GloGlossa</NavButton>
               <NavButton to="/merch">Η Ατζέντα</NavButton>
               <button
@@ -286,16 +377,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
               ) : user ? (
                 <>
-                  <NavButton to="/quiz">Quiz</NavButton>
-                  <NavButton to="/flashcards">Flashcards</NavButton>
-                  <NavButton to="/community">Community</NavButton>
-                  <NavButton to="/progress-tracker">Progress Tracker</NavButton>
-                  <NavButton to="/study-timer">Study Timer</NavButton>
-                  <NavButton to="/prosanatolismos">Προσανατολισμός</NavButton>
-                  <NavButton to="/sxoles">Σχολές</NavButton>
-                  <NavButton to="/online">Online Μαθήματα</NavButton>
-                  <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
-                  <NavButton to="/algorithms">Αλγόριθμοι</NavButton>
+                  <PrepMenu />
                   <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
                   <ProfileDropdown />
                 </>
@@ -325,6 +407,49 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </div>
         </div>
       </div>
+
+      {/* Global Panic Modal */}
+      <AnimatePresence>
+        {showPanic && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
+            <motion.div
+              className="relative max-w-md w-full rounded-3xl bg-white dark:bg-gray-900 border-2 border-pink-300 p-6 shadow-2xl"
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', stiffness: 240, damping: 20 }}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                {panicMsg.type === 'tip' && <Heart className="w-5 h-5 text-pink-600" />}
+                {panicMsg.type === 'joke' && <Laugh className="w-5 h-5 text-rose-600" />}
+                {panicMsg.type === 'breath' && <Wind className="w-5 h-5 text-fuchsia-600" />}
+                <h3 className="text-xl font-black text-gray-900 dark:text-white">Take a breath</h3>
+              </div>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{panicMsg.text}</p>
+              <div className="mt-5 flex items-center justify-between">
+                <button
+                  onClick={triggerPanic}
+                  className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold"
+                >
+                  Άλλο ένα
+                </button>
+                <button
+                  onClick={() => setShowPanic(false)}
+                  className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold"
+                >
+                  Κλείσιμο
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu Drawer */}
       <AnimatePresence>

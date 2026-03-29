@@ -104,17 +104,22 @@ const timelineData: TimelineItem[] = [
     description: 'Έκανα την τελευταία επανάληψη πριν τις εξετάσεις.',
   },
   {
-    period: '06/06/2024',
+    period: 'Ιούνιος 2024',
     title: 'Εξέταση Πληροφορικής',
     description: 'Ημέρα Πανελλαδικής εξέτασης στο μάθημα της Πληροφορικής.',
   },
   {
-    period: '28/06/2024',
+    period: 'Ιούνιος 2024',
     title: 'Αποτελέσματα',
     description: 'Βαθμός Πληροφορικής: 99/100.',
   },
   {
-    period: '04/07/2024',
+    period: 'Ιούλιος 2024',
+    title: 'Επιτυχία στο ΕΚΠΑ',
+    description: 'Πέρασα 10η στο Τμήμα Πληροφορικής και Τηλεπικοινωνιών του ΕΚΠΑ.',
+  },
+  {
+    period: 'Ιούλιος 2024',
     title: 'Γέννηση του technotesgr',
     description: 'Ξεκίνησε το technotesgr στο Instagram.',
   },
@@ -131,7 +136,7 @@ const timelineData: TimelineItem[] = [
   {
     period: 'Ιούλιος 2025',
     title: 'Νέα βήματα',
-    description: 'Άνοιξα TikTok στο technotesgr και ξεκίνησα την ιστοσελίδα.',
+    description: 'Άνοιξα TikTok,Youtube και LinkedIn στο technotesgr και ξεκίνησα την ιστοσελίδα.',
   },
   {
     period: 'Σήμερα',
@@ -139,6 +144,15 @@ const timelineData: TimelineItem[] = [
     description:
       'Συνεχίζω να αναπτύσσω το technotesgr και να στηρίζω μαθητές στην πορεία τους προς τις Πανελλήνιες.',
   },
+];
+
+const achievementImages = [
+  '/images/eg1.jpg',
+  '/images/eg2.jpg',
+  '/images/eg3.jpg',
+  '/images/eg4.jpg',
+  '/images/eg5.jpg',
+  '/images/eg6.jpg',
 ];
 
 // --- Component ---
@@ -193,6 +207,33 @@ const AboutPage: React.FC = () => {
       <section className="py-16 md:py-20 relative">
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-5xl mx-auto space-y-12">
+            {/* Achievements Gallery */}
+            <motion.div
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-200/50 dark:border-gray-700/50"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
+                Some cool moments
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {achievementImages.map((imageSrc, i) => (
+                  <div
+                    key={imageSrc}
+                    className="aspect-square overflow-hidden rounded-2xl border border-pink-200 dark:border-gray-700 bg-pink-50 dark:bg-gray-700/40"
+                  >
+                    <img
+                      src={imageSrc}
+                      alt={`Επίτευγμα ${i + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
             {/* Quick Stats */}
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-3 gap-4"
@@ -283,7 +324,15 @@ const AboutPage: React.FC = () => {
                 </motion.p>
                 <motion.p variants={fadeIn}>
                   Αυτή η σελίδα δεν θα μπορούσε να γίνει χωρίς τον{' '}
-                  <span className="font-bold text-pink-600 dark:text-pink-400">deathwish</span>.
+                  <a
+                    href="https://github.com/mgiannopoulos24"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-pink-600 dark:text-pink-400 hover:underline"
+                  >
+                    deathwish
+                  </a>
+                  .
                 </motion.p>
               </motion.div>
             </motion.div>
@@ -451,31 +500,6 @@ const AboutPage: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Achievements Gallery Placeholders */}
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <h3 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-3">
-                Some cool moments from my journey
-              </h3>
-             
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-square rounded-2xl border-2 border-dashed border-pink-300 dark:border-pink-500/50 bg-pink-50/60 dark:bg-gray-700/40 flex items-center justify-center text-center p-4"
-                  >
-                    <span className="text-sm font-semibold text-pink-600 dark:text-pink-300">
-                      Placeholder #{i + 1}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>

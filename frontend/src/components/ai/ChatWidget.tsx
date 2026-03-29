@@ -242,8 +242,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           <motion.div
             role="dialog"
             aria-label="Chatbot βοηθός"
-            className="fixed bottom-24 right-6 z-40 w-[90vw] max-w-md rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
-            style={{ border: `3px solid ${BRAND}`, height: '70vh', maxHeight: '600px' }}
+            className="fixed bottom-24 right-6 z-40 w-[94vw] max-w-3xl rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
+            style={{ border: `3px solid ${BRAND}`, height: '78vh', maxHeight: '820px' }}
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1,    y: 0  }}
             exit={{    opacity: 0, scale: 0.92, y: 16 }}
@@ -292,7 +292,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             {/* Messages */}
             <div
               ref={listRef}
-              className="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-br from-pink-50 to-rose-50"
+              className="flex-1 overflow-y-auto p-5 md:p-6 space-y-4 bg-gradient-to-br from-pink-50 to-rose-50"
             >
               {messages.length <= 2 && (
                 <div className="flex flex-wrap gap-2">
@@ -369,7 +369,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             </div>
 
             {/* Input */}
-            <div className="p-3 bg-white border-t-2 border-pink-100 flex-shrink-0">
+            <div className="p-4 bg-white border-t-2 border-pink-100 flex-shrink-0">
               <div className="flex items-end gap-2">
                 <textarea
                   ref={textareaRef}
@@ -380,22 +380,22 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                   placeholder="Γράψε εδώ... (Enter για αποστολή)"
                   disabled={sending}
                   aria-label="Μήνυμα"
-                  className="flex-1 resize-none rounded-xl border-2 border-pink-200 px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 disabled:opacity-60 transition-colors"
-                  style={{ minHeight: '42px', maxHeight: '120px' }}
+                  className="flex-1 resize-none rounded-xl border-2 border-pink-200 px-4 py-3 text-base focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 disabled:opacity-60 transition-colors"
+                  style={{ minHeight: '48px', maxHeight: '160px' }}
                 />
                 <motion.button
                   aria-label="Αποστολή"
                   onClick={send}
                   disabled={!canSend}
-                  className="rounded-xl p-2.5 text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                  className="rounded-xl p-3 text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                   style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
                   whileHover={canSend ? { scale: 1.08 } : {}}
                   whileTap={canSend  ? { scale: 0.93 } : {}}
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-6 h-6" />
                 </motion.button>
               </div>
-              <p className="text-[10px] text-gray-400 mt-1 pl-1">
+              <p className="text-[11px] text-gray-400 mt-1 pl-1">
                 Shift+Enter για νέα γραμμή
               </p>
             </div>

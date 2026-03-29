@@ -43,10 +43,17 @@ interface BackendAllQuestionsResponse {
 // --- Constants ---
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
-const QUIZ_CACHE_KEY = 'quizDataCache:v1';
+const QUIZ_CACHE_KEY = 'quizDataCache:v2';
 const QUIZ_CACHE_TTL_MS = 5 * 60 * 1000;
 
 let inMemoryQuizCache: { ts: number; data: QuizData[] } | null = null;
+
+const normalizeGreek = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
 
 const chapterNameMap: Record<string | number, string> = {
   1: 'Ανάλυση προβλήματος',
@@ -159,7 +166,41 @@ export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
       questions,
     }));
 
-    const cachePayload = { ts: Date.now(), data: quizzes };
+    // Merge "debug" and "εκσφαλμάτωση" into one chapter card.
+    const mergedByKey = new Map<string, QuizData>();
+    quizzes.forEach((quiz) => {
+      const normalizedTitle = normalizeGreek(quiz.title);
+      const isDebugChapter =
+        normalizedTitle === 'debug' ||
+        normalizedTitle === 'εκσφαλματωση' ||
+        normalizeGreek(String(quiz.number || '')) === 'debug';
+
+      const mergeKey = isDebugChapter ? 'debug-merged' : quiz.id;
+      const existing = mergedByKey.get(mergeKey);
+      if (!existing) {
+        mergedByKey.set(
+          mergeKey,
+          isDebugChapter
+            ? {
+                ...quiz,
+                id: 'chapter-debug',
+                title: 'Εκσφαλμάτωση',
+                number: 'debug',
+              }
+            : quiz
+        );
+        return;
+      }
+
+      const byQuestionId = new Map<string, Question>();
+      existing.questions.forEach((q) => byQuestionId.set(String(q.id), q));
+      quiz.questions.forEach((q) => byQuestionId.set(String(q.id), q));
+      existing.questions = Array.from(byQuestionId.values());
+    });
+
+    const mergedQuizzes = Array.from(mergedByKey.values());
+
+    const cachePayload = { ts: Date.now(), data: mergedQuizzes };
     inMemoryQuizCache = cachePayload;
     try {
       sessionStorage.setItem(QUIZ_CACHE_KEY, JSON.stringify(cachePayload));
@@ -167,7 +208,7 @@ export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
       console.warn('Quiz cache write failed:', cacheErr);
     }
 
-    return quizzes;
+    return mergedQuizzes;
   } catch (error) {
     console.error('Error fetching all quizzes:', error);
     return [];

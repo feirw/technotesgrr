@@ -716,9 +716,6 @@ const Flashcards: React.FC = () => {
                             {isFlipped ? currentCard.back : currentCard.front}
                           </p>
 
-                          <div className="absolute bottom-4 right-4 text-xs text-gray-500">
-                            Πάτα Space/Enter για flip
-                          </div>
                         </motion.button>
                       </AnimatePresence>
                     </div>

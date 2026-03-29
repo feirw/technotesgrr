@@ -60,6 +60,15 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      setError('Συμπληρώστε email.');
+      return;
+    }
+    if (!navigator.onLine) {
+      setError('Φαίνεται ότι είστε offline. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
+      return;
+    }
     setLoading(true);
 
     // Clear any existing timeout
@@ -75,7 +84,7 @@ const LoginPage: React.FC = () => {
 
     try {
       console.log('🚀 Attempting login...');
-      await login(email, password);
+      await login(normalizedEmail, password);
       
       // Clear timeout on success
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -84,15 +93,7 @@ const LoginPage: React.FC = () => {
         setLoading(false);
         console.log('✅ Login completed');
         
-        // Navigate to intended destination (from ProtectedRoute) or default to profile
-        // This preserves the user's intended navigation path
-        const state = location.state as LocationState | null;
-        const intendedDestination = state?.from?.pathname || '/profile';
-        
-        // Small delay to ensure auth state has propagated
-        setTimeout(() => {
-          navigate(intendedDestination, { replace: true });
-        }, 100);
+        // Redirect is handled by auth effect above after user state updates.
       }
     } catch (err: any) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -101,12 +102,12 @@ const LoginPage: React.FC = () => {
         console.error('❌ Login error:', err);
         setLoading(false);
 
-        const message = err?.message || '';
+        const message = (err?.message || '').toLowerCase();
 
         // Map error messages to user-friendly Greek
-        if (message.includes('Invalid login credentials') || message.includes('Invalid')) {
+        if (message.includes('invalid login credentials') || message.includes('invalid')) {
           setError('Λάθος email ή κωδικός πρόσβασης.');
-        } else if (message.includes('Email not confirmed')) {
+        } else if (message.includes('email not confirmed')) {
           setError('Παρακαλώ επιβεβαιώστε το email σας πριν συνδεθείτε.');
         } else if (
           message.includes('fetch') ||

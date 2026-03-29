@@ -32,6 +32,7 @@ from database import (
     get_quiz_by_id,
     save_contact_submission,
     get_admin_stats,
+    get_admin_users,
     is_user_admin,
     save_career_orientation_result,
     get_career_orientation_result,
@@ -456,6 +457,27 @@ async def get_dashboard_stats(user=Depends(get_current_user)):
         if not is_user_admin(user.id):
             raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
         return get_admin_stats()
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/admin/users")
+async def get_admin_users_endpoint(
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
+    user=Depends(get_current_user),
+):
+    try:
+        if not is_user_admin(user.id):
+            raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
+        users, total = get_admin_users(limit=limit, offset=offset)
+        return {
+            "users": users,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+        }
     except HTTPException:
         raise
     except Exception as e:

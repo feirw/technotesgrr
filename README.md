@@ -1,70 +1,82 @@
-# High School Informatics Hub [WIP]
+# technotesgr — High School Informatics Hub
 
-This website was created with the goal of helping high school students (3rd grade of Lyceum) better understand and engage with the Informatics course, especially in preparation for national exams in Greece.
+Modern learning platform for Greek high-school Informatics (Γ’ Λυκείου): quizzes, flashcards, community, progress tracking, study timer, chatbot and more. Built with React + Vite + Tailwind + Framer Motion (frontend) and FastAPI + PostgreSQL/Supabase (backend).
 
-## How to run locally
+## Quick Start
 
-## Frontend Setup
-If you don't have Bun installed, run `curl -fsSL https://bun.sh/install | bash` and then restart your shell.
+### 1) Frontend
+If you don't have Bun installed, run `curl -fsSL https://bun.sh/install | bash` and restart your shell.
 
-1. Navigate to frontend directory: `cd frontend`
-2. Install dependencies: `bun install`
-3. Start the development server: `bun run dev`
+1. `cd frontend`
+2. `bun install`
+3. Create `.env` if needed (see ENV section below)
+4. `bun run dev`
 
-## Backend Setup
-4. Navigate to backend directory: `cd backend`
-5. Create and activate a virtual environment: `python3 -m venv env` and `source env/bin/activate`
-6. Install backend dependencies: `pip install -r requirements.txt`
-7. Initialize the database and load data: `python3 database.py` and `python3 data_loader.py`
-8. Start the backend server: `python3 server.py`
+### 2) Backend
+1. `cd backend`
+2. Create venv: `python -m venv env` and activate it
+3. `pip install -r requirements.txt`
+4. Configure environment variables (see ENV section below)
+5. Initialize database (if needed): `python database.py`
+6. (Optional, dataset loaders) `python data_loader.py`
+7. Run server: `python server.py`
 
+### Access
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8000`
 
-## Access the Website
-Open your browser and navigate to `http://localhost:5173`.
+## Environment Variables
 
-Now you can explore the website and its features!
+Backend (FastAPI):
+- `DATABASE_URL` (PostgreSQL connection)
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE` (if using Supabase for auth/profile sync)
+- `GEMINI_API_KEY` (Google Gemini for chatbot)
+- `MAIL_FROM`, `MAIL_TO`, `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` (contact form notifications, optional)
 
-## 🌟 What You'll Find
+Frontend:
+- `VITE_API_BASE` (e.g. `http://localhost:8000`)
+- `VITE_GEMINI_ENABLED` (optional flag to toggle chatbot UI)
 
-### 📝 Notes
-- Structured and comprehensive summaries for the Informatics course.
-- Includes topics from past national exams in downloadable PDF format.
-- A preview of the notes is available. Full access is granted via direct contact and user verification.
+## Features
+- Quizzes with local-first submissions, offline queue, retry on reconnect and caching
+- Flashcards with smooth flip/vertical transitions, keyboard navigation, progress, optimized state
+- Community forum with user posts and profiles (Supabase-backed)
+- Admin dashboard (view users; protected endpoint `/api/admin/users`)
+- Study Timer page (start/pause/reset, progress/goal, pink theme)
+- Career Orientation (Προσανατολισμός) with backend persistence
+- Progress Tracker page (interactive syllabus tracking)
+- Dark mode (`darkMode: 'class'`, preference saved)
+- Chatbot (Google Gemini) with session-based history and persistent conversations
+- Web Vitals tracking (LCP/INP/CLS) and lightweight analytics hooks
+- Panic Button with curated supportive quotes (navbar)
+- Route-level lazy loading and reduced initial JS payload
 
-### 🧠 Activities
-- Quiz-based practice with questions from past national exams.
-- Each quiz awards points based on accuracy and completion.
-- A monthly **Leaderboard** showcases top-performing students using chosen nicknames (students are informed before submission).
+## Project Structure
+```
+backend/        FastAPI app, DB access, AI service, admin/users API
+frontend/       React + Vite app
+  src/
+    components/ Shared UI components (ChatWidget, quiz, flashcards)
+    pages/      Route pages (Home, About, Community, StudyTimer, etc.)
+    layouts/    MainLayout with navbar, dark mode, Panic Button
+    utils/      apiClient (retry/dedupe), quizUtils (cache), theme, webVitals
+```
 
-  - In case of a tie, rewards are given to all students with the highest score.
-  - A minimum of 15 active participants is required for the leaderboard to be valid.
+## Development Notes
+- Quizzes: No auto-advance; UI updates instantly; submissions sync in background; sessionStorage cache
+- Flashcards: In-place flip animation; vertical transitions; cleaned content; hint removed
+- Routing: Protected routes + gentle auth redirects; refresh keeps user on current page
+- Performance: Lazy `ChatWidget`, code-splitting heavy pages, request dedupe/retry, caching
+- Database: Idempotent init for `community_posts`; admin users endpoint with pagination
 
-### 🎮 Learning Games & Tools
-- Interactive visualizations of key algorithms (e.g., Binary Search, Linear Search).
-- Crossword puzzles focused on Informatics definitions and theory.
-- Flashcards for memorizing key concepts.
+## Legal
+- Privacy/Terms are available in-app at:
+  - Privacy & Terms: `/privacy-policy`
+  - Data Protection: `/data`
+- Summary: We use Supabase Auth (email/username), store community posts and quiz progress, track anonymous Web Vitals, and respect dark mode/local preferences. See pages above for details.
 
-## 📚 Additional Resources
-- **About** section with information about the creator and the project's mission.
-- Details on available online tutoring sessions.
-- Contact information and links to social platforms (Instagram, YouTube, TikTok).
-
-## 🎯 Target Audience
-- Students of the Economics and Informatics direction in their final year of Greek high school (3rd Lyceum).
-
-## 💼 Sustainability Model
-This project is supported through:
-- Educational material access.
-- Online learning services.
-- Community support and sponsorships.
-
----
-
-## 🤝 Contributing
-Contributions, issues and feature requests are welcome! 
-
-Give a ⭐️ if this project helped you!
+## Contributing
+Issues and PRs are welcome.
 
 ## Acknowledgements
-
-Special thanks to [ABSanthosh](https://github.com/ABSanthosh) for the flashcards implementation in ReactJS.
+- Special thanks to [ABSanthosh](https://github.com/ABSanthosh) for an initial flashcards idea in React.

@@ -29,10 +29,21 @@ const MerchPage: React.FC = () => {
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed max-w-lg">
               Δεν είναι απλά ένα ημερολόγιο. Είναι ο προσωπικός σου οδηγός για τις Πανελλήνιες.
+              
             </p>
 
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 mb-5 rounded-full bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300 font-bold text-sm"
+            >
+              <Sparkles className="w-4 h-4" />
+              Coming Soon το καλοκαίρι (έντυπη έκδοση)
+            </motion.div>
+
             <motion.a
-              href={vintedLink}
+              
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
@@ -40,7 +51,7 @@ const MerchPage: React.FC = () => {
               className="inline-flex items-center gap-3 px-8 py-4 bg-pink-500 text-white rounded-2xl font-black text-xl shadow-2xl shadow-pink-500/40 transition-all"
             >
               <ShoppingBag />
-              Βρες την στο Vinted
+              Digital έκδοση διαθέσιμη τώρα
             </motion.a>
           </motion.div>
 
@@ -153,36 +164,7 @@ const MerchPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 🛒 Call to Action */}
-      <section className="py-24 px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto bg-gradient-to-r from-pink-500 to-rose-400 p-12 rounded-[3rem] text-white shadow-2xl text-center relative overflow-hidden"
-        >
-         
-
-          <h2 className="text-4xl md:text-5xl font-black mb-6 relative z-10 ">
-            Βάλε τις Πανελλήνιες σε μια τάξη...Σήμερα!
-          </h2>
-          <p className="text-xl text-pink-50 mb-10 relative z-10 opacity-90 font-medium">
-            Κάνε την δική σου πριν εξαντληθούν τα αποθέματα!Αγοράζοντάς την,εξασφαλίζεις και 24/7
-            καθοδήγηση για το διάβασμά σου από εμένα.Στείλε μου στο instagram!
-          </p>
-
-          <motion.a
-            href={vintedLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-4 bg-white text-pink-600 px-12 py-5 rounded-2xl font-black text-2xl shadow-xl relative z-10 transition-all"
-          >
-            ΑΓΟΡΑ ΤΩΡΑ
-          </motion.a>
-        </motion.div>
-      </section>
+      
     </div>
   );
 };

@@ -204,6 +204,24 @@ def get_admin_stats():
                 "recent_activity": recent_activity
             }
 
+def get_admin_users(limit: int = 50, offset: int = 0):
+    """Fetch paginated users for admin panel."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                """
+                SELECT id, username, email, role, created_at
+                FROM profiles
+                ORDER BY created_at DESC NULLS LAST
+                LIMIT %s OFFSET %s
+                """,
+                (limit, offset),
+            )
+            rows = cursor.fetchall()
+            cursor.execute("SELECT COUNT(*) AS count FROM profiles")
+            total = cursor.fetchone()["count"]
+            return [dict(r) for r in rows], int(total)
+
 def save_career_orientation_result(user_id: str, answers: dict, results: dict):
     """
     Save career orientation (prosanatolismos) results to database.

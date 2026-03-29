@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/utils/supabaseClient';
+import { apiFetch } from '@/utils/apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─────────────────────────────────────────────────────────────
@@ -31,6 +32,12 @@ interface CalculationResult {
   sortedScores:   ScoredCategory[];
 }
 interface Section { id:string; title:string; icon:LucideIcon; color:string; bg:string; questions:number[]; }
+interface SavedResultApiShape {
+  answers?: Record<string, number>;
+  final_scores?: Record<CategoryKey, number>;
+  top_category?: CategoryKey;
+  sorted_scores?: Array<{ category: CategoryKey; score: number; pct?: number }>;
+}
 
 // ─────────────────────────────────────────────────────────────
 // 50 ΕΡΩΤΗΣΕΙΣ
@@ -298,6 +305,7 @@ const Prosanatolismospage: React.FC = () => {
   const [success,    setSuccess]    = useState('');
   const [isSaving,   setIsSaving]   = useState(false);
   const [isCalc,     setIsCalc]     = useState(false);
+  const [isHydrating,setIsHydrating]= useState(false);
   const [sectionIdx, setSectionIdx] = useState(0);
   const isMounted = useRef(true);
 
@@ -320,6 +328,56 @@ const Prosanatolismospage: React.FC = () => {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch { /* silent */ }
   }, [answers]);
 
+  useEffect(() => {
+    const loadLatestSavedResult = async () => {
+      if (!user) return;
+      if (Object.keys(answers).length > 0) return;
+
+      setIsHydrating(true);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) return;
+
+        const response = await apiFetch<{ found: boolean; result?: SavedResultApiShape }>(
+          `${BACKEND_URL}/api/career-orientation/result`,
+          {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${token}` },
+            timeoutMs: 8000,
+            retries: 1,
+            dedupeKey: `career-orientation-result:${user.id}`,
+          },
+        );
+
+        if (!response.found || !response.result) return;
+
+        const restoredAnswers = Object.entries(response.result.answers ?? {}).reduce<Record<number, number>>(
+          (acc, [key, value]) => {
+            const qId = Number(key);
+            if (Number.isFinite(qId) && value >= 1 && value <= 5) acc[qId] = value;
+            return acc;
+          },
+          {},
+        );
+
+        if (Object.keys(restoredAnswers).length > 0 && isMounted.current) {
+          setAnswers(restoredAnswers);
+          // If backend payload is partial, compute safely from answers.
+          setResults(computeResults(restoredAnswers));
+          setSuccess('✅ Φορτώθηκε το τελευταίο αποθηκευμένο αποτέλεσμα.');
+          setTimeout(() => { if (isMounted.current) setSuccess(''); }, 4500);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (isMounted.current) setIsHydrating(false);
+      }
+    };
+
+    loadLatestSavedResult();
+  }, [user, answers]);
+
   const handleChange = useCallback((qId: number, score: number) => {
     if (score < 1 || score > 5) return;
     setAnswers(prev => ({ ...prev, [qId]: score }));
@@ -339,7 +397,7 @@ const Prosanatolismospage: React.FC = () => {
       const { data:{ session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       if (!token) throw new Error('Not authenticated');
-      const res = await fetch(`${BACKEND_URL}/api/career-orientation/submit`, {
+      await apiFetch<{ message: string }>(`${BACKEND_URL}/api/career-orientation/submit`, {
         method: 'POST',
         headers: { 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
         body: JSON.stringify({
@@ -350,13 +408,19 @@ const Prosanatolismospage: React.FC = () => {
             sorted_scores: calc.sortedScores.map(x => ({ category:x.category, score:x.rawScore, pct:x.displayPct })),
           },
         }),
+        timeoutMs: 10000,
+        retries: 1,
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       if (isMounted.current) {
         setSuccess('✅ Αποθηκεύτηκε!');
         setTimeout(() => { if (isMounted.current) setSuccess(''); }, 4000);
       }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error(e);
+      if (isMounted.current) {
+        setError('Αποθηκεύτηκε τοπικά, αλλά απέτυχε η online αποθήκευση. Δοκιμάστε ξανά αργότερα.');
+      }
+    }
     finally { if (isMounted.current) setIsSaving(false); }
   }, [user, answers]);
 
@@ -410,6 +474,13 @@ const Prosanatolismospage: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {isHydrating && (
+        <div className="mb-4 inline-flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          Ανάκτηση τελευταίου αποθηκευμένου αποτελέσματος...
+        </div>
+      )}
 
       {/* ΑΠΟΤΕΛΕΣΜΑΤΑ */}
       <AnimatePresence>

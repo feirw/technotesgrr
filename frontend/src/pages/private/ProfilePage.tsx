@@ -13,15 +13,15 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/utils/supabaseClient';
 
 const ProfilePage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfileUsername } = useAuth();
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(user?.username || '');
   const [loading, setLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Stats Logic
@@ -42,44 +42,41 @@ const ProfilePage: React.FC = () => {
     : 'Άγνωστο';
 
   const handleLogout = async () => {
+    setLogoutLoading(true);
     try {
       await logout();
       navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
+      setLogoutLoading(false);
     }
   };
 
   const handleUpdateProfile = async () => {
     if (!user || !newUsername.trim()) return;
-    
+
+    const normalizedUsername = newUsername.trim();
+    const usernameRegex = /^[\p{L}\p{N}._-]{3,24}$/u;
+    if (!usernameRegex.test(normalizedUsername)) {
+      setMsg({
+        type: 'error',
+        text: 'Το username πρέπει να είναι 3-24 χαρακτήρες και να περιέχει μόνο γράμματα, αριθμούς, . _ -',
+      });
+      return;
+    }
+
     setLoading(true);
     setMsg(null);
 
     try {
-      // 1. Ενημέρωση στον πίνακα profiles
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ username: newUsername })
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
-
-      // 2. Ενημέρωση στο Supabase Auth Metadata για συγχρονισμό
-      const { error: authError } = await supabase.auth.updateUser({
-        data: { username: newUsername },
-      });
-
-      if (authError) throw authError;
+      await updateProfileUsername(normalizedUsername);
 
       setMsg({ type: 'success', text: 'Το προφίλ ενημερώθηκε επιτυχώς!' });
       setIsEditing(false);
-      
-      // ΣΗΜΕΙΩΣΗ: Αν το AuthContext χρησιμοποιεί το onAuthStateChange, 
-      // το 'user' object θα ενημερωθεί αυτόματα χωρίς reload.
     } catch (error: any) {
       console.error('Error updating profile:', error);
-      setMsg({ type: 'error', text: 'Σφάλμα κατά την ενημέρωση.' });
+      setMsg({ type: 'error', text: error?.message || 'Σφάλμα κατά την ενημέρωση.' });
     } finally {
       setLoading(false);
     }
@@ -244,6 +241,7 @@ const ProfilePage: React.FC = () => {
 
             <button
               onClick={handleLogout}
+              disabled={logoutLoading}
               className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex items-center justify-between group hover:border-red-300 transition-all"
             >
               <div className="flex items-center gap-4">
@@ -252,7 +250,9 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <div className="text-left">
                   <h3 className="font-bold text-gray-900 dark:text-white">Αποσύνδεση</h3>
-                  <p className="text-sm text-gray-500">Έξοδος από το λογαριασμό</p>
+                  <p className="text-sm text-gray-500">
+                    {logoutLoading ? 'Γίνεται αποσύνδεση...' : 'Έξοδος από το λογαριασμό'}
+                  </p>
                 </div>
               </div>
               <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all">

@@ -10,6 +10,7 @@ import {
   useSpring,
 } from 'framer-motion';
 import { apiFetch } from '@/utils/apiClient';
+import { } from 'lucide-react';
 
 // --- Types & Interfaces ---
 
@@ -520,6 +521,8 @@ const HomePage: React.FC = () => {
   const successId = useId();
   const errorId = useId();
 
+  // (Panic Button moved to the top navbar in MainLayout)
+
   // 1. Διόρθωση Contact Form: Καθαρισμός error όταν πληκτρολογεί
   const handleContactInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -648,18 +651,7 @@ const HomePage: React.FC = () => {
                 {user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}
               </button>
               <div className="mt-4 flex justify-center gap-3">
-                <button
-                  className="px-5 py-2 rounded-full border-2 border-pink-300 text-pink-700 font-semibold bg-white/80"
-                  onClick={() => navigate('/community')}
-                >
-                  Μπες στο Community
-                </button>
-                <button
-                  className="px-5 py-2 rounded-full border-2 border-pink-300 text-pink-700 font-semibold bg-white/80"
-                  onClick={() => navigate('/study-timer')}
-                >
-                  Άνοιξε Study Timer
-                </button>
+                {/* Secondary CTAs removed per request */}
               </div>
             </motion.div>
 
@@ -677,6 +669,8 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* Panic Button relocated to navbar (MainLayout) */}
 
         {/* Features Section */}
         <Section id="features" title="Τι προσφέρουμε;" subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες" withGradient>

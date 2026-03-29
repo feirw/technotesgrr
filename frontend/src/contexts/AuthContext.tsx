@@ -32,6 +32,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, username: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateProfileUsername: (username: string) => Promise<void>;
+  refreshUserProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -73,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       // Fetch profile with timeout to prevent hanging
-      const profilePromise = supabase.from('profiles').select('*').eq('id', baseUser.id).single();
+      const profilePromise = supabase.from('profiles').select('*').eq('id', baseUser.id).maybeSingle();
       const { data, error } = await withTimeout<{ data: any; error: any }>(profilePromise, 5000);
 
       if (error) {
@@ -241,7 +243,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * Does NOT redirect - that's handled by LoginPage component
    */
   const login = async (email: string, password: string) => {
-    console.log('🔐 Login attempt for:', email);
+    const normalizedEmail = email.trim().toLowerCase();
+    console.log('🔐 Login attempt for:', normalizedEmail);
 
     if (isMockMode) {
       console.error('❌ Cannot login - Supabase not configured');
@@ -252,7 +255,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       // Attempt login with timeout
-      const loginPromise = supabase.auth.signInWithPassword({ email, password });
+      const loginPromise = supabase.auth.signInWithPassword({ email: normalizedEmail, password });
       const { data, error } = await withTimeout(loginPromise, 10000);
 
       if (error) {
@@ -295,7 +298,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * User will receive confirmation email after signup
    */
   const signup = async (email: string, password: string, username: string) => {
-    console.log('📝 Signup attempt for:', email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim();
+    console.log('📝 Signup attempt for:', normalizedEmail);
 
     if (isMockMode) {
       throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
@@ -306,10 +311,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // The username is stored in user_metadata
       // A database trigger should create the profile entry automatically
       const signupPromise = supabase.auth.signUp({
-        email,
+        email: normalizedEmail,
         password,
         options: {
-          data: { username },
+          data: { username: normalizedUsername },
           // Optional: You can disable email confirmation for testing
           // emailRedirectTo: `${window.location.origin}/login`
         },
@@ -330,8 +335,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // This is a fallback if database trigger is not set up
           const { error: profileError } = await supabase.from('profiles').insert({
             id: data.user.id,
-            username: username,
-            email: email,
+            username: normalizedUsername,
+            email: normalizedEmail,
             role: 'user',
           });
 
@@ -382,6 +387,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // This keeps the context focused on auth state management
   };
 
+  const refreshUserProfile = async () => {
+    if (isMockMode || !user) return;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) {
+      setUser(null);
+      return;
+    }
+    const profile = await fetchProfileSafe(authUser);
+    setUser(profile);
+  };
+
+  const updateProfileUsername = async (username: string) => {
+    if (isMockMode) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
+    if (!user) throw new Error('Δεν υπάρχει συνδεδεμένος χρήστης.');
+
+    const nextUsername = username.trim();
+    if (nextUsername.length < 3) throw new Error('Το username πρέπει να έχει τουλάχιστον 3 χαρακτήρες.');
+
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ username: nextUsername })
+      .eq('id', user.id);
+    if (profileError) throw profileError;
+
+    const { error: authError } = await supabase.auth.updateUser({ data: { username: nextUsername } });
+    if (authError) throw authError;
+
+    setUser((prev) => (prev ? { ...prev, username: nextUsername } : prev));
+  };
+
   // Normalize role to lowercase for comparison (in case DB has 'Admin' instead of 'admin')
   let normalizedRole: UserRole = user?.role || null;
   if (normalizedRole) {
@@ -401,6 +436,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     signup,
     logout,
+    updateProfileUsername,
+    refreshUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

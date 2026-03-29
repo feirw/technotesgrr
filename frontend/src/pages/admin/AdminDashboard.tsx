@@ -20,6 +20,14 @@ interface DashboardStats {
   recent_activity: RecentActivityItem[];
 }
 
+interface AdminUserItem {
+  id: string;
+  username: string | null;
+  email: string | null;
+  role: string | null;
+  created_at: string | null;
+}
+
 interface StatCardProps {
   title: string;
   value: number | string;
@@ -50,6 +58,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, de
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [users, setUsers] = useState<AdminUserItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,20 +75,35 @@ const AdminDashboard: React.FC = () => {
           throw new Error('Authentication token not found.');
         }
 
-        const response = await fetch('/api/admin/dashboard', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const [statsResponse, usersResponse] = await Promise.all([
+          fetch('/api/admin/dashboard', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch('/api/admin/users?limit=100&offset=0', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
 
-        if (!response.ok) {
-          if (response.status === 401) throw new Error('Unauthorized');
-          if (response.status === 403) throw new Error('Access Forbidden: Admins only');
+        if (!statsResponse.ok) {
+          if (statsResponse.status === 401) throw new Error('Unauthorized');
+          if (statsResponse.status === 403) throw new Error('Access Forbidden: Admins only');
           throw new Error('Failed to fetch admin data');
         }
 
-        const data: DashboardStats = await response.json();
-        setStats(data);
+        if (!usersResponse.ok) {
+          if (usersResponse.status === 401) throw new Error('Unauthorized');
+          if (usersResponse.status === 403) throw new Error('Access Forbidden: Admins only');
+          throw new Error('Failed to fetch users');
+        }
+
+        const statsData: DashboardStats = await statsResponse.json();
+        const usersData: { users: AdminUserItem[] } = await usersResponse.json();
+        setStats(statsData);
+        setUsers(usersData.users || []);
       } catch (err: any) {
         console.error(err);
         setError(err.message || 'Δεν ήταν δυνατή η φόρτωση των δεδομένων.');
@@ -219,6 +243,78 @@ const AdminDashboard: React.FC = () => {
                   <tr>
                     <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
                       Καμία πρόσφατη δραστηριότητα.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
+        {/* Users Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden"
+        >
+          <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+              <Users className="w-5 h-5 text-pink-600" />
+              Χρήστες
+            </h3>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-gray-900/50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Username
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Εγγραφή
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                {users.map((u) => (
+                  <tr
+                    key={u.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                      {u.username || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">
+                      {u.email || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <span className="px-2.5 py-1 rounded-full bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300 font-bold">
+                        {(u.role || 'user').toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-gray-500 text-sm">
+                      {u.created_at
+                        ? new Date(u.created_at).toLocaleDateString('el-GR', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })
+                        : '-'}
+                    </td>
+                  </tr>
+                ))}
+                {users.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                      Δεν βρέθηκαν χρήστες.
                     </td>
                   </tr>
                 )}
