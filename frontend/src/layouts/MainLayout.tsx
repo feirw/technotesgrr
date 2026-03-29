@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { Suspense, lazy, useState, useMemo, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,10 +21,18 @@ import {
   ChevronDown,
   Shield,
   School2Icon,
+  Timer,
+  Globe,
+  MessagesSquare,
+  Sun,
+  Moon,
+  Map,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
-import ChatWidget from '@/components/ai/ChatWidget';
+import { toggleTheme, getPreferredTheme } from '@/utils/theme';
+import { flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
+const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
 const BRAND = '#fda8a9';
@@ -209,14 +217,34 @@ const ProfileDropdown: React.FC = () => {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
 
+  // Retry pending quiz submissions globally when connection is restored.
+  useEffect(() => {
+    if (!user) return;
+
+    const sync = () => {
+      void flushPendingQuizSubmissions();
+    };
+
+    sync();
+    window.addEventListener('online', sync);
+    const intervalId = window.setInterval(sync, 30000);
+    return () => {
+      window.removeEventListener('online', sync);
+      window.clearInterval(intervalId);
+    };
+  }, [user]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
-      <ChatWidget />
+      <Suspense fallback={null}>
+        <ChatWidget />
+      </Suspense>
       {/* Navbar Container */}
       <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
         <div className="container mx-auto px-6">
@@ -239,7 +267,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">Σχετικά με εμάς</NavButton>
+              <NavButton to="/gloglossa">GloGlossa</NavButton>
               <NavButton to="/merch">Η Ατζέντα</NavButton>
+              <button
+                aria-label="Theme toggle"
+                onClick={() => setIsDark(toggleTheme() === 'dark')}
+                className="ml-2 p-2 rounded-xl border border-pink-200 text-pink-600 hover:bg-pink-50 transition-colors"
+                title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
+              >
+                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
 
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
@@ -249,11 +286,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
               ) : user ? (
                 <>
+                  <NavButton to="/quiz">Quiz</NavButton>
+                  <NavButton to="/flashcards">Flashcards</NavButton>
+                  <NavButton to="/community">Community</NavButton>
+                  <NavButton to="/progress-tracker">Progress Tracker</NavButton>
+                  <NavButton to="/study-timer">Study Timer</NavButton>
                   <NavButton to="/prosanatolismos">Προσανατολισμός</NavButton>
                   <NavButton to="/sxoles">Σχολές</NavButton>
                   <NavButton to="/online">Online Μαθήματα</NavButton>
-                  <NavButton to="/quiz">Quiz</NavButton>
-                  <NavButton to="/flashcards">Flashcards</NavButton>
                   <NavButton to="/paliathemata">Παλιά Θέματα</NavButton>
                   <NavButton to="/algorithms">Αλγόριθμοι</NavButton>
                   <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
@@ -323,24 +363,42 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
                     Αρχική
                   </MobileNavButton>
+                  <div className="flex items-center justify-between px-4 py-2">
+                    <span className="text-sm font-semibold">Θέμα</span>
+                    <button
+                      aria-label="Theme toggle"
+                      onClick={() => setIsDark(toggleTheme() === 'dark')}
+                      className="p-2 rounded-lg border border-pink-200 text-pink-600"
+                    >
+                      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
+                  </div>
 
                   {user ? (
                     <>
+                      <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
+                        Quiz
+                      </MobileNavButton>
+                      <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
+                        Flashcards
+                      </MobileNavButton>
+                      <MobileNavButton to="/community" icon={MessagesSquare} onClick={closeMenu}>
+                        Community
+                      </MobileNavButton>
+                      <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
+                        Progress Tracker
+                      </MobileNavButton>
+                      <MobileNavButton to="/study-timer" icon={Timer} onClick={closeMenu}>
+                        Study Timer
+                      </MobileNavButton>
                       <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
                         Προσανατολισμός
                       </MobileNavButton>
                       <MobileNavButton to ="/sxoles" icon={School2Icon} onClick={closeMenu} >
                        Σχολές
                       </MobileNavButton>
-
                       <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                         Online Μαθήματα
-                      </MobileNavButton>
-                      <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
-                        Quiz
-                      </MobileNavButton>
-                      <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
-                        Flashcards
                       </MobileNavButton>
                       <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
                         Algorithms
@@ -377,6 +435,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <div className="my-2 border-t border-gray-100 dark:border-gray-800" />
                   <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
                     Ατζέντα
+                  </MobileNavButton>
+                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
+                    GloGlossa
                   </MobileNavButton>
                 </div>
               </div>

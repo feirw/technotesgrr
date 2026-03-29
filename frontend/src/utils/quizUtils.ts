@@ -1,3 +1,5 @@
+import { apiFetch } from '@/utils/apiClient';
+
 // --- Types ---
 
 export interface Answer {
@@ -32,11 +34,19 @@ interface BackendChapterResponse {
 
 interface BackendAllQuestionsResponse {
   questions: Question[];
+  total?: number;
+  has_more?: boolean;
+  limit?: number;
+  offset?: number;
 }
 
 // --- Constants ---
 
-const BACKEND_URL = 'http://localhost:8001';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const QUIZ_CACHE_KEY = 'quizDataCache:v1';
+const QUIZ_CACHE_TTL_MS = 5 * 60 * 1000;
+
+let inMemoryQuizCache: { ts: number; data: QuizData[] } | null = null;
 
 const chapterNameMap: Record<string | number, string> = {
   1: 'Ανάλυση προβλήματος',
@@ -53,15 +63,14 @@ const chapterNameMap: Record<string | number, string> = {
   queue: 'Ουρά',
   trees: 'Δένδρα',
   oop: 'Αντικειμενοστραφής προγραμματισμός',
-  debug: 'Αποσφαλμάτωση',
+  debug: 'Εκσφαλμάτωση',
 };
 
 // --- Functions ---
 
 export const fetchQuizCategories = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/categories`);
-    const data: BackendCategoriesResponse = await response.json();
+    const data = await apiFetch<BackendCategoriesResponse>(`${BACKEND_URL}/api/categories`);
     return data.quiz_categories || [];
   } catch (error) {
     console.error('Error fetching quiz categories:', error);
@@ -71,8 +80,7 @@ export const fetchQuizCategories = async (): Promise<string[]> => {
 
 export const fetchQuizzesByChapter = async (chapter: string | number): Promise<QuizData> => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/quiz/questions/${chapter}`);
-    const data: BackendChapterResponse = await response.json();
+    const data = await apiFetch<BackendChapterResponse>(`${BACKEND_URL}/api/quiz/questions/${chapter}`);
 
     return {
       id: `chapter-${chapter}`,
@@ -93,13 +101,49 @@ export const fetchQuizzesByChapter = async (chapter: string | number): Promise<Q
 };
 
 export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
+  // Serve from in-memory cache first for the fastest possible navigation.
+  if (inMemoryQuizCache && Date.now() - inMemoryQuizCache.ts < QUIZ_CACHE_TTL_MS) {
+    return inMemoryQuizCache.data;
+  }
+
+  // Then try session cache to avoid refetching on route changes/refreshes.
   try {
-    const response = await fetch(`${BACKEND_URL}/api/quiz/questions`);
-    const data: BackendAllQuestionsResponse = await response.json();
+    const rawCached = sessionStorage.getItem(QUIZ_CACHE_KEY);
+    if (rawCached) {
+      const parsed = JSON.parse(rawCached) as { ts: number; data: QuizData[] };
+      if (parsed?.ts && Array.isArray(parsed?.data) && Date.now() - parsed.ts < QUIZ_CACHE_TTL_MS) {
+        inMemoryQuizCache = parsed;
+        return parsed.data;
+      }
+    }
+  } catch (cacheErr) {
+    console.warn('Quiz cache read failed:', cacheErr);
+  }
+
+  try {
+    // Pull quizzes in pages so this scales when quiz volume grows.
+    const pageSize = 250;
+    let offset = 0;
+    let hasMore = true;
+    const allQuestions: Question[] = [];
+
+    while (hasMore) {
+      const page = await apiFetch<BackendAllQuestionsResponse>(
+        `${BACKEND_URL}/api/quiz/questions?limit=${pageSize}&offset=${offset}`,
+        { dedupeKey: `quiz-questions-page-${offset}` }
+      );
+      const pageQuestions = Array.isArray(page?.questions) ? page.questions : [];
+      allQuestions.push(...pageQuestions);
+      hasMore = Boolean(page?.has_more);
+      offset += pageSize;
+      if (!pageQuestions.length) {
+        hasMore = false;
+      }
+    }
 
     const questionsByChapter: Record<string, Question[]> = {};
 
-    data.questions.forEach((question) => {
+    allQuestions.forEach((question) => {
       const chap = String(question.chapter);
       if (!questionsByChapter[chap]) {
         questionsByChapter[chap] = [];
@@ -114,6 +158,14 @@ export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
       description: '',
       questions,
     }));
+
+    const cachePayload = { ts: Date.now(), data: quizzes };
+    inMemoryQuizCache = cachePayload;
+    try {
+      sessionStorage.setItem(QUIZ_CACHE_KEY, JSON.stringify(cachePayload));
+    } catch (cacheErr) {
+      console.warn('Quiz cache write failed:', cacheErr);
+    }
 
     return quizzes;
   } catch (error) {

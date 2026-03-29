@@ -1,12 +1,19 @@
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
+import { BookOpenCheck, GraduationCap, HeartHandshake, Lightbulb, Target, Users } from 'lucide-react';
 
 // --- Types & Interfaces ---
 
 interface SkillItem {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   desc: string;
+}
+
+interface TimelineItem {
+  period: string;
+  title: string;
+  description: string;
 }
 
 // --- Motion Variants ---
@@ -34,19 +41,19 @@ const stagger: Variants = {
 
 const skillsData: SkillItem[] = [
   {
-    icon: '💡',
+    icon: <Lightbulb className="w-8 h-8 text-pink-600" />,
     title: 'Καινοτομία',
     desc: 'Χρησιμοποιώ σύγχρονες τεχνολογίες για να δημιουργώ διαδραστικά εργαλεία μάθησης.',
   },
   {
-    icon: '❤️',
+    icon: <HeartHandshake className="w-8 h-8 text-pink-600" />,
     title: 'Πάθος',
-    desc: 'Λατρεύω την εκπαίδευση και μελλοντικά θέλω να ασχοληθώ με την διδακτική της πληροφορικής',
+    desc: 'Λατρεύω την εκπαίδευση και θέλω να συμβάλλω ουσιαστικά στη διδακτική της πληροφορικής.',
   },
   {
-    icon: '🤝',
+    icon: <Users className="w-8 h-8 text-pink-600" />,
     title: 'Κοινότητα',
-    desc: 'Πιστεύω στη δύναμη της συνεργασίας μεταξύ των μαθητών για την βελτίωση των επιδόσεών τους',
+    desc: 'Πιστεύω στη δύναμη της συνεργασίας των μαθητών για καλύτερη απόδοση και ουσιαστική πρόοδο.',
   },
 ];
 
@@ -55,6 +62,83 @@ const funFactsData: string[] = [
   'Πηγαίνω συνέχεια σε events σχετικά με την τεχνολογία και την εκπαίδευση.',
   'Διαβάζω συνεχώς για νέες τεχνολογίες και εφαρμογές τους στην διδακτική.',
   'Ονειρεύομαι να ανοίξω το δικό μου φροντιστήριο.',
+];
+
+const timelineData: TimelineItem[] = [
+  {
+    period: 'Σεπτέμβριος 2022',
+    title: 'Ξεκίνημα προετοιμασίας',
+    description: 'Ξεκίνησα την προετοιμασία μου για την Πληροφορική.',
+  },
+  {
+    period: 'Οκτώβριος 2022 - Μάρτιος 2023',
+    title: 'Δύσκολη αρχή',
+    description:
+      'Για αρκετούς μήνες δεν καταλάβαινα σχεδόν τίποτα και ένιωθα ότι δεν προχωράω.',
+  },
+  {
+    period: 'Μάρτιος 2023',
+    title: 'Καθοριστική ανακάλυψη',
+    description:
+      'Ανακάλυψα το panellhnies.com, που είχε πολύ καλό υλικό για την Πληροφορική και με βοήθησε σημαντικά.',
+  },
+  {
+    period: 'Μάιος 2023',
+    title: 'Νέα αρχή',
+    description:
+      "Ξεκίνησα ξανά μαθήματα για την Γ' Λυκείου και όλα άρχισαν να βγάζουν περισσότερο νόημα.",
+  },
+  {
+    period: 'Σεπτέμβριος 2023',
+    title: 'Πρώτη μεγάλη επιτυχία',
+    description: 'Πέτυχα το πρώτο μου 90+ σε διαγώνισμα.',
+  },
+  {
+    period: 'Δεκέμβριος 2023',
+    title: '1η επανάληψη',
+    description: 'Ολοκλήρωσα την πρώτη μεγάλη επανάληψη της ύλης.',
+  },
+  {
+    period: 'Πάσχα 2024',
+    title: 'Τελική επανάληψη',
+    description: 'Έκανα την τελευταία επανάληψη πριν τις εξετάσεις.',
+  },
+  {
+    period: '06/06/2024',
+    title: 'Εξέταση Πληροφορικής',
+    description: 'Ημέρα Πανελλαδικής εξέτασης στο μάθημα της Πληροφορικής.',
+  },
+  {
+    period: '28/06/2024',
+    title: 'Αποτελέσματα',
+    description: 'Βαθμός Πληροφορικής: 99/100.',
+  },
+  {
+    period: '04/07/2024',
+    title: 'Γέννηση του technotesgr',
+    description: 'Ξεκίνησε το technotesgr στο Instagram.',
+  },
+  {
+    period: 'Οκτώβριος 2024',
+    title: 'Πρώτο ιδιαίτερο',
+    description: 'Έκανα το πρώτο μου ιδιαίτερο μάθημα.',
+  },
+  {
+    period: 'Φεβρουάριος 2025 - Ιούνιος 2025',
+    title: 'Αφιλοκερδής βοήθεια',
+    description: 'Βοήθησα αφιλοκερδώς μια κοπέλα στην προετοιμασία της για τις Πανελλήνιες.',
+  },
+  {
+    period: 'Ιούλιος 2025',
+    title: 'Νέα βήματα',
+    description: 'Άνοιξα TikTok στο technotesgr και ξεκίνησα την ιστοσελίδα.',
+  },
+  {
+    period: 'Σήμερα',
+    title: 'Συνεχής εξέλιξη',
+    description:
+      'Συνεχίζω να αναπτύσσω το technotesgr και να στηρίζω μαθητές στην πορεία τους προς τις Πανελλήνιες.',
+  },
 ];
 
 // --- Component ---
@@ -73,16 +157,14 @@ const AboutPage: React.FC = () => {
 
         <div className="container mx-auto px-6 text-center relative z-10">
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{
-              type: 'spring',
-              stiffness: 100,
-              damping: 15,
-              delay: 0.2,
-            }}
-            className="mb-8"
-          />
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-pink-100 text-pink-700 font-semibold"
+          >
+            <GraduationCap className="w-4 h-4" />
+            technotesgr
+          </motion.div>
 
           <motion.h1
             className="text-5xl md:text-7xl font-black mb-6 tracking-tight"
@@ -108,9 +190,36 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-20 relative">
+      <section className="py-16 md:py-20 relative">
         <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-3xl mx-auto space-y-16">
+          <div className="max-w-5xl mx-auto space-y-12">
+            {/* Quick Stats */}
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={stagger}
+            >
+              {[
+                { label: 'Επίδοση Πανελλαδικών', value: '19.000 μόρια', icon: <Target className="w-5 h-5 text-pink-600" /> },
+                { label: 'Βαθμός Πληροφορικής', value: '99/100', icon: <BookOpenCheck className="w-5 h-5 text-pink-600" /> },
+                { label: 'Αποστολή', value: 'Προσβάσιμη γνώση', icon: <Users className="w-5 h-5 text-pink-600" /> },
+              ].map((item) => (
+                <motion.div
+                  key={item.label}
+                  variants={fadeInUp}
+                  className="rounded-2xl border border-pink-200 bg-white/80 dark:bg-gray-800/80 p-5 shadow-lg"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    {item.icon}
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
+                  </div>
+                  <p className="text-xl font-black text-pink-600">{item.value}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
             {/* Story Section */}
             <motion.div
               className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
@@ -126,19 +235,8 @@ const AboutPage: React.FC = () => {
                 viewport={{ once: true }}
                 variants={stagger}
               >
-                <motion.div
-                  className="text-4xl"
-                  variants={fadeInUp}
-                  animate={{
-                    rotate: [0, 10, -10, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 3,
-                  }}
-                >
-                  📖
+                <motion.div className="text-pink-600" variants={fadeInUp}>
+                  <BookOpenCheck className="w-9 h-9" />
                 </motion.div>
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
@@ -180,8 +278,12 @@ const AboutPage: React.FC = () => {
                 </motion.p>
 
                 <motion.p variants={fadeIn}>
-                  Το technotesgr δεν είναι απλά μια ιστοσελίδα - είναι το όνειρό μου να κάνω την
-                  εκπαίδευση πιο προσβάσιμη για όλους!
+                  Το technotesgr δεν είναι απλά μια ιστοσελίδα. Είναι μια συνεχής προσπάθεια να
+                  γίνει η εκπαίδευση πιο δομημένη, πρακτική και προσβάσιμη για κάθε μαθητή.
+                </motion.p>
+                <motion.p variants={fadeIn}>
+                  Αυτή η σελίδα δεν θα μπορούσε να γίνει χωρίς τον{' '}
+                  <span className="font-bold text-pink-600 dark:text-pink-400">deathwish</span>.
                 </motion.p>
               </motion.div>
             </motion.div>
@@ -201,19 +303,8 @@ const AboutPage: React.FC = () => {
                 viewport={{ once: true }}
                 variants={stagger}
               >
-                <motion.div
-                  className="text-4xl"
-                  variants={fadeInUp}
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 2,
-                  }}
-                >
-                  🎯
+                <motion.div className="text-pink-600" variants={fadeInUp}>
+                  <Target className="w-9 h-9" />
                 </motion.div>
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
@@ -227,8 +318,8 @@ const AboutPage: React.FC = () => {
                 className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
                 variants={fadeIn}
               >
-                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση.Στείλε μου στο instagram μήνυμα
-                αν θέλεις να μάθεις περισσότερα!
+                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση.Στείλε μου στο Instagram
+                μήνυμα αν θέλεις να μάθεις περισσότερα.
                 <a
                   href="https://www.instagram.com/technotesgr/"
                   target="_blank"
@@ -262,10 +353,10 @@ const AboutPage: React.FC = () => {
                   }}
                 >
                   <motion.div
-                    className="text-5xl mb-4 inline-block"
+                    className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-pink-50 border border-pink-200"
                     whileHover={{
-                      scale: 1.3,
-                      rotate: 360,
+                      scale: 1.1,
+                      rotate: 8,
                       transition: { duration: 0.5 },
                     }}
                   >
@@ -294,19 +385,8 @@ const AboutPage: React.FC = () => {
                 viewport={{ once: true }}
                 variants={stagger}
               >
-                <motion.div
-                  className="text-4xl"
-                  variants={fadeInUp}
-                  animate={{
-                    rotate: [0, -20, 20, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatDelay: 2,
-                  }}
-                >
-                  ✨
+                <motion.div className="text-pink-600" variants={fadeInUp}>
+                  <Lightbulb className="w-9 h-9" />
                 </motion.div>
                 <motion.h2
                   className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
@@ -338,6 +418,63 @@ const AboutPage: React.FC = () => {
                   </motion.li>
                 ))}
               </motion.ul>
+            </motion.div>
+
+            {/* Timeline */}
+            <motion.div
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-8">
+                Timeline 2022 - Σήμερα
+              </h2>
+
+              <div className="space-y-5">
+                {timelineData.map((item, idx) => (
+                  <motion.div
+                    key={`${item.period}-${idx}`}
+                    className="relative pl-8 pb-4 border-l-2 border-pink-200"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ delay: idx * 0.03 }}
+                  >
+                    <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-pink-500" />
+                    <p className="text-sm font-bold text-pink-600 mb-1">{item.period}</p>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Achievements Gallery Placeholders */}
+            <motion.div
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              <h3 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-3">
+                Some cool moments from my journey
+              </h3>
+             
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-square rounded-2xl border-2 border-dashed border-pink-300 dark:border-pink-500/50 bg-pink-50/60 dark:bg-gray-700/40 flex items-center justify-center text-center p-4"
+                  >
+                    <span className="text-sm font-semibold text-pink-600 dark:text-pink-300">
+                      Placeholder #{i + 1}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </div>

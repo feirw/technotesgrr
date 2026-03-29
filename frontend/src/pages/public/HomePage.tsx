@@ -9,6 +9,7 @@ import {
   AnimatePresence,
   useSpring,
 } from 'framer-motion';
+import { apiFetch } from '@/utils/apiClient';
 
 // --- Types & Interfaces ---
 
@@ -36,8 +37,14 @@ interface Review {
 interface Feature {
   title: string;
   desc: string;
-  icon: string;
+  badge: string;
   gradient: string;
+}
+
+interface ContactResponse {
+  message: string;
+  submission_id: number;
+  email_sent?: boolean;
 }
 
 interface FaqItem {
@@ -90,20 +97,56 @@ const featuresData: Feature[] = [
   {
     title: 'Online Καταγεγραμμένα Μαθήματα',
     desc: 'Καλύπτουν σε βάθος τη θεωρία, μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
-    icon: '👩🏻‍💻',
+    badge: '01',
     gradient: 'from-pink-500 to-rose-500',
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
-    icon: '💡',
+    badge: '02',
     gradient: 'from-pink-500 to-pink-700',
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
-    icon: '📝',
+    badge: '03',
     gradient: 'from-pink-500 to-pink-600',
+  },
+  {
+    title: 'Community Forum',
+    desc: 'Χώρος κοινότητας όπου οι μαθητές ανταλλάσσουν απορίες, ιδέες και συμβουλές.',
+    badge: '04',
+    gradient: 'from-rose-500 to-red-500',
+  },
+  {
+    title: 'Study Timer',
+    desc: 'Οργάνωσε τον χρόνο μελέτης σου και παρακολούθησε την καθημερινή πρόοδό σου.',
+    badge: '05',
+    gradient: 'from-pink-500 to-red-500',
+  },
+  {
+    title: 'Επαγγελματικός Προσανατολισμός',
+    desc: 'Απάντησε στο ερωτηματολόγιο και δες εξατομικευμένα αποτελέσματα κατεύθυνσης.',
+    badge: '06',
+    gradient: 'from-fuchsia-500 to-pink-600',
+  },
+  {
+    title: 'Σχολές και Καριέρα',
+    desc: 'Εξερεύνησε επιλογές σχολών και οργάνωσε πιο σωστά τα επόμενα βήματά σου.',
+    badge: '07',
+    gradient: 'from-pink-600 to-rose-700',
+  },
+  {
+    title: 'Παλιά Θέματα και Αλγόριθμοι',
+    desc: 'Μελέτησε παλαιά θέματα και δες οπτικοποιήσεις αλγορίθμων για βαθύτερη κατανόηση.',
+    badge: '08',
+    gradient: 'from-rose-500 to-pink-700',
+  },
+  {
+    title: 'Online Διερμηνευτής της Γλώσσας',
+    desc: 'Γράψε και δοκίμασε κώδικα στη ΓΛΩΣΣΑ άμεσα, με γρήγορη εκτέλεση και καλύτερη εξάσκηση.',
+    badge: '09',
+    gradient: 'from-fuchsia-500 to-rose-600',
   },
 ];
 
@@ -139,6 +182,8 @@ const faqData: FaqItem[] = [
       'Φυσικά! Μπορείς να επικοινωνήσεις μαζί μας μέσω της φόρμας επικοινωνίας ή μέσω των social media μας. Θα χαρούμε να σε βοηθήσουμε!',
   },
 ];
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
 
 // ---------- Motion Variants ----------
 const fadeInUp = {
@@ -261,7 +306,7 @@ interface FeatureCardProps extends Feature {
   i: number;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, icon, gradient, i }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, badge, gradient, i }) => (
   <motion.article
     className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-pink-200/50 dark:border-gray-700/50 overflow-hidden"
     aria-label={title}
@@ -291,14 +336,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, icon, gradient, 
 
     <div className="relative z-10">
       <motion.div
-        className="text-6xl mb-6 inline-block text-pink-500 drop-shadow-lg"
+        className="w-16 h-16 mb-6 mx-auto rounded-2xl flex items-center justify-center text-2xl font-black text-pink-600 bg-pink-50 border-2 border-pink-200"
         whileHover={{
           scale: 1.2,
-          rotate: [0, -10, 10, -10, 0],
+          rotate: [0, -6, 6, -6, 0],
           transition: { duration: 0.5 },
         }}
       >
-        {icon}
+        {badge}
       </motion.div>
 
       <motion.h3
@@ -388,7 +433,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="px-6 pb-5 text-gray-600 dark:text-gray-300 leading-relaxed">
+            <div className="px-6 pt-3 pb-5 text-gray-600 dark:text-gray-300 leading-relaxed">
               {answer}
             </div>
           </motion.div>
@@ -399,29 +444,40 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
 };
 
 const FloatingParticles: React.FC = () => {
-  const particles = Array.from({ length: 20 });
+  // Keep stable particle positions across renders for smoother visuals.
+  const particles = React.useMemo(
+    () =>
+      Array.from({ length: 16 }).map(() => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: 3 + Math.random() * 2,
+        delay: Math.random() * 2,
+        xDrift: Math.random() * 50 - 25,
+      })),
+    []
+  );
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((_, i) => (
+      {particles.map((p, i) => (
         <motion.div
           key={i}
           className="absolute w-2 h-2 bg-pink-400/30 rounded-full"
           style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            left: p.left,
+            top: p.top,
             boxShadow: '0 0 5px #ff00a0',
           }}
           animate={{
             y: [0, -100, 0],
-            x: [0, Math.random() * 50 - 25, 0],
+            x: [0, p.xDrift, 0],
             opacity: [0, 1, 0],
             scale: [0, 1.5, 0],
           }}
           transition={{
-            duration: 3 + Math.random() * 2,
+            duration: p.duration,
             repeat: Infinity,
-            delay: Math.random() * 2,
+            delay: p.delay,
             ease: 'easeInOut',
           }}
         />
@@ -455,6 +511,7 @@ const HomePage: React.FC = () => {
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
   const [contactError, setContactError] = useState('');
+  const [contactSuccessMessage, setContactSuccessMessage] = useState('');
 
   const firstId = useId();
   const lastId = useId();
@@ -500,8 +557,24 @@ const HomePage: React.FC = () => {
       setContactSubmitting(true);
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const data = await apiFetch<ContactResponse>(`${BACKEND_URL}/api/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          timeoutMs: 10000,
+          retries: 1,
+          body: JSON.stringify({
+            firstName: contactForm.firstName.trim(),
+            lastName: contactForm.lastName.trim(),
+            email: contactForm.email.trim(),
+            message: contactForm.message.trim(),
+          }),
+        });
         setContactSuccess(true);
+        setContactSuccessMessage(
+          data?.email_sent
+            ? '✓ Το μήνυμά σου στάλθηκε και ενημερώθηκε η ομάδα μας με email.'
+            : '✓ Το μήνυμά σου καταχωρήθηκε επιτυχώς. Θα σου απαντήσουμε σύντομα.'
+        );
         setContactForm({
           firstName: '',
           lastName: '',
@@ -509,10 +582,14 @@ const HomePage: React.FC = () => {
           message: '',
           website: '',
         });
-        setTimeout(() => setContactSuccess(false), 5000);
+        setTimeout(() => {
+          setContactSuccess(false);
+          setContactSuccessMessage('');
+        }, 5000);
       } catch (err) {
         console.error('Error:', err);
-        setContactError('Κάτι πήγε στραβά. Προσπάθησε ξανά.');
+        const detail = err instanceof Error ? err.message : '';
+        setContactError(detail || 'Κάτι πήγε στραβά. Προσπάθησε ξανά.');
       } finally {
         setContactSubmitting(false);
       }
@@ -570,6 +647,20 @@ const HomePage: React.FC = () => {
               >
                 {user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}
               </button>
+              <div className="mt-4 flex justify-center gap-3">
+                <button
+                  className="px-5 py-2 rounded-full border-2 border-pink-300 text-pink-700 font-semibold bg-white/80"
+                  onClick={() => navigate('/community')}
+                >
+                  Μπες στο Community
+                </button>
+                <button
+                  className="px-5 py-2 rounded-full border-2 border-pink-300 text-pink-700 font-semibold bg-white/80"
+                  onClick={() => navigate('/study-timer')}
+                >
+                  Άνοιξε Study Timer
+                </button>
+              </div>
             </motion.div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-16">
@@ -626,7 +717,9 @@ const HomePage: React.FC = () => {
             <AnimatePresence>
               {contactSuccess && (
                 <motion.div id={successId} role="alert" className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                  <p className="text-green-700 dark:text-green-300 font-semibold">✓ Το μήνυμά σου στάλθηκε επιτυχώς!</p>
+                  <p className="text-green-700 dark:text-green-300 font-semibold">
+                    {contactSuccessMessage || '✓ Το μήνυμά σου στάλθηκε επιτυχώς!'}
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>

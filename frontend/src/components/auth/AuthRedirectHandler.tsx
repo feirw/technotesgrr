@@ -19,7 +19,7 @@ interface LocationState {
 }
 
 const AuthRedirectHandler = () => {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,29 +31,28 @@ const AuthRedirectHandler = () => {
     // Define auth pages that logged-in users shouldn't access
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
-    // If user is logged in and trying to access login/register pages, redirect them
-    // This prevents logged-in users from seeing the login/register pages
+    // If user is logged in and trying to access login/register pages,
+    // redirect ONLY when they came from a protected route.
+    // This keeps refresh on auth pages stable (no unexpected jump).
     if (user && isAuthPage) {
       // Check if there's an intended destination from the location state
       // This happens when ProtectedRoute redirects to login
       const state = location.state as LocationState | null;
       const intendedDestination = state?.from?.pathname;
 
-      // If there's an intended destination, go there; otherwise use default
-      const destination = intendedDestination || (isAdmin ? '/admin' : '/profile');
-      
-      // Don't redirect to the same page or to auth pages
-      if (destination !== location.pathname && destination !== '/login' && destination !== '/register') {
+      // Only redirect when there is a valid intended destination from ProtectedRoute.
+      if (
+        intendedDestination &&
+        intendedDestination !== location.pathname &&
+        intendedDestination !== '/login' &&
+        intendedDestination !== '/register'
+      ) {
+        const destination = intendedDestination;
         console.log(`✅ User logged in, redirecting from ${location.pathname} to ${destination}`);
         navigate(destination, { replace: true });
-      } else {
-        // Fallback to default destination
-        const defaultDestination = isAdmin ? '/admin' : '/profile';
-        console.log(`✅ User logged in, redirecting to default: ${defaultDestination}`);
-        navigate(defaultDestination, { replace: true });
       }
     }
-  }, [user, loading, isAdmin, location.pathname, location.state, navigate]);
+  }, [user, loading, location.pathname, location.state, navigate]);
 
   return null; // This component renders nothing
 };

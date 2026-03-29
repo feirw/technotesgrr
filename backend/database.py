@@ -20,8 +20,38 @@ def get_db_connection():
         conn.close()
 
 def init_database():
-    """Tables are managed via Supabase SQL Editor now."""
-    print("Connected to Supabase PostgreSQL")
+    """
+    Ensure required runtime tables exist.
+    We keep this lightweight and idempotent so deployments don't fail
+    when a migration was missed.
+    """
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS community_posts (
+                    id BIGSERIAL PRIMARY KEY,
+                    user_id UUID NOT NULL,
+                    username TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                );
+                """
+            )
+            cursor.execute(
+                """
+                CREATE INDEX IF NOT EXISTS idx_community_posts_created_at
+                ON community_posts (created_at DESC);
+                """
+            )
+            cursor.execute(
+                """
+                CREATE INDEX IF NOT EXISTS idx_community_posts_user_id
+                ON community_posts (user_id);
+                """
+            )
+        conn.commit()
+    print("Connected to Supabase PostgreSQL (runtime tables ensured)")
 
 def update_leaderboard(nickname: str, points_earned: int):
     """Update or create leaderboard entry for a user"""
@@ -237,4 +267,51 @@ def get_career_orientation_result(user_id: str):
             row = cursor.fetchone()
             if row:
                 return dict(row)
+            return None
+
+
+def create_community_post(user_id: str, username: str, content: str):
+    """Create a new community forum post."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                """
+                INSERT INTO community_posts (user_id, username, content)
+                VALUES (%s, %s, %s)
+                RETURNING id, user_id, username, content, created_at
+                """,
+                (user_id, username, content),
+            )
+            row = cursor.fetchone()
+        conn.commit()
+        return dict(row)
+
+
+def get_community_posts(limit: int = 30, offset: int = 0):
+    """Fetch community posts with pagination."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                """
+                SELECT id, user_id, username, content, created_at
+                FROM community_posts
+                ORDER BY created_at DESC
+                LIMIT %s OFFSET %s
+                """,
+                (limit, offset),
+            )
+            rows = cursor.fetchall()
+            cursor.execute("SELECT COUNT(*) FROM community_posts")
+            total = cursor.fetchone()["count"]
+            return [dict(r) for r in rows], int(total)
+
+
+def get_username_by_user_id(user_id: str):
+    """Fetch username from profiles table for a specific user."""
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT username FROM profiles WHERE id = %s", (user_id,))
+            row = cursor.fetchone()
+            if row and row[0]:
+                return str(row[0])
             return None

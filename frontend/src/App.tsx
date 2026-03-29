@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import MainLayout from '@/layouts/MainLayout';
@@ -7,6 +7,12 @@ import routes, { RouteConfig } from './routes/routes';
 import AuthRedirectHandler from './components/auth/AuthRedirectHandler';
 
 const App: React.FC = () => {
+  const routeLoadingFallback = (
+    <div className="min-h-[40vh] flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
   return (
     <AuthProvider>
       <AuthRedirectHandler />
@@ -21,9 +27,11 @@ const App: React.FC = () => {
                 path={route.path}
                 element={
                   route.protected ? (
-                    <ProtectedRoute requireAdmin={requireAdmin}>{route.element}</ProtectedRoute>
+                    <ProtectedRoute requireAdmin={requireAdmin}>
+                      <Suspense fallback={routeLoadingFallback}>{route.element}</Suspense>
+                    </ProtectedRoute>
                   ) : (
-                    route.element
+                    <Suspense fallback={routeLoadingFallback}>{route.element}</Suspense>
                   )
                 }
               />

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// @ts-ignore - Assuming types are not available for this library
-import { FlashcardArray } from 'react-quizlet-flashcard';
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   BookOpen,
   Zap,
   Shuffle,
@@ -11,11 +11,11 @@ import {
   CheckCircle,
   AlertCircle,
   BarChart3,
-  Clock,
   Target,
   TrendingUp,
   Filter,
 } from 'lucide-react';
+import { apiFetch } from '@/utils/apiClient';
 
 // --- Types & Interfaces ---
 
@@ -24,10 +24,6 @@ interface RawFlashcard {
   category: string;
   question: string;
   answer: string;
-}
-
-interface BackendCategoriesResponse {
-  flashcard_categories: string[];
 }
 
 interface BackendFlashcardsResponse {
@@ -64,18 +60,12 @@ interface FlashcardProgress {
   };
 }
 
-interface LibCard {
-  id: number;
-  frontHTML: React.ReactNode;
-  backHTML: React.ReactNode;
-  style?: React.CSSProperties;
-}
-
 // --- Constants ---
 
-const BACKEND_URL = 'http://localhost:8001';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
 const BRAND = '#fda8a9';
 const STORAGE_KEY = 'flashcardProgress';
+const FLASHCARD_CACHE_KEY = 'flashcardData:v1';
 
 const Flashcards: React.FC = () => {
   const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
@@ -84,13 +74,13 @@ const Flashcards: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [studyMode, setStudyMode] = useState<StudyMode>('all');
   const [shuffled, setShuffled] = useState<boolean>(false);
-  const [sessionStartTime] = useState<number>(Date.now());
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
 
   const isMountedRef = useRef(true);
-  const studySessionRef = useRef<{ startTime: number; cardsStudied: Set<string> }>({
-    startTime: Date.now(),
-    cardsStudied: new Set(),
-  });
+  const cardBodyRef = useRef<HTMLButtonElement | null>(null);
+  const studySessionRef = useRef<{ cardsStudied: Set<string> }>({ cardsStudied: new Set() });
 
   // Load progress from localStorage
   const [progress, setProgress] = useState<FlashcardProgress>(() => {
@@ -118,35 +108,38 @@ const Flashcards: React.FC = () => {
     setError(null);
 
     try {
-      // Fetch Categories
-      const categoriesResponse = await fetch(`${BACKEND_URL}/api/categories`);
-      if (!categoriesResponse.ok) throw new Error('Failed to fetch categories');
-      const categoriesData: BackendCategoriesResponse = await categoriesResponse.json();
+      const cached = sessionStorage.getItem(FLASHCARD_CACHE_KEY);
+      const cachedData = cached ? (JSON.parse(cached) as FlashcardSet[]) : null;
 
-      // Fetch Flashcards
-      const flashcardsResponse = await fetch(`${BACKEND_URL}/api/flashcards`);
-      if (!flashcardsResponse.ok) throw new Error('Failed to fetch flashcards');
-      const flashcardsData: BackendFlashcardsResponse = await flashcardsResponse.json();
+      if (cachedData && cachedData.length) {
+        setFlashcardSets(cachedData);
+        setLoading(false);
+      }
 
-      const flashcards = flashcardsData.flashcards || [];
-      const categories = categoriesData.flashcard_categories || [];
-
-      // Group flashcards by category
-      const sets: FlashcardSet[] = categories.map((category) => {
-        const categoryCards = flashcards.filter((card) => card.category === category);
-        return {
-          id: category.toLowerCase().replace(/\s+/g, '-'),
-          title: category,
-          questions: categoryCards.map((card) => ({
-            id: card.id,
-            front: card.question,
-            back: card.answer,
-          })),
-        };
+      const flashcardsData = await apiFetch<BackendFlashcardsResponse>(`${BACKEND_URL}/api/flashcards`, {
+        dedupeKey: 'flashcards:all',
       });
+      const flashcards = flashcardsData.flashcards || [];
+
+      const byCategory = flashcards.reduce<Record<string, RawFlashcard[]>>((acc, item) => {
+        if (!acc[item.category]) acc[item.category] = [];
+        acc[item.category].push(item);
+        return acc;
+      }, {});
+
+      const sets: FlashcardSet[] = Object.entries(byCategory).map(([category, cards]) => ({
+        id: category.toLowerCase().replace(/\s+/g, '-'),
+        title: category,
+        questions: cards.map((card) => ({
+          id: card.id,
+          front: card.question,
+          back: card.answer,
+        })),
+      }));
 
       if (!isMountedRef.current) return;
       setFlashcardSets(sets);
+      sessionStorage.setItem(FLASHCARD_CACHE_KEY, JSON.stringify(sets));
     } catch (err) {
       console.error('Error fetching flashcard data:', err);
       if (!isMountedRef.current) return;
@@ -168,7 +161,7 @@ const Flashcards: React.FC = () => {
 
   // Get current set
   const currentSet = useMemo(() => {
-    return selectedSetIndex !== null ? flashcardSets[selectedSetIndex] : null;
+    return selectedSetIndex !== null ? flashcardSets[selectedSetIndex] ?? null : null;
   }, [selectedSetIndex, flashcardSets]);
 
   // Get filtered cards based on study mode
@@ -202,6 +195,17 @@ const Flashcards: React.FC = () => {
 
     return cards;
   }, [currentSet, studyMode, shuffled, progress]);
+
+  const currentCard = useMemo(
+    () => filteredCards[currentCardIndex] ?? null,
+    [filteredCards, currentCardIndex]
+  );
+
+  const hasCards = filteredCards.length > 0;
+  const currentCardProgress = useMemo(() => {
+    if (!currentSet || !currentCard) return null;
+    return progress[currentSet.id]?.[String(currentCard.id)] || null;
+  }, [progress, currentSet, currentCard]);
 
   // Update card progress
   const updateCardProgress = useCallback(
@@ -276,6 +280,26 @@ const Flashcards: React.FC = () => {
     });
   }, [currentSet]);
 
+  const goNext = useCallback(() => {
+    if (!hasCards) return;
+    setSlideDirection(1);
+    setCurrentCardIndex((prev) => Math.min(prev + 1, filteredCards.length - 1));
+    setIsFlipped(false);
+  }, [filteredCards.length, hasCards]);
+
+  const goPrev = useCallback(() => {
+    if (!hasCards) return;
+    setSlideDirection(-1);
+    setCurrentCardIndex((prev) => Math.max(prev - 1, 0));
+    setIsFlipped(false);
+  }, [hasCards]);
+
+  const shuffleCards = useCallback(() => {
+    setShuffled((prev) => !prev);
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+  }, []);
+
   // Calculate statistics for current set
   const stats = useMemo(() => {
     if (!currentSet) {
@@ -320,6 +344,23 @@ const Flashcards: React.FC = () => {
     return { totalCards, totalStudied, totalKnown, overallProgress, overallAccuracy };
   }, [flashcardSets, progress]);
 
+  // Keep index valid when filtering changes.
+  useEffect(() => {
+    if (!filteredCards.length) {
+      setCurrentCardIndex(0);
+      setIsFlipped(false);
+      return;
+    }
+    setCurrentCardIndex((prev) => Math.min(prev, filteredCards.length - 1));
+  }, [filteredCards]);
+
+  // Pre-focus card so space/enter flip feels instant.
+  useEffect(() => {
+    if (selectedSetIndex !== null) {
+      cardBodyRef.current?.focus();
+    }
+  }, [selectedSetIndex, currentCardIndex]);
+
   // Keyboard shortcuts
   useEffect(() => {
     if (selectedSetIndex === null) return;
@@ -330,105 +371,24 @@ const Flashcards: React.FC = () => {
       if (e.key === 'Escape') {
         setSelectedSetIndex(null);
       } else if (e.key === 's' || e.key === 'S') {
-        setShuffled((prev) => !prev);
+        shuffleCards();
       } else if (e.key === 'r' || e.key === 'R') {
         resetProgress();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (hasCards) setIsFlipped((prev) => !prev);
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedSetIndex, resetProgress]);
-
-  // Define the style object for the cards
-  const cardStyle: React.CSSProperties = useMemo(
-    () => ({
-      width: Math.min(500, window.innerWidth - 40),
-      height: 350,
-      border: `3px solid ${BRAND}`,
-      borderRadius: '2 rem',
-      boxShadow: '0 10px 40px rgba(253, 168, 169, 0.2)',
-      display: 'flex',
-      alignItems: 'center',
-    }),
-    []
-  );
-
-  // Transform data for the library with progress indicators
-  const selectedCards: LibCard[] = useMemo(() => {
-    if (!currentSet || filteredCards.length === 0) return [];
-
-    return filteredCards.map((card, idx) => {
-      const cardProgress = progress[currentSet.id]?.[String(card.id)] || {
-        studied: false,
-        known: false,
-        difficult: false,
-        needReview: false,
-      };
-
-      return {
-        id: idx + 1,
-        frontHTML: (
-          <div className="flex flex-col h-full w-full items-center justify-center text-center p-6 relative">
-            {cardProgress.difficult && (
-              <div className="absolute top-2 right-2">
-                <AlertCircle className="w-5 h-5 text-red-500" />
-              </div>
-            )}
-            {cardProgress.known && (
-              <div className="absolute top-2 right-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-              </div>
-            )}
-            <p className="text-xl font-semibold">{card.front}</p>
-          </div>
-        ),
-        backHTML: (
-          <div className="flex flex-col h-full w-full items-center justify-center text-center p-6">
-            <p className="text-xl">{card.back}</p>
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsKnown(card.id);
-                }}
-                className="px-3 py-1 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors text-sm font-semibold"
-              >
-                ✓ Ξέρω
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsDifficult(card.id);
-                }}
-                className="px-3 py-1 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors text-sm font-semibold"
-              >
-                ✗ Δύσκολο
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markForReview(card.id);
-                }}
-                className="px-3 py-1 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors text-sm font-semibold"
-              >
-                🔄 Επανάληψη
-              </button>
-            </div>
-          </div>
-        ),
-        style: cardStyle,
-      };
-    });
-  }, [filteredCards, currentSet, progress, cardStyle, markAsKnown, markAsDifficult, markForReview]);
-
-  // Calculate study session time
-  const sessionTime = useMemo(() => {
-    const elapsed = Date.now() - sessionStartTime;
-    const minutes = Math.floor(elapsed / 60000);
-    const seconds = Math.floor((elapsed % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  }, [sessionStartTime]);
+  }, [selectedSetIndex, resetProgress, shuffleCards, goNext, goPrev, hasCards]);
 
   if (loading) {
     return (
@@ -532,7 +492,9 @@ const Flashcards: React.FC = () => {
                     key={set.id}
                     onClick={() => {
                       setSelectedSetIndex(index);
-                      studySessionRef.current = { startTime: Date.now(), cardsStudied: new Set() };
+                      setCurrentCardIndex(0);
+                      setIsFlipped(false);
+                      studySessionRef.current = { cardsStudied: new Set() };
                     }}
                     className="group relative p-4 sm:p-6 rounded-2xl bg-white border-2 border-pink-200 hover:border-pink-400 hover:shadow-2xl transition-all text-left overflow-hidden"
                     initial={{ opacity: 0, y: 20 }}
@@ -632,9 +594,7 @@ const Flashcards: React.FC = () => {
                     </select>
 
                     <motion.button
-                      onClick={() => {
-                        setShuffled((prev) => !prev);
-                      }}
+                      onClick={shuffleCards}
                       className={`p-2 rounded-lg border-2 transition-all ${
                         shuffled
                           ? 'bg-pink-500 border-pink-500 text-white'
@@ -691,15 +651,17 @@ const Flashcards: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Study Session Info */}
+                {/* Session Info */}
                 <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-3 shadow-md">
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-pink-600" />
-                      <span className="text-gray-700 font-semibold">Χρόνος: {sessionTime}</span>
+                      <BookOpen className="w-4 h-4 text-pink-600" />
+                      <span className="text-gray-700 font-semibold">
+                        Κάρτα {hasCards ? currentCardIndex + 1 : 0} από {filteredCards.length}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-pink-600" />
+                      <TrendingUp className="w-4 h-4 text-pink-600" />
                       <span className="text-gray-700 font-semibold">
                         Μελετημένες: {studySessionRef.current.cardsStudied.size}
                       </span>
@@ -715,9 +677,91 @@ const Flashcards: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                {selectedCards.length > 0 ? (
+                {hasCards && currentCard ? (
                   <div className="w-full max-w-2xl">
-                    <FlashcardArray cards={selectedCards} />
+                    <div className="relative">
+                      <AnimatePresence mode="wait" initial={false}>
+                        <motion.button
+                          key={currentCard.id}
+                          ref={cardBodyRef}
+                          onClick={() => setIsFlipped((prev) => !prev)}
+                          className="relative w-full min-h-[340px] rounded-3xl bg-white border-2 border-pink-200 p-6 text-left shadow-2xl focus:outline-none focus:ring-2 focus:ring-pink-300"
+                          style={{ transformStyle: 'preserve-3d' }}
+                          initial={{ opacity: 0, y: 24 * slideDirection, rotateY: 0 }}
+                          animate={{ opacity: 1, y: 0, rotateY: isFlipped ? 180 : 0 }}
+                          exit={{ opacity: 0, y: -24 * slideDirection }}
+                          transition={{ type: 'spring', stiffness: 240, damping: 26 }}
+                          whileTap={{ scale: 0.995 }}
+                          aria-label="Flip flashcard"
+                        >
+                          {currentCardProgress?.difficult && (
+                            <AlertCircle className="absolute top-4 right-4 w-5 h-5 text-red-500" />
+                          )}
+                          {currentCardProgress?.known && (
+                            <CheckCircle className="absolute top-4 right-4 w-5 h-5 text-green-500" />
+                          )}
+
+                          <div
+                            className="text-xs font-bold uppercase tracking-wide text-pink-500 mb-4"
+                            style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
+                          >
+                            {isFlipped ? 'Απάντηση' : 'Ερώτηση'}
+                          </div>
+                          <p
+                            className={`text-xl sm:text-2xl leading-relaxed ${
+                              isFlipped ? 'text-gray-800 font-normal' : 'text-pink-600 font-bold'
+                            }`}
+                            style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
+                          >
+                            {isFlipped ? currentCard.back : currentCard.front}
+                          </p>
+
+                          <div className="absolute bottom-4 right-4 text-xs text-gray-500">
+                            Πάτα Space/Enter για flip
+                          </div>
+                        </motion.button>
+                      </AnimatePresence>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={goPrev}
+                          disabled={currentCardIndex === 0}
+                          className="px-3 py-2 rounded-lg border border-pink-200 bg-white disabled:opacity-40"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={goNext}
+                          disabled={currentCardIndex >= filteredCards.length - 1}
+                          className="px-3 py-2 rounded-lg border border-pink-200 bg-white disabled:opacity-40"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => markAsKnown(currentCard.id)}
+                          className="px-3 py-2 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors text-sm font-semibold"
+                        >
+                          ✓ Ξέρω
+                        </button>
+                        <button
+                          onClick={() => markAsDifficult(currentCard.id)}
+                          className="px-3 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors text-sm font-semibold"
+                        >
+                          ✗ Δύσκολο
+                        </button>
+                        <button
+                          onClick={() => markForReview(currentCard.id)}
+                          className="px-3 py-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors text-sm font-semibold"
+                        >
+                          🔄 Επανάληψη
+                        </button>
+                      </div>
+                    </div>
                     <div className="mt-4 text-center text-sm text-gray-600">
                       {filteredCards.length} {studyMode !== 'all' && `(${studyMode === 'difficult' ? 'δύσκολες' : studyMode === 'review' ? 'για επανάληψη' : 'νέες'})`} κάρτες διαθέσιμες
                     </div>
@@ -754,6 +798,7 @@ const Flashcards: React.FC = () => {
                   <p className="font-semibold text-center">💡 Συμβουλές:</p>
                   <ul className="list-disc list-inside space-y-1 text-xs sm:text-sm">
                     <li>Κάνε κλικ στην κάρτα για να τη γυρίσεις</li>
+                    <li>Βελάκια ← → για προηγούμενη/επόμενη κάρτα</li>
                     <li>Χρησιμοποίησε τα κουμπιά για να σημειώσεις την πρόοδό σου</li>
                     <li>Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">S</kbd> για ανακάτεμα</li>
                     <li>Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">R</kbd> για επαναφορά</li>

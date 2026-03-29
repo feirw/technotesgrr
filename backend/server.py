@@ -1,10 +1,13 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Depends
+import asyncio
+from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import os
 import time
+import smtplib
+from email.message import EmailMessage
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -13,7 +16,7 @@ load_dotenv()
 # ── AI Service ────────────────────────────────────────────────────────────────
 try:
     from ai_service import get_ai_response
-except ImportError:
+except Exception:
     def get_ai_response(msg: str) -> str:
         return "AI Service not configured."
 
@@ -32,6 +35,9 @@ from database import (
     is_user_admin,
     save_career_orientation_result,
     get_career_orientation_result,
+    create_community_post,
+    get_community_posts,
+    get_username_by_user_id,
 )
 
 # ── Auth dependency ───────────────────────────────────────────────────────────
@@ -79,10 +85,62 @@ class ContactForm(BaseModel):
 
 class ChatMessage(BaseModel):
     message: str
+    session_id: Optional[str] = "default"
 
 class CareerOrientationSubmission(BaseModel):
     answers: dict
     results: dict
+
+class WebVitalEvent(BaseModel):
+    name: str
+    value: float
+    rating: str
+    path: Optional[str] = None
+    ts: Optional[int] = None
+
+
+class CommunityPostCreate(BaseModel):
+    content: str
+
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+
+def _try_send_contact_email(first_name: str, last_name: str, email: str, message: str) -> bool:
+    """
+    Best-effort notification email for contact form.
+    Works only when SMTP env vars are configured; otherwise safely no-op.
+    """
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = os.getenv("SMTP_PORT")
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASS")
+    contact_receiver = os.getenv("CONTACT_RECEIVER_EMAIL")
+    smtp_sender = os.getenv("SMTP_SENDER_EMAIL") or smtp_user
+
+    if not all([smtp_host, smtp_port, smtp_user, smtp_pass, contact_receiver, smtp_sender]):
+        return False
+
+    msg = EmailMessage()
+    msg["Subject"] = "Νέο μήνυμα από Contact Form - TechNotesGR"
+    msg["From"] = smtp_sender
+    msg["To"] = contact_receiver
+    msg.set_content(
+        f"""
+Νέο μήνυμα από τη φόρμα επικοινωνίας:
+
+Όνομα: {first_name} {last_name}
+Email: {email}
+
+Μήνυμα:
+{message}
+        """.strip()
+    )
+
+    with smtplib.SMTP(smtp_host, int(smtp_port)) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+    return True
 
 
 # ── Health ────────────────────────────────────────────────────────────────────
@@ -98,9 +156,15 @@ async def health_check():
 async def chat_with_bot(chat_data: ChatMessage):
     if not chat_data.message or not chat_data.message.strip():
         raise HTTPException(status_code=422, detail="Το μήνυμα δεν μπορεί να είναι κενό.")
+    if len(chat_data.message.strip()) > 2000:
+        raise HTTPException(status_code=413, detail="Το μήνυμα είναι πολύ μεγάλο.")
     try:
-        response_text = get_ai_response(chat_data.message.strip())
-        time.sleep(0.4)
+        response_text = get_ai_response(
+            chat_data.message.strip(),
+            chat_data.session_id or "default",
+        )
+        # Keep a tiny artificial delay for typing feel without blocking event loop.
+        await asyncio.sleep(0.2)
         return {"reply": response_text}
     except Exception as e:
         print(f"[Chat] error: {e}")
@@ -113,9 +177,27 @@ async def chat_with_bot(chat_data: ChatMessage):
 # ── Quiz ──────────────────────────────────────────────────────────────────────
 
 @app.get("/api/quiz/questions")
-async def get_quiz_questions():
+async def get_quiz_questions(
+    chapter: Optional[str] = None,
+    limit: int = Query(default=200, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+):
     try:
-        return {"questions": get_quizzes_from_db()}
+        questions = get_quizzes_from_db()
+        if chapter is not None:
+            chapter_str = str(chapter)
+            questions = [q for q in questions if str(q.get("chapter")) == chapter_str]
+
+        total = len(questions)
+        paginated = questions[offset : offset + limit]
+        has_more = offset + limit < total
+        return {
+            "questions": paginated,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "has_more": has_more,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading quiz questions: {e}")
 
@@ -226,6 +308,8 @@ async def get_leaderboard(month: Optional[str] = None):
 
 @app.post("/api/contact")
 async def contact_form(contact_data: ContactForm):
+    if not contact_data.firstName.strip() or not contact_data.email.strip() or not contact_data.message.strip():
+        raise HTTPException(status_code=400, detail="Name, email και message είναι υποχρεωτικά.")
     try:
         submission_id = save_contact_submission(
             first_name=contact_data.firstName,
@@ -233,9 +317,22 @@ async def contact_form(contact_data: ContactForm):
             email=contact_data.email,
             message=contact_data.message,
         )
+        email_sent = False
+        try:
+            email_sent = _try_send_contact_email(
+                first_name=contact_data.firstName,
+                last_name=contact_data.lastName,
+                email=contact_data.email,
+                message=contact_data.message,
+            )
+        except Exception as email_err:
+            # Do not fail request when email notification fails.
+            print(f"[Contact] Email notification failed: {email_err}")
+
         return {
             "message": "Η φόρμα επικοινωνίας στάλθηκε επιτυχώς!",
             "submission_id": submission_id,
+            "email_sent": email_sent,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving contact form: {e}")
@@ -279,6 +376,76 @@ async def get_career_orientation_result_endpoint(user=Depends(get_current_user))
         return {"found": False, "message": "No career orientation results found for this user"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching result: {e}")
+
+
+@app.post("/api/metrics/web-vitals")
+async def ingest_web_vitals(metric: WebVitalEvent):
+    """
+    Lightweight endpoint for frontend performance telemetry.
+    Currently logs slow-path metrics; can later be wired to a metrics store.
+    """
+    try:
+        # Keep server-side logging lightweight and focused on problematic values.
+        if metric.rating in {"needs-improvement", "poor"}:
+            print(
+                "[WebVitals]",
+                {
+                    "name": metric.name,
+                    "value": metric.value,
+                    "rating": metric.rating,
+                    "path": metric.path,
+                    "ts": metric.ts or int(time.time() * 1000),
+                },
+            )
+        return {"ok": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error ingesting web vitals: {e}")
+
+
+# ── Community Forum ────────────────────────────────────────────────────────────
+
+@app.get("/api/community/posts")
+async def list_community_posts(
+    limit: int = Query(default=30, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    user=Depends(get_current_user),
+):
+    try:
+        posts, total = get_community_posts(limit=limit, offset=offset)
+        return {
+            "posts": posts,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "has_more": offset + limit < total,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching community posts: {e}")
+
+
+@app.post("/api/community/posts")
+async def add_community_post(payload: CommunityPostCreate, user=Depends(get_current_user)):
+    content = (payload.content or "").strip()
+    if not content:
+        raise HTTPException(status_code=400, detail="Το κείμενο του post είναι υποχρεωτικό.")
+    if len(content) > 2000:
+        raise HTTPException(status_code=413, detail="Το post είναι πολύ μεγάλο (max 2000 χαρακτήρες).")
+    try:
+        # Prefer profile username so the forum always shows each user's chosen name.
+        username = (
+            get_username_by_user_id(str(user.id))
+            or getattr(user, "user_metadata", {}).get("username")
+            or getattr(user, "email", "").split("@")[0]
+            or "Student"
+        )
+        post = create_community_post(
+            user_id=str(user.id),
+            username=username,
+            content=content,
+        )
+        return {"post": post}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating community post: {e}")
 
 
 # ── Admin ─────────────────────────────────────────────────────────────────────

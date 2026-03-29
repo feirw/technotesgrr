@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot, User, AlertCircle } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, AlertCircle, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { apiFetch } from '@/utils/apiClient';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,30 +27,28 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
 
 const BOT_WELCOME =
   'Γεια! Είμαι ο βοηθός του TechNotesGR. Ρώτησέ με για σημειώσεις, quiz, flashcards ή οτιδήποτε σχετικό με ΑΕΠΠ. 😊';
+const CHAT_STORAGE_KEY = 'chatWidgetMessages:v1';
+const CHAT_SESSION_KEY = 'chatWidgetSessionId:v1';
+const QUICK_PROMPTS = [
+  'Δώσε μου σύντομη επανάληψη για στοίβα και ουρά.',
+  'Πώς να διαβάσω αποτελεσματικά για ΑΕΠΠ σε 7 ημέρες;',
+  'Φτιάξε μου 5 ερωτήσεις quiz για αλγορίθμους.',
+];
 
 const MAX_RETRIES = 2;
 
 // ─── API helper ───────────────────────────────────────────────────────────────
 
 // FIX #2: The original code called `/api/` (wrong path). Correct path is `/api/chat`.
-async function fetchBotReply(message: string, retries = 0): Promise<string> {
+async function fetchBotReply(message: string, sessionId: string, retries = 0): Promise<string> {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/chat`, {
+    const data = await apiFetch<{ reply: string }>(`${BACKEND_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // FIX #3: send timeout signal so we don't hang indefinitely
-      signal: AbortSignal.timeout(15_000),
-      body: JSON.stringify({ message }),
+      timeoutMs: 15_000,
+      retries: 0,
+      body: JSON.stringify({ message, session_id: sessionId }),
     });
-
-    if (!response.ok) {
-      // Try to surface the server's error message when available
-      const errorBody = await response.json().catch(() => ({}));
-      const detail = errorBody?.detail ?? `HTTP ${response.status}`;
-      throw new Error(detail);
-    }
-
-    const data = await response.json();
 
     // FIX #4: validate that the field we expect actually exists
     if (typeof data?.reply !== 'string') {
@@ -64,7 +63,7 @@ async function fetchBotReply(message: string, retries = 0): Promise<string> {
 
     if (isNetworkError && retries < MAX_RETRIES) {
       await new Promise((r) => setTimeout(r, 800 * (retries + 1)));
-      return fetchBotReply(message, retries + 1);
+      return fetchBotReply(message, sessionId, retries + 1);
     }
 
     throw err;
@@ -124,9 +123,23 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   const [open,    setOpen]    = useState(false);
   const [input,   setInput]   = useState('');
   const [sending, setSending] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'bot', content: BOT_WELCOME, ts: Date.now() },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      const parsed = raw ? (JSON.parse(raw) as Message[]) : null;
+      if (parsed && parsed.length) return parsed;
+    } catch {
+      // ignore and use fallback
+    }
+    return [{ role: 'bot', content: BOT_WELCOME, ts: Date.now() }];
+  });
+  const [sessionId] = useState(() => {
+    const stored = localStorage.getItem(CHAT_SESSION_KEY);
+    if (stored) return stored;
+    const generated = crypto.randomUUID();
+    localStorage.setItem(CHAT_SESSION_KEY, generated);
+    return generated;
+  });
 
   const listRef     = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -144,6 +157,10 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, sending]);
 
+  useEffect(() => {
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages.slice(-60)));
+  }, [messages]);
+
   // FIX #5: personalise nickname substitution safely
   const personalise = useCallback(
     (text: string) =>
@@ -154,8 +171,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   const appendMessage = (msg: Omit<Message, 'ts'>) =>
     setMessages((prev) => [...prev, { ...msg, ts: Date.now() }]);
 
-  const send = useCallback(async () => {
-    const text = input.trim();
+  const send = useCallback(async (rawText?: string) => {
+    const text = (rawText ?? input).trim();
     if (!text || sending) return;
 
     setInput('');
@@ -163,7 +180,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
     setSending(true);
 
     try {
-      const raw = await fetchBotReply(text);
+      const raw = await fetchBotReply(text, sessionId);
       appendMessage({ role: 'bot', content: personalise(raw) });
     } catch (err: unknown) {
       console.error('[Widget] AI error:', err);
@@ -176,7 +193,13 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
     } finally {
       setSending(false);
     }
-  }, [input, sending, personalise]);
+  }, [input, sending, personalise, sessionId]);
+
+  const clearConversation = () => {
+    const initial = [{ role: 'bot' as const, content: BOT_WELCOME, ts: Date.now() }];
+    setMessages(initial);
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(initial));
+  };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -246,6 +269,15 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                   </div>
                 </div>
                 <motion.button
+                  aria-label="Καθαρισμός συνομιλίας"
+                  onClick={clearConversation}
+                  className="p-2 rounded-full hover:bg-white/20 transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </motion.button>
+                <motion.button
                   aria-label="Κλείσιμο"
                   onClick={() => setOpen(false)}
                   className="p-2 rounded-full hover:bg-white/20 transition-colors"
@@ -262,6 +294,19 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
               ref={listRef}
               className="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-br from-pink-50 to-rose-50"
             >
+              {messages.length <= 2 && (
+                <div className="flex flex-wrap gap-2">
+                  {QUICK_PROMPTS.map((prompt) => (
+                    <button
+                      key={prompt}
+                      onClick={() => void send(prompt)}
+                      className="text-xs bg-white border border-pink-200 rounded-full px-3 py-1.5 hover:bg-pink-50 text-pink-700"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              )}
               {messages.map((m, i) => (
                 <motion.div
                   key={`${m.ts}-${i}`}

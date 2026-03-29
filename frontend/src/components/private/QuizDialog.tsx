@@ -13,6 +13,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
+import { apiFetch } from '@/utils/apiClient';
+import {
+  enqueueQuizSubmission,
+  flushPendingQuizSubmissions,
+  getPendingSubmissionCount,
+} from '@/utils/quizSubmissionSync';
 
 // --- Types ---
 
@@ -63,7 +69,7 @@ interface SubmitResponse {
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
-const BACKEND_URL = 'http://localhost:8001';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
 
 const QuizDialog: React.FC<QuizDialogProps> = ({
   quiz,
@@ -74,13 +80,21 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 }) => {
   const { user } = useAuth();
   const [current, setCurrent] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isSyncingAnswer, setIsSyncingAnswer] = useState<boolean>(false);
+  const [pendingSyncCount, setPendingSyncCount] = useState<number>(0);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [score, setScore] = useState<Score>({ correct: 0, total: 0 });
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
-  const autoAdvanceTimeoutRef = useRef<number | null>(null);
+
+  const syncPendingQueue = useCallback(async () => {
+    setPendingSyncCount(getPendingSubmissionCount());
+    const result = await flushPendingQuizSubmissions();
+    if (result.sent > 0 || result.failed > 0) {
+      setPendingSyncCount(result.failed);
+    }
+  }, []);
 
   // Determine selected answer for current question (if any)
   const selected = selectedAnswers?.[current] ?? null; // number | null
@@ -130,14 +144,17 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
     }
   }, [allAnswered, isLastQuestion, selected]);
 
-  // Clear pending auto-advance timeout on unmount
+  // Try to sync queued submissions on open and whenever connection comes back.
   useEffect(() => {
-    return () => {
-      if (autoAdvanceTimeoutRef.current) {
-        clearTimeout(autoAdvanceTimeoutRef.current);
-      }
+    if (!isOpen) return;
+    void syncPendingQueue();
+
+    const handleOnline = () => {
+      void syncPendingQueue();
     };
-  }, []);
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [isOpen, syncPendingQueue]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -167,12 +184,14 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   const handleSelect = useCallback(
     async (idx: number) => {
       // Prevent selection if already answered or loading or missing props
-      if (selected !== null || !onQuestionAnswered || loading || !quiz || !question) return;
-
-      setLoading(true);
+      if (selected !== null || !onQuestionAnswered || !quiz || !question) return;
       setError(null);
 
       try {
+        const localIsCorrect = Boolean(question.answers?.[idx]?.correct);
+        // Update UI immediately to remove perceived lag between questions.
+        onQuestionAnswered(quiz.id, current, idx, localIsCorrect, localIsCorrect ? 10 : 0);
+
         // 1. Get session for token
         const {
           data: { session },
@@ -186,12 +205,15 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
         // 2. Determine nickname
         const nickname = user?.username || user?.email?.split('@')[0] || 'Anonymous';
 
-        const response = await fetch(`${BACKEND_URL}/api/quiz/submit`, {
+        setIsSyncingAnswer(true);
+        const result = await apiFetch<SubmitResponse>(`${BACKEND_URL}/api/quiz/submit`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
+          timeoutMs: 8000,
+          retries: 1,
           body: JSON.stringify({
             nickname,
             question_id: question.id,
@@ -199,34 +221,22 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
           }),
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result: SubmitResponse = await response.json();
-
-        onQuestionAnswered(quiz.id, current, idx, result.correct, result.points_earned);
-
-        // Auto-advance if correct and not last question
-        if (!isLastQuestion && result.correct) {
-          if (autoAdvanceTimeoutRef.current) {
-            clearTimeout(autoAdvanceTimeoutRef.current);
-          }
-          autoAdvanceTimeoutRef.current = window.setTimeout(() => {
-            // Check if index did not change externally before moving
-            setCurrent((prev) => (prev === current ? prev + 1 : prev));
-            setShowExplanation(false);
-            setError(null);
-          }, 1500);
-        }
+        // No auto-advance: user controls navigation with the next button.
       } catch (err) {
         console.error('Error submitting answer:', err);
-        setError('Σφάλμα κατά την υποβολή. Ελέγξτε τη σύνδεσή σας.');
+        enqueueQuizSubmission({
+          nickname: user?.username || user?.email?.split('@')[0] || 'Anonymous',
+          question_id: question.id,
+          selected_answer: idx,
+        });
+        setPendingSyncCount(getPendingSubmissionCount());
+        // Keep local progress and only show sync warning so quiz does not stall.
+        setError('Η απάντηση αποθηκεύτηκε τοπικά. Θα συγχρονιστεί όταν επανέλθει η σύνδεση.');
       } finally {
-        setLoading(false);
+        setIsSyncingAnswer(false);
       }
     },
-    [selected, onQuestionAnswered, loading, question, quiz, current, isLastQuestion, user]
+    [selected, onQuestionAnswered, question, quiz, user]
   );
 
   const handleNext = useCallback(() => {
@@ -437,31 +447,28 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
+            {isSyncingAnswer && (
+              <p className="text-xs text-gray-500 mb-3">Συγχρονισμός απάντησης...</p>
+            )}
+            {!isSyncingAnswer && pendingSyncCount > 0 && (
+              <p className="text-xs text-amber-600 mb-3">
+                {pendingSyncCount} απαντήσεις περιμένουν συγχρονισμό.
+              </p>
+            )}
 
             {/* Answers */}
             <div className="space-y-3 mb-8">
-              {loading ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <motion.div
-                    className="w-16 h-16 rounded-full border-4 border-t-transparent"
-                    style={{ borderColor: BRAND }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  />
-                  <p className="mt-4 text-gray-500 font-medium">Υποβολή απάντησης...</p>
-                </div>
-              ) : (
-                question?.answers?.map((ans, idx) => {
-                  const isSelected = selected === idx;
-                  const isRevealed = selected !== null;
-                  const isCorrect = ans.correct;
+              {question?.answers?.map((ans, idx) => {
+                const isSelected = selected === idx;
+                const isRevealed = selected !== null;
+                const isCorrect = ans.correct;
 
-                  return (
-                    <motion.button
-                      key={idx}
-                      onClick={() => handleSelect(idx)}
-                      disabled={isRevealed}
-                      className={`
+                return (
+                  <motion.button
+                    key={idx}
+                    onClick={() => handleSelect(idx)}
+                    disabled={isRevealed}
+                    className={`
                         relative flex items-center gap-4 w-full px-5 py-4 md:px-6 md:py-5 rounded-xl
                         border-2 font-semibold text-left transition-all
                         ${!isRevealed ? 'bg-white border-pink-200 hover:border-pink-400 hover:shadow-xl cursor-pointer' : 'cursor-default'}
@@ -470,19 +477,19 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                         ${isRevealed && !isCorrect && !isSelected ? 'bg-gray-50 border-gray-300 opacity-70' : ''}
                         ${isRevealed ? '' : 'hover:transform hover:scale-[1.01]'}
                       `}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{
                         opacity: 1,
                         x: 0,
                         scale: isRevealed && isSelected ? [1, 1.02, 1] : 1,
-                      }}
-                      transition={{
+                    }}
+                    transition={{
                         delay: idx * 0.08,
                         scale: { duration: 0.3 },
-                      }}
-                      whileHover={!isRevealed ? { x: 6 } : {}}
-                      whileTap={!isRevealed ? { scale: 0.98 } : {}}
-                    >
+                    }}
+                    whileHover={!isRevealed ? { x: 6 } : {}}
+                    whileTap={!isRevealed ? { scale: 0.98 } : {}}
+                  >
                       {/* Answer Letter */}
                       <div
                         className={`
@@ -536,10 +543,9 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                           </span>
                         </div>
                       )}
-                    </motion.button>
-                  );
-                })
-              )}
+                  </motion.button>
+                );
+              })}
             </div>
 
             {/* Explanation (if answered) */}

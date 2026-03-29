@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 
 // Public Pages
 import HomePage from '@/pages/public/HomePage';
@@ -8,21 +8,25 @@ import AboutPage from '@/pages/public/AboutMe';
 import MerchPage from '@/pages/public/MerchPage';
 import PrivacyPolicyPage from '@/pages/public/PrivacyPolicyPage';
 import DataProtectionPage from '@/pages/public/DataProtectionPage';
+import GloglossaEmbedPage from '@/pages/public/GloglossaEmbedPage';
 
 // User Pages (Protected)
 // import NotesPage from '@/pages/private/NotesPage';
-import QuizPage from '@/pages/private/QuizPage';
-import FlashcardsPage from '@/pages/private/FlashcardsPage';
+const QuizPage = lazy(() => import('@/pages/private/QuizPage'));
+const FlashcardsPage = lazy(() => import('@/pages/private/FlashcardsPage'));
 import LeaderboardPage from '@/pages/public/LeaderboardPage';
 import AlgorithmsPage from '@/pages/private/AlgorithmsPage';
 import PaliathemataPage from '@/pages/private/PaliathemataPage';
 import OnlinePage from '@/pages/private/OnlinePage';
-import ProsanatolismosPage from '@/pages/private/ProsanatolismosPage';
+const ProsanatolismosPage = lazy(() => import('@/pages/private/ProsanatolismosPage'));
 import ProfilePage from '@/pages/private/ProfilePage';
+import StudyTimerPage from '@/pages/private/StudyTimerPage';
 import NotFound from '@/pages/other/NotFound';
 import NotAuthorized from '@/pages/other/NotAuthorized';
 
 import SchoolsPage from '@/pages/private/SchoolsPage';
+import CommunityPage from '@/pages/private/CommunityPage';
+import ProgressTrackerPage from '@/pages/private/ProgressTrackerPage';
 // Admin Pages
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 
@@ -66,6 +70,10 @@ const routes: RouteConfig[] = [
   {
     path: '/data',
     element: <DataProtectionPage />,
+  },
+  {
+    path: '/gloglossa',
+    element: <GloglossaEmbedPage />,
   },
   {
     path: '/not-authorized',
@@ -130,8 +138,26 @@ const routes: RouteConfig[] = [
     roles: ['user', 'admin'],
   },
   {
+    path: '/study-timer',
+    element: <StudyTimerPage />,
+    protected: true,
+    roles: ['user', 'admin'],
+  },
+  {
     path: '/sxoles',
     element: <SchoolsPage />,
+    protected: true,
+    roles: ['user', 'admin'],
+  },
+  {
+    path: '/community',
+    element: <CommunityPage />,
+    protected: true,
+    roles: ['user', 'admin'],
+  },
+  {
+    path: '/progress-tracker',
+    element: <ProgressTrackerPage />,
     protected: true,
     roles: ['user', 'admin'],
   },

@@ -54,23 +54,33 @@ SYSTEM_PROMPT = """
 - Κρατα τις απαντησεις συνοπτικες αλλα πληρεις.
 """.strip()
 
-# ── Chat history (in-memory) ──────────────────────────────────────────────────
+# ── Chat history (in-memory, by session) ──────────────────────────────────────
 
-_history = []
+_histories = {}
+_MAX_HISTORY_ITEMS = 20
+_MAX_SESSIONS = 200
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
-def get_ai_response(message: str) -> str:
-    global _history
+def _get_session_history(session_id: str):
+    # Basic cap to avoid unbounded memory growth on long-running servers.
+    if len(_histories) > _MAX_SESSIONS and session_id not in _histories:
+        oldest_key = next(iter(_histories))
+        _histories.pop(oldest_key, None)
+    return _histories.setdefault(session_id, [])
+
+
+def get_ai_response(message: str, session_id: str = "default") -> str:
+    history = _get_session_history(session_id)
 
     try:
-        _history.append(
+        history.append(
             types.Content(role="user", parts=[types.Part(text=message)])
         )
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=_history,
+            contents=history,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
                 max_output_tokens=1024,
@@ -78,15 +88,15 @@ def get_ai_response(message: str) -> str:
             ),
         )
 
-        reply = response.text
+        reply = response.text or "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
 
-        _history.append(
+        history.append(
             types.Content(role="model", parts=[types.Part(text=reply)])
         )
 
         # Κρατα μονο τα τελευταια 20 μηνυματα
-        if len(_history) > 20:
-            _history = _history[-20:]
+        if len(history) > _MAX_HISTORY_ITEMS:
+            _histories[session_id] = history[-_MAX_HISTORY_ITEMS:]
 
         return reply
 
