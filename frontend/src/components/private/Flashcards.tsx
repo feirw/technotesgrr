@@ -346,7 +346,7 @@ const Flashcards: React.FC = () => {
       width: Math.min(500, window.innerWidth - 40),
       height: 350,
       border: `3px solid ${BRAND}`,
-      borderRadius: '1.5rem',
+      borderRadius: '2 rem',
       boxShadow: '0 10px 40px rgba(253, 168, 169, 0.2)',
       display: 'flex',
       alignItems: 'center',

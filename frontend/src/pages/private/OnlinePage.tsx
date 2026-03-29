@@ -41,7 +41,7 @@ const LESSONS: Lesson[] = [
       'Μεταβλητές, Σταθερές, Τύποι Δεδομένων, Εκφράσεις, Εντολή Εκχώρησης, Ενσωματωμένες Συναρτήσεις.',
     duration: '60 λεπτά',
     category: 'Βασικά για Αλγορίθμους',
-    thumbnail: '/images/2.jpg',
+    thumbnail: '/images/m2.png',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     videoType: 'youtube',
     instructor: 'Ελένη Ζαφείρη',
