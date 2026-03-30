@@ -13,4 +13,3 @@ export const getBackendUrl = (): string => {
 
   return LOCAL_FALLBACK;
 };
-
