@@ -140,6 +140,42 @@ def get_quizzes_from_db():
             rows = cursor.fetchall()
             return [dict(row) for row in rows]
 
+def get_quizzes_page(limit: int = 200, offset: int = 0, chapter: str = None):
+    """Fetch paginated quiz questions directly from DB for better performance."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            if chapter is not None:
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM quizzes
+                    WHERE CAST(chapter AS TEXT) = %s
+                    ORDER BY chapter, id
+                    LIMIT %s OFFSET %s
+                    """,
+                    (str(chapter), limit, offset),
+                )
+                rows = cursor.fetchall()
+                cursor.execute(
+                    "SELECT COUNT(*) AS count FROM quizzes WHERE CAST(chapter AS TEXT) = %s",
+                    (str(chapter),),
+                )
+            else:
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM quizzes
+                    ORDER BY chapter, id
+                    LIMIT %s OFFSET %s
+                    """,
+                    (limit, offset),
+                )
+                rows = cursor.fetchall()
+                cursor.execute("SELECT COUNT(*) AS count FROM quizzes")
+
+            total = int(cursor.fetchone()["count"])
+            return [dict(row) for row in rows], total
+
 def get_flashcards_from_db():
     """Get all flashcards from database"""
     with get_db_connection() as conn:
@@ -147,6 +183,42 @@ def get_flashcards_from_db():
             cursor.execute("SELECT * FROM flashcards ORDER BY chapter, id")
             rows = cursor.fetchall()
             return [dict(row) for row in rows]
+
+def get_flashcards_page(limit: int = 1000, offset: int = 0, chapter: str = None):
+    """Fetch paginated flashcards directly from DB."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            if chapter is not None:
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM flashcards
+                    WHERE CAST(chapter AS TEXT) = %s
+                    ORDER BY chapter, id
+                    LIMIT %s OFFSET %s
+                    """,
+                    (str(chapter), limit, offset),
+                )
+                rows = cursor.fetchall()
+                cursor.execute(
+                    "SELECT COUNT(*) AS count FROM flashcards WHERE CAST(chapter AS TEXT) = %s",
+                    (str(chapter),),
+                )
+            else:
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM flashcards
+                    ORDER BY chapter, id
+                    LIMIT %s OFFSET %s
+                    """,
+                    (limit, offset),
+                )
+                rows = cursor.fetchall()
+                cursor.execute("SELECT COUNT(*) AS count FROM flashcards")
+
+            total = int(cursor.fetchone()["count"])
+            return [dict(row) for row in rows], total
 
 def get_quiz_by_id(question_id: str):
     """Get a specific quiz question by ID"""

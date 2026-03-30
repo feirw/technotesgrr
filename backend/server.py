@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 import asyncio
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import os
@@ -28,7 +29,9 @@ from database import (
     record_quiz_submission,
     get_db_connection,
     get_quizzes_from_db,
+    get_quizzes_page,
     get_flashcards_from_db,
+    get_flashcards_page,
     get_quiz_by_id,
     save_contact_submission,
     get_admin_stats,
@@ -81,6 +84,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 
 # ── Pydantic Models ───────────────────────────────────────────────────────────
@@ -199,13 +203,7 @@ async def get_quiz_questions(
     offset: int = Query(default=0, ge=0),
 ):
     try:
-        questions = get_quizzes_from_db()
-        if chapter is not None:
-            chapter_str = str(chapter)
-            questions = [q for q in questions if str(q.get("chapter")) == chapter_str]
-
-        total = len(questions)
-        paginated = questions[offset : offset + limit]
+        paginated, total = get_quizzes_page(limit=limit, offset=offset, chapter=chapter)
         has_more = offset + limit < total
         return {
             "questions": paginated,
@@ -221,7 +219,7 @@ async def get_quiz_questions(
 @app.get("/api/quiz/questions/{chapter}")
 async def get_quiz_questions_by_chapter(chapter: str):
     try:
-        questions = [q for q in get_quizzes_from_db() if q["chapter"] == chapter]
+        questions, _ = get_quizzes_page(limit=5000, offset=0, chapter=chapter)
         return {"questions": questions, "chapter": chapter}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading quiz questions: {e}")
@@ -270,9 +268,20 @@ async def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_curren
 # ── Flashcards ────────────────────────────────────────────────────────────────
 
 @app.get("/api/flashcards")
-async def get_flashcards():
+async def get_flashcards(
+    chapter: Optional[str] = None,
+    limit: int = Query(default=1000, ge=1, le=5000),
+    offset: int = Query(default=0, ge=0),
+):
     try:
-        return {"flashcards": get_flashcards_from_db()}
+        flashcards, total = get_flashcards_page(limit=limit, offset=offset, chapter=chapter)
+        return {
+            "flashcards": flashcards,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "has_more": offset + limit < total,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading flashcards: {e}")
 
@@ -280,7 +289,7 @@ async def get_flashcards():
 @app.get("/api/flashcards/{chapter}")
 async def get_flashcards_by_chapter(chapter: str):
     try:
-        flashcards = [f for f in get_flashcards_from_db() if f["chapter"] == chapter]
+        flashcards, _ = get_flashcards_page(limit=5000, offset=0, chapter=chapter)
         return {"flashcards": flashcards, "chapter": chapter}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading flashcards: {e}")

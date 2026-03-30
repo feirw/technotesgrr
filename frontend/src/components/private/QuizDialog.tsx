@@ -586,7 +586,11 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
               {/* Question Indicators */}
               <div className="hidden md:flex gap-2 overflow-x-auto max-w-md px-2">
                 {quiz.questions.map((_, idx) => {
-                  const isAnswered = selectedAnswers?.[idx] !== undefined;
+                  const sel = selectedAnswers?.[idx];
+                  const isAnswered = sel !== undefined;
+                  const isCorrectSelected = isAnswered
+                    ? Boolean(quiz.questions[idx]?.answers?.[sel as number]?.correct)
+                    : false;
                   const isFlaggedQ = flaggedQuestions.has(idx);
 
                   return (
@@ -596,7 +600,8 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                       className={`
                         relative w-8 h-8 rounded-full font-bold text-xs transition-all flex-shrink-0
                         ${current === idx ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white scale-110 ring-2 ring-pink-300' : ''}
-                        ${isAnswered && current !== idx ? 'bg-green-200 text-green-700' : ''}
+                        ${isAnswered && current !== idx && isCorrectSelected ? 'bg-green-200 text-green-700' : ''}
+                        ${isAnswered && current !== idx && !isCorrectSelected ? 'bg-red-200 text-red-700' : ''}
                         ${!isAnswered && current !== idx ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' : ''}
                       `}
                       aria-label={`Μετάβαση στην ερώτηση ${idx + 1}`}
