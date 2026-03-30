@@ -71,6 +71,12 @@ const LoginPage: React.FC = () => {
     }
     setLoading(true);
 
+    if (typeof login !== 'function') {
+      setLoading(false);
+      setError('Σφάλμα authentication context. Κάνε refresh και δοκίμασε ξανά.');
+      return;
+    }
+
     // Clear any existing timeout
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 

@@ -4,6 +4,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 from datetime import datetime
+from typing import Dict, List
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -48,6 +49,30 @@ def init_database():
                 """
                 CREATE INDEX IF NOT EXISTS idx_community_posts_user_id
                 ON community_posts (user_id);
+                """
+            )
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS community_replies (
+                    id BIGSERIAL PRIMARY KEY,
+                    post_id BIGINT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+                    user_id UUID NOT NULL,
+                    username TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                );
+                """
+            )
+            cursor.execute(
+                """
+                CREATE INDEX IF NOT EXISTS idx_community_replies_post_id_created_at
+                ON community_replies (post_id, created_at ASC);
+                """
+            )
+            cursor.execute(
+                """
+                CREATE INDEX IF NOT EXISTS idx_community_replies_user_id
+                ON community_replies (user_id);
                 """
             )
         conn.commit()
@@ -322,6 +347,77 @@ def get_community_posts(limit: int = 30, offset: int = 0):
             cursor.execute("SELECT COUNT(*) FROM community_posts")
             total = cursor.fetchone()["count"]
             return [dict(r) for r in rows], int(total)
+
+def get_community_replies_for_posts(post_ids: List[int]) -> Dict[int, List[dict]]:
+    """Fetch replies grouped by post id."""
+    if not post_ids:
+        return {}
+
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                """
+                SELECT id, post_id, user_id, username, content, created_at
+                FROM community_replies
+                WHERE post_id = ANY(%s)
+                ORDER BY created_at ASC
+                """,
+                (post_ids,),
+            )
+            rows = cursor.fetchall()
+
+    grouped: Dict[int, List[dict]] = {int(pid): [] for pid in post_ids}
+    for row in rows:
+        reply = dict(row)
+        grouped[int(reply["post_id"])].append(reply)
+    return grouped
+
+
+def create_community_reply(post_id: int, user_id: str, username: str, content: str):
+    """Create a reply under an existing community post."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute("SELECT id FROM community_posts WHERE id = %s", (post_id,))
+            post_row = cursor.fetchone()
+            if not post_row:
+                raise ValueError("POST_NOT_FOUND")
+
+            cursor.execute(
+                """
+                INSERT INTO community_replies (post_id, user_id, username, content)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, post_id, user_id, username, content, created_at
+                """,
+                (post_id, user_id, username, content),
+            )
+            row = cursor.fetchone()
+        conn.commit()
+        return dict(row)
+
+
+def delete_community_post(post_id: int, requester_user_id: str, requester_is_admin: bool = False):
+    """
+    Delete a community post if requester is owner or admin.
+    Returns True when deleted, False if post does not exist.
+    Raises PermissionError when user is not allowed.
+    """
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, user_id FROM community_posts WHERE id = %s",
+                (post_id,),
+            )
+            row = cursor.fetchone()
+            if not row:
+                return False
+
+            owner_id = str(row["user_id"])
+            if not requester_is_admin and owner_id != str(requester_user_id):
+                raise PermissionError("Not allowed to delete this post.")
+
+            cursor.execute("DELETE FROM community_posts WHERE id = %s", (post_id,))
+        conn.commit()
+        return True
 
 
 def get_username_by_user_id(user_id: str):

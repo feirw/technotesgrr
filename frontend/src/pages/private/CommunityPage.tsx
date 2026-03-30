@@ -1,11 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Send, RefreshCw, UserCircle2 } from 'lucide-react';
+import { MessageSquare, Send, RefreshCw, UserCircle2, Trash2 } from 'lucide-react';
 import { apiFetch } from '@/utils/apiClient';
 import { supabase } from '@/utils/supabaseClient';
+import { useAuth } from '@/contexts/AuthContext';
 
 type CommunityPost = {
   id: number;
+  user_id: string;
+  username: string;
+  content: string;
+  created_at: string;
+  replies?: CommunityReply[];
+};
+
+type CommunityReply = {
+  id: number;
+  post_id: number;
   user_id: string;
   username: string;
   content: string;
@@ -23,10 +34,14 @@ type CommunityResponse = {
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
 
 const CommunityPage: React.FC = () => {
+  const { user, isAdmin } = useAuth();
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
+  const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
+  const [replyDrafts, setReplyDrafts] = useState<Record<number, string>>({});
+  const [replyingPostId, setReplyingPostId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -104,6 +119,78 @@ const CommunityPage: React.FC = () => {
       setPosting(false);
     }
   };
+
+  const onDeletePost = useCallback(
+    async (postId: number) => {
+      if (!window.confirm('Θες σίγουρα να διαγράψεις αυτό το post;')) return;
+      setDeletingPostId(postId);
+      setError(null);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+
+        await apiFetch<{ ok: boolean; deleted_id: number }>(`${BACKEND_URL}/api/community/posts/${postId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setPosts((prev) => prev.filter((p) => p.id !== postId));
+      } catch (e: any) {
+        setError(e?.message || 'Αποτυχία διαγραφής post.');
+      } finally {
+        setDeletingPostId(null);
+      }
+    },
+    []
+  );
+
+  const onSubmitReply = useCallback(async (postId: number) => {
+    const value = (replyDrafts[postId] ?? '').trim();
+    if (!value) return;
+
+    setReplyingPostId(postId);
+    setError(null);
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+
+      const result = await apiFetch<{ reply: CommunityReply }>(
+        `${BACKEND_URL}/api/community/posts/${postId}/replies`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ content: value }),
+        }
+      );
+
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                replies: [...(p.replies ?? []), result.reply],
+              }
+            : p
+        )
+      );
+      setReplyDrafts((prev) => ({ ...prev, [postId]: '' }));
+    } catch (e: any) {
+      setError(e?.message || 'Αποτυχία αποστολής απάντησης.');
+    } finally {
+      setReplyingPostId(null);
+    }
+  }, [replyDrafts]);
 
   // Autosize textarea
   useEffect(() => {
@@ -197,9 +284,66 @@ const CommunityPage: React.FC = () => {
                     </div>
                     <span className="font-bold text-pink-600">{post.username}</span>
                   </div>
-                  <time className="text-xs text-gray-500">{post.dateLabel}</time>
+                  <div className="flex items-center gap-3">
+                    <time className="text-xs text-gray-500">{post.dateLabel}</time>
+                    {(isAdmin || user?.id === post.user_id) && (
+                      <button
+                        type="button"
+                        onClick={() => void onDeletePost(post.id)}
+                        disabled={deletingPostId === post.id}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                        title="Διαγραφή post"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        {deletingPostId === post.id ? 'Διαγραφή…' : 'Διαγραφή'}
+                      </button>
+                    )}
+                  </div>
                 </header>
                 <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{post.content}</p>
+
+                <div className="mt-4 border-t border-pink-100 pt-3">
+                  <div className="space-y-2 mb-3">
+                    {(post.replies ?? []).map((reply) => (
+                      <div key={reply.id} className="rounded-xl bg-pink-50/70 border border-pink-100 p-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold text-pink-700">{reply.username}</span>
+                          <time className="text-[11px] text-gray-500">
+                            {new Date(reply.created_at).toLocaleString('el-GR')}
+                          </time>
+                        </div>
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap mt-1">{reply.content}</p>
+                      </div>
+                    ))}
+                    {(post.replies ?? []).length === 0 && (
+                      <p className="text-xs text-gray-500">Δεν υπάρχουν απαντήσεις ακόμα.</p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={replyDrafts[post.id] ?? ''}
+                      onChange={(e) =>
+                        setReplyDrafts((prev) => ({
+                          ...prev,
+                          [post.id]: e.target.value,
+                        }))
+                      }
+                      maxLength={1500}
+                      placeholder="Απάντησε σε αυτό το post…"
+                      className="flex-1 rounded-xl border border-pink-200 px-3 py-2 text-sm focus:outline-none focus:border-pink-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void onSubmitReply(post.id)}
+                      disabled={replyingPostId === post.id || !(replyDrafts[post.id] ?? '').trim()}
+                      className="px-3 py-2 rounded-xl bg-pink-500 text-white text-sm font-semibold disabled:opacity-50"
+                    >
+                      {replyingPostId === post.id ? 'Στέλνεται…' : 'Απάντηση'}
+                    </button>
+                  </div>
+                </div>
               </motion.article>
             ))
           )}

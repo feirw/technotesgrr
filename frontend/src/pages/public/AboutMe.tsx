@@ -331,6 +331,15 @@ const AboutPage: React.FC = () => {
                     className="font-bold text-pink-600 dark:text-pink-400 hover:underline"
                   >
                     deathwish
+                  </a>{' '}
+                  και την{' '}
+                  <a
+                    href="https://github.com/a-reynbaw"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-pink-600 dark:text-pink-400 hover:underline"
+                  >
+                    a‑reynbaw
                   </a>
                   .
                 </motion.p>

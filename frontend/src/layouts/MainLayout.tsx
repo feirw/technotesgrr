@@ -30,6 +30,12 @@ import {
   Heart,
   Laugh,
   Wind,
+  Mail,
+  MapPin,
+  Instagram,
+  Linkedin,
+  Youtube,
+  Music2,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
@@ -104,6 +110,7 @@ const PrepMenu: React.FC = () => {
             <div className="grid grid-cols-2 gap-1">
               <LinkItem to="/quiz" label="Quiz" icon={Trophy} />
               <LinkItem to="/flashcards" label="Flashcards" icon={Brain} />
+              <LinkItem to="/gloglossa" label="GloGlossa" icon={Globe} />
               <LinkItem to="/progress-tracker" label="Progress Tracker" icon={Map} />
               <LinkItem to="/study-timer" label="Study Timer" icon={Timer} />
               <LinkItem to="/prosanatolismos" label="Προσανατολισμός" icon={Compass} />
@@ -358,7 +365,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </button>
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">Σχετικά με εμένα</NavButton>
-              <NavButton to="/gloglossa">GloGlossa</NavButton>
+              {/* GloGlossa moved into private "Μάθηση" menu */}
               <NavButton to="/merch">Η Ατζέντα</NavButton>
               <button
                 aria-label="Theme toggle"
@@ -501,6 +508,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
                   {user ? (
                     <>
+                      <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
+                        GloGlossa
+                      </MobileNavButton>
                       <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
                         Quiz
                       </MobileNavButton>
@@ -561,9 +571,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
                     Ατζέντα
                   </MobileNavButton>
-                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
-                    GloGlossa
-                  </MobileNavButton>
                 </div>
               </div>
             </motion.div>
@@ -575,120 +582,73 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <main className="flex-grow relative z-10">{children}</main>
 
       {/* Footer */}
-      <footer className="relative bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 border-t border-pink-200 dark:border-gray-700 mt-20">
-        <div className="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-          <motion.div {...fadeIn}>
-            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-              Σχετικά με εμάς 🎓
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Το <strong className="text-pink-600 dark:text-pink-400">technotesgr</strong> βοηθά
-              μαθητές Γ' Λυκείου να προετοιμαστούν αποτελεσματικά για τις Πανελλαδικές στο μάθημα της Πληροφορικής.
-            </p>
+      <footer className="relative overflow-hidden mt-12 -mt-px">
+        {/* Light gradient (matches screenshot: subtle, from white to soft pink) */}
+        <div
+          className="pointer-events-none absolute inset-0 dark:hidden"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(253, 164, 175, 0.18) 35%, rgba(253, 164, 175, 0.28) 65%, rgba(253, 164, 175, 0.38) 100%)',
+          }}
+        />
+        {/* Dark gradient (softer for dark theme) */}
+        <div
+          className="pointer-events-none absolute inset-0 hidden dark:block"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(190, 24, 93, 0.22) 35%, rgba(190, 24, 93, 0.32) 65%, rgba(190, 24, 93, 0.42) 100%)',
+          }}
+        />
+
+        <div className="relative container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <motion.div {...fadeIn} className="text-center md:text-left">
+            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Νομικά</h3>
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
+              <NavLink to="/privacy-policy" className="hover:text-pink-600 transition-colors">
+                Όροι Χρήσης & Πολιτική Απορρήτου
+              </NavLink>
+              <NavLink to="/data" className="hover:text-pink-600 transition-colors">
+                Προστασία Προσωπικών Δεδομένων
+              </NavLink>
+              <span className="text-xs text-gray-500">
+                Τελευταία ενημέρωση: {new Date().toLocaleDateString('el-GR')}
+              </span>
+            </div>
           </motion.div>
 
-          <motion.div {...fadeIn} transition={{ delay: 0.2 }}>
-            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
-              Επικοινωνία
-            </h3>
-            <div className="space-y-3">
-              <a
-                href="https://instagram.com/technotesgr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
-              >
-                Instagram: @technotesgr
+          <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60">
+            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Socials</h3>
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
+              <a href="https://instagram.com/technotesgr" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+                <Instagram className="w-4 h-4" /> <span>Instagram</span>
               </a>
-              <a
-                href="https://tiktok.com/@technotesgr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
-              >
-                TikTok: @technotesgr
+              <a href="https://tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+                <Music2 className="w-4 h-4" /> <span>TikTok</span>
               </a>
-              <a
-                href="https://www.linkedin.com/company/technotesgr/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
-              >
-                LinkedIn: technotesgr
+              <a href="https://www.linkedin.com/company/technotesgr/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+                <Linkedin className="w-4 h-4" /> <span>LinkedIn</span>
               </a>
-              <a
-                href="https://www.youtube.com/@technotesgr-elenizafeiri"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
-              >
-                YouTube: technotesgr
+              <a href="https://www.youtube.com/@technotesgr-elenizafeiri" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+                <Youtube className="w-4 h-4" /> <span>YouTube</span>
               </a>
             </div>
           </motion.div>
 
-          <motion.div {...fadeIn} transition={{ delay: 0.3 }}>
-            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">Νομικά</h3>
-            <div className="space-y-2">
-              <NavLink
-                to="/privacy-policy"
-                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600"
-              >
-                Πολιτική Απορρήτου
-              </NavLink>
-              <NavLink
-                to="/data"
-                className="block text-gray-600 dark:text-gray-300 hover:text-pink-600"
-              >
-                Προσωπικά Δεδομένα
-              </NavLink>
+          <motion.div {...fadeIn} transition={{ delay: 0.25 }} className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60">
+            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Τοποθεσία</h3>
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
+              <div className="inline-flex items-center gap-2 justify-center md:justify-start">
+                <span role="img" aria-label="location">📍</span>
+                <span>Αθήνα, Ελλάδα</span>
+              </div>
             </div>
           </motion.div>
         </div>
 
-        <div className="bg-white/40 dark:bg-black/20 py-6 text-center border-t border-pink-100 dark:border-gray-800">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            © {currentYear} technotesgr. All rights reserved.
-          </p>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
-            Made with{' '}
-            <motion.span
-              className="inline-block text-pink-600"
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              ♡
-            </motion.span>{' '}
-            by{' '}
-            <span className="font-semibold text-pink-600">
-              <a
-                href="https://github.com/feirw"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                feirw
-              </a>
-              ,{' '}
-              <a
-                href="https://github.com/a-reynbaw"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                a-reynbaw
-              </a>{' '}
-              &{' '}
-              <a
-                href="https://github.com/mgiannopoulos24"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                mgiannopoulos24
-              </a>
-            </span>
-          </p>
+        <div className="relative py-4">
+          <div className="container mx-auto px-6 text-center text-xs text-gray-600 dark:text-gray-400">
+            <span>All Rights Reserved © technotesgr • {currentYear}</span>
+          </div>
         </div>
       </footer>
     </div>

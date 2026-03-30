@@ -38,6 +38,9 @@ from database import (
     get_career_orientation_result,
     create_community_post,
     get_community_posts,
+    get_community_replies_for_posts,
+    create_community_reply,
+    delete_community_post,
     get_username_by_user_id,
 )
 
@@ -101,6 +104,9 @@ class WebVitalEvent(BaseModel):
 
 
 class CommunityPostCreate(BaseModel):
+    content: str
+
+class CommunityReplyCreate(BaseModel):
     content: str
 
 
@@ -413,8 +419,15 @@ async def list_community_posts(
 ):
     try:
         posts, total = get_community_posts(limit=limit, offset=offset)
+        post_ids = [int(p["id"]) for p in posts]
+        replies_by_post_id = get_community_replies_for_posts(post_ids)
+        hydrated_posts = []
+        for p in posts:
+            post = dict(p)
+            post["replies"] = replies_by_post_id.get(int(post["id"]), [])
+            hydrated_posts.append(post)
         return {
-            "posts": posts,
+            "posts": hydrated_posts,
             "total": total,
             "limit": limit,
             "offset": offset,
@@ -447,6 +460,52 @@ async def add_community_post(payload: CommunityPostCreate, user=Depends(get_curr
         return {"post": post}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating community post: {e}")
+
+@app.post("/api/community/posts/{post_id}/replies")
+async def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=Depends(get_current_user)):
+    content = (payload.content or "").strip()
+    if not content:
+        raise HTTPException(status_code=400, detail="Το κείμενο της απάντησης είναι υποχρεωτικό.")
+    if len(content) > 1500:
+        raise HTTPException(status_code=413, detail="Η απάντηση είναι πολύ μεγάλη (max 1500 χαρακτήρες).")
+    try:
+        username = (
+            get_username_by_user_id(str(user.id))
+            or getattr(user, "user_metadata", {}).get("username")
+            or getattr(user, "email", "").split("@")[0]
+            or "Student"
+        )
+        reply = create_community_reply(
+            post_id=post_id,
+            user_id=str(user.id),
+            username=username,
+            content=content,
+        )
+        return {"reply": reply}
+    except ValueError as e:
+        if str(e) == "POST_NOT_FOUND":
+            raise HTTPException(status_code=404, detail="Το post δεν βρέθηκε.")
+        raise HTTPException(status_code=400, detail="Μη έγκυρο αίτημα.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating reply: {e}")
+
+@app.delete("/api/community/posts/{post_id}")
+async def remove_community_post(post_id: int, user=Depends(get_current_user)):
+    try:
+        deleted = delete_community_post(
+            post_id=post_id,
+            requester_user_id=str(user.id),
+            requester_is_admin=is_user_admin(user.id),
+        )
+        if not deleted:
+            raise HTTPException(status_code=404, detail="Το post δεν βρέθηκε.")
+        return {"ok": True, "deleted_id": post_id}
+    except PermissionError:
+        raise HTTPException(status_code=403, detail="Δεν έχεις δικαίωμα να διαγράψεις αυτό το post.")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting community post: {e}")
 
 
 # ── Admin ─────────────────────────────────────────────────────────────────────

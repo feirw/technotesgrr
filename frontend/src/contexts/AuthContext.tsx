@@ -36,7 +36,21 @@ interface AuthContextType {
   refreshUserProfile: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+const missingProviderError = () => {
+  throw new Error('AuthContext is not available. Ensure AuthProvider wraps the app.');
+};
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  role: null,
+  isAdmin: false,
+  loading: true,
+  login: async () => missingProviderError(),
+  signup: async () => missingProviderError(),
+  logout: async () => missingProviderError(),
+  updateProfileUsername: async () => missingProviderError(),
+  refreshUserProfile: async () => missingProviderError(),
+});
 
 export const useAuth = () => useContext(AuthContext);
 

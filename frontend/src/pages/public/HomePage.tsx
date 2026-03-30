@@ -10,7 +10,18 @@ import {
   useSpring,
 } from 'framer-motion';
 import { apiFetch } from '@/utils/apiClient';
-import { } from 'lucide-react';
+import {
+  GraduationCap,
+  Trophy,
+  Layers,
+  MessagesSquare,
+  Timer,
+  Compass,
+  School2Icon,
+  Code,
+  Terminal,
+  LucideIcon,
+} from 'lucide-react';
 
 // --- Types & Interfaces ---
 
@@ -40,6 +51,7 @@ interface Feature {
   desc: string;
   badge: string;
   gradient: string;
+  icon?: LucideIcon;
 }
 
 interface ContactResponse {
@@ -100,54 +112,63 @@ const featuresData: Feature[] = [
     desc: 'Καλύπτουν σε βάθος τη θεωρία, μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
     badge: '01',
     gradient: 'from-pink-500 to-rose-500',
+    icon: GraduationCap,
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
     badge: '02',
     gradient: 'from-pink-500 to-pink-700',
+    icon: Trophy,
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
     badge: '03',
     gradient: 'from-pink-500 to-pink-600',
+    icon: Layers,
   },
   {
     title: 'Community Forum',
     desc: 'Χώρος κοινότητας όπου οι μαθητές ανταλλάσσουν απορίες, ιδέες και συμβουλές.',
     badge: '04',
     gradient: 'from-rose-500 to-red-500',
+    icon: MessagesSquare,
   },
   {
     title: 'Study Timer',
     desc: 'Οργάνωσε τον χρόνο μελέτης σου και παρακολούθησε την καθημερινή πρόοδό σου.',
     badge: '05',
     gradient: 'from-pink-500 to-red-500',
+    icon: Timer,
   },
   {
     title: 'Επαγγελματικός Προσανατολισμός',
     desc: 'Απάντησε στο ερωτηματολόγιο και δες εξατομικευμένα αποτελέσματα κατεύθυνσης.',
     badge: '06',
     gradient: 'from-fuchsia-500 to-pink-600',
+    icon: Compass,
   },
   {
     title: 'Σχολές και Καριέρα',
     desc: 'Εξερεύνησε επιλογές σχολών και οργάνωσε πιο σωστά τα επόμενα βήματά σου.',
     badge: '07',
     gradient: 'from-pink-600 to-rose-700',
+    icon: School2Icon,
   },
   {
     title: 'Παλιά Θέματα και Αλγόριθμοι',
     desc: 'Μελέτησε παλαιά θέματα και δες οπτικοποιήσεις αλγορίθμων για βαθύτερη κατανόηση.',
     badge: '08',
     gradient: 'from-rose-500 to-pink-700',
+    icon: Code,
   },
   {
     title: 'Online Διερμηνευτής της Γλώσσας',
     desc: 'Γράψε και δοκίμασε κώδικα στη ΓΛΩΣΣΑ άμεσα, με γρήγορη εκτέλεση και καλύτερη εξάσκηση.',
     badge: '09',
     gradient: 'from-fuchsia-500 to-rose-600',
+    icon: Terminal,
   },
 ];
 
@@ -307,7 +328,7 @@ interface FeatureCardProps extends Feature {
   i: number;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, badge, gradient, i }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, gradient, i, icon: Icon }) => (
   <motion.article
     className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-pink-200/50 dark:border-gray-700/50 overflow-hidden"
     aria-label={title}
@@ -327,25 +348,21 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, badge, gradient,
       transition: { duration: 0.3 },
     }}
   >
-    <motion.div
-      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-    />
+    <motion.div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
 
     <div
       className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
     />
 
     <div className="relative z-10">
-      <motion.div
-        className="w-16 h-16 mb-6 mx-auto rounded-2xl flex items-center justify-center text-2xl font-black text-pink-600 bg-pink-50 border-2 border-pink-200"
-        whileHover={{
-          scale: 1.2,
-          rotate: [0, -6, 6, -6, 0],
-          transition: { duration: 0.5 },
-        }}
-      >
-        {badge}
-      </motion.div>
+      {Icon && (
+        <motion.div
+          className="w-16 h-16 mb-6 mx-auto rounded-2xl flex items-center justify-center text-2xl text-pink-600 bg-pink-50 border-2 border-pink-200"
+          whileHover={{ scale: 1.15, rotate: 0, transition: { duration: 0.3 } }}
+        >
+          <Icon className="w-8 h-8" />
+        </motion.div>
+      )}
 
       <motion.h3
         className="text-2xl font-bold mb-3 text-gray-900 dark:text-white"
@@ -487,11 +504,108 @@ const FloatingParticles: React.FC = () => {
   );
 };
 
+// Subtle moving background blobs
+const MovingBackground: React.FC = () => {
+  return (
+    <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+      <motion.div
+        className="absolute w-[60vw] h-[60vw] -top-20 -left-20 rounded-full blur-3xl"
+        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,0.18), transparent 60%)' }}
+        animate={{ x: [0, 40, -30, 0], y: [0, -20, 30, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute w-[55vw] h-[55vw] -bottom-24 -right-24 rounded-full blur-3xl"
+        style={{ background: 'radial-gradient(closest-side, rgba(244,63,94,0.16), transparent 60%)' }}
+        animate={{ x: [0, -50, 20, 0], y: [0, 30, -25, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+      />
+      <motion.div
+        className="absolute w-[40vw] h-[40vw] top-1/3 left-1/3 rounded-full blur-3xl"
+        style={{ background: 'radial-gradient(closest-side, rgba(251,113,133,0.12), transparent 60%)' }}
+        animate={{ scale: [1, 1.15, 0.95, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+      />
+    </div>
+  );
+};
+
+// Hearts rain overlay - global (subtle, behind content)
+const HeartsRain: React.FC<{ count?: number }> = ({ count = 14 }) => {
+  const HEART_SVG = encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='#ef5b80'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.22 2.53C11.09 5.01 12.76 4 14.5 4 17 4 19 6 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>"
+  );
+
+  const hearts = React.useMemo(
+    () =>
+      Array.from({ length: count }).map(() => ({
+        left: `${Math.random() * 100}%`,
+        delay: `${(Math.random() * 10).toFixed(2)}s`,
+        duration: `${12 + Math.random() * 8}s`,
+        sway: `${2.4 + Math.random() * 1.8}s`,
+        size: `${14 + Math.random() * 20}px`,
+        rotate: `${-15 + Math.random() * 30}deg`,
+      })),
+    [count]
+  );
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden motion-safe:opacity-100 motion-reduce:hidden">
+      {hearts.map((h, idx) => (
+        <img
+          key={idx}
+          alt="heart"
+          src={`data:image/svg+xml;utf8,${HEART_SVG}`}
+          style={{
+            position: 'absolute',
+            left: h.left,
+            top: '-6%',
+            width: h.size,
+            height: h.size,
+            animation: `hearts-fall ${h.duration} linear ${h.delay} infinite, hearts-sway ${h.sway} ease-in-out ${h.delay} infinite`,
+            transform: `rotate(${h.rotate})`,
+            filter: 'drop-shadow(0 2px 2px rgba(236,72,153,0.35))',
+          }}
+        />
+      ))}
+
+      <style>
+        {`
+        @keyframes hearts-fall {
+          0%   { transform: translateY(-5vh) }
+          100% { transform: translateY(105vh) }
+        }
+        @keyframes hearts-sway {
+          0%   { margin-left: -12px; opacity: 0 }
+          10%  { opacity: 0.9 }
+          50%  { margin-left: 24px }
+          100% { margin-left: -12px; opacity: 0.9 }
+        }
+        `}
+      </style>
+    </div>
+  );
+};
+
+// --- Responsive helpers ---
+const useMediaQuery = (query: string) => {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+    onChange();
+    mql.addEventListener?.('change', onChange);
+    return () => mql.removeEventListener?.('change', onChange);
+  }, [query]);
+  return matches;
+};
+
 // ---------- Main Component ----------
 
 const HomePage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const isSmall = useMediaQuery('(max-width: 640px)');
 
   // Scroll Progress
   const { scrollYProgress } = useScroll();
@@ -603,14 +717,16 @@ const HomePage: React.FC = () => {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
+        <HeartsRain count={isSmall ? 8 : 14} />
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 origin-left z-50 shadow-lg shadow-pink-500/50"
           style={{ scaleX }}
         />
 
         {/* 🚀 HERO SECTION 🚀 */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 md:py-0">
-          <FloatingParticles />
+        <section className="relative min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-20 md:py-0">
+          {!isSmall && <FloatingParticles />}
+          <MovingBackground />
           <motion.div
             className="absolute inset-0 bg-gradient-to-br from-pink-100 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900"
             animate={{
@@ -624,38 +740,42 @@ const HomePage: React.FC = () => {
             transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
           />
 
-          <div className="container mx-auto px-6 relative z-10 text-center">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
             <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              
+
               <motion.h1
-                className="text-4xl md:text-7xl font-black mb-4 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent drop-shadow-lg"
+                className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent drop-shadow-lg leading-tight"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ delay: 0.45, duration: 0.8 }}
               >
                 Γράψε 100 στην Πληροφορική
               </motion.h1>
 
               <motion.p
-                className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
+                className="text-base sm:text-lg md:text-2xl text-gray-700 dark:text-gray-300 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
+                transition={{ delay: 0.65, duration: 0.8 }}
               >
                 Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας για τις Πανελλήνιες.
               </motion.p>
 
-              <button
-                className="inline-block px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+              <motion.button
+                className="relative inline-flex items-center gap-3 px-9 py-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-rose-600 hover:to-red-600 text-white font-extrabold rounded-full shadow-xl transition-transform hover:-translate-y-1"
                 onClick={() => navigate(user ? '/quiz' : '/login')}
+                whileTap={{ scale: 0.98 }}
               >
-                {user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}
-              </button>
+                <span>{user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}</span>
+                <span className="absolute inset-0 rounded-full ring-2 ring-pink-300/40 animate-pulse" aria-hidden="true" />
+                <span className="absolute -inset-px rounded-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition" aria-hidden="true" />
+              </motion.button>
               <div className="mt-4 flex justify-center gap-3">
-                {/* Secondary CTAs removed per request */}
               </div>
             </motion.div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto mt-10 md:mt-16">
               {heroImages.map((image, index) => (
                 <AnimatedImageBox
                   key={index}
@@ -663,7 +783,7 @@ const HomePage: React.FC = () => {
                   alt={image.alt}
                   delay={image.delay}
                   rotation={image.rotation}
-                  widthClass={index % 2 === 0 ? 'h-48 md:h-64' : 'h-36 md:h-52'}
+                  widthClass="aspect-[4/3] h-auto"
                 />
               ))}
             </div>
@@ -674,7 +794,7 @@ const HomePage: React.FC = () => {
 
         {/* Features Section */}
         <Section id="features" title="Τι προσφέρουμε;" subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες" withGradient>
-          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12" variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }}>
+          <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-12" variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }}>
             {featuresData.map((feat, idx) => (
               <FeatureCard key={feat.title} {...feat} i={idx} />
             ))}
@@ -684,17 +804,19 @@ const HomePage: React.FC = () => {
         {/* Reviews Section */}
         <Section id="reviews" title="Τι λένε οι μαθητές μας;" className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10">
           <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>}>
-            <motion.div className="max-w-5xl mx-auto space-y-8" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+            <motion.div className="max-w-5xl mx-auto space-y-6 sm:space-y-8" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
               {reviewsData.map((review, idx) => (
                 <motion.div key={idx} className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50" initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: idx * 0.1, duration: 0.6 }} whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)' }}>
                   <StarRating value={review.rating} />
-                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-lg leading-relaxed italic">"{review.description}"</p>
+                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">"{review.description}"</p>
                   <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">— {review.name}</p>
                 </motion.div>
               ))}
             </motion.div>
           </Suspense>
         </Section>
+
+      
 
         {/* FAQ Section */}
         <Section id="faq" title="Συχνές Ερωτήσεις" withGradient>

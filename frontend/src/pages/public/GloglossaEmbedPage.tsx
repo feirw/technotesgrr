@@ -30,9 +30,10 @@ const GloglossaEmbedPage: React.FC = () => {
           />
         </div>
 
-        <p className="text-xs text-gray-500 mt-3">
-          Αν το site δεν εμφανιστεί, πιθανότατα μπλοκάρει iframe embedding από headers ασφαλείας.
-          Χρησιμοποίησε το κουμπί "Άνοιγμα σε νέο tab".
+
+        <p className="text-xl text-gray-600 mt-4">
+          Ευχαριστούμε θερμά τον κ. <span className="font-semibold text-pink-600">Κομνηνό Χατζηπάπα</span> για τον
+          Online Διερμηνευτή της Γλώσσας.
         </p>
       </div>
     </div>
