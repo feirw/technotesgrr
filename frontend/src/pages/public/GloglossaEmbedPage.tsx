@@ -30,10 +30,10 @@ const GloglossaEmbedPage: React.FC = () => {
           />
         </div>
 
-
         <p className="text-xl text-gray-600 mt-4">
-          Ευχαριστούμε θερμά τον κ. <span className="font-semibold text-pink-600">Κομνηνό Χατζηπάπα</span> για τον
-          Online Διερμηνευτή της Γλώσσας.
+          Ευχαριστούμε θερμά τον κ.{' '}
+          <span className="font-semibold text-pink-600">Κομνηνό Χατζηπάπα</span> για τον Online
+          Διερμηνευτή της Γλώσσας.
         </p>
       </div>
     </div>
@@ -41,4 +41,3 @@ const GloglossaEmbedPage: React.FC = () => {
 };
 
 export default GloglossaEmbedPage;
-

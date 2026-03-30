@@ -120,40 +120,9 @@ const CommunityPage: React.FC = () => {
     }
   };
 
-  const onDeletePost = useCallback(
-    async (postId: number) => {
-      if (!window.confirm('Θες σίγουρα να διαγράψεις αυτό το post;')) return;
-      setDeletingPostId(postId);
-      setError(null);
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
-
-        await apiFetch<{ ok: boolean; deleted_id: number }>(`${BACKEND_URL}/api/community/posts/${postId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setPosts((prev) => prev.filter((p) => p.id !== postId));
-      } catch (e: any) {
-        setError(e?.message || 'Αποτυχία διαγραφής post.');
-      } finally {
-        setDeletingPostId(null);
-      }
-    },
-    []
-  );
-
-  const onSubmitReply = useCallback(async (postId: number) => {
-    const value = (replyDrafts[postId] ?? '').trim();
-    if (!value) return;
-
-    setReplyingPostId(postId);
+  const onDeletePost = useCallback(async (postId: number) => {
+    if (!window.confirm('Θες σίγουρα να διαγράψεις αυτό το post;')) return;
+    setDeletingPostId(postId);
     setError(null);
     try {
       const {
@@ -162,35 +131,69 @@ const CommunityPage: React.FC = () => {
       const token = session?.access_token;
       if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
 
-      const result = await apiFetch<{ reply: CommunityReply }>(
-        `${BACKEND_URL}/api/community/posts/${postId}/replies`,
+      await apiFetch<{ ok: boolean; deleted_id: number }>(
+        `${BACKEND_URL}/api/community/posts/${postId}`,
         {
-          method: 'POST',
+          method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ content: value }),
         }
       );
 
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId
-            ? {
-                ...p,
-                replies: [...(p.replies ?? []), result.reply],
-              }
-            : p
-        )
-      );
-      setReplyDrafts((prev) => ({ ...prev, [postId]: '' }));
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
     } catch (e: any) {
-      setError(e?.message || 'Αποτυχία αποστολής απάντησης.');
+      setError(e?.message || 'Αποτυχία διαγραφής post.');
     } finally {
-      setReplyingPostId(null);
+      setDeletingPostId(null);
     }
-  }, [replyDrafts]);
+  }, []);
+
+  const onSubmitReply = useCallback(
+    async (postId: number) => {
+      const value = (replyDrafts[postId] ?? '').trim();
+      if (!value) return;
+
+      setReplyingPostId(postId);
+      setError(null);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+
+        const result = await apiFetch<{ reply: CommunityReply }>(
+          `${BACKEND_URL}/api/community/posts/${postId}/replies`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ content: value }),
+          }
+        );
+
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  replies: [...(p.replies ?? []), result.reply],
+                }
+              : p
+          )
+        );
+        setReplyDrafts((prev) => ({ ...prev, [postId]: '' }));
+      } catch (e: any) {
+        setError(e?.message || 'Αποτυχία αποστολής απάντησης.');
+      } finally {
+        setReplyingPostId(null);
+      }
+    },
+    [replyDrafts]
+  );
 
   // Autosize textarea
   useEffect(() => {
@@ -222,7 +225,10 @@ const CommunityPage: React.FC = () => {
           </p>
         </div>
 
-        <form onSubmit={onSubmit} className="bg-white/95 rounded-2xl border-2 border-pink-200 p-4 mb-5 shadow-lg">
+        <form
+          onSubmit={onSubmit}
+          className="bg-white/95 rounded-2xl border-2 border-pink-200 p-4 mb-5 shadow-lg"
+        >
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-pink-700 font-bold shadow-sm">
               <UserCircle2 className="w-6 h-6" />
@@ -257,7 +263,10 @@ const CommunityPage: React.FC = () => {
           {loading ? (
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-2xl border border-pink-200 p-4 animate-pulse">
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl border border-pink-200 p-4 animate-pulse"
+                >
                   <div className="h-3 w-1/3 bg-pink-100 rounded mb-3" />
                   <div className="h-3 w-3/4 bg-pink-100 rounded mb-2" />
                   <div className="h-3 w-2/4 bg-pink-100 rounded" />
@@ -267,7 +276,9 @@ const CommunityPage: React.FC = () => {
           ) : formattedPosts.length === 0 ? (
             <div className="text-center bg-white/80 border-2 border-pink-200 rounded-2xl p-8">
               <p className="text-pink-600 font-bold mb-1">Κανένα post ακόμα</p>
-              <p className="text-gray-600 text-sm">Γράψε το πρώτο σου μήνυμα και ξεκίνα τη συζήτηση!</p>
+              <p className="text-gray-600 text-sm">
+                Γράψε το πρώτο σου μήνυμα και ξεκίνα τη συζήτηση!
+              </p>
             </div>
           ) : (
             formattedPosts.map((post) => (
@@ -305,14 +316,21 @@ const CommunityPage: React.FC = () => {
                 <div className="mt-4 border-t border-pink-100 pt-3">
                   <div className="space-y-2 mb-3">
                     {(post.replies ?? []).map((reply) => (
-                      <div key={reply.id} className="rounded-xl bg-pink-50/70 border border-pink-100 p-2.5">
+                      <div
+                        key={reply.id}
+                        className="rounded-xl bg-pink-50/70 border border-pink-100 p-2.5"
+                      >
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-sm font-semibold text-pink-700">{reply.username}</span>
+                          <span className="text-sm font-semibold text-pink-700">
+                            {reply.username}
+                          </span>
                           <time className="text-[11px] text-gray-500">
                             {new Date(reply.created_at).toLocaleString('el-GR')}
                           </time>
                         </div>
-                        <p className="text-sm text-gray-700 whitespace-pre-wrap mt-1">{reply.content}</p>
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap mt-1">
+                          {reply.content}
+                        </p>
                       </div>
                     ))}
                     {(post.replies ?? []).length === 0 && (
@@ -372,4 +390,3 @@ const CommunityPage: React.FC = () => {
 };
 
 export default CommunityPage;
-

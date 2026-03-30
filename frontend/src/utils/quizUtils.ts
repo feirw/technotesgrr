@@ -87,7 +87,9 @@ export const fetchQuizCategories = async (): Promise<string[]> => {
 
 export const fetchQuizzesByChapter = async (chapter: string | number): Promise<QuizData> => {
   try {
-    const data = await apiFetch<BackendChapterResponse>(`${BACKEND_URL}/api/quiz/questions/${chapter}`);
+    const data = await apiFetch<BackendChapterResponse>(
+      `${BACKEND_URL}/api/quiz/questions/${chapter}`
+    );
 
     return {
       id: `chapter-${chapter}`,

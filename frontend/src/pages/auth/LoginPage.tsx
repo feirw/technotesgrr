@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 /**
  * LoginPage Component
- * 
+ *
  * Handles user authentication/login.
  * Key features:
  * - Redirects to intended destination after successful login
@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   // 1. Ref για την αποφυγή update σε unmounted component
   const isMounted = useRef(true);
   // 2. Ref για το timeout ώστε να είναι προσβάσιμο παντού
@@ -91,19 +91,19 @@ const LoginPage: React.FC = () => {
     try {
       console.log('🚀 Attempting login...');
       await login(normalizedEmail, password);
-      
+
       // Clear timeout on success
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      
+
       if (isMounted.current) {
         setLoading(false);
         console.log('✅ Login completed');
-        
+
         // Redirect is handled by auth effect above after user state updates.
       }
     } catch (err: any) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      
+
       if (isMounted.current) {
         console.error('❌ Login error:', err);
         setLoading(false);

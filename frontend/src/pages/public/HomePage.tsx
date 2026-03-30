@@ -82,24 +82,24 @@ const reviewsData: Review[] = [
       'Οι σημειώσεις είναι εξαιρετικές! Με βοήθησαν πάρα πολύ να κατανοήσω την ύλη της πληροφορικής. Το quiz είναι διασκεδαστικό και εκπαιδευτικό!',
   },
   {
-    name: 'Χριστίνα Σ. Μαθήτρια Γ\' Λυκείου',
+    name: "Χριστίνα Σ. Μαθήτρια Γ' Λυκείου",
     rating: 5,
     description:
       'Φανταστικό site! Οι flashcards με βοήθησαν να επαναλάβω γρήγορα όλες τις έννοιες. Τώρα νιώθω πιο σίγουρος για τις πανελλαδικές!',
   },
   {
-    name: 'Ντέμυ Λ. Μαθήτρια Γ\' Λυκείου',
+    name: "Ντέμυ Λ. Μαθήτρια Γ' Λυκείου",
     rating: 5,
     description:
       'Πολύ καλή πλατφόρμα για προετοιμασία! Οι οπτικοποιήσεις των αλγορίθμων είναι πολύ χρήσιμες. Συνιστώ ανεπιφύλακτα!',
   },
   {
-    name: 'Βικτώρια Κ. Μαθητρια Γ\' Λυκείου',
+    name: "Βικτώρια Κ. Μαθητρια Γ' Λυκείου",
     rating: 5,
     description: 'Οι ερωτήσεις είναι πολύ καλά δομημένες και με προετοιμάζουν σωστά.',
   },
   {
-    name: 'Αγγελική Β. Μαθήτρια Β\' Λυκείου',
+    name: "Αγγελική Β. Μαθήτρια Β' Λυκείου",
     rating: 5,
     description:
       'Εξαιρετικό εργαλείο μελέτης! Τα παιχνίδια οπτικοποίησης με βοήθησαν να καταλάβω καλύτερα τους αλγορίθμους. Ευχαριστώ πολύ!',
@@ -348,7 +348,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, gradient, i, ico
       transition: { duration: 0.3 },
     }}
   >
-    <motion.div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+    <motion.div
+      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+    />
 
     <div
       className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
@@ -510,19 +512,25 @@ const MovingBackground: React.FC = () => {
     <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
       <motion.div
         className="absolute w-[60vw] h-[60vw] -top-20 -left-20 rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(closest-side, rgba(236,72,153,0.18), transparent 60%)' }}
+        style={{
+          background: 'radial-gradient(closest-side, rgba(236,72,153,0.18), transparent 60%)',
+        }}
         animate={{ x: [0, 40, -30, 0], y: [0, -20, 30, 0] }}
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute w-[55vw] h-[55vw] -bottom-24 -right-24 rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(closest-side, rgba(244,63,94,0.16), transparent 60%)' }}
+        style={{
+          background: 'radial-gradient(closest-side, rgba(244,63,94,0.16), transparent 60%)',
+        }}
         animate={{ x: [0, -50, 20, 0], y: [0, 30, -25, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
       />
       <motion.div
         className="absolute w-[40vw] h-[40vw] top-1/3 left-1/3 rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(closest-side, rgba(251,113,133,0.12), transparent 60%)' }}
+        style={{
+          background: 'radial-gradient(closest-side, rgba(251,113,133,0.12), transparent 60%)',
+        }}
         animate={{ scale: [1, 1.15, 0.95, 1] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
       />
@@ -652,12 +660,12 @@ const HomePage: React.FC = () => {
     if (contactForm.website) return 'Spam detected.';
     if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim())
       return 'Συμπλήρωσε όνομα, email και μήνυμα.';
-    
+
     // Πιο αυστηρό email regex για client-side validation
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(contactForm.email))
       return 'Το email δεν φαίνεται έγκυρο. Παρακαλώ ελέγξτε τη μορφή (π.χ. user@example.com).';
-      
+
     return null;
   }, [contactForm]);
 
@@ -741,9 +749,11 @@ const HomePage: React.FC = () => {
           />
 
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
-            <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              
-
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
               <motion.h1
                 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 bg-clip-text text-transparent drop-shadow-lg leading-tight"
                 initial={{ opacity: 0, y: 30 }}
@@ -759,7 +769,8 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.65, duration: 0.8 }}
               >
-                Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας για τις Πανελλήνιες.
+                Η <span className="font-bold text-pink-600">ιδανική πλατφόρμα</span> προετοιμασίας
+                για τις Πανελλήνιες.
               </motion.p>
 
               <motion.button
@@ -768,11 +779,16 @@ const HomePage: React.FC = () => {
                 whileTap={{ scale: 0.98 }}
               >
                 <span>{user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}</span>
-                <span className="absolute inset-0 rounded-full ring-2 ring-pink-300/40 animate-pulse" aria-hidden="true" />
-                <span className="absolute -inset-px rounded-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition" aria-hidden="true" />
+                <span
+                  className="absolute inset-0 rounded-full ring-2 ring-pink-300/40 animate-pulse"
+                  aria-hidden="true"
+                />
+                <span
+                  className="absolute -inset-px rounded-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition"
+                  aria-hidden="true"
+                />
               </motion.button>
-              <div className="mt-4 flex justify-center gap-3">
-              </div>
+              <div className="mt-4 flex justify-center gap-3"></div>
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto mt-10 md:mt-16">
@@ -793,8 +809,19 @@ const HomePage: React.FC = () => {
         {/* Panic Button relocated to navbar (MainLayout) */}
 
         {/* Features Section */}
-        <Section id="features" title="Τι προσφέρουμε;" subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες" withGradient>
-          <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-12" variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }}>
+        <Section
+          id="features"
+          title="Τι προσφέρουμε;"
+          subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες"
+          withGradient
+        >
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-12"
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, amount: 0.2 }}
+          >
             {featuresData.map((feat, idx) => (
               <FeatureCard key={feat.title} {...feat} i={idx} />
             ))}
@@ -802,37 +829,93 @@ const HomePage: React.FC = () => {
         </Section>
 
         {/* Reviews Section */}
-        <Section id="reviews" title="Τι λένε οι μαθητές μας;" className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10">
-          <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" /></div>}>
-            <motion.div className="max-w-5xl mx-auto space-y-6 sm:space-y-8" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+        <Section
+          id="reviews"
+          title="Τι λένε οι μαθητές μας;"
+          className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10"
+        >
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center py-20">
+                <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            }
+          >
+            <motion.div
+              className="max-w-5xl mx-auto space-y-6 sm:space-y-8"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
               {reviewsData.map((review, idx) => (
-                <motion.div key={idx} className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50" initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: idx * 0.1, duration: 0.6 }} whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)' }}>
+                <motion.div
+                  key={idx}
+                  className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50"
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ delay: idx * 0.1, duration: 0.6 }}
+                  whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)' }}
+                >
                   <StarRating value={review.rating} />
-                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">"{review.description}"</p>
-                  <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">— {review.name}</p>
+                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">
+                    "{review.description}"
+                  </p>
+                  <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">
+                    — {review.name}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
           </Suspense>
         </Section>
 
-      
-
         {/* FAQ Section */}
         <Section id="faq" title="Συχνές Ερωτήσεις" withGradient>
           <div className="max-w-3xl mx-auto space-y-4">
-            {faqData.map((faq, index) => (<FAQItem key={index} {...faq} index={index} />))}
+            {faqData.map((faq, index) => (
+              <FAQItem key={index} {...faq} index={index} />
+            ))}
           </div>
         </Section>
 
         {/* Contact Section */}
-        <Section id="contact" title="Επικοινώνησε μαζί μας" subtitle="Έχεις απορίες ή προτάσεις; Στείλε μας μήνυμα!" withGradient>
-          <motion.form onSubmit={handleContactSubmit} className="max-w-2xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <input type="text" name="website" value={contactForm.website} onChange={handleContactInputChange} tabIndex={-1} autoComplete="off" aria-hidden="true" className="sr-only" />
+        <Section
+          id="contact"
+          title="Επικοινώνησε μαζί μας"
+          subtitle="Έχεις απορίες ή προτάσεις; Στείλε μας μήνυμα!"
+          withGradient
+        >
+          <motion.form
+            onSubmit={handleContactSubmit}
+            className="max-w-2xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <input
+              type="text"
+              name="website"
+              value={contactForm.website}
+              onChange={handleContactInputChange}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="sr-only"
+            />
 
             <AnimatePresence>
               {contactSuccess && (
-                <motion.div id={successId} role="alert" className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                <motion.div
+                  id={successId}
+                  role="alert"
+                  className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 rounded-lg"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
                   <p className="text-green-700 dark:text-green-300 font-semibold">
                     {contactSuccessMessage || '✓ Το μήνυμά σου στάλθηκε επιτυχώς!'}
                   </p>
@@ -842,7 +925,14 @@ const HomePage: React.FC = () => {
 
             <AnimatePresence>
               {contactError && (
-                <motion.div id={errorId} role="alert" className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 rounded-lg" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                <motion.div
+                  id={errorId}
+                  role="alert"
+                  className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 rounded-lg"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
                   <p className="text-red-700 dark:text-red-300 font-semibold">{contactError}</p>
                 </motion.div>
               )}
@@ -850,43 +940,105 @@ const HomePage: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor={firstId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Όνομα *</label>
-                <motion.input id={firstId} name="firstName" value={contactForm.firstName} onChange={handleContactInputChange} required autoComplete="given-name" className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all" placeholder="π.χ. Μαρία" whileFocus={{ scale: 1.02 }} />
+                <label
+                  htmlFor={firstId}
+                  className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+                >
+                  Όνομα *
+                </label>
+                <motion.input
+                  id={firstId}
+                  name="firstName"
+                  value={contactForm.firstName}
+                  onChange={handleContactInputChange}
+                  required
+                  autoComplete="given-name"
+                  className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all"
+                  placeholder="π.χ. Μαρία"
+                  whileFocus={{ scale: 1.02 }}
+                />
               </div>
               <div>
-                <label htmlFor={lastId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Επώνυμο</label>
-                <motion.input id={lastId} name="lastName" value={contactForm.lastName} onChange={handleContactInputChange} autoComplete="family-name" className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all" placeholder="π.χ. Παπαδοπούλου" whileFocus={{ scale: 1.02 }} />
+                <label
+                  htmlFor={lastId}
+                  className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+                >
+                  Επώνυμο
+                </label>
+                <motion.input
+                  id={lastId}
+                  name="lastName"
+                  value={contactForm.lastName}
+                  onChange={handleContactInputChange}
+                  autoComplete="family-name"
+                  className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all"
+                  placeholder="π.χ. Παπαδοπούλου"
+                  whileFocus={{ scale: 1.02 }}
+                />
               </div>
             </div>
 
             <div className="mt-6">
-              <label htmlFor={emailId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Email *</label>
+              <label
+                htmlFor={emailId}
+                className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+              >
+                Email *
+              </label>
               {/* 3. Client-side email validation via type and pattern */}
-              <motion.input 
-                id={emailId} 
-                name="email" 
-                type="email" 
-                value={contactForm.email} 
-                onChange={handleContactInputChange} 
-                required 
+              <motion.input
+                id={emailId}
+                name="email"
+                type="email"
+                value={contactForm.email}
+                onChange={handleContactInputChange}
+                required
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                inputMode="email" 
-                autoComplete="email" 
-                className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all" 
-                placeholder="name@example.com" 
-                whileFocus={{ scale: 1.02 }} 
+                inputMode="email"
+                autoComplete="email"
+                className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white transition-all"
+                placeholder="name@example.com"
+                whileFocus={{ scale: 1.02 }}
               />
             </div>
 
             <div className="mt-6">
-              <label htmlFor={msgId} className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200">Μήνυμα *</label>
-              <motion.textarea id={msgId} name="message" rows={6} value={contactForm.message} onChange={handleContactInputChange} required className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white resize-y transition-all" placeholder="Γράψε εδώ την απορία/πρότασή σου…" whileFocus={{ scale: 1.01 }} />
+              <label
+                htmlFor={msgId}
+                className="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-200"
+              >
+                Μήνυμα *
+              </label>
+              <motion.textarea
+                id={msgId}
+                name="message"
+                rows={6}
+                value={contactForm.message}
+                onChange={handleContactInputChange}
+                required
+                className="w-full rounded-xl border-2 border-pink-200 dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white dark:bg-gray-700 dark:text-white resize-y transition-all"
+                placeholder="Γράψε εδώ την απορία/πρότασή σου…"
+                whileFocus={{ scale: 1.01 }}
+              />
             </div>
 
             <div className="mt-8 flex items-center gap-4">
-              <motion.button type="submit" disabled={contactSubmitting} className="relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <span className="relative z-10">{contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}</span>
-                <motion.div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-500" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ duration: 0.3 }} />
+              <motion.button
+                type="submit"
+                disabled={contactSubmitting}
+                className="relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="relative z-10">
+                  {contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-500"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
               </motion.button>
               <p className="text-sm text-gray-500 dark:text-gray-400">* Υποχρεωτικά πεδία</p>
             </div>

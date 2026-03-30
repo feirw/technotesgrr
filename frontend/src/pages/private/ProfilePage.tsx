@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  User,
-  Mail,
-  Calendar,
-  LogOut,
-  Trophy,
-  Edit2,
-  Save,
-  X,
-  ArrowRight,
-} from 'lucide-react';
+import { User, Mail, Calendar, LogOut, Trophy, Edit2, Save, X, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -107,7 +97,6 @@ const ProfilePage: React.FC = () => {
           {/* 👤 Main Profile Card */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
             <div className="px-8 pt-8 pb-6 text-center md:text-left flex flex-col md:flex-row items-center gap-6">
-              
               {/* Avatar */}
               <div className="relative group">
                 <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center shadow-lg">
@@ -138,8 +127,10 @@ const ProfilePage: React.FC = () => {
                             className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 disabled:opacity-50 transition-all text-sm"
                           >
                             {loading ? (
-                               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            ) : <Save className="w-4 h-4" />}
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Save className="w-4 h-4" />
+                            )}
                             Αποθήκευση
                           </button>
                           <button
@@ -158,7 +149,7 @@ const ProfilePage: React.FC = () => {
                           <h1 className="text-3xl font-black text-gray-900 dark:text-white truncate">
                             {user?.username || 'Student'}
                           </h1>
-                          <button 
+                          <button
                             onClick={() => setIsEditing(true)}
                             className="p-2 text-gray-400 hover:text-pink-600 transition-colors"
                           >
@@ -194,7 +185,9 @@ const ProfilePage: React.FC = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   className={`mx-8 mb-6 p-4 rounded-xl text-center font-bold ${
-                    msg.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    msg.type === 'success'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                   }`}
                 >
                   {msg.text}
@@ -204,18 +197,28 @@ const ProfilePage: React.FC = () => {
 
             {/* 🏆 Stats Grid (Placeholder logic added) */}
             <div className="grid grid-cols-1 md:grid-cols-3 border-t border-gray-100 dark:border-gray-700 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-               <div className="p-6 text-center">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Quizzes</p>
-                  <p className="text-2xl font-black text-gray-900 dark:text-white">{totalQuizzesStarted}</p>
-               </div>
-               <div className="p-6 text-center">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Ερωτήσεις</p>
-                  <p className="text-2xl font-black text-gray-900 dark:text-white">{totalQuestionsAnswered}</p>
-               </div>
-               <div className="p-6 text-center">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Status</p>
-                  <p className="text-2xl font-black text-green-500">Active</p>
-               </div>
+              <div className="p-6 text-center">
+                <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">
+                  Quizzes
+                </p>
+                <p className="text-2xl font-black text-gray-900 dark:text-white">
+                  {totalQuizzesStarted}
+                </p>
+              </div>
+              <div className="p-6 text-center">
+                <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">
+                  Ερωτήσεις
+                </p>
+                <p className="text-2xl font-black text-gray-900 dark:text-white">
+                  {totalQuestionsAnswered}
+                </p>
+              </div>
+              <div className="p-6 text-center">
+                <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">
+                  Status
+                </p>
+                <p className="text-2xl font-black text-green-500">Active</p>
+              </div>
             </div>
           </div>
 

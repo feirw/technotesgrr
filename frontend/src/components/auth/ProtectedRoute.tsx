@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 /**
  * ProtectedRoute Component
- * 
+ *
  * Protects routes that require authentication.
  * Key features:
  * - Shows loading spinner during session restoration (preserves current page on refresh)

@@ -29,7 +29,6 @@ const MerchPage: React.FC = () => {
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed max-w-lg">
               Δεν είναι απλά ένα ημερολόγιο. Είναι ο προσωπικός σου οδηγός για τις Πανελλήνιες.
-              
             </p>
 
             <motion.div
@@ -43,7 +42,6 @@ const MerchPage: React.FC = () => {
             </motion.div>
 
             <motion.a
-              
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
@@ -74,53 +72,44 @@ const MerchPage: React.FC = () => {
         </div>
       </section>
 
-
-      {/*images of the agenda*/} 
+      {/*images of the agenda*/}
       <section className="py-20 px-6 bg-red dark:bg-purple/5 backdrop-blur-lg">
-      <div className="text-center mb-16">
-            <h2 className="text-4xl font-black mb-4 text-pink-600">
-              Μερικές σελίδες από την Ατζέντα!            </h2>
-          </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-
-        {[
-        {
-          image: "/images/ag2.jpg"
-        },
-        {
-          image: "/images/ag3.jpg"
-        },
-        {
-          image: "/images/ag4.jpg"
-        },
-        {
-          image: "/images/ag5.jpg"
-        },
-        ].map((feature, i) => (
-        <motion.div
-          key={i}
-          whileHover={{ y: -10 }}
-          className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-pink-50 dark:border-gray-700 text-center"
-        >
-          <img src={feature.image} alt={`Image ${i + 1}`} />
-        </motion.div>
-        ))}
-
-              
-            
-          </div>
-      
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-black mb-4 text-pink-600">
+            Μερικές σελίδες από την Ατζέντα!{' '}
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {[
+            {
+              image: '/images/ag2.jpg',
+            },
+            {
+              image: '/images/ag3.jpg',
+            },
+            {
+              image: '/images/ag4.jpg',
+            },
+            {
+              image: '/images/ag5.jpg',
+            },
+          ].map((feature, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -10 }}
+              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-pink-50 dark:border-gray-700 text-center"
+            >
+              <img src={feature.image} alt={`Image ${i + 1}`} />
+            </motion.div>
+          ))}
+        </div>
       </section>
-
-
 
       {/* ✨ Features Section */}
       <section className="py-20 px-6 bg-white/60 dark:bg-white/5 backdrop-blur-lg">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black mb-4 text-pink-600">
-              Γιατί σου είναι απαραίτητη;
-            </h2>
+            <h2 className="text-4xl font-black mb-4 text-pink-600">Γιατί σου είναι απαραίτητη;</h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -163,8 +152,6 @@ const MerchPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      
     </div>
   );
 };

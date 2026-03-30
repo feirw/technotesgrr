@@ -28,7 +28,9 @@ const writeQueue = (items: PendingQuizSubmission[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(-MAX_QUEUE_ITEMS)));
 };
 
-export const enqueueQuizSubmission = (submission: Omit<PendingQuizSubmission, 'id' | 'createdAt'>) => {
+export const enqueueQuizSubmission = (
+  submission: Omit<PendingQuizSubmission, 'id' | 'createdAt'>
+) => {
   const queue = readQueue();
   const item: PendingQuizSubmission = {
     ...submission,
@@ -81,4 +83,3 @@ export const flushPendingQuizSubmissions = async () => {
   writeQueue(remaining);
   return { sent, failed: remaining.length };
 };
-

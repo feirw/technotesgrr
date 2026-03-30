@@ -165,4 +165,3 @@ const ProgressTrackerPage: React.FC = () => {
 };
 
 export default ProgressTrackerPage;
-

@@ -37,7 +37,13 @@ const StudyTimerPage: React.FC = () => {
       }
       const parsed = JSON.parse(raw) as TimerState;
       if (parsed.lastDayKey !== getDayKey()) {
-        return { ...parsed, elapsedMs: 0, sessionsToday: 0, isRunning: false, lastDayKey: getDayKey() };
+        return {
+          ...parsed,
+          elapsedMs: 0,
+          sessionsToday: 0,
+          isRunning: false,
+          lastDayKey: getDayKey(),
+        };
       }
       return parsed;
     } catch {
@@ -102,15 +108,21 @@ const StudyTimerPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-pink-200 shadow-xl p-6 sm:p-8"
         >
-          <h1 className="text-3xl sm:text-4xl font-black text-pink-600 text-center mb-2">Study Timer</h1>
-          <p className="text-center text-gray-600 mb-8">Βάλε χρόνο διαβάσματος και κάνε track την πρόοδό σου.</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-pink-600 text-center mb-2">
+            Study Timer
+          </h1>
+          <p className="text-center text-gray-600 mb-8">
+            Βάλε χρόνο διαβάσματος και κάνε track την πρόοδό σου.
+          </p>
 
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 font-semibold mb-4">
               <Clock3 className="w-4 h-4" />
               Σημερινός χρόνος
             </div>
-            <div className="text-5xl sm:text-6xl font-black text-pink-600 tracking-wider">{formatTime(timer.elapsedMs)}</div>
+            <div className="text-5xl sm:text-6xl font-black text-pink-600 tracking-wider">
+              {formatTime(timer.elapsedMs)}
+            </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -191,4 +203,3 @@ const StudyTimerPage: React.FC = () => {
 };
 
 export default StudyTimerPage;
-

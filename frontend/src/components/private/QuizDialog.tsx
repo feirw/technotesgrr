@@ -479,70 +479,70 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                       `}
                     initial={{ opacity: 0, x: -30 }}
                     animate={{
-                        opacity: 1,
-                        x: 0,
-                        scale: isRevealed && isSelected ? [1, 1.02, 1] : 1,
+                      opacity: 1,
+                      x: 0,
+                      scale: isRevealed && isSelected ? [1, 1.02, 1] : 1,
                     }}
                     transition={{
-                        delay: idx * 0.08,
-                        scale: { duration: 0.3 },
+                      delay: idx * 0.08,
+                      scale: { duration: 0.3 },
                     }}
                     whileHover={!isRevealed ? { x: 6 } : {}}
                     whileTap={!isRevealed ? { scale: 0.98 } : {}}
                   >
-                      {/* Answer Letter */}
-                      <div
-                        className={`
+                    {/* Answer Letter */}
+                    <div
+                      className={`
                           flex items-center justify-center w-10 h-10 rounded-full font-bold text-base flex-shrink-0
                           transition-all duration-300
                           ${!isRevealed ? 'bg-pink-100 text-pink-600' : ''}
                           ${isRevealed && isCorrect ? 'bg-green-500 text-white' : ''}
                           ${isRevealed && !isCorrect ? 'bg-gray-400 text-gray-700' : ''}
                         `}
-                      >
-                        {String.fromCharCode(65 + idx)}
-                      </div>
+                    >
+                      {String.fromCharCode(65 + idx)}
+                    </div>
 
-                      {/* Answer Text */}
-                      <span
-                        className={`
+                    {/* Answer Text */}
+                    <span
+                      className={`
                           flex-1 text-base md:text-lg
                           ${isRevealed && isCorrect ? 'text-green-800 font-bold' : ''}
                           ${isRevealed && !isCorrect && isSelected ? 'text-red-800' : ''}
                           ${!isRevealed ? 'text-gray-800' : ''}
                         `}
+                    >
+                      {ans.text}
+                    </span>
+
+                    {/* Icons */}
+                    {isRevealed && isCorrect && (
+                      <motion.div
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: 'spring', stiffness: 500, delay: 0.1 }}
                       >
-                        {ans.text}
-                      </span>
+                        <CheckCircle className="w-7 h-7 text-green-500" />
+                      </motion.div>
+                    )}
+                    {isRevealed && isSelected && !isCorrect && (
+                      <motion.div
+                        initial={{ scale: 0, rotate: 180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: 'spring', stiffness: 500, delay: 0.1 }}
+                      >
+                        <XCircle className="w-7 h-7 text-red-500" />
+                      </motion.div>
+                    )}
 
-                      {/* Icons */}
-                      {isRevealed && isCorrect && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: 'spring', stiffness: 500, delay: 0.1 }}
-                        >
-                          <CheckCircle className="w-7 h-7 text-green-500" />
-                        </motion.div>
-                      )}
-                      {isRevealed && isSelected && !isCorrect && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: 180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: 'spring', stiffness: 500, delay: 0.1 }}
-                        >
-                          <XCircle className="w-7 h-7 text-red-500" />
-                        </motion.div>
-                      )}
-
-                      {/* Keyboard Hint */}
-                      {!isRevealed && (
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="text-xs font-mono bg-gray-200 px-2 py-1 rounded text-gray-600">
-                            {idx + 1}
-                          </span>
-                        </div>
-                      )}
+                    {/* Keyboard Hint */}
+                    {!isRevealed && (
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-xs font-mono bg-gray-200 px-2 py-1 rounded text-gray-600">
+                          {idx + 1}
+                        </span>
+                      </div>
+                    )}
                   </motion.button>
                 );
               })}

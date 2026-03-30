@@ -1,6 +1,13 @@
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
-import { BookOpenCheck, GraduationCap, HeartHandshake, Lightbulb, Target, Users } from 'lucide-react';
+import {
+  BookOpenCheck,
+  GraduationCap,
+  HeartHandshake,
+  Lightbulb,
+  Target,
+  Users,
+} from 'lucide-react';
 
 // --- Types & Interfaces ---
 
@@ -73,8 +80,7 @@ const timelineData: TimelineItem[] = [
   {
     period: 'Οκτώβριος 2022 - Μάρτιος 2023',
     title: 'Δύσκολη αρχή',
-    description:
-      'Για αρκετούς μήνες δεν καταλάβαινα σχεδόν τίποτα και ένιωθα ότι δεν προχωράω.',
+    description: 'Για αρκετούς μήνες δεν καταλάβαινα σχεδόν τίποτα και ένιωθα ότι δεν προχωράω.',
   },
   {
     period: 'Μάρτιος 2023',
@@ -243,9 +249,21 @@ const AboutPage: React.FC = () => {
               variants={stagger}
             >
               {[
-                { label: 'Επίδοση Πανελλαδικών', value: '19.000 μόρια', icon: <Target className="w-5 h-5 text-pink-600" /> },
-                { label: 'Βαθμός Πληροφορικής', value: '99/100', icon: <BookOpenCheck className="w-5 h-5 text-pink-600" /> },
-                { label: 'Αποστολή', value: 'Προσβάσιμη γνώση', icon: <Users className="w-5 h-5 text-pink-600" /> },
+                {
+                  label: 'Επίδοση Πανελλαδικών',
+                  value: '19.000 μόρια',
+                  icon: <Target className="w-5 h-5 text-pink-600" />,
+                },
+                {
+                  label: 'Βαθμός Πληροφορικής',
+                  value: '99/100',
+                  icon: <BookOpenCheck className="w-5 h-5 text-pink-600" />,
+                },
+                {
+                  label: 'Αποστολή',
+                  value: 'Προσβάσιμη γνώση',
+                  icon: <Users className="w-5 h-5 text-pink-600" />,
+                },
               ].map((item) => (
                 <motion.div
                   key={item.label}
@@ -376,8 +394,8 @@ const AboutPage: React.FC = () => {
                 className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
                 variants={fadeIn}
               >
-                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση.Στείλε μου στο Instagram
-                μήνυμα αν θέλεις να μάθεις περισσότερα.
+                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση.Στείλε μου στο
+                Instagram μήνυμα αν θέλεις να μάθεις περισσότερα.
                 <a
                   href="https://www.instagram.com/technotesgr/"
                   target="_blank"
@@ -502,13 +520,14 @@ const AboutPage: React.FC = () => {
                   >
                     <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-pink-500" />
                     <p className="text-sm font-bold text-pink-600 mb-1">{item.period}</p>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.title}</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                      {item.title}
+                    </h3>
                     <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
-
           </div>
         </div>
       </section>

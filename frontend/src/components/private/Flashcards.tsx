@@ -116,9 +116,12 @@ const Flashcards: React.FC = () => {
         setLoading(false);
       }
 
-      const flashcardsData = await apiFetch<BackendFlashcardsResponse>(`${BACKEND_URL}/api/flashcards`, {
-        dedupeKey: 'flashcards:all',
-      });
+      const flashcardsData = await apiFetch<BackendFlashcardsResponse>(
+        `${BACKEND_URL}/api/flashcards`,
+        {
+          dedupeKey: 'flashcards:all',
+        }
+      );
       const flashcards = flashcardsData.flashcards || [];
 
       const byCategory = flashcards.reduce<Record<string, RawFlashcard[]>>((acc, item) => {
@@ -161,7 +164,7 @@ const Flashcards: React.FC = () => {
 
   // Get current set
   const currentSet = useMemo(() => {
-    return selectedSetIndex !== null ? flashcardSets[selectedSetIndex] ?? null : null;
+    return selectedSetIndex !== null ? (flashcardSets[selectedSetIndex] ?? null) : null;
   }, [selectedSetIndex, flashcardSets]);
 
   // Get filtered cards based on study mode
@@ -177,7 +180,10 @@ const Flashcards: React.FC = () => {
     } else if (studyMode === 'review') {
       cards = cards.filter((card) => {
         const cardProg = setProgress[String(card.id)];
-        return cardProg?.needReview || (cardProg?.lastStudied && Date.now() - cardProg.lastStudied > 7 * 24 * 60 * 60 * 1000); // 7 days
+        return (
+          cardProg?.needReview ||
+          (cardProg?.lastStudied && Date.now() - cardProg.lastStudied > 7 * 24 * 60 * 60 * 1000)
+        ); // 7 days
       });
     } else if (studyMode === 'new') {
       cards = cards.filter((card) => !setProgress[String(card.id)]?.studied);
@@ -248,7 +254,12 @@ const Flashcards: React.FC = () => {
   // Mark card as known
   const markAsKnown = useCallback(
     (cardId: string | number) => {
-      updateCardProgress(cardId, { known: true, difficult: false, needReview: false, timesCorrect: (progress[currentSet?.id || '']?.[String(cardId)]?.timesCorrect || 0) + 1 });
+      updateCardProgress(cardId, {
+        known: true,
+        difficult: false,
+        needReview: false,
+        timesCorrect: (progress[currentSet?.id || '']?.[String(cardId)]?.timesCorrect || 0) + 1,
+      });
     },
     [updateCardProgress, progress, currentSet]
   );
@@ -311,9 +322,16 @@ const Flashcards: React.FC = () => {
     const studied = Object.values(setProgressData).filter((p) => p.studied).length;
     const known = Object.values(setProgressData).filter((p) => p.known).length;
     const difficult = Object.values(setProgressData).filter((p) => p.difficult).length;
-    const totalTimesStudied = Object.values(setProgressData).reduce((sum, p) => sum + p.timesStudied, 0);
-    const totalTimesCorrect = Object.values(setProgressData).reduce((sum, p) => sum + p.timesCorrect, 0);
-    const accuracy = totalTimesStudied > 0 ? Math.round((totalTimesCorrect / totalTimesStudied) * 100) : 0;
+    const totalTimesStudied = Object.values(setProgressData).reduce(
+      (sum, p) => sum + p.timesStudied,
+      0
+    );
+    const totalTimesCorrect = Object.values(setProgressData).reduce(
+      (sum, p) => sum + p.timesCorrect,
+      0
+    );
+    const accuracy =
+      totalTimesStudied > 0 ? Math.round((totalTimesCorrect / totalTimesStudied) * 100) : 0;
     const progressPercent = total > 0 ? Math.round((studied / total) * 100) : 0;
 
     return { total, studied, known, difficult, accuracy, progress: progressPercent };
@@ -339,7 +357,8 @@ const Flashcards: React.FC = () => {
     });
 
     const overallProgress = totalCards > 0 ? Math.round((totalStudied / totalCards) * 100) : 0;
-    const overallAccuracy = totalTimesStudied > 0 ? Math.round((totalTimesCorrect / totalTimesStudied) * 100) : 0;
+    const overallAccuracy =
+      totalTimesStudied > 0 ? Math.round((totalTimesCorrect / totalTimesStudied) * 100) : 0;
 
     return { totalCards, totalStudied, totalKnown, overallProgress, overallAccuracy };
   }, [flashcardSets, progress]);
@@ -482,9 +501,14 @@ const Flashcards: React.FC = () => {
                   studied: Object.values(setProgressData).filter((p) => p.studied).length,
                   known: Object.values(setProgressData).filter((p) => p.known).length,
                   difficult: Object.values(setProgressData).filter((p) => p.difficult).length,
-                  progress: set.questions.length > 0
-                    ? Math.round((Object.values(setProgressData).filter((p) => p.studied).length / set.questions.length) * 100)
-                    : 0,
+                  progress:
+                    set.questions.length > 0
+                      ? Math.round(
+                          (Object.values(setProgressData).filter((p) => p.studied).length /
+                            set.questions.length) *
+                            100
+                        )
+                      : 0,
                 };
 
                 return (
@@ -715,7 +739,6 @@ const Flashcards: React.FC = () => {
                           >
                             {isFlipped ? currentCard.back : currentCard.front}
                           </p>
-
                         </motion.button>
                       </AnimatePresence>
                     </div>
@@ -760,7 +783,10 @@ const Flashcards: React.FC = () => {
                       </div>
                     </div>
                     <div className="mt-4 text-center text-sm text-gray-600">
-                      {filteredCards.length} {studyMode !== 'all' && `(${studyMode === 'difficult' ? 'δύσκολες' : studyMode === 'review' ? 'για επανάληψη' : 'νέες'})`} κάρτες διαθέσιμες
+                      {filteredCards.length}{' '}
+                      {studyMode !== 'all' &&
+                        `(${studyMode === 'difficult' ? 'δύσκολες' : studyMode === 'review' ? 'για επανάληψη' : 'νέες'})`}{' '}
+                      κάρτες διαθέσιμες
                     </div>
                   </div>
                 ) : (
@@ -797,9 +823,18 @@ const Flashcards: React.FC = () => {
                     <li>Κάνε κλικ στην κάρτα για να τη γυρίσεις</li>
                     <li>Βελάκια ← → για προηγούμενη/επόμενη κάρτα</li>
                     <li>Χρησιμοποίησε τα κουμπιά για να σημειώσεις την πρόοδό σου</li>
-                    <li>Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">S</kbd> για ανακάτεμα</li>
-                    <li>Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">R</kbd> για επαναφορά</li>
-                    <li>Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">Esc</kbd> για επιστροφή</li>
+                    <li>
+                      Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">S</kbd> για
+                      ανακάτεμα
+                    </li>
+                    <li>
+                      Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">R</kbd> για
+                      επαναφορά
+                    </li>
+                    <li>
+                      Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">Esc</kbd> για
+                      επιστροφή
+                    </li>
                   </ul>
                 </div>
               </motion.div>

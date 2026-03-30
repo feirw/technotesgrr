@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * RegisterPage Component
- * 
+ *
  * Handles user registration/signup.
  * Key features:
  * - Client-side form validation
@@ -87,10 +87,10 @@ const RegisterPage: React.FC = () => {
       setSuccess(true);
     } catch (err: any) {
       console.error('Registration error:', err);
-      
+
       // 5. Βελτιωμένο Error Handling
       const message = err.message || '';
-      
+
       if (message.includes('User already registered') || message.includes('already exists')) {
         setError('Αυτό το email χρησιμοποιείται ήδη.');
       } else if (message.includes('Password should be')) {
@@ -99,7 +99,9 @@ const RegisterPage: React.FC = () => {
         setError('Πρόβλημα σύνδεσης. Ελέγξτε το internet σας.');
       } else if (message.includes('confirmation')) {
         // Ειδική περίπτωση για αποτυχία αποστολής email
-        setError('Ο λογαριασμός δημιουργήθηκε, αλλά υπήρξε πρόβλημα με το email επιβεβαίωσης. Επικοινωνήστε με την υποστήριξη.');
+        setError(
+          'Ο λογαριασμός δημιουργήθηκε, αλλά υπήρξε πρόβλημα με το email επιβεβαίωσης. Επικοινωνήστε με την υποστήριξη.'
+        );
       } else {
         setError(err.message || 'Προέκυψε σφάλμα κατά την εγγραφή. Δοκιμάστε ξανά.');
       }

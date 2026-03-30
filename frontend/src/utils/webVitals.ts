@@ -69,7 +69,9 @@ export const initWebVitalsTracking = () => {
   try {
     let clsValue = 0;
     const clsObserver = new PerformanceObserver((entryList) => {
-      for (const entry of entryList.getEntries() as Array<PerformanceEntry & { value?: number; hadRecentInput?: boolean }>) {
+      for (const entry of entryList.getEntries() as Array<
+        PerformanceEntry & { value?: number; hadRecentInput?: boolean }
+      >) {
         if (!entry.hadRecentInput) {
           clsValue += entry.value || 0;
         }
@@ -97,4 +99,3 @@ export const initWebVitalsTracking = () => {
     // Browser does not support this metric observer.
   }
 };
-

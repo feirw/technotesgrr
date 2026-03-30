@@ -96,4 +96,3 @@ export async function apiFetch<T>(url: string, options: ApiFetchOptions = {}): P
 
   return requestPromise;
 }
-

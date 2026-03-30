@@ -18,7 +18,7 @@ interface Message {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const BRAND      = '#fda8a9';
+const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
 
 // FIX #1: Read from env var so it works in every environment.
@@ -77,12 +77,20 @@ const BotMessageContent: React.FC<{ content: string }> = ({ content }) => (
     components={{
       ul: ({ ...props }) => <ul className="list-disc ml-5 space-y-1" {...props} />,
       ol: ({ ...props }) => <ol className="list-decimal ml-5 space-y-1" {...props} />,
-      a:  ({ ...props }) => (
-        <a className="text-pink-600 underline hover:text-pink-400" target="_blank" rel="noreferrer" {...props} />
+      a: ({ ...props }) => (
+        <a
+          className="text-pink-600 underline hover:text-pink-400"
+          target="_blank"
+          rel="noreferrer"
+          {...props}
+        />
       ),
-      p:  ({ ...props }) => <p className="mb-2 last:mb-0 text-sm leading-relaxed" {...props} />,
+      p: ({ ...props }) => <p className="mb-2 last:mb-0 text-sm leading-relaxed" {...props} />,
       code: ({ ...props }) => (
-        <code className="bg-pink-50 text-pink-700 rounded px-1 py-0.5 text-xs font-mono" {...props} />
+        <code
+          className="bg-pink-50 text-pink-700 rounded px-1 py-0.5 text-xs font-mono"
+          {...props}
+        />
       ),
     }}
   >
@@ -120,8 +128,8 @@ const TypingIndicator: React.FC = () => (
 // ─── Main Widget ──────────────────────────────────────────────────────────────
 
 const Widget: React.FC<WidgetProps> = ({ nickname }) => {
-  const [open,    setOpen]    = useState(false);
-  const [input,   setInput]   = useState('');
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
@@ -141,7 +149,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
     return generated;
   });
 
-  const listRef     = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-focus textarea when panel opens
@@ -163,37 +171,38 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
 
   // FIX #5: personalise nickname substitution safely
   const personalise = useCallback(
-    (text: string) =>
-      text.replace(/\{name\}/g, nickname?.trim() || 'φίλε/φίλη'),
-    [nickname],
+    (text: string) => text.replace(/\{name\}/g, nickname?.trim() || 'φίλε/φίλη'),
+    [nickname]
   );
 
   const appendMessage = (msg: Omit<Message, 'ts'>) =>
     setMessages((prev) => [...prev, { ...msg, ts: Date.now() }]);
 
-  const send = useCallback(async (rawText?: string) => {
-    const text = (rawText ?? input).trim();
-    if (!text || sending) return;
+  const send = useCallback(
+    async (rawText?: string) => {
+      const text = (rawText ?? input).trim();
+      if (!text || sending) return;
 
-    setInput('');
-    appendMessage({ role: 'user', content: text });
-    setSending(true);
+      setInput('');
+      appendMessage({ role: 'user', content: text });
+      setSending(true);
 
-    try {
-      const raw = await fetchBotReply(text, sessionId);
-      appendMessage({ role: 'bot', content: personalise(raw) });
-    } catch (err: unknown) {
-      console.error('[Widget] AI error:', err);
-      const detail =
-        err instanceof Error ? err.message : 'Άγνωστο σφάλμα';
-      appendMessage({
-        role: 'error',
-        content: `⚠️ Δεν μπόρεσα να λάβω απάντηση. ${detail}`,
-      });
-    } finally {
-      setSending(false);
-    }
-  }, [input, sending, personalise, sessionId]);
+      try {
+        const raw = await fetchBotReply(text, sessionId);
+        appendMessage({ role: 'bot', content: personalise(raw) });
+      } catch (err: unknown) {
+        console.error('[Widget] AI error:', err);
+        const detail = err instanceof Error ? err.message : 'Άγνωστο σφάλμα';
+        appendMessage({
+          role: 'error',
+          content: `⚠️ Δεν μπόρεσα να λάβω απάντηση. ${detail}`,
+        });
+      } finally {
+        setSending(false);
+      }
+    },
+    [input, sending, personalise, sessionId]
+  );
 
   const clearConversation = () => {
     const initial = [{ role: 'bot' as const, content: BOT_WELCOME, ts: Date.now() }];
@@ -230,10 +239,11 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
         animate={open ? {} : { y: [0, -8, 0] }}
         transition={open ? {} : { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
-        {open
-          ? <X             className="w-6 h-6 text-white" />
-          : <MessageCircle className="w-6 h-6 text-white" />
-        }
+        {open ? (
+          <X className="w-6 h-6 text-white" />
+        ) : (
+          <MessageCircle className="w-6 h-6 text-white" />
+        )}
       </motion.button>
 
       {/* ── Chat Panel ────────────────────────────────────────────────────── */}
@@ -245,8 +255,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             className="fixed bottom-24 right-6 z-40 w-[94vw] max-w-3xl rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
             style={{ border: `3px solid ${BRAND}`, height: '78vh', maxHeight: '820px' }}
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
-            animate={{ opacity: 1, scale: 1,    y: 0  }}
-            exit={{    opacity: 0, scale: 0.92, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 16 }}
             transition={{ type: 'spring', stiffness: 320, damping: 24 }}
           >
             {/* Header */}
@@ -337,10 +347,11 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                             : 'bg-white border-2 border-pink-300'
                         }`}
                       >
-                        {m.role === 'user'
-                          ? <User className="w-4 h-4 text-white" />
-                          : <Bot  className="w-4 h-4 text-pink-600" />
-                        }
+                        {m.role === 'user' ? (
+                          <User className="w-4 h-4 text-white" />
+                        ) : (
+                          <Bot className="w-4 h-4 text-pink-600" />
+                        )}
                       </div>
 
                       {/* Bubble */}
@@ -363,9 +374,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
               ))}
 
               {/* Typing indicator */}
-              <AnimatePresence>
-                {sending && <TypingIndicator />}
-              </AnimatePresence>
+              <AnimatePresence>{sending && <TypingIndicator />}</AnimatePresence>
             </div>
 
             {/* Input */}
@@ -390,14 +399,12 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                   className="rounded-xl p-3 text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                   style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
                   whileHover={canSend ? { scale: 1.08 } : {}}
-                  whileTap={canSend  ? { scale: 0.93 } : {}}
+                  whileTap={canSend ? { scale: 0.93 } : {}}
                 >
                   <Send className="w-6 h-6" />
                 </motion.button>
               </div>
-              <p className="text-[11px] text-gray-400 mt-1 pl-1">
-                Shift+Enter για νέα γραμμή
-              </p>
+              <p className="text-[11px] text-gray-400 mt-1 pl-1">Shift+Enter για νέα γραμμή</p>
             </div>
           </motion.div>
         )}

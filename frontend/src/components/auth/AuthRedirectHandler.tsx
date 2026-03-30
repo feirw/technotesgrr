@@ -4,10 +4,10 @@ import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * AuthRedirectHandler Component
- * 
+ *
  * Handles redirects for authenticated users trying to access auth pages (login/register).
  * This component runs AFTER session restoration to avoid interfering with refresh behavior.
- * 
+ *
  * Key features:
  * - Only redirects AFTER loading completes (preserves page on refresh)
  * - Redirects logged-in users away from login/register pages

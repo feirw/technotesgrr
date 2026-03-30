@@ -4,7 +4,7 @@ import { User as SupabaseUser } from '@supabase/supabase-js';
 
 /**
  * Authentication Context
- * 
+ *
  * Handles user authentication, session management, and profile data.
  * Key features:
  * - Session restoration on page refresh
@@ -67,7 +67,7 @@ const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number): Promise<T> => 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   // Track initialization to prevent duplicate session checks
   const isInitialized = useRef(false);
   // Timeout ref for safety - ensures loading state doesn't hang forever
@@ -89,7 +89,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       // Fetch profile with timeout to prevent hanging
-      const profilePromise = supabase.from('profiles').select('*').eq('id', baseUser.id).maybeSingle();
+      const profilePromise = supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', baseUser.id)
+        .maybeSingle();
       const { data, error } = await withTimeout<{ data: any; error: any }>(profilePromise, 5000);
 
       if (error) {
@@ -152,7 +156,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * 1. Checks for existing session in localStorage (fast)
    * 2. Restores user profile if session exists
    * 3. Sets up listener for auth state changes
-   * 
+   *
    * IMPORTANT: This does NOT redirect - that's handled by ProtectedRoute
    * This ensures the current page is preserved on refresh
    */
@@ -307,7 +311,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * Signup function
    * Creates new user account with email and password
    * Also creates profile entry in database (handled by database trigger)
-   * 
+   *
    * IMPORTANT: Supabase requires email confirmation by default
    * User will receive confirmation email after signup
    */
@@ -396,14 +400,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Clear user state
     setUser(null);
-    
+
     // Note: Navigation is handled by the component that calls logout
     // This keeps the context focused on auth state management
   };
 
   const refreshUserProfile = async () => {
     if (isMockMode || !user) return;
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
     if (!authUser) {
       setUser(null);
       return;
@@ -417,7 +423,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) throw new Error('Δεν υπάρχει συνδεδεμένος χρήστης.');
 
     const nextUsername = username.trim();
-    if (nextUsername.length < 3) throw new Error('Το username πρέπει να έχει τουλάχιστον 3 χαρακτήρες.');
+    if (nextUsername.length < 3)
+      throw new Error('Το username πρέπει να έχει τουλάχιστον 3 χαρακτήρες.');
 
     const { error: profileError } = await supabase
       .from('profiles')
@@ -425,7 +432,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .eq('id', user.id);
     if (profileError) throw profileError;
 
-    const { error: authError } = await supabase.auth.updateUser({ data: { username: nextUsername } });
+    const { error: authError } = await supabase.auth.updateUser({
+      data: { username: nextUsername },
+    });
     if (authError) throw authError;
 
     setUser((prev) => (prev ? { ...prev, username: nextUsername } : prev));

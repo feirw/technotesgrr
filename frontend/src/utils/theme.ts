@@ -34,4 +34,3 @@ export function toggleTheme(): Theme {
   applyTheme(next);
   return next;
 }
-

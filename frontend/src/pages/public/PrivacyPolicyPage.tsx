@@ -82,7 +82,8 @@ const PrivacyPolicyPage: React.FC = () => {
 
       <h3 className="text-xl font-bold mt-4 mb-2">2.2 Τι δεδομένα επεξεργαζόμαστε</h3>
       <p>
-        Επεξεργαζόμαστε τις παρακάτω κατηγορίες δεδομένων, μόνο εφόσον απαιτούνται από τη λειτουργία:
+        Επεξεργαζόμαστε τις παρακάτω κατηγορίες δεδομένων, μόνο εφόσον απαιτούνται από τη
+        λειτουργία:
       </p>
       <ul className="list-disc list-inside ml-4">
         <li>Στοιχεία λογαριασμού (email, username) μέσω Supabase Auth/Profiles.</li>
@@ -90,7 +91,10 @@ const PrivacyPolicyPage: React.FC = () => {
         <li>Απαντήσεις/πρόοδος στα κουίζ και αποτελέσματα προσανατολισμού.</li>
         <li>Ιστορικό συνομιλίας στο chatbot (ανά συνεδρία, για καλύτερες απαντήσεις).</li>
         <li>Web Vitals (ανώνυμα μετρικά απόδοσης για βελτίωση εμπειρίας).</li>
-        <li>Προτιμήσεις εμφάνισης (dark mode), προσωρινή μνήμη/κρυφή μνήμη (sessionStorage/localStorage).</li>
+        <li>
+          Προτιμήσεις εμφάνισης (dark mode), προσωρινή μνήμη/κρυφή μνήμη
+          (sessionStorage/localStorage).
+        </li>
       </ul>
 
       <h3 className="text-xl font-bold mt-4 mb-2">2.3 Σκοποί και Νομική Βάση</h3>

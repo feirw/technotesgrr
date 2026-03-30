@@ -77,7 +77,11 @@ const PrepMenu: React.FC = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const LinkItem: React.FC<{ to: string; label: string; icon: LucideIcon }> = ({ to, label, icon: Icon }) => (
+  const LinkItem: React.FC<{ to: string; label: string; icon: LucideIcon }> = ({
+    to,
+    label,
+    icon: Icon,
+  }) => (
     <button
       onClick={() => navigate(to)}
       className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200"
@@ -93,9 +97,7 @@ const PrepMenu: React.FC = () => {
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button
-        className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400 inline-flex items-center gap-1"
-      >
+      <button className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400 inline-flex items-center gap-1">
         Μάθηση
         <ChevronDown className="w-4 h-4" />
       </button>
@@ -273,7 +275,6 @@ const ProfileDropdown: React.FC = () => {
     </div>
   );
 };
-
 
 // --- Main Layout Component ---
 
@@ -529,8 +530,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
                         Προσανατολισμός
                       </MobileNavButton>
-                      <MobileNavButton to ="/sxoles" icon={School2Icon} onClick={closeMenu} >
-                       Σχολές
+                      <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
+                        Σχολές
                       </MobileNavButton>
                       <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                         Online Μαθήματα
@@ -616,29 +617,59 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </div>
           </motion.div>
 
-          <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60">
+          <motion.div
+            {...fadeIn}
+            transition={{ delay: 0.15 }}
+            className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60"
+          >
             <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Socials</h3>
             <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
-              <a href="https://instagram.com/technotesgr" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+              <a
+                href="https://instagram.com/technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+              >
                 <Instagram className="w-4 h-4" /> <span>Instagram</span>
               </a>
-              <a href="https://tiktok.com/@technotesgr" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+              <a
+                href="https://tiktok.com/@technotesgr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+              >
                 <Music2 className="w-4 h-4" /> <span>TikTok</span>
               </a>
-              <a href="https://www.linkedin.com/company/technotesgr/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+              <a
+                href="https://www.linkedin.com/company/technotesgr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+              >
                 <Linkedin className="w-4 h-4" /> <span>LinkedIn</span>
               </a>
-              <a href="https://www.youtube.com/@technotesgr-elenizafeiri" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start">
+              <a
+                href="https://www.youtube.com/@technotesgr-elenizafeiri"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+              >
                 <Youtube className="w-4 h-4" /> <span>YouTube</span>
               </a>
             </div>
           </motion.div>
 
-          <motion.div {...fadeIn} transition={{ delay: 0.25 }} className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60">
+          <motion.div
+            {...fadeIn}
+            transition={{ delay: 0.25 }}
+            className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60"
+          >
             <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Τοποθεσία</h3>
             <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
               <div className="inline-flex items-center gap-2 justify-center md:justify-start">
-                <span role="img" aria-label="location">📍</span>
+                <span role="img" aria-label="location">
+                  📍
+                </span>
                 <span>Αθήνα, Ελλάδα</span>
               </div>
             </div>
