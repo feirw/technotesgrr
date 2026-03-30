@@ -33,6 +33,8 @@ interface AuthContextType {
   signup: (email: string, password: string, username: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfileUsername: (username: string) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
   refreshUserProfile: () => Promise<void>;
 }
 
@@ -49,6 +51,8 @@ const AuthContext = createContext<AuthContextType>({
   signup: async () => missingProviderError(),
   logout: async () => missingProviderError(),
   updateProfileUsername: async () => missingProviderError(),
+  requestPasswordReset: async () => missingProviderError(),
+  updatePassword: async () => missingProviderError(),
   refreshUserProfile: async () => missingProviderError(),
 });
 
@@ -440,6 +444,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser((prev) => (prev ? { ...prev, username: nextUsername } : prev));
   };
 
+  const requestPasswordReset = async (email: string) => {
+    if (isMockMode) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) throw new Error('Συμπλήρωσε email.');
+
+    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    if (isMockMode) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
+    const nextPassword = newPassword.trim();
+    if (nextPassword.length < 6) {
+      throw new Error('Ο νέος κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.');
+    }
+
+    const { error } = await supabase.auth.updateUser({ password: nextPassword });
+    if (error) throw error;
+  };
+
   // Normalize role to lowercase for comparison (in case DB has 'Admin' instead of 'admin')
   let normalizedRole: UserRole = user?.role || null;
   if (normalizedRole) {
@@ -460,6 +486,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signup,
     logout,
     updateProfileUsername,
+    requestPasswordReset,
+    updatePassword,
     refreshUserProfile,
   };
 

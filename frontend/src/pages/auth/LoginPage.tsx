@@ -3,6 +3,7 @@ import { LogIn, Mail, Lock, AlertTriangle, UserPlus, ArrowRight } from 'lucide-r
 import { Link, useLocation, useNavigate, Location } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { isSupabaseConfigured } from '@/utils/supabaseClient';
 
 /**
  * LoginPage Component
@@ -24,13 +25,17 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [showReset, setShowReset] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetMsg, setResetMsg] = useState('');
 
   // 1. Ref για την αποφυγή update σε unmounted component
   const isMounted = useRef(true);
   // 2. Ref για το timeout ώστε να είναι προσβάσιμο παντού
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { login, user, loading: authLoading } = useAuth();
+  const { login, requestPasswordReset, user, loading: authLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -61,6 +66,10 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setError('');
     const normalizedEmail = email.trim().toLowerCase();
+    if (!isSupabaseConfigured) {
+      setError('Το authentication δεν είναι ρυθμισμένο στο deployment (λείπουν Supabase env vars).');
+      return;
+    }
     if (!normalizedEmail) {
       setError('Συμπληρώστε email.');
       return;
@@ -129,6 +138,32 @@ const LoginPage: React.FC = () => {
           setError(message || 'Προέκυψε σφάλμα σύνδεσης. Δοκιμάστε ξανά.');
         }
       }
+    }
+  };
+
+  const handleResetPassword = async () => {
+    setResetMsg('');
+    if (!isSupabaseConfigured) {
+      setResetMsg('Το authentication δεν είναι ρυθμισμένο στο deployment.');
+      return;
+    }
+    if (!resetEmail.trim()) {
+      setResetMsg('Συμπλήρωσε το email σου.');
+      return;
+    }
+    setResetLoading(true);
+    try {
+      await requestPasswordReset(resetEmail);
+      setResetMsg('Στείλαμε email επαναφοράς κωδικού. Έλεγξε inbox/spam.');
+    } catch (err: any) {
+      const message = (err?.message || '').toLowerCase();
+      if (message.includes('email')) {
+        setResetMsg('Μη έγκυρο email ή προσωρινό πρόβλημα αποστολής.');
+      } else {
+        setResetMsg('Αποτυχία αποστολής email επαναφοράς. Δοκίμασε ξανά.');
+      }
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -235,6 +270,43 @@ const LoginPage: React.FC = () => {
               </>
             )}
           </motion.button>
+
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setShowReset((prev) => !prev);
+                setResetMsg('');
+                setResetEmail(email);
+              }}
+              className="text-sm font-semibold text-pink-600 hover:text-pink-700"
+            >
+              Ξέχασες τον κωδικό;
+            </button>
+          </div>
+
+          {showReset && (
+            <div className="rounded-xl border border-pink-200 bg-pink-50/70 p-3 space-y-2">
+              <label className="text-xs font-bold text-gray-700">Email επαναφοράς</label>
+              <input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="w-full px-3 py-2 rounded-lg border border-pink-200 bg-white text-sm focus:ring-2 focus:ring-pink-500 outline-none"
+                disabled={resetLoading}
+              />
+              <button
+                type="button"
+                onClick={handleResetPassword}
+                disabled={resetLoading}
+                className="w-full py-2 rounded-lg bg-pink-600 text-white text-sm font-bold disabled:opacity-70"
+              >
+                {resetLoading ? 'Αποστολή...' : 'Στείλε email επαναφοράς'}
+              </button>
+              {resetMsg && <p className="text-xs text-gray-700">{resetMsg}</p>}
+            </div>
+          )}
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 text-center">

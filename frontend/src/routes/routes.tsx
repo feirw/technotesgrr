@@ -4,6 +4,7 @@ import React, { lazy } from 'react';
 import HomePage from '@/pages/public/HomePage';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
+import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
 import AboutPage from '@/pages/public/AboutMe';
 import MerchPage from '@/pages/public/MerchPage';
 import PrivacyPolicyPage from '@/pages/public/PrivacyPolicyPage';
@@ -54,6 +55,10 @@ const routes: RouteConfig[] = [
   {
     path: '/register',
     element: <RegisterPage />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
   },
   {
     path: '/about',
