@@ -175,7 +175,7 @@ const AboutPage: React.FC = () => {
           <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-rose-300 dark:bg-rose-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-4000" />
         </div>
 
-        <div className="container mx-auto px-6 text-center relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -187,7 +187,7 @@ const AboutPage: React.FC = () => {
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-7xl font-black mb-6 tracking-tight"
+            className="text-4xl sm:text-5xl md:text-7xl font-black mb-6 tracking-tight"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -198,7 +198,7 @@ const AboutPage: React.FC = () => {
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg md:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
@@ -211,7 +211,7 @@ const AboutPage: React.FC = () => {
 
       {/* Main Content */}
       <section className="py-16 md:py-20 relative">
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-5xl mx-auto space-y-12">
             {/* Achievements Gallery */}
             <motion.div
@@ -281,7 +281,7 @@ const AboutPage: React.FC = () => {
 
             {/* Story Section */}
             <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-gray-200/50 dark:border-gray-700/50"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -306,7 +306,7 @@ const AboutPage: React.FC = () => {
               </motion.div>
 
               <motion.div
-                className="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
+                className="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed text-base sm:text-lg"
                 initial="initial"
                 whileInView="animate"
                 viewport={{ once: true }}
@@ -366,7 +366,7 @@ const AboutPage: React.FC = () => {
 
             {/* Mission Section */}
             <motion.div
-              className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-gray-800/80 dark:to-purple-900/30 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-pink-200/50 dark:border-gray-700/50"
+              className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-gray-800/80 dark:to-purple-900/30 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-pink-200/50 dark:border-gray-700/50"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -391,7 +391,7 @@ const AboutPage: React.FC = () => {
               </motion.div>
 
               <motion.p
-                className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
+                className="text-gray-700 dark:text-gray-300 leading-relaxed text-base sm:text-lg"
                 variants={fadeIn}
               >
                 Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση.Στείλε μου στο
@@ -448,7 +448,7 @@ const AboutPage: React.FC = () => {
 
             {/* Fun Facts */}
             <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-gray-200/50 dark:border-gray-700/50"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -482,7 +482,7 @@ const AboutPage: React.FC = () => {
                 {funFactsData.map((fact, i) => (
                   <motion.li
                     key={i}
-                    className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-lg"
+                    className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-base sm:text-lg"
                     variants={fadeIn}
                     whileHover={{
                       x: 10,
@@ -498,7 +498,7 @@ const AboutPage: React.FC = () => {
 
             {/* Timeline */}
             <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-gray-200/50 dark:border-gray-700/50"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -512,13 +512,13 @@ const AboutPage: React.FC = () => {
                 {timelineData.map((item, idx) => (
                   <motion.div
                     key={`${item.period}-${idx}`}
-                    className="relative pl-8 pb-4 border-l-2 border-pink-200"
+                    className="relative pl-6 sm:pl-8 pb-4 border-l-2 border-pink-200"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: idx * 0.03 }}
                   >
-                    <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-pink-500" />
+                    <span className="absolute -left-[7px] sm:-left-[9px] top-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-pink-500" />
                     <p className="text-sm font-bold text-pink-600 mb-1">{item.period}</p>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                       {item.title}

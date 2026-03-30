@@ -329,13 +329,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
       <Suspense fallback={null}>
         <ChatWidget />
       </Suspense>
       {/* Navbar Container */}
       <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center py-4">
             {/* Logo */}
             <div className="flex items-center gap-3">
@@ -471,7 +471,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               exit={{ opacity: 0 }}
             />
             <motion.div
-              className="lg:hidden fixed top-0 right-0 h-full w-80 bg-white dark:bg-gray-900 z-50 shadow-2xl overflow-y-auto"
+              className="lg:hidden fixed top-0 right-0 h-full w-[88vw] max-w-sm bg-white dark:bg-gray-900 z-50 shadow-2xl overflow-y-auto"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -495,6 +495,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <div className="space-y-2">
                   <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
                     Αρχική
+                  </MobileNavButton>
+                  <MobileNavButton to="/about" icon={User} onClick={closeMenu}>
+                    Σχετικά με εμένα
                   </MobileNavButton>
                   <div className="flex items-center justify-between px-4 py-2">
                     <span className="text-sm font-semibold">Θέμα</span>
