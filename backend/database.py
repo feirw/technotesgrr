@@ -14,11 +14,15 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 @contextmanager
 def get_db_connection():
     """Context manager for Supabase PostgreSQL connections"""
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL is not configured.")
+    conn = None
     try:
         conn = psycopg2.connect(DATABASE_URL)
         yield conn
     finally:
-        conn.close()
+        if conn is not None:
+            conn.close()
 
 def init_database():
     """

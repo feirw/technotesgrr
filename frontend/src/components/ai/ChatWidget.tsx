@@ -418,7 +418,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
 
             {/* Input */}
             <div className="p-3 sm:p-4 bg-white border-t-2 border-pink-100 flex-shrink-0">
-              <div className="flex items-end gap-2">
+              <div className="flex items-end gap-2 relative z-10">
                 <textarea
                   ref={textareaRef}
                   value={input}
@@ -433,9 +433,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                 />
                 <motion.button
                   aria-label="Αποστολή"
-                  onClick={send}
-                  disabled={!canSend}
-                  className="rounded-xl p-3 text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                  onClick={() => void send()}
+                  className={`rounded-xl p-3 text-white shadow-md flex-shrink-0 ${!canSend ? 'opacity-50' : ''}`}
                   style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
                   whileHover={canSend ? { scale: 1.08 } : {}}
                   whileTap={canSend ? { scale: 0.93 } : {}}

@@ -55,8 +55,12 @@ from deps import get_current_user
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Runs once at startup
-    init_database()
-    print("✅ Backend connected to Supabase successfully")
+    try:
+        init_database()
+        print("✅ Backend connected to Supabase successfully")
+    except Exception as e:
+        # Keep API process alive so health/debug endpoints can still respond.
+        print(f"❌ Backend startup warning: {e}")
     yield
     # Runs once at shutdown (add cleanup here if needed)
     print("👋 Backend shutting down")
@@ -183,8 +187,6 @@ async def chat_with_bot(chat_data: ChatMessage):
             chat_data.message.strip(),
             chat_data.session_id or "default",
         )
-        # Keep a tiny artificial delay for typing feel without blocking event loop.
-        await asyncio.sleep(0.2)
         return {"reply": response_text}
     except Exception as e:
         print(f"[Chat] error: {e}")
