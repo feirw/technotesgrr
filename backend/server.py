@@ -557,11 +557,12 @@ async def get_admin_users_endpoint(
 if __name__ == "__main__":
     import uvicorn
 
-    # FIX #2: Pass the app as an import string ("server:app") so that
-    # --reload works correctly. Adjust "server" to match your filename.
+    is_dev = os.getenv("ENV", "").lower() in {"dev", "development", "local"}
+    port = int(os.getenv("PORT", "8001"))
+
     uvicorn.run(
-        "server:app",        # <-- module_name:app_variable  (change "server" if your file is named differently)
+        "server:app",
         host="0.0.0.0",
-        port=8001,
-        reload=True,         # now works because we use the import string form
+        port=port,
+        reload=is_dev,
     )

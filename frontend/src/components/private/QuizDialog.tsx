@@ -18,7 +18,6 @@ import { getBackendUrl } from '@/utils/backendUrl';
 import {
   enqueueQuizSubmission,
   flushPendingQuizSubmissions,
-  getPendingSubmissionCount,
 } from '@/utils/quizSubmissionSync';
 
 // --- Types ---
@@ -82,7 +81,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   const { user } = useAuth();
   const [current, setCurrent] = useState<number>(0);
   const [isSyncingAnswer, setIsSyncingAnswer] = useState<boolean>(false);
-  const [pendingSyncCount, setPendingSyncCount] = useState<number>(0);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [score, setScore] = useState<Score>({ correct: 0, total: 0 });
@@ -90,11 +88,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
 
   const syncPendingQueue = useCallback(async () => {
-    setPendingSyncCount(getPendingSubmissionCount());
-    const result = await flushPendingQuizSubmissions();
-    if (result.sent > 0 || result.failed > 0) {
-      setPendingSyncCount(result.failed);
-    }
+    await flushPendingQuizSubmissions();
   }, []);
 
   // Determine selected answer for current question (if any)
@@ -230,9 +224,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
           question_id: question.id,
           selected_answer: idx,
         });
-        setPendingSyncCount(getPendingSubmissionCount());
-        // Keep local progress and only show sync warning so quiz does not stall.
-        setError('Η απάντηση αποθηκεύτηκε τοπικά. Θα συγχρονιστεί όταν επανέλθει η σύνδεση.');
       } finally {
         setIsSyncingAnswer(false);
       }
@@ -450,11 +441,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             </AnimatePresence>
             {isSyncingAnswer && (
               <p className="text-xs text-gray-500 mb-3">Συγχρονισμός απάντησης...</p>
-            )}
-            {!isSyncingAnswer && pendingSyncCount > 0 && (
-              <p className="text-xs text-amber-600 mb-3">
-                {pendingSyncCount} απαντήσεις περιμένουν συγχρονισμό.
-              </p>
             )}
 
             {/* Answers */}
