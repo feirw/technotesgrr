@@ -233,7 +233,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
       <motion.button
         aria-label={open ? 'Κλείσιμο chat' : 'Άνοιγμα chat'}
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-6 right-6 z-50 rounded-full shadow-2xl p-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-pink-300"
+        className="fixed right-4 sm:right-6 bottom-[calc(env(safe-area-inset-bottom)+1rem)] sm:bottom-6 z-50 rounded-full shadow-2xl p-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-pink-300"
         style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -253,8 +253,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           <motion.div
             role="dialog"
             aria-label="Chatbot βοηθός"
-            className="fixed bottom-24 right-6 z-40 w-[94vw] max-w-3xl rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
-            style={{ border: `3px solid ${BRAND}`, height: '78vh', maxHeight: '820px' }}
+            className="fixed z-40 left-2 right-2 top-16 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[94vw] sm:max-w-3xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
+            style={{ border: `3px solid ${BRAND}`, maxHeight: '820px' }}
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
@@ -262,7 +262,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3 flex-shrink-0">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                     <Bot className="w-6 h-6" />
@@ -279,31 +279,33 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                     </div>
                   </div>
                 </div>
-                <motion.button
-                  aria-label="Καθαρισμός συνομιλίας"
-                  onClick={clearConversation}
-                  className="p-2 rounded-full hover:bg-white/20 transition-colors"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </motion.button>
-                <motion.button
-                  aria-label="Κλείσιμο"
-                  onClick={() => setOpen(false)}
-                  className="p-2 rounded-full hover:bg-white/20 transition-colors"
-                  whileHover={{ rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <X className="w-5 h-5" />
-                </motion.button>
+                <div className="flex items-center">
+                  <motion.button
+                    aria-label="Καθαρισμός συνομιλίας"
+                    onClick={clearConversation}
+                    className="p-2 rounded-full hover:bg-white/20 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </motion.button>
+                  <motion.button
+                    aria-label="Κλείσιμο"
+                    onClick={() => setOpen(false)}
+                    className="p-2 rounded-full hover:bg-white/20 transition-colors"
+                    whileHover={{ rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.button>
+                </div>
               </div>
             </div>
 
             {/* Messages */}
             <div
               ref={listRef}
-              className="flex-1 overflow-y-auto p-5 md:p-6 space-y-4 bg-gradient-to-br from-pink-50 to-rose-50"
+              className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 space-y-4 bg-gradient-to-br from-pink-50 to-rose-50"
             >
               {messages.length <= 2 && (
                 <div className="flex flex-wrap gap-2">
@@ -379,7 +381,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white border-t-2 border-pink-100 flex-shrink-0">
+            <div className="p-3 sm:p-4 bg-white border-t-2 border-pink-100 flex-shrink-0">
               <div className="flex items-end gap-2">
                 <textarea
                   ref={textareaRef}
