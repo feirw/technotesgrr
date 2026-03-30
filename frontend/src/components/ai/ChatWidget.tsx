@@ -130,6 +130,12 @@ const TypingIndicator: React.FC = () => (
 
 const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 640px)').matches : false
+  );
+  const [viewportHeight, setViewportHeight] = useState<number>(() =>
+    typeof window !== 'undefined' ? window.innerHeight : 800
+  );
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -160,6 +166,27 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Keep mobile/layout measurements in sync (orientation change, keyboard resize).
+  useEffect(() => {
+    const onResize = () => {
+      setViewportHeight(window.innerHeight);
+      setIsMobile(window.matchMedia('(max-width: 640px)').matches);
+    };
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  // Prevent background scroll when chat is open on mobile.
+  useEffect(() => {
+    if (!open || !isMobile) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open, isMobile]);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -233,7 +260,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
       <motion.button
         aria-label={open ? 'Κλείσιμο chat' : 'Άνοιγμα chat'}
         onClick={() => setOpen((v) => !v)}
-        className="fixed right-4 sm:right-6 bottom-[calc(env(safe-area-inset-bottom)+1rem)] sm:bottom-6 z-50 rounded-full shadow-2xl p-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-pink-300"
+        className="fixed right-4 sm:right-6 bottom-[calc(env(safe-area-inset-bottom)+1rem)] sm:bottom-6 z-[80] rounded-full shadow-2xl p-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-pink-300"
         style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -253,8 +280,11 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           <motion.div
             role="dialog"
             aria-label="Chatbot βοηθός"
-            className="fixed z-40 left-2 right-2 top-16 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[94vw] sm:max-w-3xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
-            style={{ border: `3px solid ${BRAND}`, maxHeight: '820px' }}
+            className="fixed z-[70] left-2 right-2 top-16 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[94vw] sm:max-w-3xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
+            style={{
+              border: `3px solid ${BRAND}`,
+              maxHeight: isMobile ? `${Math.max(420, viewportHeight - 96)}px` : '820px',
+            }}
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
