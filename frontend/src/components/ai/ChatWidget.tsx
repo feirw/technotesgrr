@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, AlertCircle, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { apiFetch } from '@/utils/apiClient';
-import { getBackendUrl } from '@/utils/backendUrl';
+import { getBackendUrlCandidates } from '@/utils/backendUrl';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -24,7 +24,7 @@ const BRAND_DARK = '#f88b8c';
 
 // FIX #1: Read from env var so it works in every environment.
 // In your .env file: VITE_BACKEND_URL=http://localhost:8001
-const BACKEND_URL = getBackendUrl();
+const BACKEND_URLS = getBackendUrlCandidates();
 
 const BOT_WELCOME =
   'Γεια! Είμαι ο βοηθός του TechNotesGR. Ρώτησέ με για σημειώσεις, quiz, flashcards ή οτιδήποτε σχετικό με ΑΕΠΠ. 😊';
@@ -42,33 +42,39 @@ const MAX_RETRIES = 2;
 
 // FIX #2: The original code called `/api/` (wrong path). Correct path is `/api/chat`.
 async function fetchBotReply(message: string, sessionId: string, retries = 0): Promise<string> {
-  try {
-    const data = await apiFetch<{ reply: string }>(`${BACKEND_URL}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      timeoutMs: 15_000,
-      retries: 0,
-      body: JSON.stringify({ message, session_id: sessionId }),
-    });
+  let lastError: unknown = null;
+  for (const baseUrl of BACKEND_URLS) {
+    try {
+      const data = await apiFetch<{ reply: string }>(`${baseUrl}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        timeoutMs: 15_000,
+        retries: 0,
+        body: JSON.stringify({ message, session_id: sessionId }),
+      });
 
-    // FIX #4: validate that the field we expect actually exists
-    if (typeof data?.reply !== 'string') {
-      throw new Error('Unexpected response format from server.');
+      // FIX #4: validate that the field we expect actually exists
+      if (typeof data?.reply !== 'string') {
+        throw new Error('Unexpected response format from server.');
+      }
+
+      return data.reply;
+    } catch (err) {
+      lastError = err;
     }
-
-    return data.reply;
-  } catch (err: unknown) {
-    // Retry on network errors (not on 4xx/5xx)
-    const isNetworkError =
-      err instanceof TypeError || (err instanceof DOMException && err.name === 'TimeoutError');
-
-    if (isNetworkError && retries < MAX_RETRIES) {
-      await new Promise((r) => setTimeout(r, 800 * (retries + 1)));
-      return fetchBotReply(message, sessionId, retries + 1);
-    }
-
-    throw err;
   }
+
+  // Retry on network errors (not on 4xx/5xx)
+  const isNetworkError =
+    lastError instanceof TypeError ||
+    (lastError instanceof DOMException && lastError.name === 'TimeoutError');
+
+  if (isNetworkError && retries < MAX_RETRIES) {
+    await new Promise((r) => setTimeout(r, 800 * (retries + 1)));
+    return fetchBotReply(message, sessionId, retries + 1);
+  }
+
+  throw lastError;
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────

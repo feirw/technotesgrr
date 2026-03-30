@@ -67,7 +67,9 @@ const LoginPage: React.FC = () => {
     setError('');
     const normalizedEmail = email.trim().toLowerCase();
     if (!isSupabaseConfigured) {
-      setError('Το authentication δεν είναι ρυθμισμένο στο deployment (λείπουν Supabase env vars).');
+      setError(
+        'Το authentication δεν είναι ρυθμισμένο στο deployment (λείπουν Supabase env vars).'
+      );
       return;
     }
     if (!normalizedEmail) {

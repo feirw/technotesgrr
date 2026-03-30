@@ -54,7 +54,9 @@ const ResetPasswordPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border-2 border-pink-100 dark:border-gray-700"
       >
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Επαναφορά κωδικού</h1>
+        <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
+          Επαναφορά κωδικού
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-300 mb-6">
           Βάλε νέο κωδικό για τον λογαριασμό σου.
         </p>

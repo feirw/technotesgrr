@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronUp, Search, Calendar, FileText, X } from 'lucide-react';
+import { Search, Calendar, FileText, X } from 'lucide-react';
 import Palia from '@/components/private/Palia';
 
 /**
@@ -128,7 +128,6 @@ const PaliathemataPage: React.FC = () => {
   const [mode, setMode] = useState<ExamMode>('kanonikes');
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
 
   // ═══════════════════════════════════════════════════════════════
   // 📊 DATA & FILTERING
@@ -175,22 +174,9 @@ const PaliathemataPage: React.FC = () => {
     setSearchQuery('');
   };
 
-  const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
-
-  // Track scroll for "back to top" button
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // ═══════════════════════════════════════════════════════════════
   // 🎨 RENDER
@@ -291,10 +277,10 @@ const PaliathemataPage: React.FC = () => {
                 role="tablist"
                 aria-label="Επιλογή κατηγορίας"
               >
-              <motion.button
-                role="tab"
-                aria-selected={mode === 'kanonikes'}
-                className={`
+                <motion.button
+                  role="tab"
+                  aria-selected={mode === 'kanonikes'}
+                  className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
@@ -303,28 +289,28 @@ const PaliathemataPage: React.FC = () => {
                       : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
-                onClick={() => handleModeChange('kanonikes')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {mode === 'kanonikes' && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
-                    layoutId="activeTabIndicator"
-                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
-                  />
-                )}
-                <div className="relative z-20 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Κανονικές
-                  <span className="ml-1 text-xs opacity-75">({KANONIKES_YEARS.length})</span>
-                </div>
-              </motion.button>
+                  onClick={() => handleModeChange('kanonikes')}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {mode === 'kanonikes' && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      layoutId="activeTabIndicator"
+                      transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                    />
+                  )}
+                  <div className="relative z-20 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Κανονικές
+                    <span className="ml-1 text-xs opacity-75">({KANONIKES_YEARS.length})</span>
+                  </div>
+                </motion.button>
 
-              <motion.button
-                role="tab"
-                aria-selected={mode === 'epanaliptikes'}
-                className={`
+                <motion.button
+                  role="tab"
+                  aria-selected={mode === 'epanaliptikes'}
+                  className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
@@ -333,28 +319,28 @@ const PaliathemataPage: React.FC = () => {
                       : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
-                onClick={() => handleModeChange('epanaliptikes')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {mode === 'epanaliptikes' && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
-                    layoutId="activeTabIndicator"
-                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
-                  />
-                )}
-                <div className="relative z-20 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Επαναληπτικές
-                  <span className="ml-1 text-xs opacity-75">({EPANALIPTIKES_YEARS.length})</span>
-                </div>
-              </motion.button>
+                  onClick={() => handleModeChange('epanaliptikes')}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {mode === 'epanaliptikes' && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      layoutId="activeTabIndicator"
+                      transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                    />
+                  )}
+                  <div className="relative z-20 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Επαναληπτικές
+                    <span className="ml-1 text-xs opacity-75">({EPANALIPTIKES_YEARS.length})</span>
+                  </div>
+                </motion.button>
 
-              <motion.button
-                role="tab"
-                aria-selected={mode === 'oefe-a'}
-                className={`
+                <motion.button
+                  role="tab"
+                  aria-selected={mode === 'oefe-a'}
+                  className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
@@ -363,28 +349,28 @@ const PaliathemataPage: React.FC = () => {
                       : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
-                onClick={() => handleModeChange('oefe-a')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {mode === 'oefe-a' && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
-                    layoutId="activeTabIndicator"
-                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
-                  />
-                )}
-                <div className="relative z-20 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  ΟΕΦΕ Ά ΦΑΣΗ
-                  <span className="ml-1 text-xs opacity-75">({OEFE_YEARS1.length})</span>
-                </div>
-              </motion.button>
+                  onClick={() => handleModeChange('oefe-a')}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {mode === 'oefe-a' && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      layoutId="activeTabIndicator"
+                      transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                    />
+                  )}
+                  <div className="relative z-20 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    ΟΕΦΕ Ά ΦΑΣΗ
+                    <span className="ml-1 text-xs opacity-75">({OEFE_YEARS1.length})</span>
+                  </div>
+                </motion.button>
 
-              <motion.button
-                role="tab"
-                aria-selected={mode === 'oefe-b'}
-                className={`
+                <motion.button
+                  role="tab"
+                  aria-selected={mode === 'oefe-b'}
+                  className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
@@ -393,23 +379,23 @@ const PaliathemataPage: React.FC = () => {
                       : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
                   }
                 `}
-                onClick={() => handleModeChange('oefe-b')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {mode === 'oefe-b' && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
-                    layoutId="activeTabIndicator"
-                    transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
-                  />
-                )}
-                <div className="relative z-20 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  ΟΕΦΕ Β' ΦΑΣΗ
-                  <span className="ml-1 text-xs opacity-75">({OEFE_YEARS2.length})</span>
-                </div>
-              </motion.button>
+                  onClick={() => handleModeChange('oefe-b')}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {mode === 'oefe-b' && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      layoutId="activeTabIndicator"
+                      transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+                    />
+                  )}
+                  <div className="relative z-20 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    ΟΕΦΕ Β' ΦΑΣΗ
+                    <span className="ml-1 text-xs opacity-75">({OEFE_YEARS2.length})</span>
+                  </div>
+                </motion.button>
               </div>
             </div>
 
@@ -540,23 +526,6 @@ const PaliathemataPage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Scroll to Top Button */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            onClick={handleScrollTop}
-            className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full shadow-2xl hover:shadow-pink-500/50 transition-all group"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            whileHover={{ scale: 1.1, y: -5 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Μετάβαση στην κορυφή"
-          >
-            <ChevronUp className="w-6 h-6 group-hover:animate-bounce" />
-          </motion.button>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

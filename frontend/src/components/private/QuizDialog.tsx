@@ -15,10 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import { apiFetch } from '@/utils/apiClient';
 import { getBackendUrl } from '@/utils/backendUrl';
-import {
-  enqueueQuizSubmission,
-  flushPendingQuizSubmissions,
-} from '@/utils/quizSubmissionSync';
+import { enqueueQuizSubmission, flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
 
 // --- Types ---
 
