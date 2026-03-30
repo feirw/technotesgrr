@@ -4,6 +4,7 @@ import { MessageSquare, Send, RefreshCw, UserCircle2, Trash2 } from 'lucide-reac
 import { apiFetch } from '@/utils/apiClient';
 import { supabase } from '@/utils/supabaseClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 type CommunityPost = {
   id: number;
@@ -31,7 +32,7 @@ type CommunityResponse = {
   has_more: boolean;
 };
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 
 const CommunityPage: React.FC = () => {
   const { user, isAdmin } = useAuth();

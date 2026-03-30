@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/utils/supabaseClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 import { apiFetch } from '@/utils/apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -497,7 +498,7 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'prosanatolismos_v3';
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 const ALL_IDS = Object.keys(QUESTIONS).map(Number);
 const RANK_LABELS = ['🥇 Κορυφαία κλίση', '🥈 2η κλίση', '🥉 3η κλίση'];
 

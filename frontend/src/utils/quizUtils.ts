@@ -1,4 +1,5 @@
 import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 // --- Types ---
 
@@ -42,7 +43,7 @@ interface BackendAllQuestionsResponse {
 
 // --- Constants ---
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 const QUIZ_CACHE_KEY = 'quizDataCache:v2';
 const QUIZ_CACHE_TTL_MS = 5 * 60 * 1000;
 

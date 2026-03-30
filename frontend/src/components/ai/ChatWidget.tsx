@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, AlertCircle, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -23,7 +24,7 @@ const BRAND_DARK = '#f88b8c';
 
 // FIX #1: Read from env var so it works in every environment.
 // In your .env file: VITE_BACKEND_URL=http://localhost:8001
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 
 const BOT_WELCOME =
   'Γεια! Είμαι ο βοηθός του TechNotesGR. Ρώτησέ με για σημειώσεις, quiz, flashcards ή οτιδήποτε σχετικό με ΑΕΠΠ. 😊';

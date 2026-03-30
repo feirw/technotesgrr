@@ -1,5 +1,6 @@
 import { supabase } from '@/utils/supabaseClient';
 import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 export interface PendingQuizSubmission {
   id: string;
@@ -10,7 +11,7 @@ export interface PendingQuizSubmission {
 }
 
 const STORAGE_KEY = 'pendingQuizSubmissions:v1';
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 const MAX_QUEUE_ITEMS = 500;
 
 const readQueue = (): PendingQuizSubmission[] => {

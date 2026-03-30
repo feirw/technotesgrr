@@ -14,6 +14,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 import {
   enqueueQuizSubmission,
   flushPendingQuizSubmissions,
@@ -69,7 +70,7 @@ interface SubmitResponse {
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 
 const QuizDialog: React.FC<QuizDialogProps> = ({
   quiz,

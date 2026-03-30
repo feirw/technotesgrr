@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useId, useState, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { getBackendUrl } from '@/utils/backendUrl';
 import { useNavigate } from 'react-router-dom';
 import {
   motion,
@@ -205,7 +206,7 @@ const faqData: FaqItem[] = [
   },
 ];
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 
 // ---------- Motion Variants ----------
 const fadeInUp = {

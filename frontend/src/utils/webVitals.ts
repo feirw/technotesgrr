@@ -1,7 +1,9 @@
+import { getBackendUrl } from '@/utils/backendUrl';
+
 type VitalName = 'LCP' | 'CLS' | 'INP';
 type VitalRating = 'good' | 'needs-improvement' | 'poor';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 const ANALYTICS_URL = `${BACKEND_URL}/api/metrics/web-vitals`;
 
 const getRating = (name: VitalName, value: number): VitalRating => {

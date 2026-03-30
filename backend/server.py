@@ -62,12 +62,21 @@ async def lifespan(app: FastAPI):
 # ─────────────────────────────────────────────────────────────────────────────
 app = FastAPI(title="TechNotesGR API", lifespan=lifespan)
 
+_extra_cors_origins = [
+    origin.strip()
+    for origin in (os.getenv("CORS_ORIGINS", "") or "").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:5173",
-    ],
+        "https://technotesgr.gr",
+        "https://www.technotesgr.gr",
+    ] + _extra_cors_origins,
+    allow_origin_regex=r"https://.*\.netlify\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

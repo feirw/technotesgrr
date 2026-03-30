@@ -16,6 +16,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 // --- Types & Interfaces ---
 
@@ -62,7 +63,7 @@ interface FlashcardProgress {
 
 // --- Constants ---
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8001';
+const BACKEND_URL = getBackendUrl();
 const BRAND = '#fda8a9';
 const STORAGE_KEY = 'flashcardProgress';
 const FLASHCARD_CACHE_KEY = 'flashcardData:v1';

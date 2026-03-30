@@ -499,6 +499,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/about" icon={User} onClick={closeMenu}>
                     Σχετικά με εμένα
                   </MobileNavButton>
+                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
+                    Ατζέντα
+                  </MobileNavButton>
                   <div className="flex items-center justify-between px-4 py-2">
                     <span className="text-sm font-semibold">Θέμα</span>
                     <button
@@ -571,10 +574,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       </MobileNavButton>
                     </>
                   )}
-                  <div className="my-2 border-t border-gray-100 dark:border-gray-800" />
-                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
-                    Ατζέντα
-                  </MobileNavButton>
                 </div>
               </div>
             </motion.div>
