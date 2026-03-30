@@ -281,20 +281,21 @@ const PaliathemataPage: React.FC = () => {
 
       {/* Tabs & Search Section */}
       <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-pink-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {/* Tabs */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-5 sm:mb-6">
             {/* Mode Tabs Container */}
-            <div
-              className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full shadow-inner relative"
-              role="tablist"
-              aria-label="Επιλογή κατηγορίας"
-            >
+            <div className="w-full md:w-auto overflow-x-auto pb-1">
+              <div
+                className="inline-flex min-w-max items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-full shadow-inner relative"
+                role="tablist"
+                aria-label="Επιλογή κατηγορίας"
+              >
               <motion.button
                 role="tab"
                 aria-selected={mode === 'kanonikes'}
                 className={`
-                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
+                  relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
                     mode === 'kanonikes'
@@ -324,7 +325,7 @@ const PaliathemataPage: React.FC = () => {
                 role="tab"
                 aria-selected={mode === 'epanaliptikes'}
                 className={`
-                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
+                  relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
                     mode === 'epanaliptikes'
@@ -354,7 +355,7 @@ const PaliathemataPage: React.FC = () => {
                 role="tab"
                 aria-selected={mode === 'oefe-a'}
                 className={`
-                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
+                  relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
                     mode === 'oefe-a'
@@ -384,7 +385,7 @@ const PaliathemataPage: React.FC = () => {
                 role="tab"
                 aria-selected={mode === 'oefe-b'}
                 className={`
-                  relative px-6 py-3 rounded-full font-bold text-sm transition-all z-10 
+                  relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
                   focus:outline-none focus:ring-2 focus:ring-pink-500
                   ${
                     mode === 'oefe-b'
@@ -409,6 +410,7 @@ const PaliathemataPage: React.FC = () => {
                   <span className="ml-1 text-xs opacity-75">({OEFE_YEARS2.length})</span>
                 </div>
               </motion.button>
+              </div>
             </div>
 
             {/* Search Bar */}
@@ -434,7 +436,7 @@ const PaliathemataPage: React.FC = () => {
           </div>
 
           {/* Results Info */}
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm">
             <div className="text-gray-600 dark:text-gray-400">
               Βρέθηκαν{' '}
               <span className="font-bold text-pink-600 dark:text-pink-400">

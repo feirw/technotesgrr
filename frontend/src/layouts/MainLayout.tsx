@@ -493,16 +493,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 )}
 
                 <div className="space-y-2">
-                  <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
-                    Αρχική
-                  </MobileNavButton>
-                  <MobileNavButton to="/about" icon={User} onClick={closeMenu}>
-                    Σχετικά με εμένα
-                  </MobileNavButton>
-                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
-                    Ατζέντα
-                  </MobileNavButton>
-                  <div className="flex items-center justify-between px-4 py-2">
+                  <div className="flex items-center justify-between px-4 py-2 mb-1">
                     <span className="text-sm font-semibold">Θέμα</span>
                     <button
                       aria-label="Theme toggle"
@@ -512,6 +503,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                   </div>
+                  <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
+                    Αρχική
+                  </MobileNavButton>
+                  <MobileNavButton to="/about" icon={User} onClick={closeMenu}>
+                    Σχετικά με εμένα
+                  </MobileNavButton>
+                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
+                    Ατζέντα
+                  </MobileNavButton>
 
                   {user ? (
                     <>
