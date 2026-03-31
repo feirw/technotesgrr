@@ -168,10 +168,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Safety timeout - ensures loading state doesn't hang forever
     loadingTimeoutRef.current = setTimeout(() => {
       if (loading) {
-        console.warn('⚠️ Auth loading timeout - forcing to false after 5 seconds');
+        console.warn('⚠️ Auth loading timeout - forcing to false after 12 seconds');
         setLoading(false);
       }
-    }, 5000);
+    }, 12000);
 
     const initializeAuth = async () => {
       // Prevent duplicate initialization
@@ -186,19 +186,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        // getSession() checks localStorage first - this is synchronous and fast
-        // This is the key to preserving the current page on refresh
-        const sessionPromise = supabase.auth.getSession();
-        const {
-          data: { session },
-          error,
-        } = await withTimeout(sessionPromise, 3000);
+        // getSession() checks localStorage first and is the main refresh-preservation path.
+        // Keep timeout relaxed for slow mobile connections.
+        let session: any = null;
+        let error: any = null;
+        try {
+          const sessionPromise = supabase.auth.getSession();
+          const sessionRes = await withTimeout(sessionPromise, 8000);
+          session = sessionRes?.data?.session ?? null;
+          error = sessionRes?.error ?? null;
+        } catch (sessionErr) {
+          // Fallback: try getUser() once before concluding user is logged out.
+          console.warn('⚠️ getSession timed out/failed, trying getUser fallback...');
+          try {
+            const userRes = await withTimeout(supabase.auth.getUser(), 8000);
+            if (userRes?.data?.user) {
+              const profile = await fetchProfileSafe(userRes.data.user);
+              setUser(profile);
+              console.log('✅ Session restored via getUser fallback');
+              return;
+            }
+          } catch (fallbackErr) {
+            console.warn('⚠️ getUser fallback failed:', fallbackErr);
+          }
+        }
 
         if (error) {
           console.warn('⚠️ Session fetch error (non-critical):', error.message);
-          // Don't throw - allow the app to continue
-          setLoading(false);
-          return;
+          // Do not force logout immediately on refresh. Continue and let auth listener update state.
         }
 
         if (session?.user) {

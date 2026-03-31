@@ -121,6 +121,8 @@ const Flashcards: React.FC = () => {
         `${BACKEND_URL}/api/flashcards`,
         {
           dedupeKey: 'flashcards:all',
+          cacheTtlMs: 5 * 60 * 1000,
+          cacheKey: 'flashcards:all',
         }
       );
       const flashcards = flashcardsData.flashcards || [];

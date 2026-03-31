@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import MainLayout from '@/layouts/MainLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import routes, { RouteConfig } from './routes/routes';
+import routes, { RouteConfig, prefetchCriticalPrivateRoutes } from './routes/routes';
 import AuthRedirectHandler from './components/auth/AuthRedirectHandler';
 
 const App: React.FC = () => {
@@ -12,6 +12,15 @@ const App: React.FC = () => {
       <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
+
+  useEffect(() => {
+    const prefetch = () => prefetchCriticalPrivateRoutes();
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(prefetch, { timeout: 2000 });
+    } else {
+      window.setTimeout(prefetch, 1200);
+    }
+  }, []);
 
   return (
     <AuthProvider>

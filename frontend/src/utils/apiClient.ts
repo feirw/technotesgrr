@@ -3,6 +3,8 @@ type ApiFetchOptions = RequestInit & {
   retries?: number;
   retryDelayMs?: number;
   dedupeKey?: string;
+  cacheTtlMs?: number;
+  cacheKey?: string;
 };
 
 const DEFAULT_TIMEOUT_MS = 10000;
@@ -10,6 +12,7 @@ const DEFAULT_RETRIES = 2;
 const DEFAULT_RETRY_DELAY_MS = 350;
 
 const inFlightRequests = new Map<string, Promise<unknown>>();
+const responseCache = new Map<string, { expiresAt: number; data: unknown }>();
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -80,6 +83,15 @@ async function requestJson<T>(url: string, options: ApiFetchOptions): Promise<T>
 export async function apiFetch<T>(url: string, options: ApiFetchOptions = {}): Promise<T> {
   const method = (options.method || 'GET').toUpperCase();
   const shouldDedupe = method === 'GET' || Boolean(options.dedupeKey);
+  const shouldUseCache = method === 'GET' && (options.cacheTtlMs ?? 0) > 0;
+  const cacheKey = options.cacheKey || makeRequestKey(url, options, options.dedupeKey);
+
+  if (shouldUseCache) {
+    const cached = responseCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data as T;
+    }
+  }
 
   if (!shouldDedupe) {
     return requestJson<T>(url, options);
@@ -89,9 +101,19 @@ export async function apiFetch<T>(url: string, options: ApiFetchOptions = {}): P
   const existing = inFlightRequests.get(key);
   if (existing) return existing as Promise<T>;
 
-  const requestPromise = requestJson<T>(url, options).finally(() => {
-    inFlightRequests.delete(key);
-  });
+  const requestPromise = requestJson<T>(url, options)
+    .then((data) => {
+      if (shouldUseCache) {
+        responseCache.set(cacheKey, {
+          expiresAt: Date.now() + (options.cacheTtlMs as number),
+          data,
+        });
+      }
+      return data;
+    })
+    .finally(() => {
+      inFlightRequests.delete(key);
+    });
   inFlightRequests.set(key, requestPromise);
 
   return requestPromise;

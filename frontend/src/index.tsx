@@ -23,4 +23,8 @@ createRoot(rootElement).render(
   </StrictMode>
 );
 
-initWebVitalsTracking();
+if ('requestIdleCallback' in window) {
+  (window as any).requestIdleCallback(() => initWebVitalsTracking());
+} else {
+  window.setTimeout(() => initWebVitalsTracking(), 1200);
+}

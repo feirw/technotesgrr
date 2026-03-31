@@ -78,7 +78,10 @@ const chapterNameMap: Record<string | number, string> = {
 
 export const fetchQuizCategories = async (): Promise<string[]> => {
   try {
-    const data = await apiFetch<BackendCategoriesResponse>(`${BACKEND_URL}/api/categories`);
+    const data = await apiFetch<BackendCategoriesResponse>(`${BACKEND_URL}/api/categories`, {
+      cacheTtlMs: 10 * 60 * 1000,
+      cacheKey: 'quiz:categories',
+    });
     return data.quiz_categories || [];
   } catch (error) {
     console.error('Error fetching quiz categories:', error);

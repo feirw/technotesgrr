@@ -101,17 +101,17 @@ const StudyTimerPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-pink-200 shadow-xl p-6 sm:p-8"
+          className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-3xl border-2 border-pink-200 dark:border-gray-700 shadow-xl p-6 sm:p-8"
         >
           <h1 className="text-3xl sm:text-4xl font-black text-pink-600 text-center mb-2">
             Study Timer
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
             Βάλε χρόνο διαβάσματος και κάνε track την πρόοδό σου.
           </p>
 
@@ -135,7 +135,7 @@ const StudyTimerPage: React.FC = () => {
             </button>
             <button
               onClick={onReset}
-              className="px-5 py-3 rounded-xl bg-white border-2 border-pink-200 text-pink-700 font-bold flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-pink-200 dark:border-gray-700 text-pink-700 dark:text-pink-300 font-bold flex items-center gap-2"
             >
               <RotateCcw className="w-5 h-5" />
               Μηδενισμός
@@ -143,16 +143,16 @@ const StudyTimerPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
-              <div className="text-sm text-gray-600 mb-1">Συνεδρίες σήμερα</div>
+            <div className="bg-pink-50 dark:bg-gray-800 border border-pink-200 dark:border-gray-700 rounded-xl p-4">
+              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Συνεδρίες σήμερα</div>
               <div className="text-2xl font-black text-pink-600">{timer.sessionsToday}</div>
             </div>
-            <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
-              <div className="text-sm text-gray-600 mb-1">Λεπτά μελέτης</div>
+            <div className="bg-pink-50 dark:bg-gray-800 border border-pink-200 dark:border-gray-700 rounded-xl p-4">
+              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Λεπτά μελέτης</div>
               <div className="text-2xl font-black text-pink-600">{studiedMin}</div>
             </div>
-            <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
-              <div className="text-sm text-gray-600 mb-1">Ημερήσιος στόχος</div>
+            <div className="bg-pink-50 dark:bg-gray-800 border border-pink-200 dark:border-gray-700 rounded-xl p-4">
+              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Ημερήσιος στόχος</div>
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-pink-500" />
                 <input
@@ -166,14 +166,14 @@ const StudyTimerPage: React.FC = () => {
                       dailyGoalMin: Math.max(10, Number(e.target.value) || 10),
                     }))
                   }
-                  className="w-24 px-2 py-1 rounded border border-pink-300 text-pink-700 font-bold bg-white"
+                  className="w-24 px-2 py-1 rounded border border-pink-300 dark:border-gray-600 text-pink-700 dark:text-pink-300 font-bold bg-white dark:bg-gray-900"
                 />
-                <span className="text-sm text-gray-600">λεπτά</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">λεπτά</span>
               </div>
             </div>
           </div>
 
-          <div className="mb-3 flex justify-between text-sm font-semibold text-gray-700">
+          <div className="mb-3 flex justify-between text-sm font-semibold text-gray-700 dark:text-gray-200">
             <span>Πρόοδος στόχου</span>
             <span>{progress}%</span>
           </div>

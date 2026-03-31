@@ -41,13 +41,13 @@ const CommunityPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
   const [deletingPostId, setDeletingPostId] = useState<number | null>(null);
-  const [replyDrafts, setReplyDrafts] = useState<Record<number, string>>({});
   const [replyingPostId, setReplyingPostId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const isMountedRef = useRef(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const replyInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
   const fetchPosts = useCallback(async (nextOffset = 0, append = false) => {
     setError(null);
@@ -66,6 +66,8 @@ const CommunityPage: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           dedupeKey: `community-posts-${nextOffset}`,
+          cacheTtlMs: 8000,
+          cacheKey: `community-posts-${nextOffset}`,
         }
       );
 
@@ -103,7 +105,7 @@ const CommunityPage: React.FC = () => {
       const token = session?.access_token;
       if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
 
-      await apiFetch<{ post: CommunityPost }>(`${BACKEND_URL}/api/community/posts`, {
+      const result = await apiFetch<{ post: CommunityPost }>(`${BACKEND_URL}/api/community/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +115,8 @@ const CommunityPage: React.FC = () => {
       });
 
       setContent('');
-      await fetchPosts(0, false);
+      // Optimistic prepend avoids full list refetch and feels instant.
+      setPosts((prev) => [result.post, ...prev]);
     } catch (e: any) {
       setError(e?.message || 'Αποτυχία δημιουργίας post.');
     } finally {
@@ -152,7 +155,8 @@ const CommunityPage: React.FC = () => {
 
   const onSubmitReply = useCallback(
     async (postId: number) => {
-      const value = (replyDrafts[postId] ?? '').trim();
+      const inputEl = replyInputRefs.current[postId];
+      const value = inputEl?.value.trim() ?? '';
       if (!value) return;
 
       setReplyingPostId(postId);
@@ -186,14 +190,14 @@ const CommunityPage: React.FC = () => {
               : p
           )
         );
-        setReplyDrafts((prev) => ({ ...prev, [postId]: '' }));
+        if (inputEl) inputEl.value = '';
       } catch (e: any) {
         setError(e?.message || 'Αποτυχία αποστολής απάντησης.');
       } finally {
         setReplyingPostId(null);
       }
     },
-    [replyDrafts]
+    []
   );
 
   // Autosize textarea
@@ -214,7 +218,7 @@ const CommunityPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-3xl shadow-xl p-5 sm:p-6 mb-5 text-white border-2 border-pink-300">
           <h1 className="text-3xl font-black flex items-center gap-2">
@@ -228,7 +232,7 @@ const CommunityPage: React.FC = () => {
 
         <form
           onSubmit={onSubmit}
-          className="bg-white/95 rounded-2xl border-2 border-pink-200 p-4 mb-5 shadow-lg"
+          className="bg-white/95 dark:bg-gray-900/95 rounded-2xl border-2 border-pink-200 dark:border-gray-700 p-4 mb-5 shadow-lg"
         >
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-pink-700 font-bold shadow-sm">
@@ -241,10 +245,10 @@ const CommunityPage: React.FC = () => {
                 onChange={(e) => setContent(e.target.value)}
                 maxLength={2000}
                 placeholder="Γράψε το post σου… (Σεβασμός, χωρίς προσωπικά δεδομένα)"
-                className="w-full min-h-[90px] rounded-xl border-2 border-pink-100 p-3 focus:outline-none focus:border-pink-400 bg-white"
+                className="w-full min-h-[90px] rounded-xl border-2 border-pink-100 dark:border-gray-700 p-3 focus:outline-none focus:border-pink-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               />
               <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs text-gray-500">{content.length}/2000</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={posting || !content.trim()}
@@ -342,13 +346,9 @@ const CommunityPage: React.FC = () => {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      value={replyDrafts[post.id] ?? ''}
-                      onChange={(e) =>
-                        setReplyDrafts((prev) => ({
-                          ...prev,
-                          [post.id]: e.target.value,
-                        }))
-                      }
+                      ref={(el) => {
+                        replyInputRefs.current[post.id] = el;
+                      }}
                       maxLength={1500}
                       placeholder="Απάντησε σε αυτό το post…"
                       className="flex-1 rounded-xl border border-pink-200 px-3 py-2 text-sm focus:outline-none focus:border-pink-400"
@@ -356,7 +356,7 @@ const CommunityPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => void onSubmitReply(post.id)}
-                      disabled={replyingPostId === post.id || !(replyDrafts[post.id] ?? '').trim()}
+                      disabled={replyingPostId === post.id}
                       className="px-3 py-2 rounded-xl bg-pink-500 text-white text-sm font-semibold disabled:opacity-50"
                     >
                       {replyingPostId === post.id ? 'Στέλνεται…' : 'Απάντηση'}

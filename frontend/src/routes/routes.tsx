@@ -4,32 +4,38 @@ import React, { lazy } from 'react';
 import HomePage from '@/pages/public/HomePage';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
-import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
-import AboutPage from '@/pages/public/AboutMe';
-import MerchPage from '@/pages/public/MerchPage';
-import PrivacyPolicyPage from '@/pages/public/PrivacyPolicyPage';
-import DataProtectionPage from '@/pages/public/DataProtectionPage';
-import GloglossaEmbedPage from '@/pages/public/GloglossaEmbedPage';
+const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
+const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
+const MerchPage = lazy(() => import('@/pages/public/MerchPage'));
+const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
+const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
+const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
 
 // User Pages (Protected)
 // import NotesPage from '@/pages/private/NotesPage';
-const QuizPage = lazy(() => import('@/pages/private/QuizPage'));
-const FlashcardsPage = lazy(() => import('@/pages/private/FlashcardsPage'));
-import LeaderboardPage from '@/pages/public/LeaderboardPage';
-import AlgorithmsPage from '@/pages/private/AlgorithmsPage';
-import PaliathemataPage from '@/pages/private/PaliathemataPage';
-import OnlinePage from '@/pages/private/OnlinePage';
-const ProsanatolismosPage = lazy(() => import('@/pages/private/ProsanatolismosPage'));
-import ProfilePage from '@/pages/private/ProfilePage';
-import StudyTimerPage from '@/pages/private/StudyTimerPage';
-import NotFound from '@/pages/other/NotFound';
-import NotAuthorized from '@/pages/other/NotAuthorized';
+const loadQuizPage = () => import('@/pages/private/QuizPage');
+const loadFlashcardsPage = () => import('@/pages/private/FlashcardsPage');
+const loadCommunityPage = () => import('@/pages/private/CommunityPage');
+const loadProgressTrackerPage = () => import('@/pages/private/ProgressTrackerPage');
+const loadProsanatolismosPage = () => import('@/pages/private/ProsanatolismosPage');
 
-import SchoolsPage from '@/pages/private/SchoolsPage';
-import CommunityPage from '@/pages/private/CommunityPage';
-import ProgressTrackerPage from '@/pages/private/ProgressTrackerPage';
+const QuizPage = lazy(loadQuizPage);
+const FlashcardsPage = lazy(loadFlashcardsPage);
+const LeaderboardPage = lazy(() => import('@/pages/public/LeaderboardPage'));
+const AlgorithmsPage = lazy(() => import('@/pages/private/AlgorithmsPage'));
+const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
+const OnlinePage = lazy(() => import('@/pages/private/OnlinePage'));
+const ProsanatolismosPage = lazy(loadProsanatolismosPage);
+const ProfilePage = lazy(() => import('@/pages/private/ProfilePage'));
+const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
+const NotFound = lazy(() => import('@/pages/other/NotFound'));
+const NotAuthorized = lazy(() => import('@/pages/other/NotAuthorized'));
+
+const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
+const CommunityPage = lazy(loadCommunityPage);
+const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 // Admin Pages
-import AdminDashboard from '@/pages/admin/AdminDashboard';
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'));
 
 // Type Definition
 export type RouteConfig = {
@@ -38,6 +44,19 @@ export type RouteConfig = {
   protected?: boolean;
   roles?: Array<'user' | 'admin'>;
   children?: RouteConfig[];
+};
+
+export const prefetchCriticalPrivateRoutes = () => {
+  const importers = [
+    loadQuizPage,
+    loadFlashcardsPage,
+    loadCommunityPage,
+    loadProgressTrackerPage,
+    loadProsanatolismosPage,
+  ];
+  for (const importer of importers) {
+    void importer();
+  }
 };
 
 const routes: RouteConfig[] = [

@@ -282,6 +282,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
+  const [shouldLoadChat, setShouldLoadChat] = useState(false);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const navigate = useNavigate();
 
@@ -328,11 +329,35 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
   }, [user]);
 
+  // Defer ChatWidget loading to keep first paint fast.
+  useEffect(() => {
+    const idle = (window as any).requestIdleCallback as
+      | ((cb: () => void, opts?: { timeout: number }) => number)
+      | undefined;
+    let timeoutId: number | undefined;
+    let idleId: number | undefined;
+
+    if (idle) {
+      idleId = idle(() => setShouldLoadChat(true), { timeout: 1500 });
+    } else {
+      timeoutId = window.setTimeout(() => setShouldLoadChat(true), 900);
+    }
+
+    return () => {
+      if (timeoutId) window.clearTimeout(timeoutId);
+      if (idleId && (window as any).cancelIdleCallback) {
+        (window as any).cancelIdleCallback(idleId);
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
-      <Suspense fallback={null}>
-        <ChatWidget />
-      </Suspense>
+      {shouldLoadChat && (
+        <Suspense fallback={null}>
+          <ChatWidget />
+        </Suspense>
+      )}
       {/* Navbar Container */}
       <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
         <div className="container mx-auto px-4 sm:px-6">
@@ -503,6 +528,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                   </div>
+                  <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
+
+                  {user && (
+                    <>
+                      <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>
+                        Προφίλ
+                      </MobileNavButton>
+                      <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
+                    </>
+                  )}
+
                   <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
                     Αρχική
                   </MobileNavButton>
@@ -548,10 +584,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
                         Παλιά Θέματα
                       </MobileNavButton>
-                      <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>
-                        Προφίλ
-                      </MobileNavButton>
-                      <div className="pt-4 mt-4 border-t border-gray-100">
+                      <div className="pt-4 mt-4 border-t border-pink-100 dark:border-gray-800">
                         <button
                           onClick={async () => {
                             await logout();
