@@ -88,7 +88,7 @@ app.add_middleware(
         "https://technotesgr.gr",
         "https://www.technotesgr.gr",
     ] + _extra_cors_origins,
-    allow_origin_regex=r"https://.*\.netlify\.app",
+    allow_origin_regex=r"https://.*\.(netlify\.app|vercel\.app)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

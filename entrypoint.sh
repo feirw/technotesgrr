@@ -36,16 +36,28 @@ write_frontend_env_js
 cd /backend || { echo "Backend directory not found"; exit 1; }
 
 echo "Starting FastAPI backend"
-# Start Uvicorn with proper host binding
-uvicorn server:app --host 0.0.0.0 --port 8001 &
+# Use python -m so PATH is not required (Alpine + pip --break-system-packages)
+python3 -m uvicorn server:app --host 0.0.0.0 --port 8001 &
 BACKEND_PID=$!
 
-echo "Waiting for backend to start..."
-sleep 30
-
-if ! kill -0 $BACKEND_PID 2>/dev/null; then
-    echo "Backend failed to start at initialization, exiting"
+echo "Waiting for backend health..."
+i=0
+while [ "$i" -lt 60 ]; do
+  if python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/health', timeout=2)" 2>/dev/null; then
+    echo "Backend is up."
+    break
+  fi
+  if ! kill -0 $BACKEND_PID 2>/dev/null; then
+    echo "Backend process exited before becoming healthy — check logs / DATABASE_URL / deps"
     exit 1
+  fi
+  i=$((i + 1))
+  sleep 1
+done
+
+if ! python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/health', timeout=2)" 2>/dev/null; then
+  echo "Backend did not respond on /api/health in time"
+  exit 1
 fi
 
 # Start Nginx
