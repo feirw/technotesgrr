@@ -16,25 +16,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ✅ Νέο SDK - όχι το deprecated google.generativeai
-from google import genai
-from google.genai import types
+GEMINI_API_KEY = (os.getenv("GEMINI_API_KEY") or "").strip()
 
-# ── API Key check ─────────────────────────────────────────────────────────────
+try:
+    from google import genai
+    from google.genai import types
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    _GENAI_IMPORT_OK = True
+except ImportError:
+    genai = None  # type: ignore[assignment, misc]
+    types = None  # type: ignore[assignment, misc]
+    _GENAI_IMPORT_OK = False
 
-if not GEMINI_API_KEY:
-    raise EnvironmentError(
-        "❌ Δεν βρέθηκε το GEMINI_API_KEY στο .env αρχείο!\n"
-        "   Πρόσθεσε: GEMINI_API_KEY=your_api_key_here"
-    )
-
-# ── Client ────────────────────────────────────────────────────────────────────
-
-client = genai.Client(api_key=GEMINI_API_KEY)
-
-# ── System prompt ─────────────────────────────────────────────────────────────
+_client = None
 
 SYSTEM_PROMPT = """
 Εισαι ο ψηφιακος βοηθος του TechNotesGR, μια εκπαιδευτικη πλατφορμα για το μαθημα ΑΕΠΠ
@@ -54,16 +48,21 @@ SYSTEM_PROMPT = """
 - Κρατα τις απαντησεις συνοπτικες αλλα πληρεις.
 """.strip()
 
-# ── Chat history (in-memory, by session) ──────────────────────────────────────
-
 _histories = {}
 _MAX_HISTORY_ITEMS = 20
 _MAX_SESSIONS = 200
 
-# ── Public API ────────────────────────────────────────────────────────────────
+
+def _get_genai_client():
+    global _client
+    if not _GENAI_IMPORT_OK or not GEMINI_API_KEY:
+        return None
+    if _client is None:
+        _client = genai.Client(api_key=GEMINI_API_KEY)
+    return _client
+
 
 def _get_session_history(session_id: str):
-    # Basic cap to avoid unbounded memory growth on long-running servers.
     if len(_histories) > _MAX_SESSIONS and session_id not in _histories:
         oldest_key = next(iter(_histories))
         _histories.pop(oldest_key, None)
@@ -71,12 +70,20 @@ def _get_session_history(session_id: str):
 
 
 def get_ai_response(message: str, session_id: str = "default") -> str:
+    if not _GENAI_IMPORT_OK:
+        return "Ο βοηθός AI δεν είναι διαθέσιμος (λείπει η βιβλιοθήκη google-genai στον server)."
+    if not GEMINI_API_KEY:
+        return "Ο βοηθός AI δεν είναι ρυθμισμένος (πρόσθεσε GEMINI_API_KEY στο .env του backend)."
+
+    client = _get_genai_client()
+    if client is None:
+        return "Ο βοηθός AI δεν είναι ρυθμισμένος (πρόσθεσε GEMINI_API_KEY στο .env του backend)."
+
     history = _get_session_history(session_id)
+    assert types is not None
 
     try:
-        history.append(
-            types.Content(role="user", parts=[types.Part(text=message)])
-        )
+        history.append(types.Content(role="user", parts=[types.Part(text=message)]))
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
@@ -90,11 +97,8 @@ def get_ai_response(message: str, session_id: str = "default") -> str:
 
         reply = response.text or "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
 
-        history.append(
-            types.Content(role="model", parts=[types.Part(text=reply)])
-        )
+        history.append(types.Content(role="model", parts=[types.Part(text=reply)]))
 
-        # Κρατα μονο τα τελευταια 20 μηνυματα
         if len(history) > _MAX_HISTORY_ITEMS:
             _histories[session_id] = history[-_MAX_HISTORY_ITEMS:]
 

@@ -1,9 +1,9 @@
 import React, { lazy } from 'react';
 
-// Public Pages
+// Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
-import LoginPage from '@/pages/auth/LoginPage';
-import RegisterPage from '@/pages/auth/RegisterPage';
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
 const MerchPage = lazy(() => import('@/pages/public/MerchPage'));

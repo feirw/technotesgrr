@@ -16,6 +16,40 @@ const responseCache = new Map<string, { expiresAt: number; data: unknown }>();
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const createTimeoutError = (): Error => {
+  if (typeof DOMException !== 'undefined') {
+    return new DOMException('The operation timed out.', 'TimeoutError');
+  }
+  const err = new Error('The operation timed out.');
+  err.name = 'TimeoutError';
+  return err;
+};
+
+const timeoutSignal = (ms: number): AbortSignal => {
+  if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+    return AbortSignal.timeout(ms);
+  }
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(createTimeoutError()), ms);
+  return controller.signal;
+};
+
+const formatHttpErrorDetail = (detail: unknown): string => {
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => {
+        if (item && typeof item === 'object' && 'msg' in item) {
+          return String((item as { msg?: string }).msg ?? JSON.stringify(item));
+        }
+        return JSON.stringify(item);
+      })
+      .join('; ');
+  }
+  if (detail && typeof detail === 'object') return JSON.stringify(detail);
+  return String(detail);
+};
+
 const makeRequestKey = (url: string, options: RequestInit, explicitKey?: string) => {
   if (explicitKey) return explicitKey;
   const method = (options.method || 'GET').toUpperCase();
@@ -47,14 +81,16 @@ async function requestJson<T>(url: string, options: ApiFetchOptions): Promise<T>
     try {
       const response = await fetch(url, {
         ...fetchOptions,
-        signal: AbortSignal.timeout(timeoutMs),
+        signal: timeoutSignal(timeoutMs),
       });
 
       if (!response.ok) {
         let detail = `HTTP ${response.status}`;
         try {
-          const body = (await response.json()) as { detail?: string };
-          if (body?.detail) detail = body.detail;
+          const body = (await response.json()) as { detail?: unknown };
+          if (body?.detail !== undefined && body?.detail !== null) {
+            detail = formatHttpErrorDetail(body.detail);
+          }
         } catch {
           // Keep fallback detail
         }

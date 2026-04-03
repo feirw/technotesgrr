@@ -28,7 +28,10 @@ interface AuthContextType {
   user: UserProfile | null;
   role: UserRole;
   isAdmin: boolean;
+  /** True until getSession() (or fallback) has finished resolving. */
   loading: boolean;
+  /** True while DB profile is loading after we already have a session user (optimistic UI). */
+  profileLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, username: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -47,6 +50,7 @@ const AuthContext = createContext<AuthContextType>({
   role: null,
   isAdmin: false,
   loading: true,
+  profileLoading: false,
   login: async () => missingProviderError(),
   signup: async () => missingProviderError(),
   logout: async () => missingProviderError(),
@@ -58,6 +62,14 @@ const AuthContext = createContext<AuthContextType>({
 
 export const useAuth = () => useContext(AuthContext);
 
+const devLog = (...args: unknown[]) => {
+  if (import.meta.env.DEV) console.log(...args);
+};
+
+const devWarn = (...args: unknown[]) => {
+  if (import.meta.env.DEV) console.warn(...args);
+};
+
 // Helper: Promise with timeout
 const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
   return Promise.race([
@@ -68,9 +80,29 @@ const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number): Promise<T> => 
   ]);
 };
 
+/** Session-only snapshot so the shell can render before profiles row loads (fast refresh). */
+function optimisticUserFromSession(baseUser: SupabaseUser): UserProfile {
+  const meta = (baseUser.user_metadata || {}) as Record<string, unknown>;
+  const appMeta = (baseUser.app_metadata || {}) as Record<string, unknown>;
+  const metaUsername = typeof meta.username === 'string' ? meta.username : undefined;
+  const roleHint =
+    (typeof meta.role === 'string' && meta.role) ||
+    (typeof appMeta.role === 'string' && appMeta.role) ||
+    '';
+  let role: UserRole = 'user';
+  if (String(roleHint).toLowerCase() === 'admin') role = 'admin';
+
+  return {
+    ...baseUser,
+    username: metaUsername ?? baseUser.email?.split('@')[0] ?? 'User',
+    role,
+  } as UserProfile;
+}
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   // Track initialization to prevent duplicate session checks
   const isInitialized = useRef(false);
@@ -101,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await withTimeout<{ data: any; error: any }>(profilePromise, 5000);
 
       if (error) {
-        console.warn('⚠️ Could not fetch profile, using defaults:', error.message);
+        devWarn('⚠️ Could not fetch profile, using defaults:', error.message);
         // Return default profile - allows app to continue functioning
         return {
           ...baseUser,
@@ -110,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } as UserProfile;
       }
 
-      console.log('📋 Profile data fetched:', {
+      devLog('📋 Profile data fetched:', {
         userId: baseUser.id,
         role: data?.role,
         roleType: typeof data?.role,
@@ -136,7 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: normalizedRole,
       } as UserProfile;
 
-      console.log('✅ Final profile object:', {
+      devLog('✅ Final profile object:', {
         userId: profile.id,
         role: profile.role,
         roleFromData: roleValue,
@@ -168,7 +200,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Safety timeout - ensures loading state doesn't hang forever
     loadingTimeoutRef.current = setTimeout(() => {
       if (loading) {
-        console.warn('⚠️ Auth loading timeout - forcing to false after 12 seconds');
+        devWarn('⚠️ Auth loading timeout - forcing to false after 12 seconds');
         setLoading(false);
       }
     }, 12000);
@@ -179,7 +211,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isInitialized.current = true;
 
       if (isMockMode) {
-        console.warn('🔧 MOCK MODE - Auth disabled');
+        devWarn('🔧 MOCK MODE - Auth disabled');
+        setProfileLoading(false);
         setLoading(false);
         if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
         return;
@@ -197,32 +230,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           error = sessionRes?.error ?? null;
         } catch (sessionErr) {
           // Fallback: try getUser() once before concluding user is logged out.
-          console.warn('⚠️ getSession timed out/failed, trying getUser fallback...');
+          devWarn('⚠️ getSession timed out/failed, trying getUser fallback...');
           try {
             const userRes = await withTimeout(supabase.auth.getUser(), 8000);
             if (userRes?.data?.user) {
-              const profile = await fetchProfileSafe(userRes.data.user);
-              setUser(profile);
-              console.log('✅ Session restored via getUser fallback');
+              const authUser = userRes.data.user;
+              setUser(optimisticUserFromSession(authUser));
+              setProfileLoading(true);
+              setLoading(false);
+              if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+              try {
+                const profile = await fetchProfileSafe(authUser);
+                setUser(profile);
+              } finally {
+                setProfileLoading(false);
+              }
+              devLog('✅ Session restored via getUser fallback');
               return;
             }
           } catch (fallbackErr) {
-            console.warn('⚠️ getUser fallback failed:', fallbackErr);
+            devWarn('⚠️ getUser fallback failed:', fallbackErr);
           }
         }
 
         if (error) {
-          console.warn('⚠️ Session fetch error (non-critical):', error.message);
+          devWarn('⚠️ Session fetch error (non-critical):', error.message);
           // Do not force logout immediately on refresh. Continue and let auth listener update state.
         }
 
         if (session?.user) {
-          // Session exists - restore user profile
-          const profile = await fetchProfileSafe(session.user);
-          setUser(profile);
-          console.log('✅ Session restored on page load - user stays on current page');
+          const authUser = session.user;
+          setUser(optimisticUserFromSession(authUser));
+          setProfileLoading(true);
+          setLoading(false);
+          if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+          try {
+            const profile = await fetchProfileSafe(authUser);
+            setUser(profile);
+            devLog('✅ Session restored on page load - user stays on current page');
+          } finally {
+            setProfileLoading(false);
+          }
         } else {
-          console.log('ℹ️ No active session found');
+          devLog('ℹ️ No active session found');
         }
       } catch (err) {
         console.error('❌ Auth init error:', err);
@@ -248,19 +298,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(`🔔 Auth Event: ${event}`);
+      devLog(`🔔 Auth Event: ${event}`);
 
       // Only process events AFTER initial load is complete
       // This prevents duplicate session restoration on page load
       if (isInitialized.current) {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
           if (session?.user) {
-            const profile = await fetchProfileSafe(session.user);
-            setUser(profile);
+            const authUser = session.user;
+            setUser(optimisticUserFromSession(authUser));
+            setProfileLoading(true);
             setLoading(false);
+            try {
+              const profile = await fetchProfileSafe(authUser);
+              setUser(profile);
+            } finally {
+              setProfileLoading(false);
+            }
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
+          setProfileLoading(false);
           setLoading(false);
         }
       }
@@ -281,7 +339,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    */
   const login = async (email: string, password: string) => {
     const normalizedEmail = email.trim().toLowerCase();
-    console.log('🔐 Login attempt for:', normalizedEmail);
+    devLog('🔐 Login attempt for:', normalizedEmail);
 
     if (isMockMode) {
       console.error('❌ Cannot login - Supabase not configured');
@@ -300,7 +358,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
 
-      console.log('✅ Login successful');
+      devLog('✅ Login successful');
 
       if (data.user) {
         // Fetch user profile and update state
@@ -312,7 +370,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Note: Redirect is handled by LoginPage component
         // This allows the user to stay on their intended page after login
-        console.log('✅ Login successful, user state updated');
+        devLog('✅ Login successful, user state updated');
       }
     } catch (error: any) {
       console.error('❌ Login failed:', error);
@@ -337,7 +395,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signup = async (email: string, password: string, username: string) => {
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedUsername = username.trim();
-    console.log('📝 Signup attempt for:', normalizedEmail);
+    devLog('📝 Signup attempt for:', normalizedEmail);
 
     if (isMockMode) {
       throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
@@ -379,15 +437,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           if (profileError) {
             // If profile already exists or other error, log but don't fail signup
-            console.warn('⚠️ Profile creation warning:', profileError.message);
+            devWarn('⚠️ Profile creation warning:', profileError.message);
           }
         } catch (profileErr) {
           // Profile creation is optional - signup can still succeed
-          console.warn('⚠️ Profile creation failed (non-critical):', profileErr);
+          devWarn('⚠️ Profile creation failed (non-critical):', profileErr);
         }
       }
 
-      console.log('✅ Signup successful');
+      devLog('✅ Signup successful');
     } catch (error: any) {
       console.error('❌ Signup failed:', error);
 
@@ -407,7 +465,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * This keeps navigation logic out of the context
    */
   const logout = async () => {
-    console.log('👋 Logging out...');
+    devLog('👋 Logging out...');
 
     if (!isMockMode) {
       try {
@@ -419,6 +477,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Clear user state
     setUser(null);
+    setProfileLoading(false);
 
     // Note: Navigation is handled by the component that calls logout
     // This keeps the context focused on auth state management
@@ -497,6 +556,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     role: normalizedRole,
     isAdmin: normalizedRole === 'admin',
     loading,
+    profileLoading,
     login,
     signup,
     logout,

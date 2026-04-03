@@ -20,13 +20,10 @@ type ProtectedRouteProps = {
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, children }) => {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading, profileLoading, isAdmin } = useAuth();
   const location = useLocation();
 
-  // CRITICAL: Show loading spinner while auth state is being restored
-  // This is the key to preserving the current page on refresh
-  // The session check happens in AuthContext, and we wait for it to complete
-  // before making any redirect decisions
+  // Wait for getSession / initial resolution only (fast — local storage).
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -49,7 +46,22 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false, c
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // User exists, check if admin access is required
+  // Admin routes: wait for DB profile so role is correct (avoids wrong redirect on refresh).
+  if (user && requireAdmin && profileLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <motion.div
+            className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          />
+          <p className="text-gray-600 dark:text-gray-400">Φόρτωση...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (user && requireAdmin && !isAdmin) {
     return <Navigate to="/not-authorized" replace />;
   }

@@ -10,8 +10,10 @@ export default defineConfig({
     }
   },
   build: {
+    target: 'es2022',
     sourcemap: false,
     cssCodeSplit: true,
+    modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
         manualChunks: {
@@ -19,6 +21,7 @@ export default defineConfig({
           motion_vendor: ['framer-motion'],
           md_vendor: ['react-markdown'],
           supabase_vendor: ['@supabase/supabase-js'],
+          lucide_vendor: ['lucide-react'],
         },
       },
     },

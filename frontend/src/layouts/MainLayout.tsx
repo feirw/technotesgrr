@@ -41,6 +41,7 @@ import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
+import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
@@ -329,6 +330,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
   }, [user]);
 
+  // Prefetch heavy private routes only when logged in (saves bandwidth/CPU for guests).
+  useEffect(() => {
+    if (!user) return;
+    const run = () => prefetchCriticalPrivateRoutes();
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(run, { timeout: 8000 });
+    } else {
+      window.setTimeout(run, 3000);
+    }
+  }, [user]);
+
   // Defer ChatWidget loading to keep first paint fast.
   useEffect(() => {
     const idle = (window as any).requestIdleCallback as
@@ -368,6 +380,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <motion.img
                   src={technotesLogo}
                   alt="Technotesgr"
+                  width={40}
+                  height={40}
+                  decoding="async"
+                  fetchPriority="high"
                   className="w-10 h-10 object-contain"
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}

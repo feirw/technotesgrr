@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import QuizDialog from '@/components/private/QuizDialog';
 import { fetchAllQuizzes } from '@/utils/quizUtils';
-import { useAuth } from '@/contexts/AuthContext';
 
 // --- Types & Interfaces ---
 
@@ -71,16 +70,10 @@ interface QuizStatus {
 // --- Constants ---
 
 const BRAND = 'rgb(236, 72, 153)'; // pink-600
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const BRAND_DARK = 'rgb(187, 12, 60)'; // A deeper red/pink for gradients
 
 // --- Component ---
 
 const QuizPage: React.FC = () => {
-  // 1. Auth Context
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user } = useAuth();
-
   // --- QuizPage State ---
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState<boolean>(false);
   const [selectedQuiz, setSelectedQuiz] = useState<ProcessedQuiz | null>(null);
@@ -114,7 +107,17 @@ const QuizPage: React.FC = () => {
 
       // Load progress from localStorage
       const storedProgress = localStorage.getItem('quizProgress');
-      const initialAnswers: QuizProgress = storedProgress ? JSON.parse(storedProgress) : {};
+      let initialAnswers: QuizProgress = {};
+      if (storedProgress) {
+        try {
+          const parsed = JSON.parse(storedProgress) as unknown;
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            initialAnswers = parsed as QuizProgress;
+          }
+        } catch {
+          initialAnswers = {};
+        }
+      }
 
       if (!isMountedRef.current) return;
       setCategoryAnswers(initialAnswers);
@@ -173,8 +176,7 @@ const QuizPage: React.FC = () => {
     quizId: string,
     questionIdx: number,
     selectedIdx: number,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    isCorrect: boolean
+    _isCorrect: boolean
   ) => {
     setCategoryAnswers((prev) => {
       const prevQuiz = prev[quizId] ? { ...prev[quizId] } : {};
@@ -211,11 +213,8 @@ const QuizPage: React.FC = () => {
   };
 
   // Quiz Menu Handlers
-  const handleQuizCategorySelect = (quiz: ProcessedQuiz, startIdx: number = 0) => {
+  const handleQuizCategorySelect = (quiz: ProcessedQuiz, _startIdx = 0) => {
     setSelectedQuiz(quiz);
-    // Note: startIdx isn't strictly passed to QuizDialog in the original code via a prop,
-    // usually QuizDialog handles "resume" logic internally or via 'selectedAnswers' prop.
-    // If QuizDialog accepts a starting index, pass it there.
     setIsQuizDialogOpen(true);
   };
 
@@ -225,7 +224,17 @@ const QuizPage: React.FC = () => {
     // For now, relying on handleQuestionAnswered updates or a page refresh.
     // To properly refresh computed stats:
     const storedProgress = localStorage.getItem('quizProgress');
-    const currentAnswers: QuizProgress = storedProgress ? JSON.parse(storedProgress) : {};
+    let currentAnswers: QuizProgress = {};
+    if (storedProgress) {
+      try {
+        const parsed = JSON.parse(storedProgress) as unknown;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          currentAnswers = parsed as QuizProgress;
+        }
+      } catch {
+        currentAnswers = {};
+      }
+    }
 
     setQuizzes((prev) =>
       prev.map((quiz) => {

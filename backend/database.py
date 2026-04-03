@@ -420,9 +420,9 @@ def get_community_posts(limit: int = 30, offset: int = 0):
                 (limit, offset),
             )
             rows = cursor.fetchall()
-            cursor.execute("SELECT COUNT(*) FROM community_posts")
-            total = cursor.fetchone()["count"]
-            return [dict(r) for r in rows], int(total)
+            cursor.execute("SELECT COUNT(*)::bigint AS total_count FROM community_posts")
+            total = int(cursor.fetchone()["total_count"])
+            return [dict(r) for r in rows], total
 
 def get_community_replies_for_posts(post_ids: List[int]) -> Dict[int, List[dict]]:
     """Fetch replies grouped by post id."""

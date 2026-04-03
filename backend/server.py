@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-import asyncio
+import logging
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -14,11 +14,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+logger = logging.getLogger("technotesgr")
+
+# Generic message for unexpected server errors (details are logged, not sent to clients).
+INTERNAL_ERROR_DETAIL = "Προέκυψε εσωτερικό σφάλμα. Δοκίμασε ξανά αργότερα."
+
 # ── AI Service ────────────────────────────────────────────────────────────────
 try:
     from ai_service import get_ai_response
 except Exception:
-    def get_ai_response(msg: str) -> str:
+    def get_ai_response(msg: str, session_id: str = "default") -> str:
         return "AI Service not configured."
 
 # ── Database ──────────────────────────────────────────────────────────────────
@@ -188,8 +193,8 @@ async def chat_with_bot(chat_data: ChatMessage):
             chat_data.session_id or "default",
         )
         return {"reply": response_text}
-    except Exception as e:
-        print(f"[Chat] error: {e}")
+    except Exception:
+        logger.exception("chat_with_bot failed")
         raise HTTPException(
             status_code=500,
             detail="Προέκυψε σφάλμα κατά την επεξεργασία του μηνύματος.",
@@ -214,8 +219,9 @@ async def get_quiz_questions(
             "offset": offset,
             "has_more": has_more,
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading quiz questions: {e}")
+    except Exception:
+        logger.exception("get_quiz_questions failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 @app.get("/api/quiz/questions/{chapter}")
@@ -223,8 +229,9 @@ async def get_quiz_questions_by_chapter(chapter: str):
     try:
         questions, _ = get_quizzes_page(limit=5000, offset=0, chapter=chapter)
         return {"questions": questions, "chapter": chapter}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading quiz questions: {e}")
+    except Exception:
+        logger.exception("get_quiz_questions_by_chapter failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 @app.post("/api/quiz/submit")
@@ -239,7 +246,14 @@ async def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_curren
             (idx for idx, a in enumerate(answers) if a.get("correct") is True), None
         )
         if correct_answer_idx is None:
-            raise HTTPException(status_code=500, detail="Question has no correct answer defined.")
+            logger.error(
+                "Quiz question has no correct answer: question_id=%s",
+                submission.question_id,
+            )
+            raise HTTPException(
+                status_code=500,
+                detail="Αυτή η ερώτηση δεν είναι διαθέσιμη αυτή τη στιγμή.",
+            )
 
         is_correct = submission.selected_answer == correct_answer_idx
         points_earned = question.get("points", 10) if is_correct else 0
@@ -263,8 +277,9 @@ async def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_curren
         }
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error submitting quiz answer: {e}")
+    except Exception:
+        logger.exception("submit_quiz_answer failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Flashcards ────────────────────────────────────────────────────────────────
@@ -284,8 +299,9 @@ async def get_flashcards(
             "offset": offset,
             "has_more": offset + limit < total,
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading flashcards: {e}")
+    except Exception:
+        logger.exception("get_flashcards failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 @app.get("/api/flashcards/{chapter}")
@@ -293,8 +309,9 @@ async def get_flashcards_by_chapter(chapter: str):
     try:
         flashcards, _ = get_flashcards_page(limit=5000, offset=0, chapter=chapter)
         return {"flashcards": flashcards, "chapter": chapter}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading flashcards: {e}")
+    except Exception:
+        logger.exception("get_flashcards_by_chapter failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Categories ────────────────────────────────────────────────────────────────
@@ -315,8 +332,9 @@ async def get_categories():
             "flashcard_categories": flash_cats,
             "all_categories": sorted(set(quiz_cats + flash_cats)),
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading categories: {e}")
+    except Exception:
+        logger.exception("get_categories failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Leaderboard ───────────────────────────────────────────────────────────────
@@ -327,8 +345,9 @@ async def get_leaderboard(month: Optional[str] = None):
         leaderboard = get_leaderboard_data(month)
         current_month = month or datetime.now().strftime("%Y-%m")
         return {"leaderboard": leaderboard, "month": current_month}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    except Exception:
+        logger.exception("get_leaderboard failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Contact ───────────────────────────────────────────────────────────────────
@@ -361,8 +380,9 @@ async def contact_form(contact_data: ContactForm):
             "submission_id": submission_id,
             "email_sent": email_sent,
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error saving contact form: {e}")
+    except Exception:
+        logger.exception("contact_form failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Career Orientation ────────────────────────────────────────────────────────
@@ -379,7 +399,7 @@ async def submit_career_orientation(
         )
     try:
         result_id = save_career_orientation_result(
-            user_id=user.id,
+            user_id=str(user.id),
             answers=submission.answers,
             results=submission.results,
         )
@@ -390,19 +410,21 @@ async def submit_career_orientation(
         }
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error saving results: {e}")
+    except Exception:
+        logger.exception("submit_career_orientation failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 @app.get("/api/career-orientation/result")
 async def get_career_orientation_result_endpoint(user=Depends(get_current_user)):
     try:
-        result = get_career_orientation_result(user.id)
+        result = get_career_orientation_result(str(user.id))
         if result:
             return {"found": True, "result": result}
         return {"found": False, "message": "No career orientation results found for this user"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching result: {e}")
+    except Exception:
+        logger.exception("get_career_orientation_result failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 @app.post("/api/metrics/web-vitals")
@@ -425,8 +447,9 @@ async def ingest_web_vitals(metric: WebVitalEvent):
                 },
             )
         return {"ok": True}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error ingesting web vitals: {e}")
+    except Exception:
+        logger.exception("ingest_web_vitals failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Community Forum ────────────────────────────────────────────────────────────
@@ -453,8 +476,9 @@ async def list_community_posts(
             "offset": offset,
             "has_more": offset + limit < total,
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching community posts: {e}")
+    except Exception:
+        logger.exception("list_community_posts failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 @app.post("/api/community/posts")
@@ -478,8 +502,9 @@ async def add_community_post(payload: CommunityPostCreate, user=Depends(get_curr
             content=content,
         )
         return {"post": post}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating community post: {e}")
+    except Exception:
+        logger.exception("add_community_post failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 @app.post("/api/community/posts/{post_id}/replies")
 async def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=Depends(get_current_user)):
@@ -506,8 +531,9 @@ async def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=
         if str(e) == "POST_NOT_FOUND":
             raise HTTPException(status_code=404, detail="Το post δεν βρέθηκε.")
         raise HTTPException(status_code=400, detail="Μη έγκυρο αίτημα.")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating reply: {e}")
+    except Exception:
+        logger.exception("add_community_reply failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 @app.delete("/api/community/posts/{post_id}")
 async def remove_community_post(post_id: int, user=Depends(get_current_user)):
@@ -515,7 +541,7 @@ async def remove_community_post(post_id: int, user=Depends(get_current_user)):
         deleted = delete_community_post(
             post_id=post_id,
             requester_user_id=str(user.id),
-            requester_is_admin=is_user_admin(user.id),
+            requester_is_admin=is_user_admin(str(user.id)),
         )
         if not deleted:
             raise HTTPException(status_code=404, detail="Το post δεν βρέθηκε.")
@@ -524,8 +550,9 @@ async def remove_community_post(post_id: int, user=Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Δεν έχεις δικαίωμα να διαγράψεις αυτό το post.")
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting community post: {e}")
+    except Exception:
+        logger.exception("remove_community_post failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Admin ─────────────────────────────────────────────────────────────────────
@@ -533,13 +560,14 @@ async def remove_community_post(post_id: int, user=Depends(get_current_user)):
 @app.get("/api/admin/dashboard")
 async def get_dashboard_stats(user=Depends(get_current_user)):
     try:
-        if not is_user_admin(user.id):
+        if not is_user_admin(str(user.id)):
             raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
         return get_admin_stats()
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception("get_dashboard_stats failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 @app.get("/api/admin/users")
 async def get_admin_users_endpoint(
@@ -548,7 +576,7 @@ async def get_admin_users_endpoint(
     user=Depends(get_current_user),
 ):
     try:
-        if not is_user_admin(user.id):
+        if not is_user_admin(str(user.id)):
             raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
         users, total = get_admin_users(limit=limit, offset=offset)
         return {
@@ -559,8 +587,9 @@ async def get_admin_users_endpoint(
         }
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception("get_admin_users_endpoint failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

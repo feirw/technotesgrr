@@ -7,12 +7,8 @@ import time
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-# Accept multiple common env names so deployment configs are less brittle.
-SUPABASE_SECRET_KEY = (
-    os.getenv("SUPABASE_SECRET_KEY")
-    or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-    or os.getenv("SUPABASE_ANON_KEY")
-)
+# Server-side token verification must use the service role (or an explicit server secret), not the anon key.
+SUPABASE_SECRET_KEY = os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 # Check if Supabase is configured
 HAS_SUPABASE_CONFIG = (
@@ -24,7 +20,7 @@ HAS_SUPABASE_CONFIG = (
 
 if not HAS_SUPABASE_CONFIG:
     print("⚠️ WARNING: Supabase auth env vars missing")
-    print("Expected: SUPABASE_URL + one of SUPABASE_SECRET_KEY/SUPABASE_SERVICE_ROLE_KEY/SUPABASE_ANON_KEY")
+    print("Expected: SUPABASE_URL + SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY (service role, not anon)")
     print("🔧 Backend auth will not work properly!")
     supabase = None
 else:

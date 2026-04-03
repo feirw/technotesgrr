@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useState, Suspense } from 'react';
+import React, { useCallback, useEffect, useId, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getBackendUrl } from '@/utils/backendUrl';
 import { useNavigate } from 'react-router-dom';
@@ -236,6 +236,8 @@ interface AnimatedImageBoxProps {
   delay: number;
   rotation: number;
   widthClass: string;
+  loading?: 'eager' | 'lazy';
+  fetchPriority?: 'high' | 'low';
 }
 
 const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
@@ -244,6 +246,8 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
   delay,
   rotation,
   widthClass,
+  loading = 'lazy',
+  fetchPriority = 'low',
 }) => (
   <motion.div
     className={`relative w-full h-auto bg-white/90 border-4 border-pink-500 rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
@@ -265,6 +269,9 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
     <img
       src={src}
       alt={alt}
+      loading={loading}
+      decoding="async"
+      fetchPriority={fetchPriority}
       className="w-full h-full object-cover rounded-md"
       style={{ filter: 'grayscale(0.1) brightness(1.05)' }}
     />
@@ -288,7 +295,11 @@ const Section: React.FC<SectionProps> = ({
   children,
   withGradient = false,
 }) => (
-  <section id={id} className={`py-20 relative overflow-hidden ${className}`}>
+  <section
+    id={id}
+    className={`py-20 relative overflow-hidden ${className}`}
+    style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 480px' }}
+  >
     {withGradient && (
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pink-50/30 to-transparent dark:via-pink-900/10 pointer-events-none" />
     )}
@@ -726,7 +737,7 @@ const HomePage: React.FC = () => {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-500">
-        <HeartsRain count={isSmall ? 8 : 14} />
+        <HeartsRain count={isSmall ? 5 : 10} />
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 origin-left z-50 shadow-lg shadow-pink-500/50"
           style={{ scaleX }}
@@ -801,6 +812,8 @@ const HomePage: React.FC = () => {
                   delay={image.delay}
                   rotation={image.rotation}
                   widthClass="aspect-[4/3] h-auto"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'low'}
                 />
               ))}
             </div>
@@ -835,41 +848,33 @@ const HomePage: React.FC = () => {
           title="Τι λένε οι μαθητές μας;"
           className="bg-gradient-to-b from-transparent via-pink-50/50 to-transparent dark:via-purple-900/10"
         >
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center py-20">
-                <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
-              </div>
-            }
+          <motion.div
+            className="max-w-5xl mx-auto space-y-6 sm:space-y-8"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.div
-              className="max-w-5xl mx-auto space-y-6 sm:space-y-8"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              {reviewsData.map((review, idx) => (
-                <motion.div
-                  key={idx}
-                  className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50"
-                  initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ delay: idx * 0.1, duration: 0.6 }}
-                  whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)' }}
-                >
-                  <StarRating value={review.rating} />
-                  <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">
-                    "{review.description}"
-                  </p>
-                  <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">
-                    — {review.name}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </Suspense>
+            {reviewsData.map((review, idx) => (
+              <motion.div
+                key={idx}
+                className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50"
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ delay: idx * 0.1, duration: 0.6 }}
+                whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.2)' }}
+              >
+                <StarRating value={review.rating} />
+                <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">
+                  "{review.description}"
+                </p>
+                <p className="text-pink-600 dark:text-pink-400 font-bold mt-4 text-right">
+                  — {review.name}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
         </Section>
 
         {/* FAQ Section */}

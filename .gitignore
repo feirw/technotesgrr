@@ -9,8 +9,8 @@
 # Dependencies
 # ===================
 node_modules/
-/build/
-/dist/
+build/
+dist/
 
 # ===================
 # Python
