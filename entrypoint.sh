@@ -1,6 +1,37 @@
 #!/bin/sh
 set -e
 
+# Inject Supabase (and optional backend) public config for the SPA — Vite only bakes env at build time;
+# this lets Docker pass secrets at runtime without rebuilding the frontend.
+write_frontend_env_js() {
+  HTML_ROOT="/usr/share/nginx/html"
+  if [ ! -d "$HTML_ROOT" ]; then
+    return 0
+  fi
+  python3 <<'PY'
+import json
+import os
+from pathlib import Path
+
+out = Path("/usr/share/nginx/html/env.js")
+payload = {
+    "VITE_SUPABASE_URL": os.environ.get("VITE_SUPABASE_URL", "") or "",
+    "VITE_SUPABASE_ANON_KEY": os.environ.get("VITE_SUPABASE_ANON_KEY", "") or "",
+    "VITE_BACKEND_URL": os.environ.get("VITE_BACKEND_URL", "") or "",
+}
+# Merge with any stub from the image so we only override known keys
+out.write_text(
+    "window.__ENV__=window.__ENV__||{};Object.assign(window.__ENV__,"
+    + json.dumps(payload)
+    + ");",
+    encoding="utf-8",
+)
+PY
+  echo "Wrote runtime env.js for SPA (merge public keys from container env)."
+}
+
+write_frontend_env_js
+
 # Start the FastAPI backend
 cd /backend || { echo "Backend directory not found"; exit 1; }
 

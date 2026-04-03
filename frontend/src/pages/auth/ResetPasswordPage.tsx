@@ -17,7 +17,7 @@ const ResetPasswordPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!isSupabaseConfigured) {
+    if (!isSupabaseConfigured()) {
       setError('Το authentication δεν είναι ρυθμισμένο στο deployment.');
       return;
     }

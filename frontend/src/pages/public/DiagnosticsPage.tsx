@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { AlertCircle, CheckCircle, XCircle } from 'lucide-react';
-import { supabase, isMockMode, isSupabaseConfigured } from '@/utils/supabaseClient';
+import {
+  supabase,
+  isMockMode,
+  isSupabaseConfigured,
+  getSupabaseEnvDebug,
+} from '@/utils/supabaseClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 interface TestResult {
   name: string;
@@ -27,21 +33,24 @@ const DiagnosticsPage: React.FC = () => {
 
     try {
       // Test 1: Environment Variables
+      const envDbg = getSupabaseEnvDebug();
+      const configured = isSupabaseConfigured();
       results.tests.push({
         name: 'Environment Variables',
-        status: isSupabaseConfigured ? 'pass' : 'fail',
-        message: isSupabaseConfigured
+        status: configured ? 'pass' : 'fail',
+        message: configured
           ? 'Supabase URL and Key are configured'
           : 'Supabase credentials are missing or placeholder values',
         details: {
-          url: import.meta.env.VITE_SUPABASE_URL || 'NOT SET',
-          keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0,
-          isMockMode,
+          url: envDbg.url,
+          keyLength: envDbg.keyLength,
+          configSource: envDbg.source,
+          isMockMode: isMockMode(),
         },
       });
 
       // Test 2: Supabase Connection
-      if (!isMockMode) {
+      if (!isMockMode()) {
         try {
           const start = Date.now();
           const { data, error } = await Promise.race([
@@ -76,7 +85,7 @@ const DiagnosticsPage: React.FC = () => {
 
       // Test 3: Backend API
       try {
-        const response = await fetch('http://localhost:8001/api/health');
+        const response = await fetch(`${getBackendUrl()}/api/health`);
         const data = await response.json();
 
         results.tests.push({
@@ -95,7 +104,7 @@ const DiagnosticsPage: React.FC = () => {
       }
 
       // Test 4: Test Login (with mock credentials)
-      if (!isMockMode) {
+      if (!isMockMode()) {
         try {
           const start = Date.now();
           const { error } = await Promise.race([
@@ -235,7 +244,7 @@ const DiagnosticsPage: React.FC = () => {
                   Summary & Recommendations
                 </h3>
                 <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
-                  {isMockMode && (
+                  {isMockMode() && (
                     <li className="flex items-start gap-2">
                       <span>⚠️</span>
                       <span>

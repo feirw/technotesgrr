@@ -1,32 +1,81 @@
 // frontend/src/utils/supabaseClient.ts
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+type SupabaseEnvKey = 'VITE_SUPABASE_URL' | 'VITE_SUPABASE_ANON_KEY';
 
-// Check if environment variables are missing
-const hasValidConfig =
-  supabaseUrl &&
-  supabaseAnonKey &&
-  supabaseUrl !== 'https://placeholder.supabase.co' &&
-  supabaseAnonKey !== 'placeholder_key';
+/** Build-time (Vite) + optional runtime (/env.js from Docker entrypoint). */
+function envValue(key: SupabaseEnvKey): string {
+  if (typeof window !== 'undefined') {
+    const fromRuntime = window.__ENV__?.[key];
+    if (typeof fromRuntime === 'string' && fromRuntime.trim().length > 0) {
+      return fromRuntime.trim();
+    }
+  }
+  const v = import.meta.env[key];
+  return typeof v === 'string' ? v.trim() : '';
+}
 
-if (!hasValidConfig) {
+function computeHasValidConfig(): boolean {
+  const supabaseUrl = envValue('VITE_SUPABASE_URL');
+  const supabaseAnonKey = envValue('VITE_SUPABASE_ANON_KEY');
+  return (
+    Boolean(supabaseUrl) &&
+    Boolean(supabaseAnonKey) &&
+    supabaseUrl !== 'https://placeholder.supabase.co' &&
+    supabaseAnonKey !== 'placeholder_key'
+  );
+}
+
+const hasValidConfig = computeHasValidConfig();
+
+if (!hasValidConfig && import.meta.env.DEV) {
   console.error('⚠️ SUPABASE CONFIGURATION MISSING!');
-  console.error('Please create a .env file in the frontend directory with:');
-  console.error('VITE_SUPABASE_URL=your_supabase_url');
-  console.error('VITE_SUPABASE_ANON_KEY=your_supabase_anon_key');
+  console.error('Add frontend/.env with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY,');
+  console.error('or for Docker set those as container env vars (written to /env.js at start).');
   console.warn('🔧 Running in MOCK MODE - Authentication will not work!');
 }
 
-// Create client with fallback values
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder_key'
+  envValue('VITE_SUPABASE_URL') || 'https://placeholder.supabase.co',
+  envValue('VITE_SUPABASE_ANON_KEY') || 'placeholder_key'
 );
 
-// Export a flag to check if Supabase is properly configured
-export const isSupabaseConfigured = hasValidConfig;
+export function isSupabaseConfigured(): boolean {
+  return computeHasValidConfig();
+}
 
-// Helper to check if we're in mock mode
-export const isMockMode = !hasValidConfig;
+export function isMockMode(): boolean {
+  return !computeHasValidConfig();
+}
+
+/** For diagnostics UI (effective config after runtime override). */
+export function getSupabaseEnvDebug(): {
+  url: string;
+  keyLength: number;
+  source: 'runtime' | 'build' | 'none';
+} {
+  const urlBuild =
+    typeof import.meta.env.VITE_SUPABASE_URL === 'string'
+      ? import.meta.env.VITE_SUPABASE_URL.trim()
+      : '';
+  const keyBuild =
+    typeof import.meta.env.VITE_SUPABASE_ANON_KEY === 'string'
+      ? import.meta.env.VITE_SUPABASE_ANON_KEY.trim()
+      : '';
+  const urlRt =
+    typeof window !== 'undefined' ? (window.__ENV__?.VITE_SUPABASE_URL || '').trim() : '';
+  const keyRt =
+    typeof window !== 'undefined' ? (window.__ENV__?.VITE_SUPABASE_ANON_KEY || '').trim() : '';
+
+  const url = envValue('VITE_SUPABASE_URL');
+  const key = envValue('VITE_SUPABASE_ANON_KEY');
+  let source: 'runtime' | 'build' | 'none' = 'none';
+  if (urlRt || keyRt) source = 'runtime';
+  else if (urlBuild || keyBuild) source = 'build';
+
+  return {
+    url: url || 'NOT SET',
+    keyLength: key.length,
+    source,
+  };
+}

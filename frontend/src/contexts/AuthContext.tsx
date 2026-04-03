@@ -115,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * This ensures the app continues to work even if profile table has issues
    */
   const fetchProfileSafe = useCallback(async (baseUser: SupabaseUser): Promise<UserProfile> => {
-    if (isMockMode) {
+    if (isMockMode()) {
       return {
         ...baseUser,
         username: baseUser.email?.split('@')[0] || 'MockUser',
@@ -210,7 +210,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (isInitialized.current) return;
       isInitialized.current = true;
 
-      if (isMockMode) {
+      if (isMockMode()) {
         devWarn('🔧 MOCK MODE - Auth disabled');
         setProfileLoading(false);
         setLoading(false);
@@ -289,7 +289,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Setup auth state change listener
     // This handles login/logout events AFTER initial load
-    if (isMockMode) {
+    if (isMockMode()) {
       return () => {
         if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
       };
@@ -341,7 +341,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const normalizedEmail = email.trim().toLowerCase();
     devLog('🔐 Login attempt for:', normalizedEmail);
 
-    if (isMockMode) {
+    if (isMockMode()) {
       console.error('❌ Cannot login - Supabase not configured');
       throw new Error(
         'Το σύστημα authentication δεν είναι ρυθμισμένο. Παρακαλώ προσθέστε Supabase credentials στο .env file.'
@@ -397,7 +397,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const normalizedUsername = username.trim();
     devLog('📝 Signup attempt for:', normalizedEmail);
 
-    if (isMockMode) {
+    if (isMockMode()) {
       throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
     }
 
@@ -467,7 +467,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     devLog('👋 Logging out...');
 
-    if (!isMockMode) {
+    if (!isMockMode()) {
       try {
         await withTimeout(supabase.auth.signOut(), 5000);
       } catch (e) {
@@ -484,7 +484,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const refreshUserProfile = async () => {
-    if (isMockMode || !user) return;
+    if (isMockMode() || !user) return;
     const {
       data: { user: authUser },
     } = await supabase.auth.getUser();
@@ -497,7 +497,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfileUsername = async (username: string) => {
-    if (isMockMode) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
+    if (isMockMode()) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
     if (!user) throw new Error('Δεν υπάρχει συνδεδεμένος χρήστης.');
 
     const nextUsername = username.trim();
@@ -519,7 +519,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const requestPasswordReset = async (email: string) => {
-    if (isMockMode) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
+    if (isMockMode()) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
     const normalizedEmail = email.trim().toLowerCase();
     if (!normalizedEmail) throw new Error('Συμπλήρωσε email.');
 
@@ -530,7 +530,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updatePassword = async (newPassword: string) => {
-    if (isMockMode) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
+    if (isMockMode()) throw new Error('Το σύστημα authentication δεν είναι ρυθμισμένο.');
     const nextPassword = newPassword.trim();
     if (nextPassword.length < 6) {
       throw new Error('Ο νέος κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.');
