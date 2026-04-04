@@ -105,7 +105,7 @@ const PrepMenu: React.FC = () => {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="absolute right-0 mt-2 w-[560px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-pink-100 dark:border-gray-800 p-3 z-50"
+            className="absolute right-0 mt-2 w-[min(560px,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-pink-100 dark:border-gray-800 p-3 z-50"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -162,7 +162,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
     to={to}
     onClick={onClick}
     className={({ isActive }) =>
-      `relative block w-full text-left py-4 px-4 rounded-xl transition-all ${
+      `relative block w-full text-left min-h-11 py-4 px-4 rounded-xl transition-all touch-manipulation ${
         isActive
           ? 'text-white'
           : 'text-gray-700 dark:text-gray-200 hover:bg-pink-50 dark:hover:bg-gray-800'
@@ -280,7 +280,7 @@ const ProfileDropdown: React.FC = () => {
 // --- Main Layout Component ---
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { user, logout, loading } = useAuth();
+  const { user, logout, loading, isAdmin } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
   const [shouldLoadChat, setShouldLoadChat] = useState(false);
@@ -371,9 +371,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </Suspense>
       )}
       {/* Navbar Container */}
-      <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center py-4">
+      <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800 pt-[env(safe-area-inset-top,0px)]">
+        <div className="container mx-auto px-3 sm:px-6 max-w-[100vw]">
+          <div className="flex justify-between items-center gap-2 py-3 sm:py-4 min-h-[3.25rem]">
             {/* Logo */}
             <div className="flex items-center gap-3">
               <NavLink to="/" className="flex items-center gap-3 group shrink-0">
@@ -398,8 +398,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
               {/* Panic Button moved right and enlarged */}
               <button
+                type="button"
                 onClick={triggerPanic}
-                className="mr-2 px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-black shadow-lg hover:shadow-xl"
+                className="mr-2 px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-black shadow-lg hover:shadow-xl touch-manipulation min-h-11"
                 title="Panic Button"
                 aria-label="Panic Button"
               >
@@ -410,9 +411,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               {/* GloGlossa moved into private "Μάθηση" menu */}
               <NavButton to="/merch">Η Ατζέντα</NavButton>
               <button
+                type="button"
                 aria-label="Theme toggle"
                 onClick={() => setIsDark(toggleTheme() === 'dark')}
-                className="ml-2 p-2 rounded-xl border border-pink-200 text-pink-600 hover:bg-pink-50 transition-colors"
+                className="ml-2 min-h-11 min-w-11 p-2 rounded-xl border border-pink-200 text-pink-600 hover:bg-pink-50 transition-colors touch-manipulation inline-flex items-center justify-center"
                 title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
               >
                 {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -445,13 +447,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             {/* Mobile Menu Button */}
             <motion.button
+              type="button"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-nav-drawer"
+              aria-label={isMenuOpen ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού'}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-3 rounded-xl text-white shadow-lg shrink-0"
+              className="lg:hidden min-h-11 min-w-11 p-3 rounded-xl text-white shadow-lg shrink-0 touch-manipulation inline-flex items-center justify-center"
               style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? <X size={24} aria-hidden /> : <Menu size={24} aria-hidden />}
             </motion.button>
           </div>
         </div>
@@ -461,14 +467,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <AnimatePresence>
         {showPanic && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-[95] flex items-center justify-center p-3 sm:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
             <motion.div
-              className="relative max-w-md w-full rounded-3xl bg-white dark:bg-gray-900 border-2 border-pink-300 p-6 shadow-2xl"
+              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-gray-900 border-2 border-pink-300 p-5 sm:p-6 shadow-2xl"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
@@ -481,16 +487,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <h3 className="text-xl font-black text-gray-900 dark:text-white">Take a breath</h3>
               </div>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{panicMsg.text}</p>
-              <div className="mt-5 flex items-center justify-between">
+              <div className="mt-5 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">
                 <button
+                  type="button"
                   onClick={triggerPanic}
-                  className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold"
+                  className="min-h-11 px-4 py-3 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold touch-manipulation"
                 >
                   Άλλο ένα
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowPanic(false)}
-                  className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold"
+                  className="min-h-11 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold touch-manipulation"
                 >
                   Κλείσιμο
                 </button>
@@ -505,23 +513,34 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {isMenuOpen && (
           <>
             <motion.div
-              className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[85]"
               onClick={closeMenu}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
             <motion.div
-              className="lg:hidden fixed top-0 right-0 h-full w-[88vw] max-w-sm bg-white dark:bg-gray-900 z-50 shadow-2xl overflow-y-auto"
+              id="mobile-nav-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Κύριο μενού"
+              className="lg:hidden fixed top-0 right-0 h-[100dvh] max-h-[100dvh] w-[min(100vw-2.5rem,20rem)] max-w-sm bg-white dark:bg-gray-900 z-[90] shadow-2xl overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <span className="text-xl font-black text-pink-600">Μενού</span>
-                  <X onClick={closeMenu} className="cursor-pointer" />
+              <div className="p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-lg sm:text-xl font-black text-pink-600">Μενού</span>
+                  <button
+                    type="button"
+                    onClick={closeMenu}
+                    className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-gray-800 touch-manipulation"
+                    aria-label="Κλείσιμο μενού"
+                  >
+                    <X className="w-6 h-6" aria-hidden />
+                  </button>
                 </div>
 
                 {user && (
@@ -537,21 +556,38 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <div className="flex items-center justify-between px-4 py-2 mb-1">
                     <span className="text-sm font-semibold">Θέμα</span>
                     <button
+                      type="button"
                       aria-label="Theme toggle"
                       onClick={() => setIsDark(toggleTheme() === 'dark')}
-                      className="p-2 rounded-lg border border-pink-200 text-pink-600"
+                      className="min-h-11 min-w-11 p-2 rounded-lg border border-pink-200 text-pink-600 touch-manipulation inline-flex items-center justify-center"
                     >
                       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                   </div>
                   <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
 
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerPanic();
+                      closeMenu();
+                    }}
+                    className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-pink-700 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/40 font-bold border border-pink-200 dark:border-pink-800 touch-manipulation min-h-11"
+                  >
+                    <Heart size={20} aria-hidden /> Take a breath
+                  </button>
+
                   {user && (
                     <>
+                      <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
                       <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>
                         Προφίλ
                       </MobileNavButton>
-                      <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
+                      {isAdmin && (
+                        <MobileNavButton to="/admin" icon={Shield} onClick={closeMenu}>
+                          Admin
+                        </MobileNavButton>
+                      )}
                     </>
                   )}
 
@@ -602,12 +638,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       </MobileNavButton>
                       <div className="pt-4 mt-4 border-t border-pink-100 dark:border-gray-800">
                         <button
+                          type="button"
                           onClick={async () => {
                             await logout();
                             closeMenu();
                             navigate('/login');
                           }}
-                          className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-red-600 bg-red-50 font-bold"
+                          className="w-full flex items-center gap-3 min-h-11 py-4 px-4 rounded-xl text-red-600 bg-red-50 font-bold touch-manipulation"
                         >
                           <LogOut size={20} /> Έξοδος
                         </button>
@@ -631,7 +668,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-grow relative z-10">{children}</main>
+      <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)]">{children}</main>
 
       {/* Footer */}
       <footer className="relative overflow-hidden mt-12 -mt-px">
@@ -652,7 +689,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           }}
         />
 
-        <div className="relative container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-[100vw]">
           <motion.div {...fadeIn} className="text-center md:text-left">
             <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Νομικά</h3>
             <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">

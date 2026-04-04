@@ -37,8 +37,105 @@ const QUICK_PROMPTS = [
 ];
 
 const MAX_RETRIES = 2;
+const CHAT_STREAM_TIMEOUT_MS = 120_000;
+
+function longTimeoutSignal(ms: number): AbortSignal {
+  const Sig = AbortSignal as typeof AbortSignal & { timeout?: (n: number) => AbortSignal };
+  if (typeof Sig.timeout === 'function') {
+    return Sig.timeout(ms);
+  }
+  const c = new AbortController();
+  const id = window.setTimeout(() => {
+    c.abort(new DOMException('The operation timed out.', 'TimeoutError'));
+  }, ms);
+  c.signal.addEventListener('abort', () => window.clearTimeout(id));
+  return c.signal;
+}
 
 // ─── API helper ───────────────────────────────────────────────────────────────
+
+/** SSE από /api/chat/stream· αν αποτύχει (404 / δίκτυο), ο καλών μπορεί να πέσει σε fetchBotReply. */
+async function fetchBotReplyStream(
+  message: string,
+  sessionId: string,
+  onDelta: (chunk: string) => void
+): Promise<void> {
+  let lastError: unknown = null;
+  for (const baseUrl of BACKEND_URLS) {
+    try {
+      const res = await fetch(`${baseUrl}/api/chat/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+        },
+        body: JSON.stringify({ message, session_id: sessionId }),
+        signal: longTimeoutSignal(CHAT_STREAM_TIMEOUT_MS),
+      });
+
+      if (res.status === 404) {
+        lastError = new Error('HTTP 404');
+        continue;
+      }
+
+      if (!res.ok) {
+        let detail = `HTTP ${res.status}`;
+        try {
+          const j = (await res.json()) as { detail?: unknown };
+          if (j?.detail != null) {
+            detail = typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail);
+          }
+        } catch {
+          /* ignore */
+        }
+        throw new Error(detail);
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Κενό σώμα απάντησης από τον server.');
+
+      const dec = new TextDecoder();
+      let buffer = '';
+      let sawDone = false;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += dec.decode(value, { stream: true });
+        let sep: number;
+        while ((sep = buffer.indexOf('\n\n')) >= 0) {
+          const block = buffer.slice(0, sep);
+          buffer = buffer.slice(sep + 2);
+          for (const line of block.split('\n')) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith('data:')) continue;
+            const jsonStr = trimmed.slice(5).trim();
+            if (!jsonStr) continue;
+            const ev = JSON.parse(jsonStr) as { delta?: string; done?: boolean; error?: string };
+            if (ev.error) throw new Error(ev.error);
+            if (typeof ev.delta === 'string' && ev.delta.length) onDelta(ev.delta);
+            if (ev.done) {
+              sawDone = true;
+              return;
+            }
+          }
+        }
+      }
+      if (!sawDone) {
+        throw new Error('Η απάντηση δεν ολοκληρώθηκε (δίκτυο ή server).');
+      }
+      return;
+    } catch (err) {
+      lastError = err;
+      const retryable =
+        err instanceof TypeError ||
+        (err instanceof DOMException && err.name === 'TimeoutError') ||
+        (err instanceof Error && /404|Failed to fetch|NetworkError/i.test(err.message));
+      if (retryable) continue;
+      throw err;
+    }
+  }
+  throw lastError ?? new Error('Stream chat failed');
+}
 
 // FIX #2: The original code called `/api/` (wrong path). Correct path is `/api/chat`.
 async function fetchBotReply(message: string, sessionId: string, retries = 0): Promise<string> {
@@ -70,7 +167,7 @@ async function fetchBotReply(message: string, sessionId: string, retries = 0): P
     (lastError instanceof DOMException && lastError.name === 'TimeoutError');
 
   if (isNetworkError && retries < MAX_RETRIES) {
-    await new Promise((r) => setTimeout(r, 800 * (retries + 1)));
+    await new Promise((r) => setTimeout(r, 350 * (retries + 1)));
     return fetchBotReply(message, sessionId, retries + 1);
   }
 
@@ -144,6 +241,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   );
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [streamPreview, setStreamPreview] = useState('');
+  const streamAccRef = useRef('');
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
       const raw = localStorage.getItem(CHAT_STORAGE_KEY);
@@ -194,10 +293,19 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
     };
   }, [open, isMobile]);
 
-  // Scroll to bottom whenever messages change
+  // Scroll to bottom whenever messages change or streaming text grows
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages, sending]);
+  }, [messages, sending, streamPreview]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
   useEffect(() => {
     localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages.slice(-60)));
@@ -220,10 +328,36 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
       setInput('');
       appendMessage({ role: 'user', content: text });
       setSending(true);
+      streamAccRef.current = '';
+      setStreamPreview('');
 
       try {
-        const raw = await fetchBotReply(text, sessionId);
-        appendMessage({ role: 'bot', content: personalise(raw) });
+        try {
+          await fetchBotReplyStream(text, sessionId, (delta) => {
+            streamAccRef.current += delta;
+            setStreamPreview(streamAccRef.current);
+          });
+          const finalText = personalise(streamAccRef.current);
+          streamAccRef.current = '';
+          setStreamPreview('');
+          appendMessage({ role: 'bot', content: finalText });
+        } catch (streamErr) {
+          console.warn('[Widget] Stream chat fallback:', streamErr);
+          const partial = streamAccRef.current.trim();
+          streamAccRef.current = '';
+          setStreamPreview('');
+          if (partial.length > 0) {
+            appendMessage({
+              role: 'bot',
+              content: personalise(
+                partial + '\n\n_(Η μετάδοση διακόπηκε πριν ολοκληρωθεί η απάντηση.)_'
+              ),
+            });
+          } else {
+            const raw = await fetchBotReply(text, sessionId);
+            appendMessage({ role: 'bot', content: personalise(raw) });
+          }
+        }
       } catch (err: unknown) {
         console.error('[Widget] AI error:', err);
         const detail = err instanceof Error ? err.message : 'Άγνωστο σφάλμα';
@@ -232,6 +366,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           content: `⚠️ Δεν μπόρεσα να λάβω απάντηση. ${detail}`,
         });
       } finally {
+        setStreamPreview('');
         setSending(false);
       }
     },
@@ -266,7 +401,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
       <motion.button
         aria-label={open ? 'Κλείσιμο chat' : 'Άνοιγμα chat'}
         onClick={() => setOpen((v) => !v)}
-        className="fixed right-4 sm:right-6 bottom-[calc(env(safe-area-inset-bottom)+1rem)] sm:bottom-6 z-[80] rounded-full shadow-2xl p-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-pink-300"
+        className="fixed right-4 sm:right-6 bottom-[calc(env(safe-area-inset-bottom)+1rem)] sm:bottom-6 z-[75] rounded-full shadow-2xl p-4 focus:outline-none focus-visible:ring-4 focus-visible:ring-pink-300 touch-manipulation"
         style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -286,10 +421,12 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           <motion.div
             role="dialog"
             aria-label="Chatbot βοηθός"
-            className="fixed z-[70] left-2 right-2 top-16 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[94vw] sm:max-w-3xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
+            className="fixed z-[72] left-3 right-3 top-[4.5rem] bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[min(88vw,42rem)] sm:max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
             style={{
               border: `3px solid ${BRAND}`,
-              maxHeight: isMobile ? `${Math.max(420, viewportHeight - 96)}px` : '820px',
+              maxHeight: isMobile
+                ? `${Math.max(320, viewportHeight - 132)}px`
+                : `${Math.min(Math.round(viewportHeight * 0.58), 520)}px`,
             }}
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -412,8 +549,30 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                 </motion.div>
               ))}
 
+              {/* Streaming απάντηση (πιο γρήγορη αίσθηση από το να περιμένεις ολόκληρο το JSON) */}
+              <AnimatePresence>
+                {sending && streamPreview.length > 0 && (
+                  <motion.div
+                    key="stream-preview"
+                    className="flex justify-start"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <div className="flex items-end gap-2 max-w-[85%]">
+                      <div className="w-8 h-8 rounded-full bg-white border-2 border-pink-300 flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-4 h-4 text-pink-600" />
+                      </div>
+                      <div className="rounded-2xl px-4 py-3 shadow-md bg-white text-gray-800">
+                        <BotMessageContent content={personalise(streamPreview)} />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Typing indicator */}
-              <AnimatePresence>{sending && <TypingIndicator />}</AnimatePresence>
+              <AnimatePresence>{sending && !streamPreview && <TypingIndicator />}</AnimatePresence>
             </div>
 
             {/* Input */}

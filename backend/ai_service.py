@@ -9,14 +9,43 @@ ai_service.py  –  Google Gemini για το TechNotesGR chatbot
 
 .env αρχείο:
     GEMINI_API_KEY=your_api_key_here
+    GEMINI_MODEL=gemini-2.5-flash
+    # Ταχύτητα: λιγότερα tokens, χαμηλότερο temperature, απενεργοποίηση thinking (μόνο 2.5.x)
+    GEMINI_MAX_OUTPUT_TOKENS=512
+    GEMINI_TEMPERATURE=0.55
+    GEMINI_MAX_HISTORY_ITEMS=14
+    GEMINI_THINKING_BUDGET=0   # 0=κλειστό (γρηγορότερα), -1=αυτόματο, κενό=χωρίς thinking_config
 """
 
+import logging
 import os
+from typing import Iterator
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
+logger = logging.getLogger("technotesgr")
+
 GEMINI_API_KEY = (os.getenv("GEMINI_API_KEY") or "").strip()
+# Override αν αλλάξει διαθεσιμότητα μοντέλων στο Google AI (π.χ. gemini-2.0-flash)
+GEMINI_MODEL = (os.getenv("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = (os.getenv(name) or "").strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+GEMINI_MAX_OUTPUT_TOKENS = max(128, min(8192, _env_int("GEMINI_MAX_OUTPUT_TOKENS", 512)))
+GEMINI_TEMPERATURE = float((os.getenv("GEMINI_TEMPERATURE") or "0.55").strip() or "0.55")
+GEMINI_TEMPERATURE = max(0.0, min(2.0, GEMINI_TEMPERATURE))
+_MAX_HISTORY_CFG = max(4, min(40, _env_int("GEMINI_MAX_HISTORY_ITEMS", 14)))
 
 try:
     from google import genai
@@ -46,11 +75,29 @@ SYSTEM_PROMPT = """
 Μορφοποιηση:
 - Χρησιμοποιησε markdown για κωδικα, λιστες και εντονο κειμενο οπου χρειαζεται.
 - Κρατα τις απαντησεις συνοπτικες αλλα πληρεις.
+- Αν δεν ζητηθει αναλυτικη αναλυση, προτιμα σύντομες απαντησεις (λιγες παραγραφοι).
 """.strip()
 
 _histories = {}
-_MAX_HISTORY_ITEMS = 20
+_MAX_HISTORY_ITEMS = _MAX_HISTORY_CFG
 _MAX_SESSIONS = 200
+
+
+def _optional_thinking_config():
+    """Στα Gemini 2.5.x το thinking αυξάνει πολύ το latency· default το κλείνουμε."""
+    if types is None:
+        return None
+    raw = (os.getenv("GEMINI_THINKING_BUDGET") or "").strip()
+    if raw == "" and "2.5" not in GEMINI_MODEL.lower():
+        return None
+    if raw == "":
+        budget = 0
+    else:
+        try:
+            budget = int(raw)
+        except ValueError:
+            budget = 0
+    return types.ThinkingConfig(thinking_budget=budget)
 
 
 def _get_genai_client():
@@ -67,6 +114,34 @@ def _get_session_history(session_id: str):
         oldest_key = next(iter(_histories))
         _histories.pop(oldest_key, None)
     return _histories.setdefault(session_id, [])
+
+
+def _rollback_last_user(history: list) -> None:
+    if history and getattr(history[-1], "role", None) == "user":
+        history.pop()
+
+
+def user_facing_chat_error(error_str: str) -> str:
+    if "429" in error_str or "quota" in error_str.lower():
+        return "Έχω πολλά αιτήματα αυτή τη στιγμή. Δοκίμασε ξανά σε λίγα δευτερόλεπτα!"
+    if "403" in error_str or "API_KEY" in error_str:
+        return "Πρόβλημα με την αυθεντικοποίηση. Επικοινώνησε με τον διαχειριστή."
+    if "404" in error_str:
+        return "Το AI μοντέλο δεν είναι διαθέσιμο αυτή τη στιγμή (έλεγξε GEMINI_MODEL στο .env)."
+    return "Δεν μπόρεσα να επεξεργαστώ το αίτημά σου. Δοκίμασε ξανά σε λίγο."
+
+
+def _make_generate_config():
+    assert types is not None
+    gen_cfg_kwargs = dict(
+        system_instruction=SYSTEM_PROMPT,
+        max_output_tokens=GEMINI_MAX_OUTPUT_TOKENS,
+        temperature=GEMINI_TEMPERATURE,
+    )
+    _tc = _optional_thinking_config()
+    if _tc is not None:
+        gen_cfg_kwargs["thinking_config"] = _tc
+    return types.GenerateContentConfig(**gen_cfg_kwargs)
 
 
 def get_ai_response(message: str, session_id: str = "default") -> str:
@@ -86,13 +161,9 @@ def get_ai_response(message: str, session_id: str = "default") -> str:
         history.append(types.Content(role="user", parts=[types.Part(text=message)]))
 
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=GEMINI_MODEL,
             contents=history,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                max_output_tokens=1024,
-                temperature=0.7,
-            ),
+            config=_make_generate_config(),
         )
 
         reply = response.text or "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
@@ -106,13 +177,51 @@ def get_ai_response(message: str, session_id: str = "default") -> str:
 
     except Exception as e:
         error_str = str(e)
-        print(f"[ai_service] Gemini error: {error_str}")
+        logger.exception("Gemini generate_content failed")
+        _rollback_last_user(history)
+        return user_facing_chat_error(error_str)
 
-        if "429" in error_str or "quota" in error_str.lower():
-            return "Εχω πολλα αιτηματα αυτη τη στιγμη. Δοκιμασε ξανα σε λιγα δευτερολεπτα!"
-        if "403" in error_str or "API_KEY" in error_str:
-            return "Προβλημα με την αυθεντικοποιηση. Επικοινωνησε με τον διαχειριστη."
-        if "404" in error_str:
-            return "Το AI μοντελο δεν ειναι διαθεσιμο αυτη τη στιγμη."
 
-        return "Δεν μπορεσα να επεξεργαστω το αιτημα σου. Δοκιμασε ξανα σε λιγο."
+def iter_ai_response_stream(message: str, session_id: str = "default") -> Iterator[str]:
+    """
+    Αποστολή απάντησης σε τμήματα (για SSE). Σε επιτυχία ενημερώνει το ιστορικό όπως το get_ai_response.
+    Σε σφάλμα API κάνει rollback το τελευταίο user turn και κάνει raise RuntimeError με ελληνικό μήνυμα.
+    """
+    if not _GENAI_IMPORT_OK:
+        yield "Ο βοηθός AI δεν είναι διαθέσιμος (λείπει η βιβλιοθήκη google-genai στον server)."
+        return
+    if not GEMINI_API_KEY:
+        yield "Ο βοηθός AI δεν είναι ρυθμισμένος (πρόσθεσε GEMINI_API_KEY στο .env του backend)."
+        return
+
+    client = _get_genai_client()
+    if client is None:
+        yield "Ο βοηθός AI δεν είναι ρυθμισμένος (πρόσθεσε GEMINI_API_KEY στο .env του backend)."
+        return
+
+    history = _get_session_history(session_id)
+    assert types is not None
+    history.append(types.Content(role="user", parts=[types.Part(text=message)]))
+    full = ""
+    try:
+        stream = client.models.generate_content_stream(
+            model=GEMINI_MODEL,
+            contents=history,
+            config=_make_generate_config(),
+        )
+        for chunk in stream:
+            piece = chunk.text or ""
+            if piece:
+                full += piece
+                yield piece
+        if not full.strip():
+            full = "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
+            yield full
+        history.append(types.Content(role="model", parts=[types.Part(text=full)]))
+        if len(history) > _MAX_HISTORY_ITEMS:
+            _histories[session_id] = history[-_MAX_HISTORY_ITEMS:]
+    except Exception as e:
+        error_str = str(e)
+        logger.exception("Gemini generate_content_stream failed")
+        _rollback_last_user(history)
+        raise RuntimeError(user_facing_chat_error(error_str)) from e

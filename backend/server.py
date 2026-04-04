@@ -1,8 +1,13 @@
 from contextlib import asynccontextmanager
+import asyncio
+import json
 import logging
+import queue
+import threading
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
 import os
@@ -21,10 +26,15 @@ INTERNAL_ERROR_DETAIL = "Προέκυψε εσωτερικό σφάλμα. Δο�
 
 # ── AI Service ────────────────────────────────────────────────────────────────
 try:
-    from ai_service import get_ai_response
+    from ai_service import get_ai_response, iter_ai_response_stream
 except Exception:
+
     def get_ai_response(msg: str, session_id: str = "default") -> str:
         return "AI Service not configured."
+
+    def iter_ai_response_stream(msg: str, session_id: str = "default"):
+        yield "AI Service not configured."
+        return
 
 # ── Database ──────────────────────────────────────────────────────────────────
 from database import (
@@ -188,7 +198,9 @@ async def chat_with_bot(chat_data: ChatMessage):
     if len(chat_data.message.strip()) > 2000:
         raise HTTPException(status_code=413, detail="Το μήνυμα είναι πολύ μεγάλο.")
     try:
-        response_text = get_ai_response(
+        # Μην μπλοκάρεις το event loop ενώ περιμένει το Gemini (καλύτερη απόκριση υπό φόρτο).
+        response_text = await asyncio.to_thread(
+            get_ai_response,
             chat_data.message.strip(),
             chat_data.session_id or "default",
         )
@@ -199,6 +211,54 @@ async def chat_with_bot(chat_data: ChatMessage):
             status_code=500,
             detail="Προέκυψε σφάλμα κατά την επεξεργασία του μηνύματος.",
         )
+
+
+@app.post("/api/chat/stream")
+async def chat_with_bot_stream(chat_data: ChatMessage):
+    """SSE: data: {"delta":"..."} | {"done":true} | {"error":"..."}"""
+    if not chat_data.message or not chat_data.message.strip():
+        raise HTTPException(status_code=422, detail="Το μήνυμα δεν μπορεί να είναι κενό.")
+    if len(chat_data.message.strip()) > 2000:
+        raise HTTPException(status_code=413, detail="Το μήνυμα είναι πολύ μεγάλο.")
+
+    msg = chat_data.message.strip()
+    sid = chat_data.session_id or "default"
+    q: queue.Queue = queue.Queue(maxsize=256)
+
+    def worker():
+        try:
+            for piece in iter_ai_response_stream(msg, sid):
+                q.put(("p", piece))
+            q.put(("d", None))
+        except Exception as e:
+            logger.exception("chat stream worker failed")
+            q.put(("e", str(e)))
+
+    threading.Thread(target=worker, daemon=True).start()
+
+    async def event_gen():
+        while True:
+            kind, payload = await asyncio.to_thread(q.get)
+            if kind == "p":
+                line = json.dumps({"delta": payload}, ensure_ascii=False)
+                yield f"data: {line}\n\n".encode("utf-8")
+            elif kind == "d":
+                yield f"data: {json.dumps({'done': True})}\n\n".encode("utf-8")
+                break
+            elif kind == "e":
+                line = json.dumps({"error": payload}, ensure_ascii=False)
+                yield f"data: {line}\n\n".encode("utf-8")
+                break
+
+    return StreamingResponse(
+        event_gen(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 # ── Quiz ──────────────────────────────────────────────────────────────────────

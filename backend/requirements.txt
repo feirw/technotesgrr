@@ -1,4 +1,5 @@
 fastapi
+google-genai>=1.0.0
 psycopg2_binary
 pydantic
 python-dotenv

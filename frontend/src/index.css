@@ -9,6 +9,11 @@
   font-weight: 100 900;
 }
 
+html {
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   margin: 0;
   font-family: 'Manrope', sans-serif;

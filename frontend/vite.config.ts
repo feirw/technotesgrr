@@ -14,6 +14,9 @@ export default defineConfig({
     target: 'es2022',
     sourcemap: false,
     cssCodeSplit: true,
+    cssMinify: true,
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 650,
     modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
@@ -33,6 +36,8 @@ export default defineConfig({
         target: 'http://localhost:8001',
         changeOrigin: true,
         secure: false,
+        timeout: 120_000,
+        proxyTimeout: 120_000,
       }
     }
   }
