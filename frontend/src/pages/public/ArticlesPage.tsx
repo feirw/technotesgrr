@@ -85,7 +85,10 @@ function formatDateLong(iso: string): string {
 }
 
 function daysAgoLabel(iso: string): string {
-  const days = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 86400000));
+  // CHANGED: invalid ISO → NaN days without this guard (broken UI text).
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return formatDateLong(iso);
+  const days = Math.max(0, Math.floor((Date.now() - then) / 86400000));
   if (days === 0) return 'Σήμερα';
   if (days === 1) return 'Χθες';
   if (days < 7) return `${days} μέρες πριν`;
@@ -109,11 +112,14 @@ type ApiArticleRow = {
 function mapApiRow(r: ApiArticleRow): Article {
   const pastel = (['white', 'sky', 'pink', 'yellow', 'violet', 'mint'].includes(r.pastel)
     ? r.pastel : 'white') as ArticlePastel;
+  // CHANGED: avoid crashing / empty date if API sends null or short string.
+  const created =
+    typeof r.created_at === 'string' && r.created_at.length >= 10 ? r.created_at.slice(0, 10) : String(r.created_at ?? '');
   return {
     id: r.id,
     authorName: r.author_name,
     authorAvatar: r.author_avatar ?? undefined,
-    publishedAt: r.created_at.slice(0, 10),
+    publishedAt: created,
     title: r.title,
     body: r.body,
     pastel,
@@ -192,12 +198,24 @@ const ArticleCard: React.FC<CardProps> = ({ article, isAdmin, onDelete, likedIds
     return () => document.removeEventListener('mousedown', close);
   }, [menuOpen]);
 
+  // CHANGED: clear timeout on unmount / id change so we never call setState after unmount.
+  const copyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (copyResetRef.current !== null) clearTimeout(copyResetRef.current);
+    };
+  }, []);
+
   const shareUrl = useCallback(async () => {
     const url = `${window.location.origin}/articles#article-${article.id}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyResetRef.current !== null) clearTimeout(copyResetRef.current);
+      copyResetRef.current = setTimeout(() => {
+        copyResetRef.current = null;
+        setCopied(false);
+      }, 2000);
     } catch { /* ignore */ }
     setMenuOpen(false);
   }, [article.id]);
@@ -355,8 +373,11 @@ const ComposeModal: React.FC<ComposeProps> = ({ open, onClose, onPublished, post
   const [submitting, setSubmitting] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
 
+  // CHANGED: clear focus timeout if modal closes before it fires.
   useEffect(() => {
-    if (open) setTimeout(() => titleRef.current?.focus(), 100);
+    if (!open) return;
+    const t = window.setTimeout(() => titleRef.current?.focus(), 100);
+    return () => clearTimeout(t);
   }, [open]);
 
   // Trap Escape key
@@ -529,7 +550,7 @@ const ComposeModal: React.FC<ComposeProps> = ({ open, onClose, onPublished, post
                   </div>
                 </div>
 
-                {/* Avatar URL */}
+                {/* Avatar URL — type="text" (not url) so /images/... relative paths validate in browser */}
                 <div>
                   <label htmlFor="art-avatar" className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-2">
                     URL εικόνας προφίλ <span className="normal-case font-normal">(προαιρετικό)</span>
@@ -538,8 +559,9 @@ const ComposeModal: React.FC<ComposeProps> = ({ open, onClose, onPublished, post
                     id="art-avatar"
                     value={avatarUrl}
                     onChange={e => setAvatarUrl(e.target.value)}
-                    type="url"
-                    placeholder="https://example.com/photo.jpg"
+                    type="text"
+                    inputMode="url"
+                    placeholder="https://… ή /images/photo.jpg"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 focus:border-transparent transition-all text-sm"
                   />
                 </div>
@@ -629,9 +651,18 @@ const ArticlesPage: React.FC = () => {
   const [likingId, setLikingId] = useState<number | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (toastTimerRef.current !== null) clearTimeout(toastTimerRef.current);
+  }, []);
+
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    if (toastTimerRef.current !== null) clearTimeout(toastTimerRef.current);
     setToast({ message, type });
-    setTimeout(() => setToast(null), 3500);
+    toastTimerRef.current = setTimeout(() => {
+      toastTimerRef.current = null;
+      setToast(null);
+    }, 3500);
   };
 
   /* fetch */
@@ -642,15 +673,42 @@ const ArticlesPage: React.FC = () => {
     for (const base of getBackendUrlCandidates()) {
       try {
         const res = await fetch(`${base}/api/articles`);
-        if (!res.ok) continue;
-        const data = (await res.json()) as { articles?: unknown };
+        // CHANGED: record HTTP failures — previously `continue` left lastErr null → misleading "Σφάλμα δικτύου".
+        if (!res.ok) {
+          let detail = `HTTP ${res.status}`;
+          try {
+            const text = await res.text();
+            const j = JSON.parse(text) as { detail?: unknown };
+            if (typeof j.detail === 'string') detail = j.detail;
+          } catch {
+            /* keep status */
+          }
+          lastErr = new Error(detail);
+          continue;
+        }
+        let data: { articles?: unknown };
+        try {
+          data = (await res.json()) as { articles?: unknown };
+        } catch {
+          lastErr = new Error(
+            'Η απάντηση δεν ήταν JSON — συχνά το /api δεν προωθείται στο backend ή επιστρέφεται HTML.',
+          );
+          continue;
+        }
         const raw = Array.isArray(data.articles) ? data.articles : [];
         setArticles(raw.map(x => mapApiRow(x as ApiArticleRow)));
         setLoading(false);
         return;
-      } catch (e) { lastErr = e; }
+      } catch (e) {
+        lastErr = e;
+      }
     }
-    setLoadError(lastErr instanceof Error ? lastErr.message : 'Σφάλμα δικτύου');
+    setLoadError(
+      lastErr instanceof Error
+        ? lastErr.message
+        : 'Δεν ήταν δυνατή η φόρτωση. Έλεγξε backend, proxy /api και VITE_BACKEND_URL.',
+    );
+    setArticles([]);
     setLoading(false);
   }, []);
 
@@ -675,7 +733,8 @@ const ArticlesPage: React.FC = () => {
         const res = await fetch(`${base}${path}`, {
           ...rest,
           headers: {
-            ...(rest.headers as Record<string, string>),
+            // CHANGED: rest.headers can be undefined — spread would throw in some engines.
+            ...((rest.headers as Record<string, string> | undefined) || {}),
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },

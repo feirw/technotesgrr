@@ -61,14 +61,17 @@ export const getBackendUrlCandidates = (): string[] => {
   const candidates: string[] = [];
   const normalizedEnv = normalizedBackendEnv();
 
-  if (normalizedEnv && envBackendUsableHere(normalizedEnv)) {
-    candidates.push(normalizedEnv);
-  }
-
+  // Same origin first: Vite proxy `/api` and nginx `location /api/` work without CORS.
+  // If env (e.g. http://localhost:8001) came first, opening the app via http://127.0.0.1:5173
+  // sends Origin 127.0.0.1 — often blocked vs localhost:8001 even when allow_origins lists both.
   if (typeof window !== 'undefined') {
     const sameOrigin = window.location.origin.replace(/\/+$/, '');
-    if (!candidates.includes(sameOrigin)) {
-      candidates.push(sameOrigin);
+    candidates.push(sameOrigin);
+  }
+
+  if (normalizedEnv && envBackendUsableHere(normalizedEnv)) {
+    if (!candidates.includes(normalizedEnv)) {
+      candidates.push(normalizedEnv);
     }
   }
 

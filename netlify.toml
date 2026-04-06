@@ -1,7 +1,8 @@
 [build]
   base = "frontend"
   command = "npm run build"
-  publish = "dist"
+  # Must match vite.config.ts outDir ('build'), not 'dist' — wrong folder = blank/broken site on Netlify.
+  publish = "build"
 
 [[redirects]]
   from = "/*"
