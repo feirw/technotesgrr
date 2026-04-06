@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { supabase, isMockMode } from '@/utils/supabaseClient';
+import { authRedirectUrl } from '@/utils/siteUrl';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
 /**
@@ -410,8 +411,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         password,
         options: {
           data: { username: normalizedUsername },
-          // Optional: You can disable email confirmation for testing
-          // emailRedirectTo: `${window.location.origin}/login`
+          // CHANGED: explicit redirect so confirmation email does not use Supabase dashboard "Site URL" (often localhost).
+          // Set VITE_SITE_URL on Netlify/Docker to your public origin; falls back to window.location.origin in dev.
+          emailRedirectTo: authRedirectUrl('/login'),
         },
       });
 
@@ -524,7 +526,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!normalizedEmail) throw new Error('Συμπλήρωσε email.');
 
     const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: authRedirectUrl('/reset-password'),
     });
     if (error) throw error;
   };

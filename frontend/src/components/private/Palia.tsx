@@ -61,30 +61,31 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 p-6">
+    /* CHANGED: όχι min-h-screen — στο mobile ανάγκαζε τεράστιο scroll· λεπτό padding. */
+    <div className="w-full bg-gradient-to-br from-pink-50 to-rose-50 p-2 sm:p-4">
       <motion.div
         ref={containerRef}
-        className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto"
+        className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto"
         style={{ border: `3px solid ${BRAND}` }}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 300 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 28 }}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-              <FileText className="w-6 h-6" />
+        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-3 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <h1 className="text-2xl font-black">Σημειώσεις PDF</h1>
-              <p className="text-pink-100 text-sm">{fileName}</p>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-black truncate">Παλιό θέμα (PDF)</h1>
+              <p className="text-pink-100 text-xs sm:text-sm truncate">{fileName}</p>
             </div>
           </div>
         </div>
 
-        {/* PDF Viewer */}
-        <div className="relative bg-gray-100">
+        {/* PDF Viewer — ύψος ανάλογο viewport στο κινητό (dvh), όχι σταθερά 720px */}
+        <div className="relative bg-gray-100 min-h-[200px]">
           {loading && (
             <motion.div
               className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10"
@@ -93,12 +94,14 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4"
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-t-transparent mb-3 sm:mb-4"
                 style={{ borderColor: BRAND }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               />
-              <p className="text-gray-600 font-semibold">Φόρτωση PDF...</p>
+              <p className="text-gray-600 font-semibold text-sm sm:text-base px-4 text-center">
+                Φόρτωση PDF…
+              </p>
             </motion.div>
           )}
 
@@ -107,55 +110,56 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
             src={pdfPath}
             title={fileName}
             width="100%"
-            height="720"
-            className="block"
+            /* mobile: χρησιμοποιεί dynamic viewport ώστε να χωράει χωρίς υπερβολικό scroll */
+            className="block w-full h-[min(720px,calc(100dvh-14rem))] sm:h-[min(720px,80dvh)] md:h-[720px]"
             onLoad={() => setLoading(false)}
             allow="fullscreen"
+            loading="eager"
           />
         </div>
 
         {/* Actions */}
-        <div className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-t-2 border-pink-200">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="p-3 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-t-2 border-pink-200">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
             <motion.button
               onClick={handleOpenNew}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold text-white shadow-lg touch-manipulation"
               style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <ExternalLink className="w-5 h-5" />
-              <span className="hidden sm:inline">Νέο Παράθυρο</span>
+              <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="truncate">Άνοιγμα</span>
             </motion.button>
 
             <motion.button
               onClick={handleDownload}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg touch-manipulation"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Download className="w-5 h-5" />
-              <span className="hidden sm:inline">Λήψη</span>
+              <Download className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="truncate">Λήψη</span>
             </motion.button>
 
             <motion.button
               onClick={handlePrint}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg touch-manipulation"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Printer className="w-5 h-5" />
-              <span className="hidden sm:inline">Εκτύπωση</span>
+              <Printer className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="truncate">Εκτύπωση</span>
             </motion.button>
 
             <motion.button
               onClick={handleFullscreen}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg touch-manipulation"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Maximize className="w-5 h-5" />
-              <span className="hidden sm:inline">Πλήρης</span>
+              <Maximize className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="truncate">Πλήρης</span>
             </motion.button>
           </div>
         </div>

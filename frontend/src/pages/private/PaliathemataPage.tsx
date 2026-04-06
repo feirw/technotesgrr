@@ -64,28 +64,31 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
     }
   };
 
+  /* CHANGED: μικρότερα κελιά + όριο delay στο stagger — στο mobile 26×30ms κάνει τη λίστα «βαριά». */
+  const staggerDelay = Math.min(index * 0.015, 0.2);
+
   return (
     <motion.button
       className={`
-        relative group p-6 rounded-2xl font-bold text-lg
-        transition-all duration-300 shadow-lg
+        relative group p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg
+        transition-all duration-300 shadow-lg touch-manipulation min-h-[4.5rem] sm:min-h-0
         focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2
         ${
           isSelected
-            ? 'bg-gradient-to-br from-pink-500 to-rose-500 text-white scale-105 shadow-2xl'
-            : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:shadow-xl'
+            ? 'bg-gradient-to-br from-pink-500 to-rose-500 text-white sm:scale-105 shadow-2xl ring-2 ring-pink-300'
+            : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:shadow-xl active:scale-[0.98]'
         }
       `}
       onClick={onClick}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.03 }}
-      whileHover={{ y: -4, scale: 1.05 }}
-      whileTap={{ scale: 0.98 }}
+      transition={{ delay: staggerDelay, duration: 0.2 }}
+      whileHover={{ y: -2, scale: 1.02 }}
+      whileTap={{ scale: 0.97 }}
       aria-label={`${getModeLabel(mode)} ${year}`}
     >
       {/* Year Number */}
-      <div className="text-2xl font-black mb-2">{year}</div>
+      <div className="text-lg sm:text-2xl font-black mb-1 sm:mb-2">{year}</div>
 
       {/* Icon */}
       <div className="flex justify-center">
@@ -99,7 +102,7 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
       {/* Hover gradient overlay */}
       {!isSelected && (
         <motion.div
-          className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
         />
@@ -157,15 +160,6 @@ const PaliathemataPage: React.FC = () => {
 
   const handleYearClick = (year: number) => {
     setSelectedYear(selectedYear === year ? null : year);
-    // Scroll to PDF viewer after selection
-    if (selectedYear !== year) {
-      setTimeout(() => {
-        document.getElementById('pdf-viewer')?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }, 300);
-    }
   };
 
   const handleModeChange = (newMode: ExamMode) => {
@@ -178,6 +172,26 @@ const PaliathemataPage: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
+  /* Μετά την επιλογή έτους το PDF mount-άρει ασύγχρονα — διπλό rAF ώστε το scroll να γίνει μετά layout. */
+  useEffect(() => {
+    if (selectedYear == null) return;
+    let cancelled = false;
+    const raf1 = requestAnimationFrame(() => {
+      if (cancelled) return;
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        document.getElementById('pdf-viewer')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf1);
+    };
+  }, [selectedYear]);
+
   // ═══════════════════════════════════════════════════════════════
   // 🎨 RENDER
   // ═══════════════════════════════════════════════════════════════
@@ -185,7 +199,7 @@ const PaliathemataPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white py-16 px-6">
+      <div className="relative overflow-hidden bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white py-8 sm:py-14 md:py-16 px-4 sm:px-6">
         {/* Animated Background Circles */}
         <div className="absolute inset-0 overflow-hidden opacity-20">
           <motion.div
@@ -220,40 +234,40 @@ const PaliathemataPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h1 className="text-5xl md:text-6xl font-black mb-4 flex items-center justify-center gap-3">
-              <FileText className="w-12 h-12" />
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-2 sm:mb-4 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              <FileText className="w-8 h-8 sm:w-12 sm:h-12 shrink-0" />
               Παλιά Θέματα
             </h1>
-            <p className="text-xl md:text-2xl text-pink-100 mb-8">
+            <p className="text-base sm:text-xl md:text-2xl text-pink-100 mb-4 sm:mb-8 px-1">
               Πανελλήνιες Πληροφορικής • Όλες οι Χρονιές
             </p>
           </motion.div>
 
           {/* Stats */}
           <motion.div
-            className="flex flex-wrap justify-center gap-8"
+            className="hidden sm:flex flex-wrap justify-center gap-6 md:gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
             <div className="text-center">
-              <div className="text-4xl font-bold">{KANONIKES_YEARS.length}</div>
+              <div className="text-3xl md:text-4xl font-bold">{KANONIKES_YEARS.length}</div>
               <div className="text-pink-100">Κανονικές Περίοδοι</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold">{EPANALIPTIKES_YEARS.length}</div>
+              <div className="text-3xl md:text-4xl font-bold">{EPANALIPTIKES_YEARS.length}</div>
               <div className="text-pink-100">Επαναληπτικές Περίοδοι</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold">{OEFE_YEARS1.length}</div>
+              <div className="text-3xl md:text-4xl font-bold">{OEFE_YEARS1.length}</div>
               <div className="text-pink-100">ΟΕΦΕ Ά ΦΑΣΗ</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold">{OEFE_YEARS2.length}</div>
+              <div className="text-3xl md:text-4xl font-bold">{OEFE_YEARS2.length}</div>
               <div className="text-pink-100">ΟΕΦΕ ΄Β ΦΑΣΗ</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold">
+              <div className="text-3xl md:text-4xl font-bold">
                 {KANONIKES_YEARS.length +
                   EPANALIPTIKES_YEARS.length +
                   OEFE_YEARS1.length +
@@ -266,7 +280,7 @@ const PaliathemataPage: React.FC = () => {
       </div>
 
       {/* Tabs & Search Section */}
-      <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-pink-200 dark:border-gray-700">
+      <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-pink-200 dark:border-gray-700 [overflow-anchor:none]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {/* Tabs */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-5 sm:mb-6">
@@ -454,7 +468,7 @@ const PaliathemataPage: React.FC = () => {
       </div>
 
       {/* Years Grid Section */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-12">
         <AnimatePresence mode="wait">
           {filteredYears.length === 0 ? (
             <motion.div
@@ -482,7 +496,7 @@ const PaliathemataPage: React.FC = () => {
             </motion.div>
           ) : (
             <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4"
+              className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-4"
               key={`${mode}-grid`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -509,7 +523,7 @@ const PaliathemataPage: React.FC = () => {
         {selectedYear && (
           <motion.div
             id="pdf-viewer"
-            className="max-w-7xl mx-auto px-6 pb-12"
+            className="max-w-7xl mx-auto px-3 sm:px-6 pb-8 sm:pb-12 scroll-mt-20 sm:scroll-mt-24"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState, useMemo, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import {
@@ -41,7 +41,7 @@ import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
-import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
+import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
@@ -281,6 +281,8 @@ const ProfileDropdown: React.FC = () => {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout, loading, isAdmin } = useAuth();
+  const location = useLocation();
+  const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
   const [shouldLoadChat, setShouldLoadChat] = useState(false);
@@ -341,8 +343,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }
   }, [user]);
 
-  // Defer ChatWidget loading to keep first paint fast.
+  // Defer ChatWidget loading — μόνο σε δημόσιες αρχικές σελίδες (όχι quiz / flashcards / κ.λπ.).
   useEffect(() => {
+    if (!chatPathAllowed) return;
+
     const idle = (window as any).requestIdleCallback as
       | ((cb: () => void, opts?: { timeout: number }) => number)
       | undefined;
@@ -361,11 +365,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         (window as any).cancelIdleCallback(idleId);
       }
     };
-  }, []);
+  }, [chatPathAllowed]);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
-      {shouldLoadChat && (
+      {shouldLoadChat && chatPathAllowed && (
         <Suspense fallback={null}>
           <ChatWidget />
         </Suspense>

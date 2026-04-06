@@ -59,6 +59,13 @@ export const prefetchCriticalPrivateRoutes = () => {
   }
 };
 
+/** Chat widget: μόνο δημόσιες «εισόδου» / αρχικές σελίδες — όχι quiz, flashcards, κ.λπ. */
+export function shouldShowChatWidgetOnPath(pathname: string): boolean {
+  const p =
+    pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+  return routes.some((r) => !r.protected && r.path !== '*' && r.path === p);
+}
+
 const routes: RouteConfig[] = [
   // ═══════════════════════════════════════════════════════════════
   // 🔓 PUBLIC ROUTES

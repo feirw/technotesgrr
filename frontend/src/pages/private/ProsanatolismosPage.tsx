@@ -506,7 +506,8 @@ const RANK_LABELS = ['🥇 Κορυφαία κλίση', '🥈 2η κλίση', 
 // SCORING LOGIC  (pure function — εύκολο να τεσταριστεί)
 // ─────────────────────────────────────────────────────────────
 function computeResults(answers: Record<number, number>): CalculationResult {
-  // 1. Raw scores
+  // 1. Raw scores — κάθε απάντηση 1–5 πολλαπλασιάζεται με το βάρος της ερώτησης ανά κατηγορία.
+  // Για μερικώς συμπληρωμένα δεδομένα (π.χ. παλιό API) λείπουσες ερωτήσεις → ουδέτερο 3.
   const raw: Record<CategoryKey, number> = {
     INFO: 0,
     FIN: 0,
@@ -520,8 +521,10 @@ function computeResults(answers: Record<number, number>): CalculationResult {
   ALL_IDS.forEach((id) => {
     const w = SCORE_MATRIX[id];
     if (!w) return;
+    const a = answers[id];
+    const value = typeof a === 'number' && a >= 1 && a <= 5 ? a : 3;
     CAT_NAMES.forEach((cat, i) => {
-      raw[cat] += (answers[id] ?? 3) * w[i];
+      raw[cat] += value * w[i];
     });
   });
 
@@ -567,6 +570,9 @@ const Prosanatolismospage: React.FC = () => {
   const [isHydrating, setIsHydrating] = useState(false);
   const [sectionIdx, setSectionIdx] = useState(0);
   const isMounted = useRef(true);
+  /** Κύλιση προς τα αποτελέσματα μόνο μετά «Υπολογισμός» ή φόρτωση αποθηκευμένου — όχι σε κάθε re-render. */
+  const resultsAnchorRef = useRef<HTMLElement | null>(null);
+  const scrollResultsAfterUpdate = useRef<'off' | 'calculate' | 'hydrate'>('off');
 
   const totalAnswered = ALL_IDS.filter((id) => answers[id] !== undefined).length;
   const totalQuestions = ALL_IDS.length;
@@ -600,6 +606,17 @@ const Prosanatolismospage: React.FC = () => {
         /* silent */
       }
   }, [answers]);
+
+  useEffect(() => {
+    if (!results) return;
+    const mode = scrollResultsAfterUpdate.current;
+    if (mode === 'off') return;
+    scrollResultsAfterUpdate.current = 'off';
+    const frame = requestAnimationFrame(() => {
+      resultsAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [results]);
 
   useEffect(() => {
     const loadLatestSavedResult = async () => {
@@ -636,6 +653,7 @@ const Prosanatolismospage: React.FC = () => {
         }, {});
 
         if (Object.keys(restoredAnswers).length > 0 && isMounted.current) {
+          scrollResultsAfterUpdate.current = 'hydrate';
           setAnswers(restoredAnswers);
           // If backend payload is partial, compute safely from answers.
           setResults(computeResults(restoredAnswers));
@@ -732,9 +750,9 @@ const Prosanatolismospage: React.FC = () => {
     try {
       const calc = computeResults(answers);
       if (isMounted.current) {
+        scrollResultsAfterUpdate.current = 'calculate';
         setResults(calc);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        saveToBackend(calc);
+        void saveToBackend(calc);
       }
     } catch (e) {
       console.error(e);
@@ -797,14 +815,23 @@ const Prosanatolismospage: React.FC = () => {
       <AnimatePresence>
         {results && (
           <motion.section
+            ref={resultsAnchorRef}
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mb-10 p-5 md:p-7 rounded-2xl bg-gradient-to-br from-rose-50 to-white dark:from-gray-800 dark:to-gray-800 border border-rose-200 dark:border-rose-800 shadow-xl"
+            className="mb-10 p-5 md:p-7 rounded-2xl bg-gradient-to-br from-rose-50 to-white dark:from-gray-800 dark:to-gray-800 border border-rose-200 dark:border-rose-800 shadow-xl scroll-mt-24"
           >
-            <h2 className="text-xl font-bold text-rose-700 dark:text-rose-300 mb-1 text-center">
-              🏆 Τα Αποτελέσματά Σου
-            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 mb-1">
+              <h2 className="text-xl font-bold text-rose-700 dark:text-rose-300 text-center">
+                🏆 Τα Αποτελέσματά Σου
+              </h2>
+              {isSaving && (
+                <span className="flex items-center justify-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                  Αποθήκευση online…
+                </span>
+              )}
+            </div>
             <p className="text-center text-xs text-gray-400 mb-6">
               Το % δείχνει πόσο <em>ξεπερνάς το ουδέτερο</em> σε κάθε κατηγορία, σε σχέση με την
               κορυφαία σου κλίση
@@ -950,16 +977,16 @@ const Prosanatolismospage: React.FC = () => {
             ) : (
               <button
                 onClick={handleCalculate}
-                disabled={totalAnswered < totalQuestions || isCalc || isSaving}
+                disabled={totalAnswered < totalQuestions || isCalc}
                 className={`flex items-center gap-1.5 px-6 py-2 text-sm font-extrabold rounded-lg shadow transition-all ${
-                  totalAnswered < totalQuestions || isCalc || isSaving
+                  totalAnswered < totalQuestions || isCalc
                     ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
                     : 'bg-rose-600 text-white hover:bg-rose-700 hover:scale-105 active:scale-95'
                 }`}
               >
-                {isCalc || isSaving ? (
+                {isCalc ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" /> Επεξεργασία...
+                    <Loader2 className="w-4 h-4 animate-spin" /> Υπολογισμός…
                   </>
                 ) : (
                   <>
