@@ -84,7 +84,15 @@ module.exports = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+  			/** Ροζ-κοραλί (ίδιο με HomePage) */
+  			coral: {
+  				DEFAULT: '#ff8f8e',
+  				accent: '#ff6b7a',
+  				strong: '#e85563',
+  				light: '#ffb0a4',
+  				wash: '#fff5f4',
+  			},
   		}
   	},
   },

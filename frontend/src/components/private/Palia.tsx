@@ -4,8 +4,8 @@ import { Download, Printer, ExternalLink, Maximize, FileText } from 'lucide-reac
 
 const PaliaMobilePdf = lazy(() => import('./PaliaMobilePdf'));
 
-const BRAND = '#fda8a9';
-const BRAND_DARK = '#f88b8c';
+const BRAND = '#ff8f8e';
+const BRAND_DARK = '#e85563';
 
 interface PaliaProps {
   pdfPath?: string;
@@ -91,7 +91,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
     'block w-full h-[min(720px,calc(100dvh-14rem))] sm:h-[min(720px,80dvh)] md:h-[720px]';
 
   return (
-    <div className="w-full bg-gradient-to-br from-pink-50 to-rose-50 p-2 sm:p-4">
+    <div className="w-full bg-coral-wash p-2 sm:p-4">
       <motion.div
         ref={containerRef}
         className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto"
@@ -107,7 +107,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
             </div>
             <div className="min-w-0">
               <h1 className="text-lg sm:text-2xl font-black truncate">Παλιό θέμα (PDF)</h1>
-              <p className="text-pink-100 text-xs sm:text-sm truncate">{fileName}</p>
+              <p className="text-coral-light/95 text-xs sm:text-sm truncate">{fileName}</p>
             </div>
           </div>
         </div>
@@ -167,7 +167,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
           )}
         </div>
 
-        <div className="p-3 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-t-2 border-pink-200">
+        <div className="p-3 sm:p-6 bg-coral-wash border-t-2 border-coral-accent/25">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
             <motion.button
               onClick={handleOpenNew}
@@ -182,7 +182,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
             <motion.button
               onClick={handleDownload}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-lg touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -192,7 +192,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
             <motion.button
               onClick={handlePrint}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-lg touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -202,7 +202,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
             <motion.button
               onClick={handleFullscreen}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-pink-300 text-gray-800 hover:border-pink-400 shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-lg touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

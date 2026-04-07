@@ -51,7 +51,6 @@ interface Feature {
   title: string;
   desc: string;
   badge: string;
-  gradient: string;
   icon?: LucideIcon;
 }
 
@@ -112,63 +111,54 @@ const featuresData: Feature[] = [
     title: 'Online Καταγεγραμμένα Μαθήματα',
     desc: 'Καλύπτουν σε βάθος τη θεωρία, μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
     badge: '01',
-    gradient: 'from-[#831843] to-[#be185d]',
     icon: GraduationCap,
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
     badge: '02',
-    gradient: 'from-[#be185d] to-[#9f1239]',
     icon: Trophy,
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
     badge: '03',
-    gradient: 'from-[#be185d] to-[#db2777]',
     icon: Layers,
   },
   {
     title: 'Community Forum',
     desc: 'Χώρος κοινότητας όπου οι μαθητές ανταλλάσσουν απορίες, ιδέες και συμβουλές.',
     badge: '04',
-    gradient: 'from-[#db2777] to-[#f472b6]',
     icon: MessagesSquare,
   },
   {
     title: 'Study Timer',
     desc: 'Οργάνωσε τον χρόνο μελέτης σου και παρακολούθησε την καθημερινή πρόοδό σου.',
     badge: '05',
-    gradient: 'from-[#831843] to-[#db2777]',
     icon: Timer,
   },
   {
     title: 'Επαγγελματικός Προσανατολισμός',
     desc: 'Απάντησε στο ερωτηματολόγιο και δες εξατομικευμένα αποτελέσματα κατεύθυνσης.',
     badge: '06',
-    gradient: 'from-[#be185d] via-[#9d174d] to-[#831843]',
     icon: Compass,
   },
   {
     title: 'Σχολές και Καριέρα',
     desc: 'Εξερεύνησε επιλογές σχολών και οργάνωσε πιο σωστά τα επόμενα βήματά σου.',
     badge: '07',
-    gradient: 'from-[#9f1239] to-[#be185d]',
     icon: School2Icon,
   },
   {
     title: 'Παλιά Θέματα και Αλγόριθμοι',
     desc: 'Μελέτησε παλαιά θέματα και δες οπτικοποιήσεις αλγορίθμων για βαθύτερη κατανόηση.',
     badge: '08',
-    gradient: 'from-[#be185d] to-[#fbcfe8]',
     icon: Code,
   },
   {
     title: 'Online Διερμηνευτής της Γλώσσας',
     desc: 'Γράψε και δοκίμασε κώδικα στη ΓΛΩΣΣΑ άμεσα, με γρήγορη εκτέλεση και καλύτερη εξάσκηση.',
     badge: '09',
-    gradient: 'from-[#831843] via-[#be185d] to-[#f472b6]',
     icon: Terminal,
   },
 ];
@@ -208,7 +198,7 @@ const faqData: FaqItem[] = [
 
 const BACKEND_URL = getBackendUrl();
 
-/** Σκούρο ροζ — βάση `#831843` / `#be185d`, τονικό `#db2777`, ανοιχτό `#f472b6` / `#fbcfe8`. */
+/** Κοραλί (ζεστό): κύριο `#ff8f8e`, accent `#ff6b7a`, hover `#e85563`, ανοιχτό `#ffb0a4`. */
 
 // ---------- Motion Variants ----------
 const fadeInUp = {
@@ -252,8 +242,8 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
   fetchPriority = 'low',
 }) => (
   <motion.div
-    className={`relative w-full h-auto bg-white/90 border-4 border-[#be185d] rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
-    style={{ boxShadow: '0 10px 30px rgba(190, 24, 93, 0.38)' }}
+    className={`relative w-full h-auto bg-white/90 border-4 border-[#ff8f8e] rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
+    style={{ boxShadow: '0 10px 30px rgba(255, 143, 142, 0.38)' }}
     initial={{ opacity: 0, scale: 0.8, rotate: rotation + 10 }}
     animate={{ opacity: 1, scale: 1, rotate: rotation }}
     transition={{
@@ -265,7 +255,7 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
     whileHover={{
       scale: 1.05,
       rotate: 0,
-      boxShadow: '0 15px 40px rgba(157, 23, 77, 0.42)',
+      boxShadow: '0 15px 40px rgba(255, 107, 122, 0.38)',
     }}
   >
     <img
@@ -303,7 +293,7 @@ const Section: React.FC<SectionProps> = ({
     style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 480px' }}
   >
     {withGradient && (
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#be185d]/[0.07] to-transparent dark:via-[#be185d]/[0.14] pointer-events-none" />
+      <div className="absolute inset-0 bg-[#ff8f8e]/[0.06] dark:bg-[#ff6b7a]/[0.1] pointer-events-none" />
     )}
     <div className="container mx-auto px-6 relative z-10">
       {title && (
@@ -315,7 +305,7 @@ const Section: React.FC<SectionProps> = ({
           variants={stagger}
         >
           <motion.h2
-            className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-[#831843] via-[#be185d] to-[#f472b6] bg-clip-text text-transparent mb-4"
+            className="text-4xl md:text-5xl font-black tracking-tight text-[#ff6b7a] dark:text-[#ffb0a4] mb-4"
             variants={fadeInUp}
             transition={{ type: 'spring', stiffness: 100, damping: 20 }}
           >
@@ -342,9 +332,9 @@ interface FeatureCardProps extends Feature {
   i: number;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, gradient, i, icon: Icon }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, i, icon: Icon }) => (
   <motion.article
-    className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-[#be185d]/30 dark:border-gray-700/50 overflow-hidden"
+    className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-[#ff8f8e]/35 dark:border-gray-700/50 overflow-hidden"
     aria-label={title}
     initial={{ opacity: 0, y: 30, rotateX: -5 }}
     whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -358,22 +348,18 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, gradient, i, ico
     whileHover={{
       y: -10,
       scale: 1.02,
-      boxShadow: '0 25px 50px -12px rgba(131, 24, 67, 0.28)',
+      boxShadow: '0 25px 50px -12px rgba(232, 86, 100, 0.26)',
       transition: { duration: 0.3 },
     }}
   >
-    <motion.div
-      className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-    />
+    <motion.div className="absolute inset-0 bg-[#ff8f8e] opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
 
-    <div
-      className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500`}
-    />
+    <div className="absolute -inset-0.5 bg-[#ff8f8e] rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500" />
 
     <div className="relative z-10">
       {Icon && (
         <motion.div
-          className="w-16 h-16 mb-6 mx-auto rounded-2xl flex items-center justify-center text-2xl text-[#9d174d] bg-[#fdf2f8] border-2 border-[#be185d]/40 dark:bg-[#1a0612]/75 dark:border-[#be185d]/35 dark:text-[#f9a8d4]"
+          className="w-16 h-16 mb-6 mx-auto rounded-2xl flex items-center justify-center text-2xl text-[#ff6b7a] bg-[#fff5f4] border-2 border-[#ff8f8e]/40 dark:bg-[#2a1815]/55 dark:border-[#ff6b7a]/35 dark:text-[#ffb0a4]"
           whileHover={{ scale: 1.15, rotate: 0, transition: { duration: 0.3 } }}
         >
           <Icon className="w-8 h-8" />
@@ -438,9 +424,9 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-5 flex items-center justify-between text-left group"
-        whileHover={{ backgroundColor: 'rgba(190, 24, 93, 0.09)' }}
+        whileHover={{ backgroundColor: 'rgba(255, 143, 142, 0.1)' }}
       >
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white pr-8 group-hover:text-[#be185d] dark:group-hover:text-[#f472b6] transition-colors">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white pr-8 group-hover:text-[#ff6b7a] dark:group-hover:text-[#ffb0a4] transition-colors">
           {question}
         </h3>
         <motion.div
@@ -449,7 +435,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
           className="flex-shrink-0"
         >
           <svg
-            className="w-6 h-6 text-[#be185d] dark:text-[#f472b6]"
+            className="w-6 h-6 text-[#ff8f8e] dark:text-[#ffb0a4]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -477,33 +463,17 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
   );
 };
 
-/** Mesh σκούρου ροζ (#831843 / #be185d) — στατικό blur. */
+/** Απαλά blurs ροζ-κοραλί (συμπαγές χρώμα, όχι gradient). */
 const HeroMeshBlurs: React.FC = () => (
   <div
     className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
     aria-hidden
   >
     <div
-      className="absolute -top-28 -left-20 sm:-top-32 sm:-left-24 w-[min(92vw,560px)] h-[min(92vw,560px)] rounded-full blur-3xl opacity-90 dark:opacity-50"
-      style={{
-        background:
-          'radial-gradient(closest-side, rgba(157, 23, 77, 0.28) 0%, rgba(236, 72, 153, 0.12) 45%, transparent 72%)',
-      }}
+      className="absolute -top-28 -left-20 sm:-top-32 sm:-left-24 w-[min(92vw,560px)] h-[min(92vw,560px)] rounded-full blur-3xl opacity-90 dark:opacity-50 bg-[#ff8f8e]/25"
     />
-    <div
-      className="absolute top-[12%] -right-16 sm:right-0 w-[min(88vw,520px)] h-[min(88vw,520px)] rounded-full blur-3xl opacity-85 dark:opacity-48"
-      style={{
-        background:
-          'radial-gradient(closest-side, rgba(131, 24, 67, 0.24) 0%, rgba(190, 24, 93, 0.16) 50%, transparent 74%)',
-      }}
-    />
-    <div
-      className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[min(95vw,640px)] h-[min(70vw,420px)] rounded-full blur-3xl opacity-60 dark:opacity-38"
-      style={{
-        background:
-          'radial-gradient(closest-side, rgba(244, 114, 182, 0.2) 0%, rgba(190, 24, 93, 0.1) 55%, transparent 68%)',
-      }}
-    />
+    <div className="absolute top-[12%] -right-16 sm:right-0 w-[min(88vw,520px)] h-[min(88vw,520px)] rounded-full blur-3xl opacity-85 dark:opacity-48 bg-[#ff6b7a]/22" />
+    <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[min(95vw,640px)] h-[min(70vw,420px)] rounded-full blur-3xl opacity-60 dark:opacity-38 bg-[#fbcfe8]/40" />
   </div>
 );
 
@@ -533,7 +503,7 @@ const HeartsRain: React.FC<{ count?: number }> = ({ count = 14 }) => {
             width: h.size,
             height: h.size,
             animation: `hearts-fall ${h.duration} linear ${h.delay} infinite, hearts-sway ${h.sway} ease-in-out ${h.delay} infinite`,
-            filter: 'drop-shadow(0 2px 2px rgba(131, 24, 67, 0.4))',
+            filter: 'drop-shadow(0 2px 2px rgba(255, 107, 122, 0.36))',
           }}
         >
           <img
@@ -693,10 +663,10 @@ const HomePage: React.FC = () => {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-gradient-to-b from-white via-[#fce7f3] to-[#f9d0e3]/85 dark:from-gray-900 dark:via-[#1a0612] dark:to-gray-900 transition-colors duration-500">
+      <div className="min-h-screen bg-[#fff5f4] dark:bg-gray-900 transition-colors duration-500">
         <HeartsRain count={isSmall ? 5 : 10} />
         <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#831843] via-[#be185d] to-[#f472b6] origin-left z-50 shadow-lg shadow-[#be185d]/45"
+          className="fixed top-0 left-0 right-0 h-1 bg-[#ff8f8e] origin-left z-50 shadow-lg shadow-[#ff6b7a]/35"
           style={{ scaleX }}
         />
 
@@ -710,7 +680,7 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8 }}
             >
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-[#831843] via-[#be185d] to-[#db2777] bg-clip-text text-transparent drop-shadow-lg leading-tight"
+                className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 text-[#ff6b7a] dark:text-[#ffb0a4] drop-shadow-lg leading-tight"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45, duration: 0.8 }}
@@ -724,22 +694,22 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.65, duration: 0.8 }}
               >
-                Η <span className="font-bold text-[#be185d] dark:text-[#f472b6]">ιδανική πλατφόρμα</span> προετοιμασίας
+                Η <span className="font-bold text-[#ff6b7a] dark:text-[#ffb0a4]">ιδανική πλατφόρμα</span> προετοιμασίας
                 για τις Πανελλήνιες.
               </motion.p>
 
               <motion.button
-                className="relative inline-flex items-center gap-3 px-9 py-4 bg-gradient-to-r from-[#831843] via-[#be185d] to-[#db2777] hover:from-[#be185d] hover:via-[#9d174d] hover:to-[#831843] text-white font-extrabold rounded-full shadow-xl transition-transform hover:-translate-y-1"
+                className="relative inline-flex items-center gap-3 px-9 py-4 bg-[#ff6b7a] hover:bg-[#e85563] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
                 onClick={() => navigate(user ? '/quiz' : '/login')}
                 whileTap={{ scale: 0.98 }}
               >
                 <span>{user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}</span>
                 <span
-                  className="absolute inset-0 rounded-full ring-2 ring-[#be185d]/50 animate-pulse"
+                  className="absolute inset-0 rounded-full ring-2 ring-[#ff8f8e]/55 animate-pulse"
                   aria-hidden="true"
                 />
                 <span
-                  className="absolute -inset-px rounded-full bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition"
+                  className="absolute -inset-px rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition"
                   aria-hidden="true"
                 />
               </motion.button>
@@ -789,7 +759,7 @@ const HomePage: React.FC = () => {
         <Section
           id="reviews"
           title="Τι λένε οι μαθητές μας;"
-          className="bg-gradient-to-b from-transparent via-[#be185d]/[0.08] to-transparent dark:via-[#be185d]/[0.1]"
+          className="bg-[#ff8f8e]/[0.06] dark:bg-[#ff6b7a]/[0.08]"
         >
           <motion.div
             className="max-w-5xl mx-auto space-y-6 sm:space-y-8"
@@ -806,13 +776,13 @@ const HomePage: React.FC = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ delay: idx * 0.1, duration: 0.6 }}
-                whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(131, 24, 67, 0.25)' }}
+                whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(255, 107, 122, 0.24)' }}
               >
                 <StarRating value={review.rating} />
                 <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">
                   "{review.description}"
                 </p>
-                <p className="text-[#be185d] dark:text-[#f472b6] font-bold mt-4 text-right">
+                <p className="text-[#ff6b7a] dark:text-[#ffb0a4] font-bold mt-4 text-right">
                   — {review.name}
                 </p>
               </motion.div>
@@ -902,7 +872,7 @@ const HomePage: React.FC = () => {
                   onChange={handleContactInputChange}
                   required
                   autoComplete="given-name"
-                  className="w-full rounded-xl border-2 border-[#f9c4d8] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#be185d] bg-white dark:bg-gray-700 dark:text-white transition-all"
+                  className="w-full rounded-xl border-2 border-[#f3c6dd] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6b7a] bg-white dark:bg-gray-700 dark:text-white transition-all"
                   placeholder="π.χ. Μαρία"
                   whileFocus={{ scale: 1.02 }}
                 />
@@ -920,7 +890,7 @@ const HomePage: React.FC = () => {
                   value={contactForm.lastName}
                   onChange={handleContactInputChange}
                   autoComplete="family-name"
-                  className="w-full rounded-xl border-2 border-[#f9c4d8] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#be185d] bg-white dark:bg-gray-700 dark:text-white transition-all"
+                  className="w-full rounded-xl border-2 border-[#f3c6dd] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6b7a] bg-white dark:bg-gray-700 dark:text-white transition-all"
                   placeholder="π.χ. Παπαδοπούλου"
                   whileFocus={{ scale: 1.02 }}
                 />
@@ -945,7 +915,7 @@ const HomePage: React.FC = () => {
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                 inputMode="email"
                 autoComplete="email"
-                className="w-full rounded-xl border-2 border-[#f9c4d8] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#be185d] bg-white dark:bg-gray-700 dark:text-white transition-all"
+                className="w-full rounded-xl border-2 border-[#f3c6dd] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6b7a] bg-white dark:bg-gray-700 dark:text-white transition-all"
                 placeholder="name@example.com"
                 whileFocus={{ scale: 1.02 }}
               />
@@ -965,7 +935,7 @@ const HomePage: React.FC = () => {
                 value={contactForm.message}
                 onChange={handleContactInputChange}
                 required
-                className="w-full rounded-xl border-2 border-[#f9c4d8] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#be185d] bg-white dark:bg-gray-700 dark:text-white resize-y transition-all"
+                className="w-full rounded-xl border-2 border-[#f3c6dd] dark:border-gray-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6b7a] bg-white dark:bg-gray-700 dark:text-white resize-y transition-all"
                 placeholder="Γράψε εδώ την απορία/πρότασή σου…"
                 whileFocus={{ scale: 1.01 }}
               />
@@ -975,7 +945,7 @@ const HomePage: React.FC = () => {
               <motion.button
                 type="submit"
                 disabled={contactSubmitting}
-                className="relative px-8 py-4 bg-gradient-to-r from-[#831843] via-[#be185d] to-[#db2777] text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group"
+                className="relative px-8 py-4 bg-[#ff6b7a] hover:bg-[#e85563] text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -983,7 +953,7 @@ const HomePage: React.FC = () => {
                   {contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}
                 </span>
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-[#db2777] to-[#f472b6]"
+                  className="absolute inset-0 bg-[#ffb0a4]"
                   initial={{ x: '-100%' }}
                   whileHover={{ x: 0 }}
                   transition={{ duration: 0.3 }}

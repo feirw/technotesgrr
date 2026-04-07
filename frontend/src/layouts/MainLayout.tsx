@@ -41,12 +41,10 @@ import technotesLogo from '../assets/technotes_logo.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
-import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
+import { loadCommunityPage, prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
-const BRAND = '#fda8a9';
-const BRAND_DARK = '#f88b8c';
 
 const fadeIn = {
   initial: { opacity: 0, y: 30 },
@@ -78,16 +76,19 @@ const PrepMenu: React.FC = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const LinkItem: React.FC<{ to: string; label: string; icon: LucideIcon }> = ({
-    to,
-    label,
-    icon: Icon,
-  }) => (
+  const LinkItem: React.FC<{
+    to: string;
+    label: string;
+    icon: LucideIcon;
+    onPrefetch?: () => void;
+  }> = ({ to, label, icon: Icon, onPrefetch }) => (
     <button
+      type="button"
       onClick={() => navigate(to)}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200"
+      onMouseEnter={() => onPrefetch?.()}
+      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-coral-wash dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200"
     >
-      <Icon className="w-4 h-4 text-pink-600" />
+      <Icon className="w-4 h-4 text-coral-accent" />
       <span className="font-semibold">{label}</span>
     </button>
   );
@@ -98,14 +99,14 @@ const PrepMenu: React.FC = () => {
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400 inline-flex items-center gap-1">
+      <button className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light inline-flex items-center gap-1">
         Μάθηση
         <ChevronDown className="w-4 h-4" />
       </button>
       <AnimatePresence>
         {open && (
           <motion.div
-            className="absolute right-0 mt-2 w-[min(560px,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-pink-100 dark:border-gray-800 p-3 z-50"
+            className="absolute right-0 mt-2 w-[min(560px,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-coral-accent/15 dark:border-gray-800 p-3 z-50"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -121,7 +122,12 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
               <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
               <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
-              <LinkItem to="/community" label="Community" icon={MessagesSquare} />
+              <LinkItem
+                to="/community"
+                label="Community"
+                icon={MessagesSquare}
+                onPrefetch={() => void loadCommunityPage()}
+              />
             </div>
           </motion.div>
         )}
@@ -137,7 +143,7 @@ const NavButton: React.FC<NavButtonProps> = ({ to, children }) => (
       `relative py-2 px-3 rounded-xl font-semibold text-sm xl:text-base transition-all duration-200 whitespace-nowrap ${
         isActive
           ? 'text-white'
-          : 'text-gray-700 dark:text-gray-200 hover:text-pink-600 dark:hover:text-pink-400'
+          : 'text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light'
       }`
     }
   >
@@ -145,8 +151,7 @@ const NavButton: React.FC<NavButtonProps> = ({ to, children }) => (
       <>
         {isActive && (
           <motion.div
-            className="absolute inset-0 rounded-xl"
-            style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
+            className="absolute inset-0 rounded-xl bg-coral-accent"
             layoutId="activeNav"
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           />
@@ -165,7 +170,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
       `relative block w-full text-left min-h-11 py-4 px-4 rounded-xl transition-all touch-manipulation ${
         isActive
           ? 'text-white'
-          : 'text-gray-700 dark:text-gray-200 hover:bg-pink-50 dark:hover:bg-gray-800'
+          : 'text-gray-700 dark:text-gray-200 hover:bg-coral-wash dark:hover:bg-gray-800'
       }`
     }
   >
@@ -173,8 +178,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
       <>
         {isActive && (
           <motion.div
-            className="absolute inset-0 rounded-xl"
-            style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
+            className="absolute inset-0 rounded-xl bg-coral-accent"
             layoutId="mobileActiveNav"
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           />
@@ -204,13 +208,13 @@ const ProfileDropdown: React.FC = () => {
     <div className="relative">
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 rounded-full hover:bg-pink-50 dark:hover:bg-gray-800 transition-all"
+        className="flex items-center gap-2 p-1 rounded-full hover:bg-coral-wash dark:hover:bg-gray-800 transition-all"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         <motion.div
-          className="relative w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 via-rose-500 to-red-500 flex items-center justify-center text-white font-bold shadow-lg"
-          whileHover={{ boxShadow: '0 0 20px rgba(236, 72, 153, 0.6)', scale: 1.1 }}
+          className="relative w-10 h-10 rounded-full bg-coral-accent flex items-center justify-center text-white font-bold shadow-lg"
+          whileHover={{ boxShadow: '0 0 20px rgba(255, 107, 122, 0.45)', scale: 1.1 }}
         >
           {initials}
         </motion.div>
@@ -229,7 +233,7 @@ const ProfileDropdown: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
             >
-              <div className="bg-gradient-to-br from-pink-500 via-rose-500 to-red-500 p-6 text-white">
+              <div className="bg-coral-accent p-6 text-white">
                 <p className="font-bold text-lg truncate">{user.username || 'Χρήστης'}</p>
                 <p className="text-sm opacity-80 truncate">{user.email}</p>
               </div>
@@ -239,10 +243,10 @@ const ProfileDropdown: React.FC = () => {
                     navigate('/profile');
                     setIsOpen(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-pink-50 dark:hover:bg-gray-700 transition-all text-gray-700 dark:text-gray-200"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-coral-wash dark:hover:bg-gray-700 transition-all text-gray-700 dark:text-gray-200"
                   whileHover={{ x: 5 }}
                 >
-                  <User size={18} className="text-pink-600" />{' '}
+                  <User size={18} className="text-coral-accent" />{' '}
                   <span className="font-semibold">Προφίλ</span>
                 </motion.button>
                 {isAdmin && (
@@ -368,14 +372,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, [chatPathAllowed]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
+    <div className="min-h-screen overflow-x-hidden bg-coral-wash dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
       {shouldLoadChat && chatPathAllowed && (
         <Suspense fallback={null}>
           <ChatWidget />
         </Suspense>
       )}
       {/* Navbar Container */}
-      <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-pink-100 dark:border-gray-800 pt-[env(safe-area-inset-top,0px)]">
+      <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-coral-accent/15 dark:border-gray-800 pt-[env(safe-area-inset-top,0px)]">
         <div className="container mx-auto px-3 sm:px-6 max-w-[100vw]">
           <div className="flex justify-between items-center gap-2 py-3 sm:py-4 min-h-[3.25rem]">
             {/* Logo */}
@@ -404,7 +408,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <button
                 type="button"
                 onClick={triggerPanic}
-                className="mr-2 px-6 py-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-black shadow-lg hover:shadow-xl touch-manipulation min-h-11"
+                className="mr-2 px-6 py-3 rounded-full bg-coral-accent hover:bg-coral-strong text-white font-black shadow-lg hover:shadow-xl touch-manipulation min-h-11 transition-colors"
                 title="Panic Button"
                 aria-label="Panic Button"
               >
@@ -418,7 +422,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 type="button"
                 aria-label="Theme toggle"
                 onClick={() => setIsDark(toggleTheme() === 'dark')}
-                className="ml-2 min-h-11 min-w-11 p-2 rounded-xl border border-pink-200 text-pink-600 hover:bg-pink-50 transition-colors touch-manipulation inline-flex items-center justify-center"
+                className="ml-2 min-h-11 min-w-11 p-2 rounded-xl border border-coral-accent/35 text-coral-accent hover:bg-coral-wash transition-colors touch-manipulation inline-flex items-center justify-center"
                 title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
               >
                 {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -441,7 +445,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <NavButton to="/login">Σύνδεση</NavButton>
                   <NavLink
                     to="/register"
-                    className="py-2 px-5 bg-pink-600 text-white rounded-xl font-bold hover:bg-pink-700 transition-all shadow-md"
+                    className="py-2 px-5 bg-coral-accent text-white rounded-xl font-bold hover:bg-coral-strong transition-all shadow-md"
                   >
                     Εγγραφή
                   </NavLink>
@@ -456,8 +460,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               aria-controls="mobile-nav-drawer"
               aria-label={isMenuOpen ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού'}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden min-h-11 min-w-11 p-3 rounded-xl text-white shadow-lg shrink-0 touch-manipulation inline-flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
+              className="lg:hidden min-h-11 min-w-11 p-3 rounded-xl text-white bg-coral-accent hover:bg-coral-strong shadow-lg shrink-0 touch-manipulation inline-flex items-center justify-center transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -478,15 +481,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
             <motion.div
-              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-gray-900 border-2 border-pink-300 p-5 sm:p-6 shadow-2xl"
+              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-gray-900 border-2 border-coral-accent/40 p-5 sm:p-6 shadow-2xl"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             >
               <div className="flex items-center gap-3 mb-3">
-                {panicMsg.type === 'tip' && <Heart className="w-5 h-5 text-pink-600" />}
-                {panicMsg.type === 'joke' && <Laugh className="w-5 h-5 text-rose-600" />}
+                {panicMsg.type === 'tip' && <Heart className="w-5 h-5 text-coral-accent" />}
+                {panicMsg.type === 'joke' && <Laugh className="w-5 h-5 text-coral-strong" />}
                 {panicMsg.type === 'breath' && <Wind className="w-5 h-5 text-fuchsia-600" />}
                 <h3 className="text-xl font-black text-gray-900 dark:text-white">Take a breath</h3>
               </div>
@@ -495,7 +498,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <button
                   type="button"
                   onClick={triggerPanic}
-                  className="min-h-11 px-4 py-3 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-bold touch-manipulation"
+                  className="min-h-11 px-4 py-3 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-bold touch-manipulation transition-colors"
                 >
                   Άλλο ένα
                 </button>
@@ -536,11 +539,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             >
               <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-lg sm:text-xl font-black text-pink-600">Μενού</span>
+                  <span className="text-lg sm:text-xl font-black text-coral-accent dark:text-coral-light">Μενού</span>
                   <button
                     type="button"
                     onClick={closeMenu}
-                    className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-gray-800 touch-manipulation"
+                    className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-coral-wash dark:hover:bg-gray-800 touch-manipulation"
                     aria-label="Κλείσιμο μενού"
                   >
                     <X className="w-6 h-6" aria-hidden />
@@ -548,7 +551,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
 
                 {user && (
-                  <div className="mb-6 p-4 bg-pink-50 dark:bg-gray-800 rounded-2xl border border-pink-100 dark:border-gray-700">
+                  <div className="mb-6 p-4 bg-coral-wash dark:bg-gray-800 rounded-2xl border border-coral-accent/15 dark:border-gray-700">
                     <p className="text-sm text-gray-500">Συνδεδεμένος ως:</p>
                     <p className="font-bold text-gray-900 dark:text-white truncate">
                       {user.username || user.email}
@@ -563,12 +566,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       type="button"
                       aria-label="Theme toggle"
                       onClick={() => setIsDark(toggleTheme() === 'dark')}
-                      className="min-h-11 min-w-11 p-2 rounded-lg border border-pink-200 text-pink-600 touch-manipulation inline-flex items-center justify-center"
+                      className="min-h-11 min-w-11 p-2 rounded-lg border border-coral-accent/35 text-coral-accent touch-manipulation inline-flex items-center justify-center"
                     >
                       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                   </div>
-                  <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
+                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
 
                   <button
                     type="button"
@@ -576,14 +579,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       triggerPanic();
                       closeMenu();
                     }}
-                    className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-pink-700 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/40 font-bold border border-pink-200 dark:border-pink-800 touch-manipulation min-h-11"
+                    className="w-full flex items-center gap-3 py-4 px-4 rounded-xl text-coral-strong dark:text-coral-light bg-coral-wash dark:bg-coral-accent/15 font-bold border border-coral-accent/30 dark:border-coral-accent/35 touch-manipulation min-h-11"
                   >
                     <Heart size={20} aria-hidden /> Take a breath
                   </button>
 
                   {user && (
                     <>
-                      <div className="border-t border-pink-100 dark:border-gray-800 my-2" />
+                      <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                       <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>
                         Προφίλ
                       </MobileNavButton>
@@ -640,7 +643,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
                         Παλιά Θέματα
                       </MobileNavButton>
-                      <div className="pt-4 mt-4 border-t border-pink-100 dark:border-gray-800">
+                      <div className="pt-4 mt-4 border-t border-coral-accent/15 dark:border-gray-800">
                         <button
                           type="button"
                           onClick={async () => {
@@ -676,31 +679,31 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Footer */}
       <footer className="relative overflow-hidden mt-12 -mt-px">
-        {/* Light gradient (matches screenshot: subtle, from white to soft pink) */}
+        {/* Light: απαλό κοραλί */}
         <div
           className="pointer-events-none absolute inset-0 dark:hidden"
           style={{
             background:
-              'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(253, 164, 175, 0.18) 35%, rgba(253, 164, 175, 0.28) 65%, rgba(253, 164, 175, 0.38) 100%)',
+              'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255, 143, 142, 0.14) 35%, rgba(255, 107, 122, 0.2) 65%, rgba(255, 176, 164, 0.28) 100%)',
           }}
         />
-        {/* Dark gradient (softer for dark theme) */}
+        {/* Dark */}
         <div
           className="pointer-events-none absolute inset-0 hidden dark:block"
           style={{
             background:
-              'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(190, 24, 93, 0.22) 35%, rgba(190, 24, 93, 0.32) 65%, rgba(190, 24, 93, 0.42) 100%)',
+              'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(255, 107, 122, 0.12) 35%, rgba(255, 107, 122, 0.2) 65%, rgba(232, 85, 99, 0.28) 100%)',
           }}
         />
 
         <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-[100vw]">
           <motion.div {...fadeIn} className="text-center md:text-left">
-            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Νομικά</h3>
+            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Νομικά</h3>
             <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
-              <NavLink to="/privacy-policy" className="hover:text-pink-600 transition-colors">
+              <NavLink to="/privacy-policy" className="hover:text-coral-accent dark:hover:text-coral-light transition-colors">
                 Όροι Χρήσης & Πολιτική Απορρήτου
               </NavLink>
-              <NavLink to="/data" className="hover:text-pink-600 transition-colors">
+              <NavLink to="/data" className="hover:text-coral-accent dark:hover:text-coral-light transition-colors">
                 Προστασία Προσωπικών Δεδομένων
               </NavLink>
               <span className="text-xs text-gray-500">
@@ -712,15 +715,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <motion.div
             {...fadeIn}
             transition={{ delay: 0.15 }}
-            className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60"
+            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-800/60"
           >
-            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Socials</h3>
+            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Socials</h3>
             <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
               <a
                 href="https://instagram.com/technotesgr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
               >
                 <Instagram className="w-4 h-4" /> <span>Instagram</span>
               </a>
@@ -728,7 +731,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 href="https://tiktok.com/@technotesgr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
               >
                 <Music2 className="w-4 h-4" /> <span>TikTok</span>
               </a>
@@ -736,7 +739,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 href="https://www.linkedin.com/company/technotesgr/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
               >
                 <Linkedin className="w-4 h-4" /> <span>LinkedIn</span>
               </a>
@@ -744,7 +747,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 href="https://www.youtube.com/@technotesgr-elenizafeiri"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-pink-600 transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
               >
                 <Youtube className="w-4 h-4" /> <span>YouTube</span>
               </a>
@@ -754,9 +757,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <motion.div
             {...fadeIn}
             transition={{ delay: 0.25 }}
-            className="text-center md:text-left md:border-l md:border-pink-100/60 md:pl-6 dark:md:border-gray-800/60"
+            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-800/60"
           >
-            <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-3">Τοποθεσία</h3>
+            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Τοποθεσία</h3>
             <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
               <div className="inline-flex items-center gap-2 justify-center md:justify-start">
                 <span role="img" aria-label="location">

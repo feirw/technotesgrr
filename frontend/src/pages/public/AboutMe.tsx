@@ -48,17 +48,17 @@ const stagger: Variants = {
 
 const skillsData: SkillItem[] = [
   {
-    icon: <Lightbulb className="w-8 h-8 text-pink-600" />,
+    icon: <Lightbulb className="w-8 h-8 text-coral-accent" />,
     title: 'Καινοτομία',
     desc: 'Χρησιμοποιώ σύγχρονες τεχνολογίες για να δημιουργώ διαδραστικά εργαλεία μάθησης.',
   },
   {
-    icon: <HeartHandshake className="w-8 h-8 text-pink-600" />,
+    icon: <HeartHandshake className="w-8 h-8 text-coral-accent" />,
     title: 'Πάθος',
     desc: 'Λατρεύω την εκπαίδευση και θέλω να συμβάλλω ουσιαστικά στη διδακτική της πληροφορικής.',
   },
   {
-    icon: <Users className="w-8 h-8 text-pink-600" />,
+    icon: <Users className="w-8 h-8 text-coral-accent" />,
     title: 'Κοινότητα',
     desc: 'Πιστεύω στη δύναμη της συνεργασίας των μαθητών για καλύτερη απόδοση και ουσιαστική πρόοδο.',
   },
@@ -165,14 +165,14 @@ const achievementImages = [
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-pink-50/30 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-white via-coral-wash/90 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 opacity-30 dark:opacity-20 pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob" />
-          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-rose-300 dark:bg-rose-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-4000" />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-coral/35 dark:bg-coral-accent/25 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob" />
+          <div className="absolute top-40 right-10 w-72 h-72 bg-coral-light/40 dark:bg-coral-strong/20 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-coral-wash dark:bg-coral-accent/20 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-4000" />
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
@@ -180,7 +180,7 @@ const AboutPage: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-pink-100 text-pink-700 font-semibold"
+            className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-coral-wash text-coral-strong font-semibold border border-coral-accent/20"
           >
             <GraduationCap className="w-4 h-4" />
             technotesgr
@@ -192,7 +192,7 @@ const AboutPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <span className="bg-gradient-to-r from-pink-600 via-rose-500 to-red-500 bg-clip-text text-transparent">
+            <span className="text-coral-accent dark:text-coral-light">
               Σχετικά με εμένα
             </span>
           </motion.h1>
@@ -204,7 +204,7 @@ const AboutPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.5 }}
           >
             Γεια σου! Είμαι η Ελένη, δημιουργός του{' '}
-            <span className="font-bold text-pink-600 dark:text-pink-400">technotesgr</span>
+            <span className="font-bold text-coral-accent dark:text-coral-light">technotesgr</span>
           </motion.p>
         </div>
       </section>
@@ -220,14 +220,14 @@ const AboutPage: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-coral-accent dark:text-coral-light mb-4">
                 Some cool moments
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {achievementImages.map((imageSrc, i) => (
                   <div
                     key={imageSrc}
-                    className="aspect-square overflow-hidden rounded-2xl border border-pink-200 dark:border-gray-700 bg-pink-50 dark:bg-gray-700/40"
+                    className="aspect-square overflow-hidden rounded-2xl border border-coral-accent/25 dark:border-gray-700 bg-coral-wash dark:bg-gray-700/40"
                   >
                     <img
                       src={imageSrc}
@@ -252,29 +252,29 @@ const AboutPage: React.FC = () => {
                 {
                   label: 'Επίδοση Πανελλαδικών',
                   value: '19.000 μόρια',
-                  icon: <Target className="w-5 h-5 text-pink-600" />,
+                  icon: <Target className="w-5 h-5 text-coral-accent" />,
                 },
                 {
                   label: 'Βαθμός Πληροφορικής',
                   value: '99/100',
-                  icon: <BookOpenCheck className="w-5 h-5 text-pink-600" />,
+                  icon: <BookOpenCheck className="w-5 h-5 text-coral-accent" />,
                 },
                 {
                   label: 'Αποστολή',
                   value: 'Προσβάσιμη γνώση',
-                  icon: <Users className="w-5 h-5 text-pink-600" />,
+                  icon: <Users className="w-5 h-5 text-coral-accent" />,
                 },
               ].map((item) => (
                 <motion.div
                   key={item.label}
                   variants={fadeInUp}
-                  className="rounded-2xl border border-pink-200 bg-white/80 dark:bg-gray-800/80 p-5 shadow-lg"
+                  className="rounded-2xl border border-coral-accent/25 bg-white/80 dark:bg-gray-800/80 p-5 shadow-lg"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     {item.icon}
                     <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
                   </div>
-                  <p className="text-xl font-black text-pink-600">{item.value}</p>
+                  <p className="text-xl font-black text-coral-accent">{item.value}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -294,11 +294,11 @@ const AboutPage: React.FC = () => {
                 viewport={{ once: true }}
                 variants={stagger}
               >
-                <motion.div className="text-pink-600" variants={fadeInUp}>
+                <motion.div className="text-coral-accent" variants={fadeInUp}>
                   <BookOpenCheck className="w-9 h-9" />
                 </motion.div>
                 <motion.h2
-                  className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
+                  className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light"
                   variants={fadeInUp}
                 >
                   Η ιστορία μου
@@ -329,7 +329,7 @@ const AboutPage: React.FC = () => {
                     href="https://www.vrisko.gr/details/21a516312h3ja01e0bd_4d_26h3j0jc0#:~:text=E%20%2D%20%CE%9C%CE%91%CE%98%CE%97%CE%A3%CE%97%20%2D%20e%2D%CE%BC%CE%AC%CE%B8%CE%B7%CF%83%CE%B7%20(%CE%A4%CF%83%CF%8E%CE%BD%CE%BF%CF%85%20%CE%95%CE%BB%CE%AD%CE%BD%CE%B7%20%CE%91.)&text=%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1%20%CE%A0%CF%81%CE%BF%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B9%CF%83%CE%BC%CE%BF%CF%8D%2C%20%CE%A6%CF%81%CE%BF%CE%BD%CF%84%CE%B9%CF%83%CF%84%CE%AE%CF%81%CE%B9%CE%B1%20%CE%9C%CE%AD%CF%83%CE%B7%CF%82%20%CE%95%CE%BA%CF%80%CE%B1%CE%AF%CE%B4%CE%B5%CF%85%CF%83%CE%B7%CF%82,%CE%A6%CE%98%CE%99%CE%A9%CE%A4%CE%99%CE%A4%CE%91%CE%A3%20%2C%206976681079%20%7C%20vrisko.gr"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-pink-600 dark:text-pink-400 font-bold hover:underline"
+                    className="text-coral-accent dark:text-coral-light font-bold hover:underline"
                   >
                     Λένα Τσώνου
                   </a>{' '}
@@ -346,7 +346,7 @@ const AboutPage: React.FC = () => {
                     href="https://github.com/mgiannopoulos24"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-bold text-pink-600 dark:text-pink-400 hover:underline"
+                    className="font-bold text-coral-accent dark:text-coral-light hover:underline"
                   >
                     deathwish
                   </a>{' '}
@@ -355,7 +355,7 @@ const AboutPage: React.FC = () => {
                     href="https://github.com/a-reynbaw"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-bold text-pink-600 dark:text-pink-400 hover:underline"
+                    className="font-bold text-coral-accent dark:text-coral-light hover:underline"
                   >
                     a‑reynbaw
                   </a>
@@ -366,7 +366,7 @@ const AboutPage: React.FC = () => {
 
             {/* Mission Section */}
             <motion.div
-              className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-gray-800/80 dark:to-purple-900/30 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-pink-200/50 dark:border-gray-700/50"
+              className="bg-gradient-to-br from-coral-wash to-coral-light/20 dark:from-gray-800/80 dark:to-purple-900/30 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-coral-accent/25 dark:border-gray-700/50"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -379,11 +379,11 @@ const AboutPage: React.FC = () => {
                 viewport={{ once: true }}
                 variants={stagger}
               >
-                <motion.div className="text-pink-600" variants={fadeInUp}>
+                <motion.div className="text-coral-accent" variants={fadeInUp}>
                   <Target className="w-9 h-9" />
                 </motion.div>
                 <motion.h2
-                  className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
+                  className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light"
                   variants={fadeInUp}
                 >
                   Η δουλειά μου
@@ -400,7 +400,7 @@ const AboutPage: React.FC = () => {
                   href="https://www.instagram.com/technotesgr/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-pink-600 dark:text-pink-400 font-bold hover:underline"
+                  className="text-coral-accent dark:text-coral-light font-bold hover:underline"
                 >
                   {' '}
                   @technotesgr
@@ -429,7 +429,7 @@ const AboutPage: React.FC = () => {
                   }}
                 >
                   <motion.div
-                    className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-pink-50 border border-pink-200"
+                    className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-coral-wash border border-coral-accent/25"
                     whileHover={{
                       scale: 1.1,
                       rotate: 8,
@@ -461,11 +461,11 @@ const AboutPage: React.FC = () => {
                 viewport={{ once: true }}
                 variants={stagger}
               >
-                <motion.div className="text-pink-600" variants={fadeInUp}>
+                <motion.div className="text-coral-accent" variants={fadeInUp}>
                   <Lightbulb className="w-9 h-9" />
                 </motion.div>
                 <motion.h2
-                  className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent"
+                  className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light"
                   variants={fadeInUp}
                 >
                   Fun Facts About Me
@@ -489,7 +489,7 @@ const AboutPage: React.FC = () => {
                       transition: { duration: 0.2 },
                     }}
                   >
-                    <span className="flex-shrink-0 w-2 h-2 bg-pink-500 rounded-full mt-2" />
+                    <span className="flex-shrink-0 w-2 h-2 bg-coral-accent rounded-full mt-2" />
                     <span>{fact}</span>
                   </motion.li>
                 ))}
@@ -504,7 +504,7 @@ const AboutPage: React.FC = () => {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light mb-8">
                 Timeline 2022 - Σήμερα
               </h2>
 
@@ -512,14 +512,14 @@ const AboutPage: React.FC = () => {
                 {timelineData.map((item, idx) => (
                   <motion.div
                     key={`${item.period}-${idx}`}
-                    className="relative pl-6 sm:pl-8 pb-4 border-l-2 border-pink-200"
+                    className="relative pl-6 sm:pl-8 pb-4 border-l-2 border-coral-accent/30"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: idx * 0.03 }}
                   >
-                    <span className="absolute -left-[7px] sm:-left-[9px] top-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-pink-500" />
-                    <p className="text-sm font-bold text-pink-600 mb-1">{item.period}</p>
+                    <span className="absolute -left-[7px] sm:-left-[9px] top-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-coral-accent" />
+                    <p className="text-sm font-bold text-coral-accent mb-1">{item.period}</p>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                       {item.title}
                     </h3>

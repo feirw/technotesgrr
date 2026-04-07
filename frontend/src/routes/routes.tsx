@@ -15,7 +15,7 @@ const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'
 // import NotesPage from '@/pages/private/NotesPage';
 const loadQuizPage = () => import('@/pages/private/QuizPage');
 const loadFlashcardsPage = () => import('@/pages/private/FlashcardsPage');
-const loadCommunityPage = () => import('@/pages/private/CommunityPage');
+export const loadCommunityPage = () => import('@/pages/private/CommunityPage');
 const loadProgressTrackerPage = () => import('@/pages/private/ProgressTrackerPage');
 const loadProsanatolismosPage = () => import('@/pages/private/ProsanatolismosPage');
 

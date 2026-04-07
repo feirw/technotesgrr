@@ -529,13 +529,13 @@ async def list_community_posts(
     user=Depends(get_current_user),
 ):
     try:
-        posts, total = get_community_posts(limit=limit, offset=offset)
+        posts, has_more = get_community_posts(limit=limit, offset=offset)
         return {
             "posts": posts,
-            "total": total,
+            "total": None,
             "limit": limit,
             "offset": offset,
-            "has_more": offset + limit < total,
+            "has_more": has_more,
         }
     except Exception:
         logger.exception("list_community_posts failed")

@@ -69,7 +69,7 @@ interface QuizStatus {
 
 // --- Constants ---
 
-const BRAND = 'rgb(236, 72, 153)'; // pink-600
+const BRAND = 'rgb(255, 107, 122)'; // coral-accent
 
 // --- Component ---
 
@@ -359,9 +359,9 @@ const QuizPage: React.FC = () => {
   // Background Component
   const TechBackgroundPattern = useMemo(
     () => (
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 transition-colors duration-500">
+      <div className="absolute inset-0 bg-gradient-to-br from-coral-wash via-white to-[#ffe8e5] dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 transition-colors duration-500">
         {/* Binary Code Pattern */}
-        <div className="absolute inset-0 opacity-5 dark:opacity-5 font-mono text-xs overflow-hidden text-pink-300 dark:text-purple-400/50">
+        <div className="absolute inset-0 opacity-5 dark:opacity-5 font-mono text-xs overflow-hidden text-coral-accent/40 dark:text-purple-400/50">
           {Array.from({ length: 25 }).map((_, i) => (
             <motion.div
               key={i}
@@ -382,7 +382,7 @@ const QuizPage: React.FC = () => {
         </div>
 
         {/* Floating Code Symbols */}
-        <div className="absolute inset-0 opacity-10 dark:opacity-10 text-pink-400 dark:text-rose-500/20">
+        <div className="absolute inset-0 opacity-10 dark:opacity-10 text-coral-accent/50 dark:text-rose-500/20">
           <div className="absolute top-10 left-10 text-6xl">
             <Code size={80} />
           </div>
@@ -409,7 +409,7 @@ const QuizPage: React.FC = () => {
       {/* Main Content Area */}
       <div className="relative z-20 flex flex-col min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 z-30 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white p-6 shadow-xl dark:shadow-pink-900/50">
+        <div className="sticky top-0 z-30 bg-coral-accent text-white p-6 shadow-xl shadow-coral-strong/25 dark:shadow-coral-accent/20">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-4">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
@@ -495,7 +495,7 @@ const QuizPage: React.FC = () => {
                 <AnimatePresence>
                   {showSortMenu && (
                     <motion.div
-                      className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-pink-200 overflow-hidden z-20 min-w-[200px]"
+                      className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-coral-accent/25 overflow-hidden z-20 min-w-[200px]"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -512,9 +512,9 @@ const QuizPage: React.FC = () => {
                             setSortBy(option.value as 'progress' | 'title' | 'recent' | 'default');
                             setShowSortMenu(false);
                           }}
-                          className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors ${
+                          className={`w-full px-4 py-3 text-left hover:bg-coral-wash transition-colors ${
                             sortBy === option.value
-                              ? 'bg-pink-100 text-pink-700 font-bold'
+                              ? 'bg-coral-wash text-coral-strong font-bold'
                               : 'text-gray-700'
                           }`}
                         >
@@ -546,7 +546,7 @@ const QuizPage: React.FC = () => {
                 <AnimatePresence>
                   {showFilterMenu && (
                     <motion.div
-                      className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-pink-200 overflow-hidden z-20 min-w-[200px]"
+                      className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-coral-accent/25 overflow-hidden z-20 min-w-[200px]"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -567,9 +567,9 @@ const QuizPage: React.FC = () => {
                               );
                               setShowFilterMenu(false);
                             }}
-                            className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors flex items-center gap-2 ${
+                            className={`w-full px-4 py-3 text-left hover:bg-coral-wash transition-colors flex items-center gap-2 ${
                               filterBy === option.value
-                                ? 'bg-pink-100 text-pink-700 font-bold'
+                                ? 'bg-coral-wash text-coral-strong font-bold'
                                 : 'text-gray-700'
                             }`}
                           >
@@ -639,7 +639,7 @@ const QuizPage: React.FC = () => {
                     setQ('');
                     setFilterBy('all');
                   }}
-                  className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  className="px-6 py-2 bg-coral-accent hover:bg-coral-strong text-white rounded-xl font-semibold hover:shadow-lg transition-all"
                 >
                   Καθαρισμός φίλτρων
                 </button>
@@ -657,7 +657,7 @@ const QuizPage: React.FC = () => {
                 return (
                   <motion.div
                     key={quiz.id}
-                    className="group relative p-6 rounded-2xl bg-white dark:bg-gray-700 border-2 border-pink-200 hover:border-pink-400 hover:shadow-2xl transition-all overflow-hidden cursor-pointer"
+                    className="group relative p-6 rounded-2xl bg-white dark:bg-gray-700 border-2 border-coral-accent/25 hover:border-coral-accent hover:shadow-2xl transition-all overflow-hidden cursor-pointer"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
@@ -667,7 +667,7 @@ const QuizPage: React.FC = () => {
                     {/* Progress Bar */}
                     <div className="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-gray-600 rounded-t-2xl overflow-hidden">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-pink-500 via-rose-500 to-red-500"
+                        className="h-full bg-coral-accent"
                         initial={{ width: 0 }}
                         animate={{ width: `${quiz.percent}%` }}
                         transition={{ duration: 1, delay: Math.min(i * 0.05 + 0.3, 0.8) }}
@@ -676,8 +676,8 @@ const QuizPage: React.FC = () => {
 
                     {/* Icon & Badge */}
                     <div className="flex items-center justify-between mb-4 mt-2">
-                      <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/50 dark:to-rose-900/50 group-hover:from-pink-200 group-hover:to-rose-200 transition-all">
-                        <BookOpen className="w-7 h-7 text-pink-600 dark:text-pink-300" />
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-coral-wash to-coral-light/40 dark:from-coral-accent/20 dark:to-coral-strong/20 group-hover:from-coral-light/50 group-hover:to-coral-accent/30 transition-all">
+                        <BookOpen className="w-7 h-7 text-coral-accent dark:text-coral-light" />
                       </div>
 
                       <motion.div
@@ -700,7 +700,7 @@ const QuizPage: React.FC = () => {
                     </div>
 
                     {/* Title */}
-                    <h4 className="font-bold text-lg text-gray-800 dark:text-white group-hover:text-pink-600 transition-colors mb-3 line-clamp-2 leading-tight">
+                    <h4 className="font-bold text-lg text-gray-800 dark:text-white group-hover:text-coral-accent transition-colors mb-3 line-clamp-2 leading-tight">
                       {quiz.title}
                     </h4>
 
@@ -739,7 +739,7 @@ const QuizPage: React.FC = () => {
                     {/* Action Buttons */}
                     <div className="flex gap-2 justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-600">
                       <motion.button
-                        className="flex-1 py-2 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow"
+                        className="flex-1 py-2 px-4 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -761,7 +761,7 @@ const QuizPage: React.FC = () => {
                     </div>
 
                     {/* Hover effect overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 to-rose-500/0 group-hover:from-pink-500/5 group-hover:to-rose-500/5 transition-all rounded-2xl pointer-events-none" />
+                    <div className="absolute inset-0 bg-coral-accent/0 group-hover:bg-coral-accent/8 transition-all rounded-2xl pointer-events-none" />
                   </motion.div>
                 );
               })}

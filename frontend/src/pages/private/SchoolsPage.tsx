@@ -49,7 +49,7 @@ const CATEGORIES: Record<string, { icon: React.ReactNode; color: string }> = {
     color: 'bg-teal-100 text-teal-600',
   },
   'Διοίκηση Επιχειρήσεων': { icon: <Landmark size={20} />, color: 'bg-indigo-100 text-indigo-600' },
-  'Marketing & Επικοινωνία': { icon: <TrendingUp size={20} />, color: 'bg-pink-100 text-pink-600' },
+  'Marketing & Επικοινωνία': { icon: <TrendingUp size={20} />, color: 'bg-coral-wash text-coral-accent' },
   'Διοικητικής Επιστήμης': {
     icon: <GraduationCap size={20} />,
     color: 'bg-orange-100 text-orange-600',
@@ -62,7 +62,7 @@ const CATEGORIES: Record<string, { icon: React.ReactNode; color: string }> = {
   },
   'Ναυτιλιακά & Τουρισμός': { icon: <Ship size={20} />, color: 'bg-cyan-100 text-cyan-600' },
   Παιδαγωγικά: { icon: <GraduationCap size={20} />, color: 'bg-orange-100 text-orange-600' },
-  'Ανθρωπιστικά & Κοινωνικά': { icon: <Users size={20} />, color: 'bg-rose-100 text-rose-600' },
+  'Ανθρωπιστικά & Κοινωνικά': { icon: <Users size={20} />, color: 'bg-coral-light/30 text-coral-strong' },
   'Μουσική & Πολιτισμός': { icon: <Music size={20} />, color: 'bg-purple-100 text-purple-600' },
   Τέχνες: { icon: <BookOpen size={20} />, color: 'bg-gray-100 text-gray-600' },
   Αθλητισμός: { icon: <Trophy size={20} />, color: 'bg-amber-100 text-amber-600' },
@@ -1847,28 +1847,28 @@ const SchoolsPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-28 flex flex-col justify-center">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <h1 className="text-xl font-black text-gray-900 dark:text-white shrink-0">
-              Σχολές <span className="text-pink-600">4ο Επιστημονικό πεδίο</span>
+              Σχολές <span className="text-coral-accent dark:text-coral-light">4ο Επιστημονικό πεδίο</span>
             </h1>
 
             <div className="flex w-full max-w-3xl gap-3">
               <div className="relative flex-1 group">
                 <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-coral-accent transition-colors"
                   size={18}
                 />
                 <input
                   type="text"
                   placeholder="Αναζήτηση σχολής ή πανεπιστημίου..."
-                  className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-pink-500 outline-none dark:text-white transition-all shadow-inner"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-coral-accent outline-none dark:text-white transition-all shadow-inner"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <div className="relative shrink-0">
                 <Select value={activeCity} onValueChange={setActiveCity}>
-                  <SelectTrigger className="relative flex items-center justify-between bg-gray-100 dark:bg-gray-800 pl-10 pr-10 py-3 rounded-2xl font-bold text-sm dark:text-white cursor-pointer outline-none focus:ring-2 focus:ring-pink-500 transition-all shadow-inner border-none h-auto w-[200px] [&>svg:not(.absolute)]:hidden">
+                  <SelectTrigger className="relative flex items-center justify-between bg-gray-100 dark:bg-gray-800 pl-10 pr-10 py-3 rounded-2xl font-bold text-sm dark:text-white cursor-pointer outline-none focus:ring-2 focus:ring-coral-accent transition-all shadow-inner border-none h-auto w-[200px] [&>svg:not(.absolute)]:hidden">
                     <MapPin
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-pink-600 pointer-events-none z-10"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-coral-accent pointer-events-none z-10"
                       size={16}
                     />
                     <SelectValue placeholder="Επιλέξτε πόλη" className="flex-1 text-left" />
@@ -1879,7 +1879,7 @@ const SchoolsPage: React.FC = () => {
                       <SelectItem
                         key={c}
                         value={c}
-                        className="font-semibold text-sm cursor-pointer hover:bg-pink-50 dark:hover:bg-gray-700 focus:bg-pink-50 dark:focus:bg-gray-700"
+                        className="font-semibold text-sm cursor-pointer hover:bg-coral-wash dark:hover:bg-gray-700 focus:bg-coral-wash dark:focus:bg-gray-700"
                       >
                         {c}
                       </SelectItem>
@@ -1937,23 +1937,23 @@ const SchoolsPage: React.FC = () => {
 const SchoolCard: React.FC<{ school: School }> = ({ school }) => (
   <motion.div
     whileHover={{ y: -8, scale: 1.01 }}
-    className="bg-white dark:bg-gray-900 p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-2xl hover:shadow-pink-500/10 transition-all group overflow-hidden relative"
+    className="bg-white dark:bg-gray-900 p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-2xl hover:shadow-coral-accent/10 transition-all group overflow-hidden relative"
   >
     {/* Background Pattern */}
-    <div className="absolute -top-10 -right-10 w-24 h-24 bg-pink-500/5 rounded-full blur-2xl group-hover:bg-pink-500/10 transition-all" />
+    <div className="absolute -top-10 -right-10 w-24 h-24 bg-coral-accent/5 rounded-full blur-2xl group-hover:bg-coral-accent/10 transition-all" />
 
     <div className="flex justify-between items-start mb-4">
       <div className="space-y-1 pr-10">
-        <span className="text-[10px] font-black text-pink-600 bg-pink-50 dark:bg-pink-900/30 px-2 py-0.5 rounded-lg uppercase tracking-wider">
+        <span className="text-[10px] font-black text-coral-accent bg-coral-wash dark:bg-coral-accent/15 px-2 py-0.5 rounded-lg uppercase tracking-wider">
           {school.uni}
         </span>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight group-hover:text-pink-600 transition-colors">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight group-hover:text-coral-accent transition-colors">
           {school.name}
         </h3>
       </div>
       <div className="shrink-0 bg-slate-50 dark:bg-gray-800 p-2 rounded-2xl">
         <TrendingUp
-          className="text-gray-400 group-hover:text-pink-500 transition-colors"
+          className="text-gray-400 group-hover:text-coral-accent transition-colors"
           size={18}
         />
       </div>
@@ -1971,7 +1971,7 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => (
     <div className="flex items-end justify-between mt-8 pt-5 border-t border-slate-50 dark:border-gray-800/50">
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
-          <MapPin size={14} className="text-pink-500" />
+          <MapPin size={14} className="text-coral-accent" />
           <span className="text-xs font-bold">{school.city}</span>
         </div>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-gray-800 rounded-full text-gray-400">

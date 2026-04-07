@@ -101,14 +101,14 @@ const StudyTimerPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-3xl border-2 border-pink-200 dark:border-gray-700 shadow-xl p-6 sm:p-8"
+          className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-3xl border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl p-6 sm:p-8"
         >
-          <h1 className="text-3xl sm:text-4xl font-black text-pink-600 text-center mb-2">
+          <h1 className="text-3xl sm:text-4xl font-black text-coral-accent dark:text-coral-light text-center mb-2">
             Study Timer
           </h1>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
@@ -116,11 +116,11 @@ const StudyTimerPage: React.FC = () => {
           </p>
 
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 font-semibold mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-coral-wash text-coral-strong dark:bg-coral-accent/15 dark:text-coral-light font-semibold mb-4 border border-coral-accent/20">
               <Clock3 className="w-4 h-4" />
               Σημερινός χρόνος
             </div>
-            <div className="text-5xl sm:text-6xl font-black text-pink-600 tracking-wider">
+            <div className="text-5xl sm:text-6xl font-black text-coral-accent dark:text-coral-light tracking-wider">
               {formatTime(timer.elapsedMs)}
             </div>
           </div>
@@ -128,14 +128,14 @@ const StudyTimerPage: React.FC = () => {
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <button
               onClick={onStartPause}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow hover:opacity-95 flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-bold shadow hover:opacity-95 flex items-center gap-2 transition-colors"
             >
               {timer.isRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
               {timer.isRunning ? 'Παύση' : 'Έναρξη'}
             </button>
             <button
               onClick={onReset}
-              className="px-5 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-pink-200 dark:border-gray-700 text-pink-700 dark:text-pink-300 font-bold flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-coral-accent/35 dark:border-gray-700 text-coral-strong dark:text-coral-light font-bold flex items-center gap-2 hover:border-coral-accent transition-colors"
             >
               <RotateCcw className="w-5 h-5" />
               Μηδενισμός
@@ -143,18 +143,18 @@ const StudyTimerPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div className="bg-pink-50 dark:bg-gray-800 border border-pink-200 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Συνεδρίες σήμερα</div>
-              <div className="text-2xl font-black text-pink-600">{timer.sessionsToday}</div>
+              <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{timer.sessionsToday}</div>
             </div>
-            <div className="bg-pink-50 dark:bg-gray-800 border border-pink-200 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Λεπτά μελέτης</div>
-              <div className="text-2xl font-black text-pink-600">{studiedMin}</div>
+              <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{studiedMin}</div>
             </div>
-            <div className="bg-pink-50 dark:bg-gray-800 border border-pink-200 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Ημερήσιος στόχος</div>
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-pink-500" />
+                <Target className="w-4 h-4 text-coral-accent" />
                 <input
                   type="number"
                   min={10}
@@ -166,7 +166,7 @@ const StudyTimerPage: React.FC = () => {
                       dailyGoalMin: Math.max(10, Number(e.target.value) || 10),
                     }))
                   }
-                  className="w-24 px-2 py-1 rounded border border-pink-300 dark:border-gray-600 text-pink-700 dark:text-pink-300 font-bold bg-white dark:bg-gray-900"
+                  className="w-24 px-2 py-1 rounded border border-coral-accent/40 dark:border-gray-600 text-coral-strong dark:text-coral-light font-bold bg-white dark:bg-gray-900"
                 />
                 <span className="text-sm text-gray-600 dark:text-gray-300">λεπτά</span>
               </div>
@@ -177,9 +177,9 @@ const StudyTimerPage: React.FC = () => {
             <span>Πρόοδος στόχου</span>
             <span>{progress}%</span>
           </div>
-          <div className="h-3 bg-pink-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-coral-accent/15 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-pink-500 to-rose-500"
+              className="h-full bg-gradient-to-r from-coral-accent to-coral-strong"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.4 }}

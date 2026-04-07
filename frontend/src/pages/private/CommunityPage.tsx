@@ -25,13 +25,26 @@ type CommunityReply = {
 
 type CommunityResponse = {
   posts: CommunityPost[];
-  total: number;
+  total?: number | null;
   limit: number;
   offset: number;
   has_more: boolean;
 };
 
 const BACKEND_URL = getBackendUrl();
+
+/** JWT για κλήσεις API — δοκιμάζει refresh αν το session δεν έχει ακόμα token (restore καρτέλας κ.λπ.). */
+async function getAccessToken(): Promise<string> {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (session?.access_token) return session.access_token;
+  const { data, error } = await supabase.auth.refreshSession();
+  if (error || !data.session?.access_token) {
+    throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+  }
+  return data.session.access_token;
+}
 
 const CommunityPage: React.FC = () => {
   const { user, isAdmin } = useAuth();
@@ -52,11 +65,7 @@ const CommunityPage: React.FC = () => {
     setError(null);
     if (!append) setLoading(true);
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+      const token = await getAccessToken();
 
       const data = await apiFetch<CommunityResponse>(
         `${BACKEND_URL}/api/community/posts?limit=20&offset=${nextOffset}`,
@@ -65,8 +74,6 @@ const CommunityPage: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           dedupeKey: `community-posts-${nextOffset}`,
-          cacheTtlMs: 30_000,
-          cacheKey: `community-posts-${nextOffset}`,
           retries: 0,
           timeoutMs: 12_000,
         }
@@ -100,11 +107,7 @@ const CommunityPage: React.FC = () => {
     setPosting(true);
     setError(null);
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+      const token = await getAccessToken();
 
       const result = await apiFetch<{ post: CommunityPost }>(`${BACKEND_URL}/api/community/posts`, {
         method: 'POST',
@@ -130,11 +133,7 @@ const CommunityPage: React.FC = () => {
     setDeletingPostId(postId);
     setError(null);
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+      const token = await getAccessToken();
 
       await apiFetch<{ ok: boolean; deleted_id: number }>(
         `${BACKEND_URL}/api/community/posts/${postId}`,
@@ -163,11 +162,7 @@ const CommunityPage: React.FC = () => {
       setReplyingPostId(postId);
       setError(null);
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        if (!token) throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+        const token = await getAccessToken();
 
         const result = await apiFetch<{ reply: CommunityReply }>(
           `${BACKEND_URL}/api/community/posts/${postId}/replies`,
@@ -219,9 +214,9 @@ const CommunityPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-3xl shadow-xl p-5 sm:p-6 mb-5 text-white border-2 border-pink-300">
+        <div className="bg-coral-accent rounded-3xl shadow-xl p-5 sm:p-6 mb-5 text-white border-2 border-coral-light/50">
           <h1 className="text-3xl font-black flex items-center gap-2">
             <MessageSquare className="w-7 h-7" />
             Student Community
@@ -233,10 +228,10 @@ const CommunityPage: React.FC = () => {
 
         <form
           onSubmit={onSubmit}
-          className="bg-white/95 dark:bg-gray-900/95 rounded-2xl border-2 border-pink-200 dark:border-gray-700 p-4 mb-5 shadow-lg"
+          className="bg-white/95 dark:bg-gray-900/95 rounded-2xl border-2 border-coral-accent/25 dark:border-gray-700 p-4 mb-5 shadow-lg"
         >
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-pink-700 font-bold shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-coral-wash flex items-center justify-center text-coral-strong font-bold shadow-sm border border-coral-accent/25">
               <UserCircle2 className="w-6 h-6" />
             </div>
             <div className="flex-1">
@@ -246,14 +241,14 @@ const CommunityPage: React.FC = () => {
                 onChange={(e) => setContent(e.target.value)}
                 maxLength={2000}
                 placeholder="Γράψε το post σου… (Σεβασμός, χωρίς προσωπικά δεδομένα)"
-                className="w-full min-h-[90px] rounded-xl border-2 border-pink-100 dark:border-gray-700 p-3 focus:outline-none focus:border-pink-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                className="w-full min-h-[90px] rounded-xl border-2 border-coral-accent/15 dark:border-gray-700 p-3 focus:outline-none focus:border-coral-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               />
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-xs text-gray-500 dark:text-gray-400">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={posting || !content.trim()}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold disabled:opacity-50 inline-flex items-center gap-2 shadow-md"
+                  className="px-4 py-2 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-bold disabled:opacity-50 inline-flex items-center gap-2 shadow-md transition-colors"
                 >
                   <Send className="w-4 h-4" />
                   {posting ? 'Ανέβασμα…' : 'Δημοσίευση'}
@@ -268,20 +263,20 @@ const CommunityPage: React.FC = () => {
         <div className="space-y-3">
           {loading ? (
             <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
+              {Array.from({ length: 2 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-pink-200 p-4 animate-pulse"
+                  className="bg-white rounded-2xl border border-coral-accent/20 p-4 animate-pulse"
                 >
-                  <div className="h-3 w-1/3 bg-pink-100 rounded mb-3" />
-                  <div className="h-3 w-3/4 bg-pink-100 rounded mb-2" />
-                  <div className="h-3 w-2/4 bg-pink-100 rounded" />
+                  <div className="h-3 w-1/3 bg-coral-accent/15 rounded mb-3" />
+                  <div className="h-3 w-3/4 bg-coral-accent/15 rounded mb-2" />
+                  <div className="h-3 w-2/4 bg-coral-accent/15 rounded" />
                 </div>
               ))}
             </div>
           ) : formattedPosts.length === 0 ? (
-            <div className="text-center bg-white/80 border-2 border-pink-200 rounded-2xl p-8">
-              <p className="text-pink-600 font-bold mb-1">Κανένα post ακόμα</p>
+            <div className="text-center bg-white/80 border-2 border-coral-accent/25 rounded-2xl p-8">
+              <p className="text-coral-accent font-bold mb-1">Κανένα post ακόμα</p>
               <p className="text-gray-600 text-sm">
                 Γράψε το πρώτο σου μήνυμα και ξεκίνα τη συζήτηση!
               </p>
@@ -290,18 +285,18 @@ const CommunityPage: React.FC = () => {
             formattedPosts.map((post) => (
               <article
                 key={post.id}
-                className="bg-white rounded-2xl border-2 border-pink-200 p-4 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl border-2 border-coral-accent/20 p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <header className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-pink-700 font-bold">
+                    <div className="w-8 h-8 rounded-full bg-coral-wash flex items-center justify-center text-coral-strong font-bold border border-coral-accent/20">
                       {post.username?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
-                    <span className="font-bold text-pink-600">{post.username}</span>
+                    <span className="font-bold text-coral-accent">{post.username}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <time className="text-xs text-gray-500">{post.dateLabel}</time>
-                    {(isAdmin || user?.id === post.user_id) && (
+                    {(isAdmin || String(user?.id ?? '') === String(post.user_id)) && (
                       <button
                         type="button"
                         onClick={() => void onDeletePost(post.id)}
@@ -317,15 +312,15 @@ const CommunityPage: React.FC = () => {
                 </header>
                 <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{post.content}</p>
 
-                <div className="mt-4 border-t border-pink-100 pt-3">
+                <div className="mt-4 border-t border-coral-accent/15 pt-3">
                   <div className="space-y-2 mb-3">
                     {(post.replies ?? []).map((reply) => (
                       <div
                         key={reply.id}
-                        className="rounded-xl bg-pink-50/70 border border-pink-100 p-2.5"
+                        className="rounded-xl bg-coral-wash/90 border border-coral-accent/15 p-2.5"
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-sm font-semibold text-pink-700">
+                          <span className="text-sm font-semibold text-coral-strong">
                             {reply.username}
                           </span>
                           <time className="text-[11px] text-gray-500">
@@ -350,13 +345,13 @@ const CommunityPage: React.FC = () => {
                       }}
                       maxLength={1500}
                       placeholder="Απάντησε σε αυτό το post…"
-                      className="flex-1 rounded-xl border border-pink-200 px-3 py-2 text-sm focus:outline-none focus:border-pink-400"
+                      className="flex-1 rounded-xl border border-coral-accent/25 px-3 py-2 text-sm focus:outline-none focus:border-coral-accent"
                     />
                     <button
                       type="button"
                       onClick={() => void onSubmitReply(post.id)}
                       disabled={replyingPostId === post.id}
-                      className="px-3 py-2 rounded-xl bg-pink-500 text-white text-sm font-semibold disabled:opacity-50"
+                      className="px-3 py-2 rounded-xl bg-coral-accent hover:bg-coral-strong text-white text-sm font-semibold disabled:opacity-50 transition-colors"
                     >
                       {replyingPostId === post.id ? 'Στέλνεται…' : 'Απάντηση'}
                     </button>
@@ -370,7 +365,7 @@ const CommunityPage: React.FC = () => {
         <div className="mt-4 flex gap-3">
           <button
             onClick={() => void fetchPosts(0, false)}
-            className="px-4 py-2 rounded-xl border border-pink-200 bg-white text-pink-700 font-semibold inline-flex items-center gap-2"
+            className="px-4 py-2 rounded-xl border border-coral-accent/30 bg-white text-coral-strong font-semibold inline-flex items-center gap-2 hover:border-coral-accent"
           >
             <RefreshCw className="w-4 h-4" />
             Ανανέωση
@@ -378,7 +373,7 @@ const CommunityPage: React.FC = () => {
           {hasMore && (
             <button
               onClick={() => void fetchPosts(offset + 20, true)}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold shadow-md"
+              className="px-4 py-2 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-semibold shadow-md transition-colors"
             >
               Περισσότερα
             </button>

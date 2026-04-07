@@ -407,43 +407,66 @@ def create_community_post(user_id: str, username: str, content: str):
 
 
 def get_community_posts(limit: int = 30, offset: int = 0):
-    """Fetch community posts with pagination and replies (ένα DB connection, λιγότερη καθυστέρηση)."""
+    """
+    Posts + replies σε ένα round-trip (χωρίς COUNT(*) για γρήγορο pagination).
+    Φέρνουμε limit+1 γραμμές για να υπολογίσουμε has_more χωρίς επιπλέον query.
+    """
+    fetch_n = limit + 1
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(
                 """
-                SELECT id, user_id, username, content, created_at
-                FROM community_posts
-                ORDER BY created_at DESC
-                LIMIT %s OFFSET %s
+                WITH page AS (
+                    SELECT id, user_id, username, content, created_at
+                    FROM community_posts
+                    ORDER BY created_at DESC
+                    LIMIT %s OFFSET %s
+                )
+                SELECT
+                    p.id,
+                    p.user_id,
+                    p.username,
+                    p.content,
+                    p.created_at,
+                    COALESCE(
+                        json_agg(
+                            json_build_object(
+                                'id', r.id,
+                                'post_id', r.post_id,
+                                'user_id', r.user_id,
+                                'username', r.username,
+                                'content', r.content,
+                                'created_at', r.created_at
+                            )
+                            ORDER BY r.created_at ASC
+                        ) FILTER (WHERE r.id IS NOT NULL),
+                        '[]'::json
+                    ) AS replies
+                FROM page p
+                LEFT JOIN community_replies r ON r.post_id = p.id
+                GROUP BY p.id, p.user_id, p.username, p.content, p.created_at
+                ORDER BY p.created_at DESC
                 """,
-                (limit, offset),
+                (fetch_n, offset),
             )
             rows = cursor.fetchall()
-            cursor.execute("SELECT COUNT(*)::bigint AS total_count FROM community_posts")
-            total = int(cursor.fetchone()["total_count"])
-            posts = [dict(r) for r in rows]
-            if not posts:
-                return [], total
-            post_ids = [int(p["id"]) for p in posts]
-            cursor.execute(
-                """
-                SELECT id, post_id, user_id, username, content, created_at
-                FROM community_replies
-                WHERE post_id = ANY(%s)
-                ORDER BY post_id ASC, created_at ASC
-                """,
-                (post_ids,),
-            )
-            reply_rows = cursor.fetchall()
 
-    grouped: Dict[int, List[dict]] = {pid: [] for pid in post_ids}
-    for row in reply_rows:
-        reply = dict(row)
-        grouped[int(reply["post_id"])].append(reply)
-    for p in posts:
-        p["replies"] = grouped.get(int(p["id"]), [])
-    return posts, total
+    has_more = len(rows) > limit
+    if has_more:
+        rows = rows[:limit]
+
+    posts: List[dict] = []
+    for r in rows:
+        row = dict(r)
+        rep = row.get("replies")
+        if isinstance(rep, str):
+            rep = json.loads(rep)
+        if rep is None:
+            rep = []
+        row["replies"] = rep
+        posts.append(row)
+
+    return posts, has_more
 
 
 def create_community_reply(post_id: int, user_id: str, username: str, content: str):
@@ -495,10 +518,14 @@ def delete_community_post(post_id: int, requester_user_id: str, requester_is_adm
 
 def get_username_by_user_id(user_id: str):
     """Fetch username from profiles table for a specific user."""
-    with get_db_connection() as conn:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT username FROM profiles WHERE id = %s", (user_id,))
-            row = cursor.fetchone()
-            if row and row[0]:
-                return str(row[0])
-            return None
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT username FROM profiles WHERE id = %s", (user_id,))
+                row = cursor.fetchone()
+                if row and row[0]:
+                    return str(row[0])
+                return None
+    except Exception:
+        # Profiles table missing or transient DB error — forum still works with metadata fallback.
+        return None

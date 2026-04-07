@@ -72,10 +72,10 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
       className={`
         relative group p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg
         transition-all duration-300 shadow-lg touch-manipulation min-h-[4.5rem] sm:min-h-0
-        focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-coral-accent focus:ring-offset-2
         ${
           isSelected
-            ? 'bg-gradient-to-br from-pink-500 to-rose-500 text-white sm:scale-105 shadow-2xl ring-2 ring-pink-300'
+            ? 'bg-coral-accent text-white sm:scale-105 shadow-2xl ring-2 ring-coral-light/60'
             : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:shadow-xl active:scale-[0.98]'
         }
       `}
@@ -94,7 +94,7 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
       <div className="flex justify-center">
         <FileText
           className={`w-5 h-5 ${
-            isSelected ? 'text-white' : 'text-pink-500 group-hover:text-pink-600'
+            isSelected ? 'text-white' : 'text-coral-accent group-hover:text-coral-strong'
           }`}
         />
       </div>
@@ -102,7 +102,7 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
       {/* Hover gradient overlay */}
       {!isSelected && (
         <motion.div
-          className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+          className="absolute inset-0 rounded-xl sm:rounded-2xl bg-coral-accent/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
         />
@@ -111,7 +111,7 @@ const YearCard: React.FC<YearCardProps> = ({ year, mode, isSelected, onClick, in
       {/* Selected indicator */}
       {isSelected && (
         <motion.div
-          className="absolute -top-2 -right-2 bg-white text-pink-500 rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg"
+          className="absolute -top-2 -right-2 bg-white text-coral-accent rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 500 }}
@@ -197,9 +197,9 @@ const PaliathemataPage: React.FC = () => {
   // ═══════════════════════════════════════════════════════════════
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 text-white py-8 sm:py-14 md:py-16 px-4 sm:px-6">
+      <div className="relative overflow-hidden bg-coral-accent text-white py-8 sm:py-14 md:py-16 px-4 sm:px-6">
         {/* Animated Background Circles */}
         <div className="absolute inset-0 overflow-hidden opacity-20">
           <motion.div
@@ -238,7 +238,7 @@ const PaliathemataPage: React.FC = () => {
               <FileText className="w-8 h-8 sm:w-12 sm:h-12 shrink-0" />
               Παλιά Θέματα
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl text-pink-100 mb-4 sm:mb-8 px-1">
+            <p className="text-base sm:text-xl md:text-2xl text-white/85 mb-4 sm:mb-8 px-1">
               Πανελλήνιες Πληροφορικής • Όλες οι Χρονιές
             </p>
           </motion.div>
@@ -252,19 +252,19 @@ const PaliathemataPage: React.FC = () => {
           >
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold">{KANONIKES_YEARS.length}</div>
-              <div className="text-pink-100">Κανονικές Περίοδοι</div>
+              <div className="text-white/85">Κανονικές Περίοδοι</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold">{EPANALIPTIKES_YEARS.length}</div>
-              <div className="text-pink-100">Επαναληπτικές Περίοδοι</div>
+              <div className="text-white/85">Επαναληπτικές Περίοδοι</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold">{OEFE_YEARS1.length}</div>
-              <div className="text-pink-100">ΟΕΦΕ Ά ΦΑΣΗ</div>
+              <div className="text-white/85">ΟΕΦΕ Ά ΦΑΣΗ</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold">{OEFE_YEARS2.length}</div>
-              <div className="text-pink-100">ΟΕΦΕ ΄Β ΦΑΣΗ</div>
+              <div className="text-white/85">ΟΕΦΕ ΄Β ΦΑΣΗ</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold">
@@ -273,14 +273,14 @@ const PaliathemataPage: React.FC = () => {
                   OEFE_YEARS1.length +
                   OEFE_YEARS2.length}
               </div>
-              <div className="text-pink-100">Σύνολο Θεμάτων</div>
+              <div className="text-white/85">Σύνολο Θεμάτων</div>
             </div>
           </motion.div>
         </div>
       </div>
 
       {/* Tabs & Search Section */}
-      <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-pink-200 dark:border-gray-700 [overflow-anchor:none]">
+      <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-coral-accent/20 dark:border-gray-700 [overflow-anchor:none]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {/* Tabs */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-5 sm:mb-6">
@@ -296,11 +296,11 @@ const PaliathemataPage: React.FC = () => {
                   aria-selected={mode === 'kanonikes'}
                   className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
-                  focus:outline-none focus:ring-2 focus:ring-pink-500
+                  focus:outline-none focus:ring-2 focus:ring-coral-accent
                   ${
                     mode === 'kanonikes'
                       ? 'text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-coral-accent dark:hover:text-coral-light'
                   }
                 `}
                   onClick={() => handleModeChange('kanonikes')}
@@ -309,7 +309,7 @@ const PaliathemataPage: React.FC = () => {
                 >
                   {mode === 'kanonikes' && (
                     <motion.div
-                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      className="absolute inset-0 rounded-full bg-coral-accent shadow-lg"
                       layoutId="activeTabIndicator"
                       transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
                     />
@@ -326,11 +326,11 @@ const PaliathemataPage: React.FC = () => {
                   aria-selected={mode === 'epanaliptikes'}
                   className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
-                  focus:outline-none focus:ring-2 focus:ring-pink-500
+                  focus:outline-none focus:ring-2 focus:ring-coral-accent
                   ${
                     mode === 'epanaliptikes'
                       ? 'text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-coral-accent dark:hover:text-coral-light'
                   }
                 `}
                   onClick={() => handleModeChange('epanaliptikes')}
@@ -339,7 +339,7 @@ const PaliathemataPage: React.FC = () => {
                 >
                   {mode === 'epanaliptikes' && (
                     <motion.div
-                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      className="absolute inset-0 rounded-full bg-coral-accent shadow-lg"
                       layoutId="activeTabIndicator"
                       transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
                     />
@@ -356,11 +356,11 @@ const PaliathemataPage: React.FC = () => {
                   aria-selected={mode === 'oefe-a'}
                   className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
-                  focus:outline-none focus:ring-2 focus:ring-pink-500
+                  focus:outline-none focus:ring-2 focus:ring-coral-accent
                   ${
                     mode === 'oefe-a'
                       ? 'text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-coral-accent dark:hover:text-coral-light'
                   }
                 `}
                   onClick={() => handleModeChange('oefe-a')}
@@ -369,7 +369,7 @@ const PaliathemataPage: React.FC = () => {
                 >
                   {mode === 'oefe-a' && (
                     <motion.div
-                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      className="absolute inset-0 rounded-full bg-coral-accent shadow-lg"
                       layoutId="activeTabIndicator"
                       transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
                     />
@@ -386,11 +386,11 @@ const PaliathemataPage: React.FC = () => {
                   aria-selected={mode === 'oefe-b'}
                   className={`
                   relative shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm transition-all z-10 
-                  focus:outline-none focus:ring-2 focus:ring-pink-500
+                  focus:outline-none focus:ring-2 focus:ring-coral-accent
                   ${
                     mode === 'oefe-b'
                       ? 'text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-coral-accent dark:hover:text-coral-light'
                   }
                 `}
                   onClick={() => handleModeChange('oefe-b')}
@@ -399,7 +399,7 @@ const PaliathemataPage: React.FC = () => {
                 >
                   {mode === 'oefe-b' && (
                     <motion.div
-                      className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg"
+                      className="absolute inset-0 rounded-full bg-coral-accent shadow-lg"
                       layoutId="activeTabIndicator"
                       transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
                     />
@@ -420,7 +420,7 @@ const PaliathemataPage: React.FC = () => {
                 placeholder="Αναζήτηση έτους..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-full px-4 py-3 pl-11 pr-10 rounded-xl border-2 border-pink-200 dark:border-gray-600 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-4 py-3 pl-11 pr-10 rounded-xl border-2 border-coral-accent/25 dark:border-gray-600 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               {searchQuery && (
@@ -439,14 +439,14 @@ const PaliathemataPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm">
             <div className="text-gray-600 dark:text-gray-400">
               Βρέθηκαν{' '}
-              <span className="font-bold text-pink-600 dark:text-pink-400">
+              <span className="font-bold text-coral-accent dark:text-coral-light">
                 {filteredYears.length}
               </span>{' '}
               χρονιές
               {selectedYear && (
                 <span className="ml-2">
                   • Επιλεγμένη:{' '}
-                  <span className="font-bold text-pink-600 dark:text-pink-400">{selectedYear}</span>
+                  <span className="font-bold text-coral-accent dark:text-coral-light">{selectedYear}</span>
                 </span>
               )}
             </div>
@@ -454,7 +454,7 @@ const PaliathemataPage: React.FC = () => {
             {selectedYear && (
               <motion.button
                 onClick={() => setSelectedYear(null)}
-                className="text-pink-600 hover:text-pink-700 dark:text-pink-400 dark:hover:text-pink-300 font-semibold flex items-center gap-1"
+                className="text-coral-accent hover:text-coral-strong dark:text-coral-light dark:hover:text-coral-light font-semibold flex items-center gap-1"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 whileHover={{ scale: 1.05 }}
@@ -488,7 +488,7 @@ const PaliathemataPage: React.FC = () => {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="px-6 py-3 bg-pink-500 text-white rounded-lg font-semibold hover:bg-pink-600 transition-colors"
+                  className="px-6 py-3 bg-coral-accent text-white rounded-lg font-semibold hover:bg-coral-strong transition-colors"
                 >
                   Καθαρισμός Αναζήτησης
                 </button>
