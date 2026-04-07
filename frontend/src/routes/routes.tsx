@@ -46,17 +46,10 @@ export type RouteConfig = {
   children?: RouteConfig[];
 };
 
+/** Μόνο τα πιο συχνά routes — λιγότερο parse/main thread μετά το login (κοινότητα/progress κ.λπ. από hover). */
 export const prefetchCriticalPrivateRoutes = () => {
-  const importers = [
-    loadQuizPage,
-    loadFlashcardsPage,
-    loadCommunityPage,
-    loadProgressTrackerPage,
-    loadProsanatolismosPage,
-  ];
-  for (const importer of importers) {
-    void importer();
-  }
+  void loadQuizPage();
+  void loadFlashcardsPage();
 };
 
 /** Chat widget: μόνο δημόσιες «εισόδου» / αρχικές σελίδες — όχι quiz, flashcards, κ.λπ. */

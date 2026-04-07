@@ -261,6 +261,8 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
     <img
       src={src}
       alt={alt}
+      width={800}
+      height={600}
       loading={loading}
       decoding="async"
       fetchPriority={fetchPriority}
@@ -509,6 +511,11 @@ const HeartsRain: React.FC<{ count?: number }> = ({ count = 14 }) => {
           <img
             src="/images/logo.png"
             alt=""
+            width={48}
+            height={48}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
             className="w-full h-full object-contain select-none"
             draggable={false}
             style={{ transform: `rotate(${h.rotate})` }}

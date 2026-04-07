@@ -26,6 +26,7 @@ export default defineConfig({
           md_vendor: ['react-markdown'],
           supabase_vendor: ['@supabase/supabase-js'],
           lucide_vendor: ['lucide-react'],
+          pdf_vendor: ['react-pdf', 'pdfjs-dist'],
         },
       },
     },
