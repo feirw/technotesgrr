@@ -36,8 +36,9 @@ const QUICK_PROMPTS = [
   'Φτιάξε μου 5 ερωτήσεις quiz για αλγορίθμους.',
 ];
 
-const MAX_RETRIES = 2;
-const CHAT_STREAM_TIMEOUT_MS = 120_000;
+const MAX_RETRIES = 1;
+// More tolerant stream timeout to avoid false "interrupted" messages on longer replies.
+const CHAT_STREAM_TIMEOUT_MS = 150_000;
 
 function longTimeoutSignal(ms: number): AbortSignal {
   const Sig = AbortSignal as typeof AbortSignal & { timeout?: (n: number) => AbortSignal };
@@ -349,9 +350,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           if (partial.length > 0) {
             appendMessage({
               role: 'bot',
-              content: personalise(
-                partial + '\n\n_(Η μετάδοση διακόπηκε πριν ολοκληρωθεί η απάντηση.)_'
-              ),
+              // Keep partial response instead of noisy interruption warning.
+              content: personalise(partial),
             });
           } else {
             const raw = await fetchBotReply(text, sessionId);

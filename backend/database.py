@@ -407,7 +407,7 @@ def create_community_post(user_id: str, username: str, content: str):
 
 
 def get_community_posts(limit: int = 30, offset: int = 0):
-    """Fetch community posts with pagination."""
+    """Fetch community posts with pagination and replies (ένα DB connection, λιγότερη καθυστέρηση)."""
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(
@@ -422,31 +422,28 @@ def get_community_posts(limit: int = 30, offset: int = 0):
             rows = cursor.fetchall()
             cursor.execute("SELECT COUNT(*)::bigint AS total_count FROM community_posts")
             total = int(cursor.fetchone()["total_count"])
-            return [dict(r) for r in rows], total
-
-def get_community_replies_for_posts(post_ids: List[int]) -> Dict[int, List[dict]]:
-    """Fetch replies grouped by post id."""
-    if not post_ids:
-        return {}
-
-    with get_db_connection() as conn:
-        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            posts = [dict(r) for r in rows]
+            if not posts:
+                return [], total
+            post_ids = [int(p["id"]) for p in posts]
             cursor.execute(
                 """
                 SELECT id, post_id, user_id, username, content, created_at
                 FROM community_replies
                 WHERE post_id = ANY(%s)
-                ORDER BY created_at ASC
+                ORDER BY post_id ASC, created_at ASC
                 """,
                 (post_ids,),
             )
-            rows = cursor.fetchall()
+            reply_rows = cursor.fetchall()
 
-    grouped: Dict[int, List[dict]] = {int(pid): [] for pid in post_ids}
-    for row in rows:
+    grouped: Dict[int, List[dict]] = {pid: [] for pid in post_ids}
+    for row in reply_rows:
         reply = dict(row)
         grouped[int(reply["post_id"])].append(reply)
-    return grouped
+    for p in posts:
+        p["replies"] = grouped.get(int(p["id"]), [])
+    return posts, total
 
 
 def create_community_reply(post_id: int, user_id: str, username: str, content: str):

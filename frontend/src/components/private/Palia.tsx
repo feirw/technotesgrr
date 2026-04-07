@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Printer, ExternalLink, Maximize, FileText } from 'lucide-react';
+
+const PaliaMobilePdf = lazy(() => import('./PaliaMobilePdf'));
 
 const BRAND = '#fda8a9';
 const BRAND_DARK = '#f88b8c';
@@ -10,25 +12,50 @@ interface PaliaProps {
   fileName?: string;
 }
 
+const MOBILE_MQ = '(max-width: 767px)';
+
 const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [narrowViewport, setNarrowViewport] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(MOBILE_MQ).matches : false
+  );
+  const [iframeFallback, setIframeFallback] = useState(false);
+
+  const fileUrl = useMemo(() => {
+    try {
+      return new URL(pdfPath, window.location.origin).href;
+    } catch {
+      return pdfPath;
+    }
+  }, [pdfPath]);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_MQ);
+    const onChange = () => setNarrowViewport(mq.matches);
+    onChange();
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
+    setIframeFallback(false);
   }, [pdfPath]);
+
+  const usePdfJs = narrowViewport && !iframeFallback;
 
   const handleOpenNew = () => {
     if (pdfPath) {
-      window.open(pdfPath, '_blank', 'noopener,noreferrer');
+      window.open(fileUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
   const handleDownload = () => {
     if (!pdfPath) return;
     const a = document.createElement('a');
-    a.href = pdfPath;
+    a.href = fileUrl;
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
@@ -37,7 +64,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
   const handlePrint = () => {
     if (!pdfPath) return;
-    const w = window.open(pdfPath, '_blank', 'noopener,noreferrer');
+    const w = window.open(fileUrl, '_blank', 'noopener,noreferrer');
     if (w) {
       setTimeout(() => {
         try {
@@ -60,8 +87,10 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
     }
   };
 
+  const viewerFrameClass =
+    'block w-full h-[min(720px,calc(100dvh-14rem))] sm:h-[min(720px,80dvh)] md:h-[720px]';
+
   return (
-    /* CHANGED: όχι min-h-screen — στο mobile ανάγκαζε τεράστιο scroll· λεπτό padding. */
     <div className="w-full bg-gradient-to-br from-pink-50 to-rose-50 p-2 sm:p-4">
       <motion.div
         ref={containerRef}
@@ -71,7 +100,6 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 380, damping: 28 }}
       >
-        {/* Header */}
         <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-3 sm:p-6">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
@@ -84,8 +112,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
           </div>
         </div>
 
-        {/* PDF Viewer — ύψος ανάλογο viewport στο κινητό (dvh), όχι σταθερά 720px */}
-        <div className="relative bg-gray-100 min-h-[200px]">
+        <div className={`relative bg-gray-100 min-h-[200px] ${viewerFrameClass}`}>
           {loading && (
             <motion.div
               className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10"
@@ -105,20 +132,41 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
             </motion.div>
           )}
 
-          <iframe
-            ref={frameRef}
-            src={pdfPath}
-            title={fileName}
-            width="100%"
-            /* mobile: χρησιμοποιεί dynamic viewport ώστε να χωράει χωρίς υπερβολικό scroll */
-            className="block w-full h-[min(720px,calc(100dvh-14rem))] sm:h-[min(720px,80dvh)] md:h-[720px]"
-            onLoad={() => setLoading(false)}
-            allow="fullscreen"
-            loading="eager"
-          />
+          {usePdfJs ? (
+            <div className="h-full w-full overflow-y-auto overflow-x-hidden overscroll-y-contain touch-pan-y">
+              <Suspense
+                fallback={
+                  <div className="flex flex-col items-center justify-center min-h-[200px] py-8">
+                    <div
+                      className="w-12 h-12 rounded-full border-4 border-t-transparent animate-spin mb-3"
+                      style={{ borderColor: BRAND }}
+                    />
+                    <p className="text-gray-600 text-sm font-semibold">Άνοιγμα προβολής PDF…</p>
+                  </div>
+                }
+              >
+                <PaliaMobilePdf
+                  fileUrl={fileUrl}
+                  onReady={() => setLoading(false)}
+                  onFatal={() => setIframeFallback(true)}
+                  className="px-1 py-2"
+                />
+              </Suspense>
+            </div>
+          ) : (
+            <iframe
+              ref={frameRef}
+              src={`${fileUrl}#navpanes=0`}
+              title={fileName}
+              width="100%"
+              className={`${viewerFrameClass} border-0`}
+              onLoad={() => setLoading(false)}
+              allow="fullscreen"
+              loading="eager"
+            />
+          )}
         </div>
 
-        {/* Actions */}
         <div className="p-3 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-t-2 border-pink-200">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
             <motion.button

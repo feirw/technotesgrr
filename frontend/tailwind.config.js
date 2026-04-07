@@ -6,6 +6,39 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: [
+  				'Manrope',
+  				'ui-sans-serif',
+  				'system-ui',
+  				'Segoe UI',
+  				'Roboto',
+  				'Helvetica Neue',
+  				'Arial',
+  				'sans-serif',
+  			],
+  			mono: [
+  				'ui-monospace',
+  				'SFMono-Regular',
+  				'Menlo',
+  				'Monaco',
+  				'Consolas',
+  				'monospace',
+  			],
+  			arcade: ['ArcadeClassic', 'Manrope', 'sans-serif'],
+  		},
+  		typography: (theme) => ({
+  			DEFAULT: {
+  				css: {
+  					maxWidth: 'none',
+  					fontFamily: theme('fontFamily.sans').join(', '),
+  					h1: { fontFamily: theme('fontFamily.sans').join(', ') },
+  					h2: { fontFamily: theme('fontFamily.sans').join(', ') },
+  					h3: { fontFamily: theme('fontFamily.sans').join(', ') },
+  					h4: { fontFamily: theme('fontFamily.sans').join(', ') },
+  				},
+  			},
+  		}),
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -54,12 +87,6 @@ module.exports = {
   			}
   		}
   	},
-  	fontFamily: {
-  		arcade: [
-  			'ArcadeClassic',
-  			'monospace'
-  		]
-  	}
   },
   plugins: [
     require('@tailwindcss/typography'),

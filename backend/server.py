@@ -56,7 +56,6 @@ from database import (
     get_career_orientation_result,
     create_community_post,
     get_community_posts,
-    get_community_replies_for_posts,
     create_community_reply,
     delete_community_post,
     get_username_by_user_id,
@@ -97,6 +96,8 @@ app.add_middleware(
         "http://localhost:5173",
         "https://technotesgr.gr",
         "https://www.technotesgr.gr",
+        "https://technotesgr.com",
+        "https://www.technotesgr.com",
     ] + _extra_cors_origins,
     allow_origin_regex=r"https://.*\.(netlify\.app|vercel\.app)",
     allow_credentials=True,
@@ -237,8 +238,15 @@ async def chat_with_bot_stream(chat_data: ChatMessage):
     threading.Thread(target=worker, daemon=True).start()
 
     async def event_gen():
+        # Push an immediate event so the client knows stream channel is alive.
+        yield f"data: {json.dumps({'started': True})}\n\n".encode("utf-8")
         while True:
-            kind, payload = await asyncio.to_thread(q.get)
+            try:
+                kind, payload = await asyncio.to_thread(q.get, True, 12)
+            except queue.Empty:
+                # Keep connection warm through proxies/load balancers.
+                yield b": ping\n\n"
+                continue
             if kind == "p":
                 line = json.dumps({"delta": payload}, ensure_ascii=False)
                 yield f"data: {line}\n\n".encode("utf-8")
@@ -522,15 +530,8 @@ async def list_community_posts(
 ):
     try:
         posts, total = get_community_posts(limit=limit, offset=offset)
-        post_ids = [int(p["id"]) for p in posts]
-        replies_by_post_id = get_community_replies_for_posts(post_ids)
-        hydrated_posts = []
-        for p in posts:
-            post = dict(p)
-            post["replies"] = replies_by_post_id.get(int(post["id"]), [])
-            hydrated_posts.append(post)
         return {
-            "posts": hydrated_posts,
+            "posts": posts,
             "total": total,
             "limit": limit,
             "offset": offset,

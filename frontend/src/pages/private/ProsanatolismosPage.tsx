@@ -502,6 +502,32 @@ const BACKEND_URL = getBackendUrl();
 const ALL_IDS = Object.keys(QUESTIONS).map(Number);
 const RANK_LABELS = ['🥇 Κορυφαία κλίση', '🥈 2η κλίση', '🥉 3η κλίση'];
 
+/** JSON/API συχνά επιστρέφουν "4" αντί για 4 — το παλιό `typeof === 'number'` έκανε όλα 3 → 0% παντού. */
+function coerceLikert1to5(v: unknown): number | null {
+  if (typeof v === 'number' && Number.isFinite(v)) {
+    const r = Math.round(v);
+    if (r >= 1 && r <= 5) return r;
+    return null;
+  }
+  if (typeof v === 'string') {
+    const n = Number(String(v).trim());
+    if (!Number.isFinite(n)) return null;
+    const r = Math.round(n);
+    if (r >= 1 && r <= 5) return r;
+  }
+  return null;
+}
+
+function normalizeAnswersMap(raw: Record<string, unknown>): Record<number, number> {
+  const out: Record<number, number> = {};
+  for (const [k, v] of Object.entries(raw)) {
+    const qId = Number(k);
+    const score = coerceLikert1to5(v);
+    if (Number.isFinite(qId) && qId >= 1 && score !== null) out[qId] = score;
+  }
+  return out;
+}
+
 // ─────────────────────────────────────────────────────────────
 // SCORING LOGIC  (pure function — εύκολο να τεσταριστεί)
 // ─────────────────────────────────────────────────────────────
@@ -521,8 +547,8 @@ function computeResults(answers: Record<number, number>): CalculationResult {
   ALL_IDS.forEach((id) => {
     const w = SCORE_MATRIX[id];
     if (!w) return;
-    const a = answers[id];
-    const value = typeof a === 'number' && a >= 1 && a <= 5 ? a : 3;
+    const raw = answers[id] ?? (answers as unknown as Record<string, unknown>)[String(id)];
+    const value = coerceLikert1to5(raw) ?? 3;
     CAT_NAMES.forEach((cat, i) => {
       raw[cat] += value * w[i];
     });
@@ -591,7 +617,10 @@ const Prosanatolismospage: React.FC = () => {
       const s = localStorage.getItem(STORAGE_KEY);
       if (s) {
         const p = JSON.parse(s);
-        if (p && typeof p === 'object') setAnswers(p);
+        if (p && typeof p === 'object' && !Array.isArray(p)) {
+          const norm = normalizeAnswersMap(p as Record<string, unknown>);
+          if (Object.keys(norm).length > 0) setAnswers(norm);
+        }
       }
     } catch {
       /* silent */
@@ -644,13 +673,9 @@ const Prosanatolismospage: React.FC = () => {
 
         if (!response.found || !response.result) return;
 
-        const restoredAnswers = Object.entries(response.result.answers ?? {}).reduce<
-          Record<number, number>
-        >((acc, [key, value]) => {
-          const qId = Number(key);
-          if (Number.isFinite(qId) && value >= 1 && value <= 5) acc[qId] = value;
-          return acc;
-        }, {});
+        const restoredAnswers = normalizeAnswersMap(
+          (response.result.answers ?? {}) as Record<string, unknown>
+        );
 
         if (Object.keys(restoredAnswers).length > 0 && isMounted.current) {
           scrollResultsAfterUpdate.current = 'hydrate';

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { MessageSquare, Send, RefreshCw, UserCircle2, Trash2 } from 'lucide-react';
 import { apiFetch } from '@/utils/apiClient';
 import { supabase } from '@/utils/supabaseClient';
@@ -66,8 +65,10 @@ const CommunityPage: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           dedupeKey: `community-posts-${nextOffset}`,
-          cacheTtlMs: 8000,
+          cacheTtlMs: 30_000,
           cacheKey: `community-posts-${nextOffset}`,
+          retries: 0,
+          timeoutMs: 12_000,
         }
       );
 
@@ -287,10 +288,8 @@ const CommunityPage: React.FC = () => {
             </div>
           ) : (
             formattedPosts.map((post) => (
-              <motion.article
+              <article
                 key={post.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-2xl border-2 border-pink-200 p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <header className="flex items-start justify-between mb-2">
@@ -363,7 +362,7 @@ const CommunityPage: React.FC = () => {
                     </button>
                   </div>
                 </div>
-              </motion.article>
+              </article>
             ))
           )}
         </div>

@@ -60,22 +60,41 @@ export const getBackendUrl = (): string => {
 export const getBackendUrlCandidates = (): string[] => {
   const candidates: string[] = [];
   const normalizedEnv = normalizedBackendEnv();
+  const sameOrigin =
+    typeof window !== 'undefined' ? window.location.origin.replace(/\/+$/, '') : '';
 
-  // Same origin first: Vite proxy `/api` and nginx `location /api/` work without CORS.
-  // If env (e.g. http://localhost:8001) came first, opening the app via http://127.0.0.1:5173
-  // sends Origin 127.0.0.1 — often blocked vs localhost:8001 even when allow_origins lists both.
-  if (typeof window !== 'undefined') {
-    const sameOrigin = window.location.origin.replace(/\/+$/, '');
+  /**
+   * Netlify (και άλλα static hosts): το ίδιο origin ΔΕΝ έχει FastAPI — το SPA fallback δίνει HTML στο /api.
+   * Σε αυτή την περίπτωση πρέπει πρώτα το VITE_BACKEND_URL (π.χ. Render), όχι το technotesgr.com.
+   * Σε localhost το Vite proxy `/api` → backend: ίδιο origin πρώτα.
+   */
+  const externalBackendFirst =
+    Boolean(sameOrigin) &&
+    !pageIsOnLoopbackHost() &&
+    Boolean(normalizedEnv) &&
+    envBackendUsableHere(normalizedEnv) &&
+    (() => {
+      try {
+        return new URL(normalizedEnv).origin !== new URL(sameOrigin).origin;
+      } catch {
+        return false;
+      }
+    })();
+
+  if (externalBackendFirst && normalizedEnv) {
+    candidates.push(normalizedEnv);
+  }
+
+  if (sameOrigin && !candidates.includes(sameOrigin)) {
     candidates.push(sameOrigin);
   }
 
-  if (normalizedEnv && envBackendUsableHere(normalizedEnv)) {
-    if (!candidates.includes(normalizedEnv)) {
-      candidates.push(normalizedEnv);
-    }
+  if (normalizedEnv && envBackendUsableHere(normalizedEnv) && !candidates.includes(normalizedEnv)) {
+    candidates.push(normalizedEnv);
   }
 
-  if (!candidates.includes(LOCAL_FALLBACK)) {
+  // Avoid localhost fallback on public domains; it adds long failed attempts before real errors.
+  if (pageIsOnLoopbackHost() && !candidates.includes(LOCAL_FALLBACK)) {
     candidates.push(LOCAL_FALLBACK);
   }
 

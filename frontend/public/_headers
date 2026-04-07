@@ -1,0 +1,3 @@
+# Inline προβολή PDF στον browser (όχι forced download) — Netlify
+/pdfs/*
+  Content-Disposition: inline

@@ -9,16 +9,18 @@
   font-weight: 100 900;
 }
 
-html {
-  overflow-x: hidden;
-  -webkit-tap-highlight-color: transparent;
-}
+@layer base {
+  html {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    @apply font-sans;
+  }
 
-body {
-  margin: 0;
-  font-family: 'Manrope', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  body {
+    margin: 0;
+    @apply font-sans antialiased bg-background text-foreground;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 code {
@@ -84,8 +86,5 @@ code {
 @layer base {
   * {
     @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }
