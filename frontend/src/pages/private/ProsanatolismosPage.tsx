@@ -498,8 +498,20 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'prosanatolismos_v3';
-const BACKEND_URL = getBackendUrl();
 const ALL_IDS = Object.keys(QUESTIONS).map(Number);
+
+/** JWT για API — refresh αν λείπει token (restore καρτέλας). */
+async function getAccessToken(): Promise<string> {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (session?.access_token) return session.access_token;
+  const { data, error } = await supabase.auth.refreshSession();
+  if (error || !data.session?.access_token) {
+    throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
+  }
+  return data.session.access_token;
+}
 const RANK_LABELS = ['🥇 Κορυφαία κλίση', '🥈 2η κλίση', '🥉 3η κλίση'];
 
 /** JSON/API συχνά επιστρέφουν "4" αντί για 4 — το παλιό `typeof === 'number'` έκανε όλα 3 → 0% παντού. */
@@ -547,8 +559,8 @@ function computeResults(answers: Record<number, number>): CalculationResult {
   ALL_IDS.forEach((id) => {
     const w = SCORE_MATRIX[id];
     if (!w) return;
-    const raw = answers[id] ?? (answers as unknown as Record<string, unknown>)[String(id)];
-    const value = coerceLikert1to5(raw) ?? 3;
+    const cell = answers[id] ?? (answers as unknown as Record<string, unknown>)[String(id)];
+    const value = coerceLikert1to5(cell) ?? 3;
     CAT_NAMES.forEach((cat, i) => {
       raw[cat] += value * w[i];
     });
@@ -654,14 +666,15 @@ const Prosanatolismospage: React.FC = () => {
 
       setIsHydrating(true);
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        if (!token) return;
+        let token: string;
+        try {
+          token = await getAccessToken();
+        } catch {
+          return;
+        }
 
         const response = await apiFetch<{ found: boolean; result?: SavedResultApiShape }>(
-          `${BACKEND_URL}/api/career-orientation/result`,
+          `${getBackendUrl()}/api/career-orientation/result`,
           {
             method: 'GET',
             headers: { Authorization: `Bearer ${token}` },
@@ -721,12 +734,8 @@ const Prosanatolismospage: React.FC = () => {
       if (!user) return;
       setIsSaving(true);
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        if (!token) throw new Error('Not authenticated');
-        await apiFetch<{ message: string }>(`${BACKEND_URL}/api/career-orientation/submit`, {
+        const token = await getAccessToken();
+        await apiFetch<{ message: string }>(`${getBackendUrl()}/api/career-orientation/submit`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({
