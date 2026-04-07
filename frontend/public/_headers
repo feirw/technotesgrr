@@ -5,3 +5,13 @@
 # Vite build output — repeat visits
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Favicon / manifest — μην «κολλάει» παλιό εικονίδιο στο CDN/browser
+/favicon.ico
+  Cache-Control: public, max-age=0, must-revalidate
+/favicon.png
+  Cache-Control: public, max-age=0, must-revalidate
+/apple-touch-icon.png
+  Cache-Control: public, max-age=0, must-revalidate
+/site.webmanifest
+  Cache-Control: public, max-age=0, must-revalidate
