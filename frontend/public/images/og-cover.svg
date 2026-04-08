@@ -19,6 +19,15 @@
     </filter>
   </defs>
   <rect width="1200" height="630" fill="url(#g)"/>
+  <!-- Λογότυπο (ίδιος φάκελος /images/) — για embeds που διαβάζουν SVG -->
+  <image
+    href="logo.png"
+    x="760"
+    y="120"
+    width="380"
+    height="380"
+    preserveAspectRatio="xMidYMid meet"
+  />
   <g filter="url(#shadow)">
     <text x="100" y="270" font-family="Manrope, Poppins, Inter, system-ui, -apple-system, Segoe UI, Roboto" font-weight="900" font-size="84" fill="url(#t)">
       technotesgr
