@@ -1,28 +1,57 @@
 import os
 import json
 import psycopg2
+from psycopg2 import pool as pg_pool
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 from dotenv import load_dotenv
 
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-@contextmanager
-def get_db_connection():
-    """Context manager for Supabase PostgreSQL connections"""
+# Thread-safe pool: αποφεύγει νέο TCP+SSL handshake σε κάθε αίτηση (μεγάλο κέρδος latency υπό φόρτο).
+_db_pool: Optional[pg_pool.ThreadedConnectionPool] = None
+
+
+def _pool_min_max() -> Tuple[int, int]:
+    try:
+        mn = max(1, int(os.getenv("DB_POOL_MIN", "1")))
+        mx = max(mn, int(os.getenv("DB_POOL_MAX", "20")))
+        return mn, mx
+    except ValueError:
+        return 1, 20
+
+
+def _ensure_pool() -> pg_pool.ThreadedConnectionPool:
+    global _db_pool
     if not DATABASE_URL:
         raise RuntimeError("DATABASE_URL is not configured.")
-    conn = None
+    if _db_pool is None:
+        mn, mx = _pool_min_max()
+        _db_pool = pg_pool.ThreadedConnectionPool(mn, mx, DATABASE_URL)
+    return _db_pool
+
+
+def close_db_pool() -> None:
+    """Κλείσιμο pool στο shutdown (π.χ. lifespan)."""
+    global _db_pool
+    if _db_pool is not None:
+        _db_pool.closeall()
+        _db_pool = None
+
+
+@contextmanager
+def get_db_connection():
+    """Παίρνει σύνδεση από pool και την επιστρέφει στο τέλος."""
+    p = _ensure_pool()
+    conn = p.getconn()
     try:
-        conn = psycopg2.connect(DATABASE_URL)
         yield conn
     finally:
-        if conn is not None:
-            conn.close()
+        p.putconn(conn)
 
 def init_database():
     """
@@ -263,38 +292,38 @@ def is_user_admin(user_id: str):
             return False
 
 def get_admin_stats():
-    """Fetches high-level stats for the admin dashboard"""
+    """Fetches high-level stats for the admin dashboard (1 round-trip για counts)."""
     with get_db_connection() as conn:
         with conn.cursor() as cursor:
-            # 1. Count Users (from profiles table)
-            cursor.execute("SELECT COUNT(*) FROM profiles")
-            user_count = cursor.fetchone()[0]
+            cursor.execute(
+                """
+                SELECT
+                    (SELECT COUNT(*) FROM profiles) AS user_count,
+                    (SELECT COUNT(*) FROM quiz_submissions) AS submission_count,
+                    (SELECT COUNT(*) FROM quizzes) AS question_count
+                """
+            )
+            counts = cursor.fetchone()
+            user_count = int(counts[0])
+            submission_count = int(counts[1])
+            question_count = int(counts[2])
 
-            # 2. Count Total Submissions
-            cursor.execute("SELECT COUNT(*) FROM quiz_submissions")
-            submission_count = cursor.fetchone()[0]
-
-            # 3. Count Total Questions
-            cursor.execute("SELECT COUNT(*) FROM quizzes")
-            question_count = cursor.fetchone()[0]
-
-            # 4. Recent Activity (Last 5 submissions)
-            cursor.execute("""
-                SELECT nickname, points_earned, submitted_at, question_id 
-                FROM quiz_submissions 
-                ORDER BY submitted_at DESC 
+            cursor.execute(
+                """
+                SELECT nickname, points_earned, submitted_at, question_id
+                FROM quiz_submissions
+                ORDER BY submitted_at DESC
                 LIMIT 5
-            """)
-            # Convert tuples to dicts manually since we aren't using RealDictCursor here 
-            # or rely on logic in server.py. Let's use list comprehension for safety.
+                """
+            )
             recent_rows = cursor.fetchall()
             recent_activity = [
                 {
                     "nickname": row[0],
                     "points_earned": row[1],
                     "submitted_at": row[2],
-                    "question_id": row[3]
-                } 
+                    "question_id": row[3],
+                }
                 for row in recent_rows
             ]
 
@@ -302,8 +331,19 @@ def get_admin_stats():
                 "total_users": user_count,
                 "total_submissions": submission_count,
                 "total_questions": question_count,
-                "recent_activity": recent_activity
+                "recent_activity": recent_activity,
             }
+
+
+def get_category_lists():
+    """Quiz + flashcard categories σε μία σύνδεση (χρησιμοποιείται από /api/categories)."""
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
+            quiz_cats = [row[0] for row in cursor.fetchall()]
+            cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
+            flash_cats = [row[0] for row in cursor.fetchall()]
+    return quiz_cats, flash_cats
 
 def get_admin_users(limit: int = 50, offset: int = 0):
     """Fetch paginated users for admin panel."""

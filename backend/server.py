@@ -4,7 +4,7 @@ import json
 import logging
 import queue
 import threading
-from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi import FastAPI, HTTPException, Depends, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
@@ -39,10 +39,10 @@ except Exception:
 # ── Database ──────────────────────────────────────────────────────────────────
 from database import (
     init_database,
+    close_db_pool,
     update_leaderboard,
     get_leaderboard_data,
     record_quiz_submission,
-    get_db_connection,
     get_quizzes_from_db,
     get_quizzes_page,
     get_flashcards_from_db,
@@ -59,6 +59,7 @@ from database import (
     create_community_reply,
     delete_community_post,
     get_username_by_user_id,
+    get_category_lists,
 )
 
 # ── Auth dependency ───────────────────────────────────────────────────────────
@@ -76,7 +77,7 @@ async def lifespan(app: FastAPI):
         # Keep API process alive so health/debug endpoints can still respond.
         print(f"❌ Backend startup warning: {e}")
     yield
-    # Runs once at shutdown (add cleanup here if needed)
+    close_db_pool()
     print("👋 Backend shutting down")
 
 
@@ -272,7 +273,8 @@ async def chat_with_bot_stream(chat_data: ChatMessage):
 # ── Quiz ──────────────────────────────────────────────────────────────────────
 
 @app.get("/api/quiz/questions")
-async def get_quiz_questions(
+def get_quiz_questions(
+    response: Response,
     chapter: Optional[str] = None,
     limit: int = Query(default=200, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
@@ -280,6 +282,7 @@ async def get_quiz_questions(
     try:
         paginated, total = get_quizzes_page(limit=limit, offset=offset, chapter=chapter)
         has_more = offset + limit < total
+        response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
         return {
             "questions": paginated,
             "total": total,
@@ -293,9 +296,10 @@ async def get_quiz_questions(
 
 
 @app.get("/api/quiz/questions/{chapter}")
-async def get_quiz_questions_by_chapter(chapter: str):
+def get_quiz_questions_by_chapter(chapter: str, response: Response):
     try:
         questions, _ = get_quizzes_page(limit=5000, offset=0, chapter=chapter)
+        response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
         return {"questions": questions, "chapter": chapter}
     except Exception:
         logger.exception("get_quiz_questions_by_chapter failed")
@@ -303,7 +307,7 @@ async def get_quiz_questions_by_chapter(chapter: str):
 
 
 @app.post("/api/quiz/submit")
-async def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_current_user)):
+def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_current_user)):
     try:
         question = get_quiz_by_id(submission.question_id)
         if not question:
@@ -353,13 +357,15 @@ async def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_curren
 # ── Flashcards ────────────────────────────────────────────────────────────────
 
 @app.get("/api/flashcards")
-async def get_flashcards(
+def get_flashcards(
+    response: Response,
     chapter: Optional[str] = None,
     limit: int = Query(default=1000, ge=1, le=5000),
     offset: int = Query(default=0, ge=0),
 ):
     try:
         flashcards, total = get_flashcards_page(limit=limit, offset=offset, chapter=chapter)
+        response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
         return {
             "flashcards": flashcards,
             "total": total,
@@ -373,9 +379,10 @@ async def get_flashcards(
 
 
 @app.get("/api/flashcards/{chapter}")
-async def get_flashcards_by_chapter(chapter: str):
+def get_flashcards_by_chapter(chapter: str, response: Response):
     try:
         flashcards, _ = get_flashcards_page(limit=5000, offset=0, chapter=chapter)
+        response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
         return {"flashcards": flashcards, "chapter": chapter}
     except Exception:
         logger.exception("get_flashcards_by_chapter failed")
@@ -385,16 +392,10 @@ async def get_flashcards_by_chapter(chapter: str):
 # ── Categories ────────────────────────────────────────────────────────────────
 
 @app.get("/api/categories")
-async def get_categories():
+def get_categories(response: Response):
     try:
-        with get_db_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT DISTINCT category FROM quizzes ORDER BY category")
-                quiz_cats = [row[0] for row in cursor.fetchall()]
-
-                cursor.execute("SELECT DISTINCT category FROM flashcards ORDER BY category")
-                flash_cats = [row[0] for row in cursor.fetchall()]
-
+        quiz_cats, flash_cats = get_category_lists()
+        response.headers["Cache-Control"] = "public, max-age=120, stale-while-revalidate=300"
         return {
             "quiz_categories": quiz_cats,
             "flashcard_categories": flash_cats,
@@ -408,10 +409,11 @@ async def get_categories():
 # ── Leaderboard ───────────────────────────────────────────────────────────────
 
 @app.get("/api/leaderboard")
-async def get_leaderboard(month: Optional[str] = None):
+def get_leaderboard(response: Response, month: Optional[str] = None):
     try:
         leaderboard = get_leaderboard_data(month)
         current_month = month or datetime.now().strftime("%Y-%m")
+        response.headers["Cache-Control"] = "public, max-age=15, stale-while-revalidate=60"
         return {"leaderboard": leaderboard, "month": current_month}
     except Exception:
         logger.exception("get_leaderboard failed")
@@ -421,7 +423,7 @@ async def get_leaderboard(month: Optional[str] = None):
 # ── Contact ───────────────────────────────────────────────────────────────────
 
 @app.post("/api/contact")
-async def contact_form(contact_data: ContactForm):
+def contact_form(contact_data: ContactForm):
     if not contact_data.firstName.strip() or not contact_data.email.strip() or not contact_data.message.strip():
         raise HTTPException(status_code=400, detail="Name, email και message είναι υποχρεωτικά.")
     try:
@@ -456,7 +458,7 @@ async def contact_form(contact_data: ContactForm):
 # ── Career Orientation ────────────────────────────────────────────────────────
 
 @app.post("/api/career-orientation/submit")
-async def submit_career_orientation(
+def submit_career_orientation(
     submission: CareerOrientationSubmission,
     user=Depends(get_current_user),
 ):
@@ -484,7 +486,7 @@ async def submit_career_orientation(
 
 
 @app.get("/api/career-orientation/result")
-async def get_career_orientation_result_endpoint(user=Depends(get_current_user)):
+def get_career_orientation_result_endpoint(user=Depends(get_current_user)):
     try:
         result = get_career_orientation_result(str(user.id))
         if result:
@@ -496,7 +498,7 @@ async def get_career_orientation_result_endpoint(user=Depends(get_current_user))
 
 
 @app.post("/api/metrics/web-vitals")
-async def ingest_web_vitals(metric: WebVitalEvent):
+def ingest_web_vitals(metric: WebVitalEvent):
     """
     Lightweight endpoint for frontend performance telemetry.
     Currently logs slow-path metrics; can later be wired to a metrics store.
@@ -523,7 +525,7 @@ async def ingest_web_vitals(metric: WebVitalEvent):
 # ── Community Forum ────────────────────────────────────────────────────────────
 
 @app.get("/api/community/posts")
-async def list_community_posts(
+def list_community_posts(
     limit: int = Query(default=30, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     user=Depends(get_current_user),
@@ -543,7 +545,7 @@ async def list_community_posts(
 
 
 @app.post("/api/community/posts")
-async def add_community_post(payload: CommunityPostCreate, user=Depends(get_current_user)):
+def add_community_post(payload: CommunityPostCreate, user=Depends(get_current_user)):
     content = (payload.content or "").strip()
     if not content:
         raise HTTPException(status_code=400, detail="Το κείμενο του post είναι υποχρεωτικό.")
@@ -568,7 +570,7 @@ async def add_community_post(payload: CommunityPostCreate, user=Depends(get_curr
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 @app.post("/api/community/posts/{post_id}/replies")
-async def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=Depends(get_current_user)):
+def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=Depends(get_current_user)):
     content = (payload.content or "").strip()
     if not content:
         raise HTTPException(status_code=400, detail="Το κείμενο της απάντησης είναι υποχρεωτικό.")
@@ -597,7 +599,7 @@ async def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 @app.delete("/api/community/posts/{post_id}")
-async def remove_community_post(post_id: int, user=Depends(get_current_user)):
+def remove_community_post(post_id: int, user=Depends(get_current_user)):
     try:
         deleted = delete_community_post(
             post_id=post_id,
@@ -619,7 +621,7 @@ async def remove_community_post(post_id: int, user=Depends(get_current_user)):
 # ── Admin ─────────────────────────────────────────────────────────────────────
 
 @app.get("/api/admin/dashboard")
-async def get_dashboard_stats(user=Depends(get_current_user)):
+def get_dashboard_stats(user=Depends(get_current_user)):
     try:
         if not is_user_admin(str(user.id)):
             raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
@@ -631,7 +633,7 @@ async def get_dashboard_stats(user=Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 @app.get("/api/admin/users")
-async def get_admin_users_endpoint(
+def get_admin_users_endpoint(
     limit: int = Query(default=50, ge=1, le=200),
     offset: int = Query(default=0, ge=0),
     user=Depends(get_current_user),
