@@ -31,6 +31,7 @@ import {
   Linkedin,
   Youtube,
   Music2,
+  Megaphone,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
@@ -294,6 +295,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </button>
               <NavButton to="/">Αρχική</NavButton>
               <NavButton to="/about">Σχετικά με εμένα</NavButton>
+              <NavButton to="/announcements">Ανακοινώσεις</NavButton>
               {/* GloGlossa moved into private "Μάθηση" menu */}
               <NavButton to="/merch">Η Ατζέντα</NavButton>
               <button
@@ -438,6 +440,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </MobileNavButton>
                   <MobileNavButton to="/about" icon={User} onClick={closeMenu}>
                     Σχετικά με εμένα
+                  </MobileNavButton>
+                  <MobileNavButton to="/announcements" icon={Megaphone} onClick={closeMenu}>
+                    Ανακοινώσεις
                   </MobileNavButton>
                   <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
                     Ατζέντα

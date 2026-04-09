@@ -7,6 +7,7 @@ const MerchPage = lazy(() => import('@/pages/public/MerchPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
 const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
+const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 
 // User Pages (Protected)
 // import NotesPage from '@/pages/private/NotesPage';
@@ -52,7 +53,7 @@ export const prefetchCriticalPrivateRoutes = () => {
 export function shouldShowChatWidgetOnPath(pathname: string): boolean {
   const p =
     pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
-  const allowList = new Set(['/', '/about', '/merch', '/privacy-policy', '/data']);
+  const allowList = new Set(['/', '/about', '/merch', '/privacy-policy', '/data', '/announcements']);
   return allowList.has(p);
 }
 
@@ -80,6 +81,10 @@ const routes: RouteConfig[] = [
   {
     path: '/gloglossa',
     element: <GloglossaEmbedPage />,
+  },
+  {
+    path: '/announcements',
+    element: <AnnouncementsPage />,
   },
   {
     path: '/quiz',
