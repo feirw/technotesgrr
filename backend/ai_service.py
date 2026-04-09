@@ -76,6 +76,8 @@ SYSTEM_PROMPT = """
 - Χρησιμοποιησε markdown για κωδικα, λιστες και εντονο κειμενο οπου χρειαζεται.
 - Κρατα τις απαντησεις συνοπτικες αλλα πληρεις.
 - Αν δεν ζητηθει αναλυτικη αναλυση, προτιμα σύντομες απαντησεις (λιγες παραγραφοι).
+- Ποτε μην σταματας στη μεση προτασης. Ολοκληρωνε παντα το νοημα με καθαρο κλεισιμο.
+- Αν η απαντηση ειναι μεγαλη, κανε συνοπτικη δομη με bullets ωστε να παραμενει πληρης και ευαναγνωστη.
 """.strip()
 
 _histories = {}
@@ -121,6 +123,22 @@ def _rollback_last_user(history: list) -> None:
         history.pop()
 
 
+def _ensure_complete_reply(text: str) -> str:
+    """Best-effort guard against cut-off/unfinished responses."""
+    cleaned = (text or "").strip()
+    if not cleaned:
+        return "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
+
+    terminal = {".", "!", "?", "…", ";", ":", "»"}
+    if cleaned[-1] not in terminal:
+        cleaned = cleaned.rstrip(".,;: ") + "."
+
+    # Close a dangling markdown code block if needed.
+    if cleaned.count("```") % 2 != 0:
+        cleaned += "\n```"
+    return cleaned
+
+
 def user_facing_chat_error(error_str: str) -> str:
     if "429" in error_str or "quota" in error_str.lower():
         return "Έχω πολλά αιτήματα αυτή τη στιγμή. Δοκίμασε ξανά σε λίγα δευτερόλεπτα!"
@@ -135,7 +153,7 @@ def _make_generate_config():
     assert types is not None
     gen_cfg_kwargs = dict(
         system_instruction=SYSTEM_PROMPT,
-        max_output_tokens=GEMINI_MAX_OUTPUT_TOKENS,
+        max_output_tokens=max(GEMINI_MAX_OUTPUT_TOKENS, 768),
         temperature=GEMINI_TEMPERATURE,
     )
     _tc = _optional_thinking_config()
@@ -166,7 +184,7 @@ def get_ai_response(message: str, session_id: str = "default") -> str:
             config=_make_generate_config(),
         )
 
-        reply = response.text or "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
+        reply = _ensure_complete_reply(response.text or "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά.")
 
         history.append(types.Content(role="model", parts=[types.Part(text=reply)]))
 
@@ -217,6 +235,7 @@ def iter_ai_response_stream(message: str, session_id: str = "default") -> Iterat
         if not full.strip():
             full = "Δεν έχω απάντηση αυτή τη στιγμή. Δοκίμασε ξανά."
             yield full
+        full = _ensure_complete_reply(full)
         history.append(types.Content(role="model", parts=[types.Part(text=full)]))
         if len(history) > _MAX_HISTORY_ITEMS:
             _histories[session_id] = history[-_MAX_HISTORY_ITEMS:]

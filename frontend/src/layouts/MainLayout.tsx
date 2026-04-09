@@ -32,7 +32,6 @@ import {
   Youtube,
   Music2,
 } from 'lucide-react';
-import technotesLogo from '../assets/technotes_logo.png';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
@@ -251,27 +250,27 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, [chatPathAllowed]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-coral-wash dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 flex flex-col">
+    <div className="min-h-screen overflow-x-hidden bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] text-gray-900 dark:text-gray-100 flex flex-col">
       {shouldLoadChat && chatPathAllowed && (
         <Suspense fallback={null}>
           <ChatWidget />
         </Suspense>
       )}
       {/* Navbar Container */}
-      <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-30 border-b border-coral-accent/15 dark:border-gray-800 pt-[env(safe-area-inset-top,0px)]">
+      <div className="bg-white/55 dark:bg-[#0f152a]/75 backdrop-blur-md sticky top-0 z-30 border-b border-coral-accent/15 dark:border-white/10 pt-[env(safe-area-inset-top,0px)]">
         <div className="container mx-auto px-3 sm:px-6 max-w-[100vw]">
           <div className="flex justify-between items-center gap-2 py-3 sm:py-4 min-h-[3.25rem]">
             {/* Logo */}
             <div className="flex items-center gap-3">
               <NavLink to="/" className="flex items-center gap-3 group shrink-0">
                 <motion.img
-                  src={technotesLogo}
+                  src="/images/logo.png"
                   alt="Technotesgr"
                   width={40}
                   height={40}
                   decoding="async"
                   fetchPriority="high"
-                  className="w-10 h-10 object-contain"
+                  className="w-10 h-10 object-contain bg-transparent p-0 m-0"
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
                 />
@@ -485,7 +484,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)]">{children}</main>
 
       {/* Footer */}
-      <footer className="relative overflow-hidden mt-12 -mt-px">
+      <footer className="relative overflow-hidden mt-12 -mt-px bg-transparent">
         {/* Light: απαλό κοραλί */}
         <div
           className="pointer-events-none absolute inset-0 dark:hidden"
@@ -499,21 +498,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           className="pointer-events-none absolute inset-0 hidden dark:block"
           style={{
             background:
-              'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(255, 107, 122, 0.12) 35%, rgba(255, 107, 122, 0.2) 65%, rgba(232, 85, 99, 0.28) 100%)',
+              'linear-gradient(180deg, rgba(17,24,39,0.55) 0%, rgba(30,41,59,0.72) 45%, rgba(17,24,39,0.88) 100%)',
           }}
         />
 
         <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-[100vw]">
           <motion.div {...fadeIn} className="text-center md:text-left">
             <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Νομικά</h3>
-            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm">
               <NavLink to="/privacy-policy" className="hover:text-coral-accent dark:hover:text-coral-light transition-colors">
                 Όροι Χρήσης & Πολιτική Απορρήτου
               </NavLink>
               <NavLink to="/data" className="hover:text-coral-accent dark:hover:text-coral-light transition-colors">
                 Προστασία Προσωπικών Δεδομένων
               </NavLink>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
                 Τελευταία ενημέρωση: {new Date().toLocaleDateString('el-GR')}
               </span>
             </div>
@@ -522,10 +521,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <motion.div
             {...fadeIn}
             transition={{ delay: 0.15 }}
-            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-800/60"
+            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-700"
           >
             <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Socials</h3>
-            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm">
               <a
                 href="https://instagram.com/technotesgr"
                 target="_blank"
@@ -564,10 +563,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <motion.div
             {...fadeIn}
             transition={{ delay: 0.25 }}
-            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-800/60"
+            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-700"
           >
             <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Τοποθεσία</h3>
-            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-300 text-sm">
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm">
               <div className="inline-flex items-center gap-2 justify-center md:justify-start">
                 <span role="img" aria-label="location">
                   📍
@@ -579,7 +578,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </div>
 
         <div className="relative py-4">
-          <div className="container mx-auto px-6 text-center text-xs text-gray-600 dark:text-gray-400">
+          <div className="container mx-auto px-6 text-center text-xs text-gray-600 dark:text-gray-300">
             <span>All Rights Reserved © technotesgr • {currentYear}</span>
           </div>
         </div>

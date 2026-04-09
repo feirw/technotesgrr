@@ -401,7 +401,7 @@ const Flashcards: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-coral-wash flex items-center justify-center">
+      <div className="min-h-screen bg-coral-wash dark:bg-black flex items-center justify-center">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <motion.div
             className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4"
@@ -409,14 +409,14 @@ const Flashcards: React.FC = () => {
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
-          <p className="text-gray-600 font-semibold">Φόρτωση Flashcards...</p>
+          <p className="text-gray-600 dark:text-gray-300 font-semibold">Φόρτωση Flashcards...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-coral-wash p-4 sm:p-6">
+    <div className="min-h-screen bg-coral-wash dark:bg-black p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -429,26 +429,26 @@ const Flashcards: React.FC = () => {
           </h1>
           {selectedSetIndex === null && (
             <div className="flex flex-wrap justify-center gap-4 mt-4">
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+              <div className="bg-white/80 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg border border-transparent dark:border-gray-800">
                 <div className="flex items-center gap-2">
                   <Target className="w-4 h-4 text-coral-accent" />
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                     Σύνολο: {overallStats.totalCards} κάρτες
                   </span>
                 </div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+              <div className="bg-white/80 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg border border-transparent dark:border-gray-800">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                     Πρόοδος: {overallStats.overallProgress}%
                   </span>
                 </div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+              <div className="bg-white/80 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg border border-transparent dark:border-gray-800">
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                     Ακρίβεια: {overallStats.overallAccuracy}%
                   </span>
                 </div>
@@ -459,13 +459,13 @@ const Flashcards: React.FC = () => {
 
         {!loading && error && (
           <motion.div
-            className="mb-8 bg-red-50 border-2 border-red-300 rounded-2xl p-6 text-center"
+            className="mb-8 bg-red-50 dark:bg-red-950/30 border-2 border-red-300 dark:border-red-800 rounded-2xl p-6 text-center"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="text-4xl mb-2">⚠️</div>
-            <h2 className="text-lg font-bold text-red-800 mb-2">Σφάλμα φόρτωσης Flashcards</h2>
-            <p className="text-red-600 mb-4">{error}</p>
+            <h2 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">Σφάλμα φόρτωσης Flashcards</h2>
+            <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
             <button
               onClick={() => void fetchFlashcardData()}
               className="px-6 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors"
@@ -510,7 +510,7 @@ const Flashcards: React.FC = () => {
                       setIsFlipped(false);
                       studySessionRef.current = { cardsStudied: new Set() };
                     }}
-                    className="group relative p-4 sm:p-6 rounded-2xl bg-white border-2 border-coral-accent/25 hover:border-coral-accent hover:shadow-2xl transition-all text-left overflow-hidden"
+                    className="group relative p-4 sm:p-6 rounded-2xl bg-white dark:bg-gray-950 border-2 border-coral-accent/25 dark:border-gray-800 hover:border-coral-accent hover:shadow-2xl transition-all text-left overflow-hidden"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
@@ -534,7 +534,7 @@ const Flashcards: React.FC = () => {
                         <BookOpen className="w-6 h-6 text-coral-accent" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-base text-gray-800 group-hover:text-coral-accent transition-colors">
+                        <h3 className="font-bold text-base text-gray-800 dark:text-gray-100 group-hover:text-coral-accent transition-colors">
                           {set.title}
                         </h3>
                       </div>
@@ -542,13 +542,13 @@ const Flashcards: React.FC = () => {
 
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-500">{set.questions.length} κάρτες</span>
+                        <span className="text-gray-500 dark:text-gray-400">{set.questions.length} κάρτες</span>
                         {setStats.progress > 0 && (
                           <span className="font-bold text-coral-accent">{setStats.progress}%</span>
                         )}
                       </div>
                       {setStats.studied > 0 && (
-                        <div className="flex items-center gap-4 text-xs text-gray-600">
+                        <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-300">
                           <span>✓ {setStats.known}</span>
                           <span>⚠️ {setStats.difficult}</span>
                           <span>📚 {setStats.studied}</span>
@@ -580,12 +580,12 @@ const Flashcards: React.FC = () => {
             >
               {/* Controls Bar */}
               <div className="w-full max-w-4xl mb-6 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-4 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                <div className="flex flex-wrap items-center justify-between gap-4 bg-white/80 dark:bg-gray-950/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-transparent dark:border-gray-800">
                   <motion.button
                     onClick={() => {
                       setSelectedSetIndex(null);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-md transition-all"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-white dark:bg-gray-900 border-2 border-coral-accent/40 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:border-coral-accent shadow-md transition-all"
                     whileHover={{ scale: 1.05, x: -4 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -599,7 +599,7 @@ const Flashcards: React.FC = () => {
                       onChange={(e) => {
                         setStudyMode(e.target.value as StudyMode);
                       }}
-                      className="px-3 py-2 rounded-lg border-2 border-coral-accent/25 bg-white text-gray-800 font-semibold text-sm focus:outline-none focus:border-coral-accent"
+                      className="px-3 py-2 rounded-lg border-2 border-coral-accent/25 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-semibold text-sm focus:outline-none focus:border-coral-accent"
                     >
                       <option value="all">Όλες</option>
                       <option value="new">Νέες</option>
@@ -612,7 +612,7 @@ const Flashcards: React.FC = () => {
                       className={`p-2 rounded-lg border-2 transition-all ${
                         shuffled
                           ? 'bg-coral-accent border-coral-accent text-white'
-                          : 'bg-white border-coral-accent/25 text-gray-800 hover:border-coral-accent'
+                          : 'bg-white dark:bg-gray-900 border-coral-accent/25 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:border-coral-accent'
                       }`}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
@@ -623,7 +623,7 @@ const Flashcards: React.FC = () => {
 
                     <motion.button
                       onClick={resetProgress}
-                      className="p-2 rounded-lg border-2 border-red-200 bg-white text-red-600 hover:border-red-400 transition-all"
+                      className="p-2 rounded-lg border-2 border-red-200 dark:border-red-900 bg-white dark:bg-gray-900 text-red-600 dark:text-red-400 hover:border-red-400 transition-all"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       title="Επαναφορά (R)"
@@ -635,48 +635,48 @@ const Flashcards: React.FC = () => {
 
                 {/* Statistics */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 shadow-lg">
+                  <div className="bg-white/80 dark:bg-gray-950/90 backdrop-blur-sm rounded-xl p-3 shadow-lg border border-transparent dark:border-gray-800">
                     <div className="flex items-center gap-2 mb-1">
                       <Target className="w-4 h-4 text-coral-accent" />
-                      <span className="text-xs font-medium text-gray-600">Πρόοδος</span>
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Πρόοδος</span>
                     </div>
-                    <div className="text-xl font-black text-gray-800">{stats.progress}%</div>
+                    <div className="text-xl font-black text-gray-800 dark:text-gray-100">{stats.progress}%</div>
                   </div>
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 shadow-lg">
+                  <div className="bg-white/80 dark:bg-gray-950/90 backdrop-blur-sm rounded-xl p-3 shadow-lg border border-transparent dark:border-gray-800">
                     <div className="flex items-center gap-2 mb-1">
                       <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-xs font-medium text-gray-600">Ξέρω</span>
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Ξέρω</span>
                     </div>
-                    <div className="text-xl font-black text-gray-800">{stats.known}</div>
+                    <div className="text-xl font-black text-gray-800 dark:text-gray-100">{stats.known}</div>
                   </div>
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 shadow-lg">
+                  <div className="bg-white/80 dark:bg-gray-950/90 backdrop-blur-sm rounded-xl p-3 shadow-lg border border-transparent dark:border-gray-800">
                     <div className="flex items-center gap-2 mb-1">
                       <AlertCircle className="w-4 h-4 text-red-600" />
-                      <span className="text-xs font-medium text-gray-600">Δύσκολες</span>
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Δύσκολες</span>
                     </div>
-                    <div className="text-xl font-black text-gray-800">{stats.difficult}</div>
+                    <div className="text-xl font-black text-gray-800 dark:text-gray-100">{stats.difficult}</div>
                   </div>
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 shadow-lg">
+                  <div className="bg-white/80 dark:bg-gray-950/90 backdrop-blur-sm rounded-xl p-3 shadow-lg border border-transparent dark:border-gray-800">
                     <div className="flex items-center gap-2 mb-1">
                       <BarChart3 className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-medium text-gray-600">Ακρίβεια</span>
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Ακρίβεια</span>
                     </div>
-                    <div className="text-xl font-black text-gray-800">{stats.accuracy}%</div>
+                    <div className="text-xl font-black text-gray-800 dark:text-gray-100">{stats.accuracy}%</div>
                   </div>
                 </div>
 
                 {/* Session Info */}
-                <div className="bg-gradient-to-r from-coral-wash to-coral-light/25 rounded-xl p-3 shadow-md">
+                <div className="bg-gradient-to-r from-coral-wash to-coral-light/25 dark:from-gray-900 dark:to-gray-950 rounded-xl p-3 shadow-md border border-transparent dark:border-gray-800">
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
                       <BookOpen className="w-4 h-4 text-coral-accent" />
-                      <span className="text-gray-700 font-semibold">
+                      <span className="text-gray-700 dark:text-gray-200 font-semibold">
                         Κάρτα {hasCards ? currentCardIndex + 1 : 0} από {filteredCards.length}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-coral-accent" />
-                      <span className="text-gray-700 font-semibold">
+                      <span className="text-gray-700 dark:text-gray-200 font-semibold">
                         Μελετημένες: {studySessionRef.current.cardsStudied.size}
                       </span>
                     </div>
@@ -699,7 +699,7 @@ const Flashcards: React.FC = () => {
                           key={currentCard.id}
                           ref={cardBodyRef}
                           onClick={() => setIsFlipped((prev) => !prev)}
-                          className="relative w-full min-h-[340px] rounded-3xl bg-white border-2 border-coral-accent/25 p-6 text-left shadow-2xl focus:outline-none focus:ring-2 focus:ring-coral-accent/35"
+                          className="relative w-full min-h-[340px] rounded-3xl bg-white dark:bg-gray-950 border-2 border-coral-accent/25 dark:border-gray-800 p-6 text-left shadow-2xl focus:outline-none focus:ring-2 focus:ring-coral-accent/35"
                           style={{ transformStyle: 'preserve-3d' }}
                           initial={{ opacity: 0, y: 24 * slideDirection, rotateY: 0 }}
                           animate={{ opacity: 1, y: 0, rotateY: isFlipped ? 180 : 0 }}
@@ -723,7 +723,7 @@ const Flashcards: React.FC = () => {
                           </div>
                           <p
                             className={`text-xl sm:text-2xl leading-relaxed ${
-                              isFlipped ? 'text-gray-800 font-normal' : 'text-coral-strong font-bold'
+                              isFlipped ? 'text-gray-800 dark:text-gray-100 font-normal' : 'text-coral-strong dark:text-coral-light font-bold'
                             }`}
                             style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
                           >
@@ -738,14 +738,14 @@ const Flashcards: React.FC = () => {
                         <button
                           onClick={goPrev}
                           disabled={currentCardIndex === 0}
-                          className="px-3 py-2 rounded-lg border border-coral-accent/25 bg-white disabled:opacity-40"
+                          className="px-3 py-2 rounded-lg border border-coral-accent/30 bg-white text-coral-strong hover:bg-coral-wash transition-colors disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-coral-light dark:border-coral-accent/40 dark:hover:bg-gray-800"
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                           onClick={goNext}
                           disabled={currentCardIndex >= filteredCards.length - 1}
-                          className="px-3 py-2 rounded-lg border border-coral-accent/25 bg-white disabled:opacity-40"
+                          className="px-3 py-2 rounded-lg border border-coral-accent/30 bg-white text-coral-strong hover:bg-coral-wash transition-colors disabled:opacity-40 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-coral-light dark:border-coral-accent/40 dark:hover:bg-gray-800"
                         >
                           <ChevronRight className="w-4 h-4" />
                         </button>
@@ -754,25 +754,25 @@ const Flashcards: React.FC = () => {
                       <div className="flex gap-2">
                         <button
                           onClick={() => markAsKnown(currentCard.id)}
-                          className="px-3 py-2 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors text-sm font-semibold"
+                          className="px-3 py-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors text-sm font-semibold"
                         >
                           ✓ Ξέρω
                         </button>
                         <button
                           onClick={() => markAsDifficult(currentCard.id)}
-                          className="px-3 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors text-sm font-semibold"
+                          className="px-3 py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors text-sm font-semibold"
                         >
                           ✗ Δύσκολο
                         </button>
                         <button
                           onClick={() => markForReview(currentCard.id)}
-                          className="px-3 py-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors text-sm font-semibold"
+                          className="px-3 py-2 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 transition-colors text-sm font-semibold"
                         >
                           🔄 Επανάληψη
                         </button>
                       </div>
                     </div>
-                    <div className="mt-4 text-center text-sm text-gray-600">
+                    <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
                       {filteredCards.length}{' '}
                       {studyMode !== 'all' &&
                         `(${studyMode === 'difficult' ? 'δύσκολες' : studyMode === 'review' ? 'για επανάληψη' : 'νέες'})`}{' '}
@@ -780,10 +780,10 @@ const Flashcards: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-3xl p-8 shadow-2xl text-center border-2 border-coral-accent/25 max-w-md">
+                  <div className="bg-white dark:bg-gray-950 rounded-3xl p-8 shadow-2xl text-center border-2 border-coral-accent/25 dark:border-gray-800 max-w-md">
                     <Filter className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 font-semibold mb-2">Δεν υπάρχουν κάρτες</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-600 dark:text-gray-200 font-semibold mb-2">Δεν υπάρχουν κάρτες</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {studyMode === 'difficult'
                         ? 'Δεν έχεις σημειώσει δύσκολες κάρτες ακόμα'
                         : studyMode === 'review'
@@ -802,27 +802,27 @@ const Flashcards: React.FC = () => {
 
               {/* Tips */}
               <motion.div
-                className="bg-gradient-to-r from-coral-wash to-coral-light/20 rounded-2xl p-4 sm:p-6 max-w-2xl w-full"
+                className="bg-gradient-to-r from-coral-wash to-coral-light/20 dark:from-gray-900 dark:to-gray-950 rounded-2xl p-4 sm:p-6 max-w-2xl w-full border border-transparent dark:border-gray-800"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <div className="space-y-2 text-sm text-gray-700">
+                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
                   <p className="font-semibold text-center">💡 Συμβουλές:</p>
                   <ul className="list-disc list-inside space-y-1 text-xs sm:text-sm">
                     <li>Κάνε κλικ στην κάρτα για να τη γυρίσεις</li>
                     <li>Βελάκια ← → για προηγούμενη/επόμενη κάρτα</li>
                     <li>Χρησιμοποίησε τα κουμπιά για να σημειώσεις την πρόοδό σου</li>
                     <li>
-                      Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">S</kbd> για
+                      Πάτα <kbd className="px-1 py-0.5 bg-white dark:bg-gray-900 rounded border dark:border-gray-700">S</kbd> για
                       ανακάτεμα
                     </li>
                     <li>
-                      Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">R</kbd> για
+                      Πάτα <kbd className="px-1 py-0.5 bg-white dark:bg-gray-900 rounded border dark:border-gray-700">R</kbd> για
                       επαναφορά
                     </li>
                     <li>
-                      Πάτα <kbd className="px-1 py-0.5 bg-white rounded border">Esc</kbd> για
+                      Πάτα <kbd className="px-1 py-0.5 bg-white dark:bg-gray-900 rounded border dark:border-gray-700">Esc</kbd> για
                       επιστροφή
                     </li>
                   </ul>

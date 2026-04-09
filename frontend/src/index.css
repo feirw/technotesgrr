@@ -14,6 +14,7 @@
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
     @apply font-sans;
+    color-scheme: light;
   }
 
   body {
@@ -56,35 +57,62 @@ code {
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 222 24% 6%;
+    --foreground: 220 20% 96%;
+    --card: 222 20% 9%;
+    --card-foreground: 220 20% 96%;
+    --popover: 222 20% 9%;
+    --popover-foreground: 220 20% 96%;
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --primary-foreground: 222 24% 8%;
+    --secondary: 220 16% 15%;
+    --secondary-foreground: 220 20% 96%;
+    --muted: 220 14% 14%;
+    --muted-foreground: 220 12% 74%;
+    --accent: 220 14% 16%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
+    --border: 220 12% 20%;
+    --input: 220 12% 20%;
     --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    color-scheme: dark;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+  }
+
+  ::selection {
+    background: rgba(255, 107, 122, 0.25);
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(255, 107, 122, 0.75);
+    outline-offset: 2px;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply transition-colors duration-200;
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply text-gray-100 placeholder:text-gray-400;
+  }
+
+  button {
+    @apply transition-colors duration-200;
   }
 }

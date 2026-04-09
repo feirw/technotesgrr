@@ -5,8 +5,8 @@ export type Theme = 'light' | 'dark';
 export function getPreferredTheme(): Theme {
   const stored = localStorage.getItem(THEME_KEY) as Theme | null;
   if (stored === 'light' || stored === 'dark') return stored;
-  const mql = window.matchMedia?.('(prefers-color-scheme: dark)');
-  return mql && mql.matches ? 'dark' : 'light';
+  // First visit defaults to light theme for predictable UX.
+  return 'light';
 }
 
 export function applyTheme(theme: Theme) {

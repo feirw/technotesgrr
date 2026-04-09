@@ -51,6 +51,7 @@ interface Feature {
   desc: string;
   badge: string;
   icon?: LucideIcon;
+  path?: string;
 }
 
 interface ContactResponse {
@@ -111,54 +112,63 @@ const featuresData: Feature[] = [
     desc: 'Καλύπτουν σε βάθος τη θεωρία, μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
     badge: '01',
     icon: GraduationCap,
+    path: '/online',
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
     badge: '02',
     icon: Trophy,
+    path: '/quiz',
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
     badge: '03',
     icon: Layers,
+    path: '/flashcards',
   },
   {
     title: 'Άρθρα & Υλικό',
     desc: 'Διάβασε οργανωμένο εκπαιδευτικό υλικό και πρακτικές συμβουλές μελέτης.',
     badge: '04',
     icon: BookOpen,
+    path: '/about',
   },
   {
     title: 'Study Timer',
     desc: 'Οργάνωσε τον χρόνο μελέτης σου και παρακολούθησε την καθημερινή πρόοδό σου.',
     badge: '05',
     icon: Timer,
+    path: '/study-timer',
   },
   {
     title: 'Επαγγελματικός Προσανατολισμός',
     desc: 'Απάντησε στο ερωτηματολόγιο και δες εξατομικευμένα αποτελέσματα κατεύθυνσης.',
     badge: '06',
     icon: Compass,
+    path: '/prosanatolismos',
   },
   {
     title: 'Σχολές και Καριέρα',
     desc: 'Εξερεύνησε επιλογές σχολών και οργάνωσε πιο σωστά τα επόμενα βήματά σου.',
     badge: '07',
     icon: School2Icon,
+    path: '/sxoles',
   },
   {
     title: 'Παλιά Θέματα και Αλγόριθμοι',
     desc: 'Μελέτησε παλαιά θέματα και δες οπτικοποιήσεις αλγορίθμων για βαθύτερη κατανόηση.',
     badge: '08',
     icon: Code,
+    path: '/paliathemata',
   },
   {
     title: 'Online Διερμηνευτής της Γλώσσας',
     desc: 'Γράψε και δοκίμασε κώδικα στη ΓΛΩΣΣΑ άμεσα, με γρήγορη εκτέλεση και καλύτερη εξάσκηση.',
     badge: '09',
     icon: Terminal,
+    path: '/gloglossa',
   },
 ];
 
@@ -331,12 +341,15 @@ const Section: React.FC<SectionProps> = ({
 
 interface FeatureCardProps extends Feature {
   i: number;
+  onClick?: () => void;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, i, icon: Icon }) => (
-  <motion.article
-    className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-[#ff8f8e]/35 dark:border-gray-700/50 overflow-hidden"
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, i, icon: Icon, onClick }) => (
+  <motion.button
+    type="button"
+    className="group relative bg-white/85 dark:bg-[#17233a]/85 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-[#ff8f8e]/35 dark:border-white/10 overflow-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-[#ff8f8e] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0f152a]"
     aria-label={title}
+    onClick={onClick}
     initial={{ opacity: 0, y: 30, rotateX: -5 }}
     whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
     viewport={{ once: true, amount: 0.2 }}
@@ -368,7 +381,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, i, icon: Icon })
       )}
 
       <motion.h3
-        className="text-2xl font-bold mb-3 text-gray-900 dark:text-white"
+        className="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-50"
         whileHover={{
           scale: 1.05,
           transition: { duration: 0.2 },
@@ -377,9 +390,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, i, icon: Icon })
         {title}
       </motion.h3>
 
-      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{desc}</p>
+      <p className="text-gray-600 dark:text-gray-200/90 leading-relaxed">{desc}</p>
     </div>
-  </motion.article>
+  </motion.button>
 );
 
 const StarRating: React.FC<{ value?: number }> = ({ value = 0 }) => {
@@ -755,7 +768,14 @@ const HomePage: React.FC = () => {
             viewport={{ once: true, amount: 0.2 }}
           >
             {featuresData.map((feat, idx) => (
-              <FeatureCard key={feat.title} {...feat} i={idx} />
+              <FeatureCard
+                key={feat.title}
+                {...feat}
+                i={idx}
+                onClick={() => {
+                  if (feat.path) navigate(feat.path);
+                }}
+              />
             ))}
           </motion.div>
         </Section>

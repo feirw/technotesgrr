@@ -39,6 +39,7 @@ const QUICK_PROMPTS = [
 const MAX_RETRIES = 1;
 // More tolerant stream timeout to avoid false "interrupted" messages on longer replies.
 const CHAT_STREAM_TIMEOUT_MS = 150_000;
+const STREAM_UI_FLUSH_MS = 48;
 
 function longTimeoutSignal(ms: number): AbortSignal {
   const Sig = AbortSignal as typeof AbortSignal & { timeout?: (n: number) => AbortSignal };
@@ -184,7 +185,7 @@ const BotMessageContent: React.FC<{ content: string }> = ({ content }) => (
       ol: ({ ...props }) => <ol className="list-decimal ml-5 space-y-1" {...props} />,
       a: ({ ...props }) => (
         <a
-          className="text-pink-600 underline hover:text-pink-400"
+          className="text-pink-600 dark:text-pink-300 underline hover:text-pink-400 dark:hover:text-pink-200"
           target="_blank"
           rel="noreferrer"
           {...props}
@@ -193,7 +194,7 @@ const BotMessageContent: React.FC<{ content: string }> = ({ content }) => (
       p: ({ ...props }) => <p className="mb-2 last:mb-0 text-sm leading-relaxed" {...props} />,
       code: ({ ...props }) => (
         <code
-          className="bg-pink-50 text-pink-700 rounded px-1 py-0.5 text-xs font-mono"
+          className="bg-pink-50 dark:bg-neutral-800 text-pink-700 dark:text-pink-200 rounded px-1 py-0.5 text-xs font-mono"
           {...props}
         />
       ),
@@ -244,6 +245,8 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   const [sending, setSending] = useState(false);
   const [streamPreview, setStreamPreview] = useState('');
   const streamAccRef = useRef('');
+  const streamUiBufferRef = useRef('');
+  const streamFlushTimerRef = useRef<number | null>(null);
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
       const raw = localStorage.getItem(CHAT_STORAGE_KEY);
@@ -321,6 +324,29 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
   const appendMessage = (msg: Omit<Message, 'ts'>) =>
     setMessages((prev) => [...prev, { ...msg, ts: Date.now() }]);
 
+  const flushStreamPreview = useCallback(() => {
+    if (!streamUiBufferRef.current) return;
+    streamAccRef.current += streamUiBufferRef.current;
+    streamUiBufferRef.current = '';
+    setStreamPreview(streamAccRef.current);
+  }, []);
+
+  const scheduleStreamPreviewFlush = useCallback(() => {
+    if (streamFlushTimerRef.current != null) return;
+    streamFlushTimerRef.current = window.setTimeout(() => {
+      streamFlushTimerRef.current = null;
+      flushStreamPreview();
+    }, STREAM_UI_FLUSH_MS);
+  }, [flushStreamPreview]);
+
+  useEffect(() => {
+    return () => {
+      if (streamFlushTimerRef.current != null) {
+        window.clearTimeout(streamFlushTimerRef.current);
+      }
+    };
+  }, []);
+
   const send = useCallback(
     async (rawText?: string) => {
       const text = (rawText ?? input).trim();
@@ -335,28 +361,25 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
       try {
         try {
           await fetchBotReplyStream(text, sessionId, (delta) => {
-            streamAccRef.current += delta;
-            setStreamPreview(streamAccRef.current);
+            streamUiBufferRef.current += delta;
+            scheduleStreamPreviewFlush();
           });
+          flushStreamPreview();
           const finalText = personalise(streamAccRef.current);
           streamAccRef.current = '';
+          streamUiBufferRef.current = '';
           setStreamPreview('');
           appendMessage({ role: 'bot', content: finalText });
         } catch (streamErr) {
           console.warn('[Widget] Stream chat fallback:', streamErr);
-          const partial = streamAccRef.current.trim();
+          flushStreamPreview();
           streamAccRef.current = '';
+          streamUiBufferRef.current = '';
           setStreamPreview('');
-          if (partial.length > 0) {
-            appendMessage({
-              role: 'bot',
-              // Keep partial response instead of noisy interruption warning.
-              content: personalise(partial),
-            });
-          } else {
-            const raw = await fetchBotReply(text, sessionId);
-            appendMessage({ role: 'bot', content: personalise(raw) });
-          }
+          // Always request a full fallback answer so users don't get half responses.
+          const raw = await fetchBotReply(text, sessionId);
+          const fullFallback = personalise(raw);
+          appendMessage({ role: 'bot', content: fullFallback });
         }
       } catch (err: unknown) {
         console.error('[Widget] AI error:', err);
@@ -366,11 +389,16 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           content: `⚠️ Δεν μπόρεσα να λάβω απάντηση. ${detail}`,
         });
       } finally {
+        if (streamFlushTimerRef.current != null) {
+          window.clearTimeout(streamFlushTimerRef.current);
+          streamFlushTimerRef.current = null;
+        }
+        streamUiBufferRef.current = '';
         setStreamPreview('');
         setSending(false);
       }
     },
-    [input, sending, personalise, sessionId]
+    [input, sending, personalise, sessionId, flushStreamPreview, scheduleStreamPreviewFlush]
   );
 
   const clearConversation = () => {
@@ -421,7 +449,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
           <motion.div
             role="dialog"
             aria-label="Chatbot βοηθός"
-            className="fixed z-[72] left-3 right-3 top-[4.5rem] bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[min(88vw,42rem)] sm:max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white flex flex-col"
+            className="fixed z-[72] left-3 right-3 top-[4.5rem] bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] sm:left-auto sm:top-auto sm:bottom-24 sm:right-6 sm:w-[min(88vw,42rem)] sm:max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden bg-white dark:bg-neutral-950 flex flex-col"
             style={{
               border: `3px solid ${BRAND}`,
               maxHeight: isMobile
@@ -434,7 +462,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             transition={{ type: 'spring', stiffness: 320, damping: 24 }}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3 flex-shrink-0">
+            <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3.5 flex-shrink-0">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -478,7 +506,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             {/* Messages */}
             <div
               ref={listRef}
-              className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 space-y-4 bg-gradient-to-br from-pink-50 to-rose-50"
+              className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 space-y-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-neutral-950 dark:to-neutral-900"
             >
               {messages.length <= 2 && (
                 <div className="flex flex-wrap gap-2">
@@ -486,7 +514,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                     <button
                       key={prompt}
                       onClick={() => void send(prompt)}
-                      className="text-xs bg-white border border-pink-200 rounded-full px-3 py-1.5 hover:bg-pink-50 text-pink-700"
+                      className="text-xs bg-white dark:bg-neutral-900 border border-pink-200 dark:border-neutral-700 rounded-full px-3 py-1.5 hover:bg-pink-50 dark:hover:bg-neutral-800 text-pink-700 dark:text-pink-300"
                     >
                       {prompt}
                     </button>
@@ -520,7 +548,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                         className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                           m.role === 'user'
                             ? 'bg-gradient-to-br from-pink-400 to-rose-400'
-                            : 'bg-white border-2 border-pink-300'
+                            : 'bg-white dark:bg-neutral-900 border-2 border-pink-300 dark:border-neutral-700'
                         }`}
                       >
                         {m.role === 'user' ? (
@@ -535,7 +563,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                         className={`rounded-2xl px-4 py-3 shadow-md ${
                           m.role === 'user'
                             ? 'bg-gradient-to-br from-pink-500 to-rose-500 text-white'
-                            : 'bg-white text-gray-800'
+                            : 'bg-white dark:bg-neutral-900 text-gray-800 dark:text-neutral-100'
                         }`}
                       >
                         {m.role === 'user' ? (
@@ -560,10 +588,10 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                     exit={{ opacity: 0 }}
                   >
                     <div className="flex items-end gap-2 max-w-[85%]">
-                      <div className="w-8 h-8 rounded-full bg-white border-2 border-pink-300 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-white dark:bg-neutral-900 border-2 border-pink-300 dark:border-neutral-700 flex items-center justify-center flex-shrink-0">
                         <Bot className="w-4 h-4 text-pink-600" />
                       </div>
-                      <div className="rounded-2xl px-4 py-3 shadow-md bg-white text-gray-800">
+                      <div className="rounded-2xl px-4 py-3 shadow-md bg-white dark:bg-neutral-900 text-gray-800 dark:text-neutral-100">
                         <BotMessageContent content={personalise(streamPreview)} />
                       </div>
                     </div>
@@ -576,7 +604,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
             </div>
 
             {/* Input */}
-            <div className="p-3 sm:p-4 bg-white border-t-2 border-pink-100 flex-shrink-0">
+            <div className="p-3 sm:p-4 bg-white dark:bg-neutral-950 border-t-2 border-pink-100 dark:border-neutral-800 flex-shrink-0">
               <div className="flex items-end gap-2 relative z-10">
                 <textarea
                   ref={textareaRef}
@@ -587,7 +615,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                   placeholder="Γράψε εδώ... (Enter για αποστολή)"
                   disabled={sending}
                   aria-label="Μήνυμα"
-                  className="flex-1 resize-none rounded-xl border-2 border-pink-200 px-4 py-3 text-base focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 disabled:opacity-60 transition-colors"
+                  className="flex-1 resize-none rounded-xl border-2 border-pink-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-neutral-100 px-4 py-3 text-base focus:outline-none focus:border-pink-400 dark:focus:border-pink-400 focus:ring-2 focus:ring-pink-100 dark:focus:ring-pink-900/40 disabled:opacity-60 transition-colors"
                   style={{ minHeight: '48px', maxHeight: '160px' }}
                 />
                 <motion.button
@@ -601,7 +629,7 @@ const Widget: React.FC<WidgetProps> = ({ nickname }) => {
                   <Send className="w-6 h-6" />
                 </motion.button>
               </div>
-              <p className="text-[11px] text-gray-400 mt-1 pl-1">Shift+Enter για νέα γραμμή</p>
+              <p className="text-[11px] text-gray-500 dark:text-neutral-400 mt-1 pl-1">Shift+Enter για νέα γραμμή</p>
             </div>
           </motion.div>
         )}

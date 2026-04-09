@@ -231,14 +231,23 @@ async def chat_with_bot_stream(chat_data: ChatMessage):
     sid = chat_data.session_id or "default"
     q: queue.Queue = queue.Queue(maxsize=256)
 
+    def _safe_queue_put(item: tuple[str, str | None]) -> None:
+        # Avoid potential deadlock if producer is faster than consumer.
+        while True:
+            try:
+                q.put(item, timeout=1)
+                return
+            except queue.Full:
+                continue
+
     def worker():
         try:
             for piece in iter_ai_response_stream(msg, sid):
-                q.put(("p", piece))
-            q.put(("d", None))
+                _safe_queue_put(("p", piece))
+            _safe_queue_put(("d", None))
         except Exception as e:
             logger.exception("chat stream worker failed")
-            q.put(("e", user_facing_chat_error(str(e))))
+            _safe_queue_put(("e", user_facing_chat_error(str(e))))
 
     threading.Thread(target=worker, daemon=True).start()
 
