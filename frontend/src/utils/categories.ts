@@ -1,3 +1,6 @@
+import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrlCandidates } from '@/utils/backendUrl';
+
 /**
  * Interface representing a Category.
  * Adjust these fields (id, name, slug, etc.) to match your actual backend object.
@@ -31,26 +34,35 @@ export interface FetchCategoriesResult {
  * Fetches categories from the backend API
  */
 export const fetchCategories = async (): Promise<FetchCategoriesResult> => {
+  let lastError: unknown = null;
   try {
-    const response = await fetch('/api/categories');
+    for (const base of getBackendUrlCandidates()) {
+      try {
+        const data = await apiFetch<ApiCategoriesResponse>(`${base}/api/categories`, {
+          dedupeKey: `categories:${base}`,
+          cacheKey: `categories:${base}`,
+          cacheTtlMs: 10 * 60 * 1000,
+          timeoutMs: 20_000,
+          retries: 1,
+        });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        return {
+          quizCategories: data.quiz_categories || [],
+          flashcardCategories: data.flashcard_categories || [],
+          allCategories: data.all_categories || [],
+        };
+      } catch (error) {
+        lastError = error;
+      }
     }
-
-    const data: ApiCategoriesResponse = await response.json();
-
-    return {
-      quizCategories: data.quiz_categories || [],
-      flashcardCategories: data.flashcard_categories || [],
-      allCategories: data.all_categories || [],
-    };
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    return {
-      quizCategories: [],
-      flashcardCategories: [],
-      allCategories: [],
-    };
+    lastError = error;
   }
+
+  console.error('Error fetching categories:', lastError);
+  return {
+    quizCategories: [],
+    flashcardCategories: [],
+    allCategories: [],
+  };
 };

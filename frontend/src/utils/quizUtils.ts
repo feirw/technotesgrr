@@ -1,5 +1,5 @@
 import { apiFetch } from '@/utils/apiClient';
-import { getBackendUrl } from '@/utils/backendUrl';
+import { getBackendUrlCandidates } from '@/utils/backendUrl';
 
 // --- Types ---
 
@@ -43,11 +43,15 @@ interface BackendAllQuestionsResponse {
 
 // --- Constants ---
 
-const BACKEND_URL = getBackendUrl();
 const QUIZ_CACHE_KEY = 'quizDataCache:v2';
 const QUIZ_CACHE_TTL_MS = 5 * 60 * 1000;
+/** Συντηρητικό page size για συμβατότητα με αυστηρά backend validators και proxies. */
+const QUIZ_FETCH_LIMIT = 500;
+const QUIZ_FETCH_TIMEOUT_MS = 60_000;
 
 let inMemoryQuizCache: { ts: number; data: QuizData[] } | null = null;
+/** Ένα inflight fetch — αποφεύγει διπλό backend load (π.χ. prefetch + QuizPage ταυτόχρονα). */
+let fetchAllQuizzesInFlight: Promise<QuizData[]> | null = null;
 
 const normalizeGreek = (value: string) =>
   value
@@ -77,40 +81,61 @@ const chapterNameMap: Record<string | number, string> = {
 // --- Functions ---
 
 export const fetchQuizCategories = async (): Promise<string[]> => {
+  let lastError: unknown = null;
   try {
-    const data = await apiFetch<BackendCategoriesResponse>(`${BACKEND_URL}/api/categories`, {
-      cacheTtlMs: 10 * 60 * 1000,
-      cacheKey: 'quiz:categories',
-    });
-    return data.quiz_categories || [];
+    for (const base of getBackendUrlCandidates()) {
+      try {
+        const data = await apiFetch<BackendCategoriesResponse>(`${base}/api/categories`, {
+          dedupeKey: `quiz:categories:${base}`,
+          cacheTtlMs: 10 * 60 * 1000,
+          cacheKey: `quiz:categories:${base}`,
+        });
+        return data.quiz_categories || [];
+      } catch (error) {
+        lastError = error;
+      }
+    }
   } catch (error) {
-    console.error('Error fetching quiz categories:', error);
-    return [];
+    lastError = error;
   }
+  console.error('Error fetching quiz categories:', lastError);
+  return [];
 };
 
 export const fetchQuizzesByChapter = async (chapter: string | number): Promise<QuizData> => {
+  let lastError: unknown = null;
   try {
-    const data = await apiFetch<BackendChapterResponse>(
-      `${BACKEND_URL}/api/quiz/questions/${chapter}`
-    );
+    for (const base of getBackendUrlCandidates()) {
+      try {
+        const data = await apiFetch<BackendChapterResponse>(`${base}/api/quiz/questions/${chapter}`, {
+          dedupeKey: `quiz:chapter:${chapter}:${base}`,
+          cacheKey: `quiz:chapter:${chapter}:${base}`,
+          cacheTtlMs: QUIZ_CACHE_TTL_MS,
+          timeoutMs: QUIZ_FETCH_TIMEOUT_MS,
+          retries: 1,
+        });
 
-    return {
-      id: `chapter-${chapter}`,
-      title: String(data.chapter),
-      questions: data.questions.map((q) => ({
-        ...q,
-        answers: q.answers,
-      })),
-    };
+        return {
+          id: `chapter-${chapter}`,
+          title: String(data.chapter),
+          questions: data.questions.map((q) => ({
+            ...q,
+            answers: q.answers,
+          })),
+        };
+      } catch (error) {
+        lastError = error;
+      }
+    }
   } catch (error) {
-    console.error(`Error fetching quizzes for chapter ${chapter}:`, error);
-    return {
-      id: `chapter-${chapter}`,
-      title: `Chapter ${chapter}`,
-      questions: [],
-    };
+    lastError = error;
   }
+  console.error(`Error fetching quizzes for chapter ${chapter}:`, lastError);
+  return {
+    id: `chapter-${chapter}`,
+    title: `Chapter ${chapter}`,
+    questions: [],
+  };
 };
 
 export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
@@ -133,25 +158,59 @@ export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
     console.warn('Quiz cache read failed:', cacheErr);
   }
 
-  try {
-    // Pull quizzes in pages so this scales when quiz volume grows.
-    const pageSize = 250;
-    let offset = 0;
-    let hasMore = true;
-    const allQuestions: Question[] = [];
+  if (fetchAllQuizzesInFlight) {
+    return fetchAllQuizzesInFlight;
+  }
 
-    while (hasMore) {
-      const page = await apiFetch<BackendAllQuestionsResponse>(
-        `${BACKEND_URL}/api/quiz/questions?limit=${pageSize}&offset=${offset}`,
-        { dedupeKey: `quiz-questions-page-${offset}` }
-      );
-      const pageQuestions = Array.isArray(page?.questions) ? page.questions : [];
-      allQuestions.push(...pageQuestions);
-      hasMore = Boolean(page?.has_more);
-      offset += pageSize;
-      if (!pageQuestions.length) {
-        hasMore = false;
+  fetchAllQuizzesInFlight = (async () => {
+  try {
+    const bases = getBackendUrlCandidates();
+    let allQuestions: Question[] = [];
+    let lastError: unknown = null;
+
+    for (const base of bases) {
+      try {
+        const fetchPage = (offset: number) =>
+          apiFetch<BackendAllQuestionsResponse>(
+            `${base}/api/quiz/questions?limit=${QUIZ_FETCH_LIMIT}&offset=${offset}`,
+            {
+              dedupeKey: `quiz-questions-${base}-${offset}`,
+              timeoutMs: QUIZ_FETCH_TIMEOUT_MS,
+              retries: 1,
+              cacheTtlMs: QUIZ_CACHE_TTL_MS,
+              cacheKey: `quiz:raw:${base}:${offset}`,
+            }
+          );
+
+        const first = await fetchPage(0);
+        const candidate: Question[] = Array.isArray(first?.questions) ? [...first.questions] : [];
+
+        let hasMore = Boolean(first?.has_more);
+        let offset = QUIZ_FETCH_LIMIT;
+        while (hasMore) {
+          const page = await fetchPage(offset);
+          const chunk = Array.isArray(page?.questions) ? page.questions : [];
+          candidate.push(...chunk);
+          hasMore = Boolean(page?.has_more) && chunk.length > 0;
+          offset += QUIZ_FETCH_LIMIT;
+        }
+
+        // Prefer the first backend that returns non-empty quiz data.
+        if (candidate.length > 0) {
+          allQuestions = candidate;
+          break;
+        }
+      } catch (err) {
+        lastError = err;
       }
+    }
+
+    if (allQuestions.length === 0 && lastError) {
+      throw lastError instanceof Error ? lastError : new Error(String(lastError));
+    }
+
+    if (allQuestions.length === 0) {
+      throw new Error('No quiz data returned from backend.');
     }
 
     const questionsByChapter: Record<string, Question[]> = {};
@@ -217,6 +276,13 @@ export const fetchAllQuizzes = async (): Promise<QuizData[]> => {
     return mergedQuizzes;
   } catch (error) {
     console.error('Error fetching all quizzes:', error);
-    return [];
+    throw error instanceof Error ? error : new Error(String(error));
+  }
+  })();
+
+  try {
+    return await fetchAllQuizzesInFlight;
+  } finally {
+    fetchAllQuizzesInFlight = null;
   }
 };

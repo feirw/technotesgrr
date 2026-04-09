@@ -11,11 +11,8 @@ import {
   Flag,
   Lightbulb,
 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../utils/supabaseClient';
 import { apiFetch } from '@/utils/apiClient';
 import { getBackendUrl } from '@/utils/backendUrl';
-import { enqueueQuizSubmission, flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
 
 // --- Types ---
 
@@ -75,7 +72,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   onQuestionAnswered,
   selectedAnswers,
 }) => {
-  const { user } = useAuth();
   const [current, setCurrent] = useState<number>(0);
   const [isSyncingAnswer, setIsSyncingAnswer] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
@@ -83,10 +79,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   const [score, setScore] = useState<Score>({ correct: 0, total: 0 });
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
-
-  const syncPendingQueue = useCallback(async () => {
-    await flushPendingQuizSubmissions();
-  }, []);
 
   // Determine selected answer for current question (if any)
   const selected = selectedAnswers?.[current] ?? null; // number | null
@@ -136,18 +128,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
     }
   }, [allAnswered, isLastQuestion, selected]);
 
-  // Try to sync queued submissions on open and whenever connection comes back.
-  useEffect(() => {
-    if (!isOpen) return;
-    void syncPendingQueue();
-
-    const handleOnline = () => {
-      void syncPendingQueue();
-    };
-    window.addEventListener('online', handleOnline);
-    return () => window.removeEventListener('online', handleOnline);
-  }, [isOpen, syncPendingQueue]);
-
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen || !quiz) return;
@@ -184,25 +164,13 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
         // Update UI immediately to remove perceived lag between questions.
         onQuestionAnswered(quiz.id, current, idx, localIsCorrect, localIsCorrect ? 10 : 0);
 
-        // 1. Get session for token
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const token = session?.access_token;
-
-        if (!token) {
-          throw new Error('User not authenticated');
-        }
-
-        // 2. Determine nickname
-        const nickname = user?.username || user?.email?.split('@')[0] || 'Anonymous';
+        const nickname = 'Visitor';
 
         setIsSyncingAnswer(true);
-        const result = await apiFetch<SubmitResponse>(`${BACKEND_URL}/api/quiz/submit`, {
+        await apiFetch<SubmitResponse>(`${BACKEND_URL}/api/quiz/submit`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
           timeoutMs: 8000,
           retries: 1,
@@ -216,16 +184,11 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
         // No auto-advance: user controls navigation with the next button.
       } catch (err) {
         console.error('Error submitting answer:', err);
-        enqueueQuizSubmission({
-          nickname: user?.username || user?.email?.split('@')[0] || 'Anonymous',
-          question_id: question.id,
-          selected_answer: idx,
-        });
       } finally {
         setIsSyncingAnswer(false);
       }
     },
-    [selected, onQuestionAnswered, question, quiz, user]
+    [selected, onQuestionAnswered, question, quiz]
   );
 
   const handleNext = useCallback(() => {

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useId, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { getBackendUrl } from '@/utils/backendUrl';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,12 +14,12 @@ import {
   GraduationCap,
   Trophy,
   Layers,
-  MessagesSquare,
   Timer,
   Compass,
   School2Icon,
   Code,
   Terminal,
+  BookOpen,
   LucideIcon,
 } from 'lucide-react';
 
@@ -126,10 +125,10 @@ const featuresData: Feature[] = [
     icon: Layers,
   },
   {
-    title: 'Community Forum',
-    desc: 'Χώρος κοινότητας όπου οι μαθητές ανταλλάσσουν απορίες, ιδέες και συμβουλές.',
+    title: 'Άρθρα & Υλικό',
+    desc: 'Διάβασε οργανωμένο εκπαιδευτικό υλικό και πρακτικές συμβουλές μελέτης.',
     badge: '04',
-    icon: MessagesSquare,
+    icon: BookOpen,
   },
   {
     title: 'Study Timer',
@@ -557,7 +556,6 @@ const useMediaQuery = (query: string) => {
 // ---------- Main Component ----------
 
 const HomePage: React.FC = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const isSmall = useMediaQuery('(max-width: 640px)');
 
@@ -707,10 +705,10 @@ const HomePage: React.FC = () => {
 
               <motion.button
                 className="relative inline-flex items-center gap-3 px-9 py-4 bg-[#ff6b7a] hover:bg-[#e85563] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
-                onClick={() => navigate(user ? '/quiz' : '/login')}
+                onClick={() => navigate('/quiz')}
                 whileTap={{ scale: 0.98 }}
               >
-                <span>{user ? 'Συνέχισε την προετοιμασία' : 'Συνδέσου για να ξεκινήσεις'}</span>
+                <span>Ξεκίνα την προετοιμασία</span>
                 <span
                   className="absolute inset-0 rounded-full ring-2 ring-[#ff8f8e]/55 animate-pulse"
                   aria-hidden="true"

@@ -15,8 +15,6 @@ import {
   Loader2,
 } from 'lucide-react';
 import type { Article, ArticlePastel } from '../../data/articles';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/utils/supabaseClient';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 
 /* ─────────────────────────── constants ─────────────────────────── */
@@ -640,7 +638,6 @@ const DeleteConfirmModal: React.FC<{
 /* ─────────────────────────── Main Page ─────────────────────────── */
 
 const ArticlesPage: React.FC = () => {
-  const { isAdmin, loading: authLoading } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -714,18 +711,10 @@ const ArticlesPage: React.FC = () => {
 
   useEffect(() => { void fetchList(); }, [fetchList]);
 
-  /* auth helper */
-  const getAuthHeader = async (): Promise<string | null> => {
-    const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? null;
-  };
-
   const postWithCandidates = useCallback(async (
     path: string,
     init: RequestInit & { parseJson?: boolean }
   ): Promise<{ base: string; data: unknown }> => {
-    const token = await getAuthHeader();
-    if (!token) throw new Error('Χρειάζεσαι σύνδεση ως διαχειριστής.');
     const { parseJson = true, ...rest } = init;
     let lastErr: unknown = null;
     for (const base of getBackendUrlCandidates()) {
@@ -735,7 +724,6 @@ const ArticlesPage: React.FC = () => {
           headers: {
             // CHANGED: rest.headers can be undefined — spread would throw in some engines.
             ...((rest.headers as Record<string, string> | undefined) || {}),
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -810,7 +798,7 @@ const ArticlesPage: React.FC = () => {
     }
   };
 
-  const showComposer = !authLoading && isAdmin;
+  const showComposer = true;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -921,7 +909,7 @@ const ArticlesPage: React.FC = () => {
               <ArticleCard
                 key={article.id}
                 article={article}
-                isAdmin={Boolean(isAdmin)}
+                isAdmin={true}
                 onDelete={id => setDeleteTarget(id)}
                 likedIds={likedIds}
                 likingId={likingId}

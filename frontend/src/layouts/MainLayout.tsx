@@ -11,19 +11,14 @@ import {
   Menu,
   X,
   GraduationCap,
-  LogOut,
-  LogIn,
-  UserPlus,
   Compass,
   ShoppingBag,
   LucideIcon,
   User,
   ChevronDown,
-  Shield,
   School2Icon,
   Timer,
   Globe,
-  MessagesSquare,
   Sun,
   Moon,
   Map,
@@ -38,10 +33,8 @@ import {
   Music2,
 } from 'lucide-react';
 import technotesLogo from '../assets/technotes_logo.png';
-import { useAuth } from '@/contexts/AuthContext';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
-import { flushPendingQuizSubmissions } from '@/utils/quizSubmissionSync';
-import { loadCommunityPage, prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
+import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
@@ -122,12 +115,6 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
               <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
               <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
-              <LinkItem
-                to="/community"
-                label="Community"
-                icon={MessagesSquare}
-                onPrefetch={() => void loadCommunityPage()}
-              />
             </div>
           </motion.div>
         )}
@@ -192,99 +179,9 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
   </NavLink>
 );
 
-const ProfileDropdown: React.FC = () => {
-  const { user, logout, isAdmin } = useAuth();
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const initials = useMemo(() => {
-    const name = user?.username || user?.email || 'U';
-    return name.charAt(0).toUpperCase();
-  }, [user]);
-
-  if (!user) return null;
-
-  return (
-    <div className="relative">
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 rounded-full hover:bg-coral-wash dark:hover:bg-gray-800 transition-all"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <motion.div
-          className="relative w-10 h-10 rounded-full bg-coral-accent flex items-center justify-center text-white font-bold shadow-lg"
-          whileHover={{ boxShadow: '0 0 20px rgba(255, 107, 122, 0.45)', scale: 1.1 }}
-        >
-          {initials}
-        </motion.div>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
-          <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-        </motion.div>
-      </motion.button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-            <motion.div
-              className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            >
-              <div className="bg-coral-accent p-6 text-white">
-                <p className="font-bold text-lg truncate">{user.username || 'Χρήστης'}</p>
-                <p className="text-sm opacity-80 truncate">{user.email}</p>
-              </div>
-              <div className="p-2 space-y-1">
-                <motion.button
-                  onClick={() => {
-                    navigate('/profile');
-                    setIsOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-coral-wash dark:hover:bg-gray-700 transition-all text-gray-700 dark:text-gray-200"
-                  whileHover={{ x: 5 }}
-                >
-                  <User size={18} className="text-coral-accent" />{' '}
-                  <span className="font-semibold">Προφίλ</span>
-                </motion.button>
-                {isAdmin && (
-                  <motion.button
-                    onClick={() => {
-                      navigate('/admin');
-                      setIsOpen(false);
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all text-purple-600 dark:text-purple-400"
-                    whileHover={{ x: 5 }}
-                  >
-                    <Shield size={18} /> <span className="font-semibold">Admin Dashboard</span>
-                  </motion.button>
-                )}
-                <motion.button
-                  onClick={async () => {
-                    await logout();
-                    setIsOpen(false);
-                    navigate('/login');
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-red-600"
-                  whileHover={{ x: 5 }}
-                >
-                  <LogOut size={18} /> <span className="font-semibold">Αποσύνδεση</span>
-                </motion.button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
 // --- Main Layout Component ---
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { user, logout, loading, isAdmin } = useAuth();
   const location = useLocation();
   const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -319,33 +216,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     setShowPanic(true);
   };
 
-  // Retry pending quiz submissions globally when connection is restored.
+  // Prefetch heavy routes after idle.
   useEffect(() => {
-    if (!user) return;
-
-    const sync = () => {
-      void flushPendingQuizSubmissions();
-    };
-
-    sync();
-    window.addEventListener('online', sync);
-    const intervalId = window.setInterval(sync, 30000);
-    return () => {
-      window.removeEventListener('online', sync);
-      window.clearInterval(intervalId);
-    };
-  }, [user]);
-
-  // Prefetch heavy private routes only when logged in (saves bandwidth/CPU for guests).
-  useEffect(() => {
-    if (!user) return;
     const run = () => prefetchCriticalPrivateRoutes();
     if ('requestIdleCallback' in window) {
       (window as any).requestIdleCallback(run, { timeout: 8000 });
     } else {
       window.setTimeout(run, 3000);
     }
-  }, [user]);
+  }, []);
 
   // Defer ChatWidget loading — μόνο σε δημόσιες αρχικές σελίδες (όχι quiz / flashcards / κ.λπ.).
   useEffect(() => {
@@ -430,27 +309,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
-              {loading ? (
-                <div className="flex gap-2 animate-pulse">
-                  <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-                </div>
-              ) : user ? (
-                <>
-                  <PrepMenu />
-                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
-                  <ProfileDropdown />
-                </>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <NavButton to="/login">Σύνδεση</NavButton>
-                  <NavLink
-                    to="/register"
-                    className="py-2 px-5 bg-coral-accent text-white rounded-xl font-bold hover:bg-coral-strong transition-all shadow-md"
-                  >
-                    Εγγραφή
-                  </NavLink>
-                </div>
-              )}
+              <PrepMenu />
             </div>
 
             {/* Mobile Menu Button */}
@@ -550,15 +409,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </button>
                 </div>
 
-                {user && (
-                  <div className="mb-6 p-4 bg-coral-wash dark:bg-gray-800 rounded-2xl border border-coral-accent/15 dark:border-gray-700">
-                    <p className="text-sm text-gray-500">Συνδεδεμένος ως:</p>
-                    <p className="font-bold text-gray-900 dark:text-white truncate">
-                      {user.username || user.email}
-                    </p>
-                  </div>
-                )}
-
                 <div className="space-y-2">
                   <div className="flex items-center justify-between px-4 py-2 mb-1">
                     <span className="text-sm font-semibold">Θέμα</span>
@@ -584,20 +434,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     <Heart size={20} aria-hidden /> Take a breath
                   </button>
 
-                  {user && (
-                    <>
-                      <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
-                      <MobileNavButton to="/profile" icon={User} onClick={closeMenu}>
-                        Προφίλ
-                      </MobileNavButton>
-                      {isAdmin && (
-                        <MobileNavButton to="/admin" icon={Shield} onClick={closeMenu}>
-                          Admin
-                        </MobileNavButton>
-                      )}
-                    </>
-                  )}
-
                   <MobileNavButton to="/" icon={Home} onClick={closeMenu}>
                     Αρχική
                   </MobileNavButton>
@@ -608,65 +444,36 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     Ατζέντα
                   </MobileNavButton>
 
-                  {user ? (
-                    <>
-                      <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
-                        GloGlossa
-                      </MobileNavButton>
-                      <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
-                        Quiz
-                      </MobileNavButton>
-                      <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
-                        Flashcards
-                      </MobileNavButton>
-                      <MobileNavButton to="/community" icon={MessagesSquare} onClick={closeMenu}>
-                        Community
-                      </MobileNavButton>
-                      <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
-                        Progress Tracker
-                      </MobileNavButton>
-                      <MobileNavButton to="/study-timer" icon={Timer} onClick={closeMenu}>
-                        Study Timer
-                      </MobileNavButton>
-                      <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
-                        Προσανατολισμός
-                      </MobileNavButton>
-                      <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
-                        Σχολές
-                      </MobileNavButton>
-                      <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
-                        Online Μαθήματα
-                      </MobileNavButton>
-                      <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
-                        Algorithms
-                      </MobileNavButton>
-                      <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
-                        Παλιά Θέματα
-                      </MobileNavButton>
-                      <div className="pt-4 mt-4 border-t border-coral-accent/15 dark:border-gray-800">
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            await logout();
-                            closeMenu();
-                            navigate('/login');
-                          }}
-                          className="w-full flex items-center gap-3 min-h-11 py-4 px-4 rounded-xl text-red-600 bg-red-50 font-bold touch-manipulation"
-                        >
-                          <LogOut size={20} /> Έξοδος
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <MobileNavButton to="/login" icon={LogIn} onClick={closeMenu}>
-                        Σύνδεση
-                      </MobileNavButton>
-                      <MobileNavButton to="/register" icon={UserPlus} onClick={closeMenu}>
-                        Εγγραφή
-                      </MobileNavButton>
-                    </>
-                  )}
+                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
+                    GloGlossa
+                  </MobileNavButton>
+                  <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
+                    Quiz
+                  </MobileNavButton>
+                  <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
+                    Flashcards
+                  </MobileNavButton>
+                  <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
+                    Progress Tracker
+                  </MobileNavButton>
+                  <MobileNavButton to="/study-timer" icon={Timer} onClick={closeMenu}>
+                    Study Timer
+                  </MobileNavButton>
+                  <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
+                    Προσανατολισμός
+                  </MobileNavButton>
+                  <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
+                    Σχολές
+                  </MobileNavButton>
+                  <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
+                    Online Μαθήματα
+                  </MobileNavButton>
+                  <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
+                    Algorithms
+                  </MobileNavButton>
+                  <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
+                    Παλιά Θέματα
+                  </MobileNavButton>
                 </div>
               </div>
             </motion.div>

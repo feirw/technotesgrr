@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
+import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrlCandidates } from '@/utils/backendUrl';
 
 interface LeaderboardEntry {
   nickname: string;
@@ -12,13 +14,29 @@ const LeaderboardPage: React.FC = () => {
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
+      let lastError: unknown = null;
       try {
-        const response = await fetch('/api/leaderboard');
-        const data = await response.json();
-        setLeaderboard(data.leaderboard || []);
+        for (const base of getBackendUrlCandidates()) {
+          try {
+            const data = await apiFetch<{ leaderboard?: LeaderboardEntry[] }>(`${base}/api/leaderboard`, {
+              dedupeKey: `leaderboard:${base}`,
+              cacheKey: `leaderboard:${base}`,
+              cacheTtlMs: 30_000,
+              timeoutMs: 20_000,
+              retries: 1,
+            });
+            setLeaderboard(Array.isArray(data?.leaderboard) ? data.leaderboard : []);
+            return;
+          } catch (error) {
+            lastError = error;
+          }
+        }
       } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        lastError = error;
       } finally {
+        if (lastError) {
+          console.error('Error fetching leaderboard:', lastError);
+        }
         setLoading(false);
       }
     };

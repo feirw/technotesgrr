@@ -4,12 +4,12 @@ import json
 import logging
 import queue
 import threading
-from fastapi import FastAPI, HTTPException, Depends, Query, Response
+from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, EmailStr, Field
+from typing import Any, Literal, Optional
 import os
 import time
 import smtplib
@@ -26,7 +26,7 @@ INTERNAL_ERROR_DETAIL = "Προέκυψε εσωτερικό σφάλμα. Δο�
 
 # ── AI Service ────────────────────────────────────────────────────────────────
 try:
-    from ai_service import get_ai_response, iter_ai_response_stream
+    from ai_service import get_ai_response, iter_ai_response_stream, user_facing_chat_error
 except Exception:
 
     def get_ai_response(msg: str, session_id: str = "default") -> str:
@@ -35,6 +35,9 @@ except Exception:
     def iter_ai_response_stream(msg: str, session_id: str = "default"):
         yield "AI Service not configured."
         return
+
+    def user_facing_chat_error(_error_str: str) -> str:
+        return "Δεν μπόρεσα να επεξεργαστώ το αίτημά σου. Δοκίμασε ξανά σε λίγο."
 
 # ── Database ──────────────────────────────────────────────────────────────────
 from database import (
@@ -49,33 +52,25 @@ from database import (
     get_flashcards_page,
     get_quiz_by_id,
     save_contact_submission,
-    get_admin_stats,
-    get_admin_users,
-    is_user_admin,
-    save_career_orientation_result,
-    get_career_orientation_result,
-    create_community_post,
-    get_community_posts,
-    create_community_reply,
-    delete_community_post,
-    get_username_by_user_id,
     get_category_lists,
+    db_ping,
 )
-
-# ── Auth dependency ───────────────────────────────────────────────────────────
-from deps import get_current_user
-
 
 # ── FIX #1: Replace deprecated @app.on_event with lifespan ───────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Runs once at startup
+    allow_without_db = os.getenv("ALLOW_START_WITHOUT_DB", "").strip().lower() in {"1", "true", "yes"}
     try:
         init_database()
+        app.state.db_ready = True
         print("✅ Backend connected to Supabase successfully")
     except Exception as e:
-        # Keep API process alive so health/debug endpoints can still respond.
-        print(f"❌ Backend startup warning: {e}")
+        app.state.db_ready = False
+        logger.exception("Backend startup failed during DB init")
+        if not allow_without_db:
+            raise
+        print(f"❌ Backend startup warning (continuing due to ALLOW_START_WITHOUT_DB): {e}")
     yield
     close_db_pool()
     print("👋 Backend shutting down")
@@ -111,37 +106,30 @@ app.add_middleware(GZipMiddleware, minimum_size=1024)
 # ── Pydantic Models ───────────────────────────────────────────────────────────
 
 class QuizSubmission(BaseModel):
-    nickname: str
-    question_id: str
-    selected_answer: int
+    nickname: str = Field(min_length=1, max_length=60)
+    question_id: str = Field(min_length=1, max_length=128)
+    selected_answer: int = Field(ge=0, le=20)
 
 class ContactForm(BaseModel):
-    firstName: str
-    lastName: str
-    email: str
-    message: str
+    firstName: str = Field(min_length=1, max_length=80)
+    lastName: str = Field(default="", max_length=80)
+    email: EmailStr
+    message: str = Field(min_length=1, max_length=5000)
 
 class ChatMessage(BaseModel):
-    message: str
-    session_id: Optional[str] = "default"
+    message: str = Field(min_length=1, max_length=2000)
+    session_id: Optional[str] = Field(default="default", max_length=120)
 
 class CareerOrientationSubmission(BaseModel):
-    answers: dict
-    results: dict
+    answers: dict[str, Any] = Field(min_length=1, max_length=500)
+    results: dict[str, Any] = Field(min_length=1, max_length=100)
 
 class WebVitalEvent(BaseModel):
-    name: str
-    value: float
-    rating: str
-    path: Optional[str] = None
-    ts: Optional[int] = None
-
-
-class CommunityPostCreate(BaseModel):
-    content: str
-
-class CommunityReplyCreate(BaseModel):
-    content: str
+    name: Literal["LCP", "CLS", "INP", "FCP", "TTFB"]
+    value: float = Field(ge=0)
+    rating: Literal["good", "needs-improvement", "poor"]
+    path: Optional[str] = Field(default=None, max_length=2048)
+    ts: Optional[int] = Field(default=None, ge=0)
 
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
@@ -188,7 +176,23 @@ Email: {email}
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "healthy", "message": "TechNotesGR API is running"}
+    return {
+        "status": "healthy",
+        "message": "TechNotesGR API is running",
+        "db_ready": bool(getattr(app.state, "db_ready", False)),
+    }
+
+
+@app.get("/api/ready")
+def readiness_check():
+    try:
+        db_ping()
+        app.state.db_ready = True
+        return {"status": "ready"}
+    except Exception:
+        app.state.db_ready = False
+        logger.exception("readiness_check failed")
+        raise HTTPException(status_code=503, detail="Database is not ready.")
 
 
 # ── Chat ──────────────────────────────────────────────────────────────────────
@@ -234,7 +238,7 @@ async def chat_with_bot_stream(chat_data: ChatMessage):
             q.put(("d", None))
         except Exception as e:
             logger.exception("chat stream worker failed")
-            q.put(("e", str(e)))
+            q.put(("e", user_facing_chat_error(str(e))))
 
     threading.Thread(target=worker, daemon=True).start()
 
@@ -276,16 +280,15 @@ async def chat_with_bot_stream(chat_data: ChatMessage):
 def get_quiz_questions(
     response: Response,
     chapter: Optional[str] = None,
-    limit: int = Query(default=200, ge=1, le=500),
+    limit: int = Query(default=500, ge=1, le=8000),
     offset: int = Query(default=0, ge=0),
 ):
     try:
-        paginated, total = get_quizzes_page(limit=limit, offset=offset, chapter=chapter)
-        has_more = offset + limit < total
+        paginated, has_more = get_quizzes_page(limit=limit, offset=offset, chapter=chapter)
         response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
         return {
             "questions": paginated,
-            "total": total,
+            "total": None,
             "limit": limit,
             "offset": offset,
             "has_more": has_more,
@@ -307,7 +310,7 @@ def get_quiz_questions_by_chapter(chapter: str, response: Response):
 
 
 @app.post("/api/quiz/submit")
-def submit_quiz_answer(submission: QuizSubmission, user=Depends(get_current_user)):
+def submit_quiz_answer(submission: QuizSubmission):
     try:
         question = get_quiz_by_id(submission.question_id)
         if not question:
@@ -364,14 +367,14 @@ def get_flashcards(
     offset: int = Query(default=0, ge=0),
 ):
     try:
-        flashcards, total = get_flashcards_page(limit=limit, offset=offset, chapter=chapter)
+        flashcards, has_more = get_flashcards_page(limit=limit, offset=offset, chapter=chapter)
         response.headers["Cache-Control"] = "public, max-age=30, stale-while-revalidate=120"
         return {
             "flashcards": flashcards,
-            "total": total,
+            "total": None,
             "limit": limit,
             "offset": offset,
-            "has_more": offset + limit < total,
+            "has_more": has_more,
         }
     except Exception:
         logger.exception("get_flashcards failed")
@@ -460,7 +463,6 @@ def contact_form(contact_data: ContactForm):
 @app.post("/api/career-orientation/submit")
 def submit_career_orientation(
     submission: CareerOrientationSubmission,
-    user=Depends(get_current_user),
 ):
     if not submission.answers or not submission.results:
         raise HTTPException(
@@ -468,13 +470,10 @@ def submit_career_orientation(
             detail="Missing required data: answers and results are required",
         )
     try:
-        result_id = save_career_orientation_result(
-            user_id=str(user.id),
-            answers=submission.answers,
-            results=submission.results,
-        )
+        # Public mode: endpoint remains available without per-user persistence.
+        result_id = None
         return {
-            "message": "Career orientation results saved successfully",
+            "message": "Career orientation results processed (public mode, no account persistence).",
             "result_id": result_id,
             "saved_at": datetime.now().isoformat(),
         }
@@ -486,12 +485,9 @@ def submit_career_orientation(
 
 
 @app.get("/api/career-orientation/result")
-def get_career_orientation_result_endpoint(user=Depends(get_current_user)):
+def get_career_orientation_result_endpoint():
     try:
-        result = get_career_orientation_result(str(user.id))
-        if result:
-            return {"found": True, "result": result}
-        return {"found": False, "message": "No career orientation results found for this user"}
+        return {"found": False, "message": "No stored career-orientation result in public mode."}
     except Exception:
         logger.exception("get_career_orientation_result failed")
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
@@ -519,139 +515,6 @@ def ingest_web_vitals(metric: WebVitalEvent):
         return {"ok": True}
     except Exception:
         logger.exception("ingest_web_vitals failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-
-# ── Community Forum ────────────────────────────────────────────────────────────
-
-@app.get("/api/community/posts")
-def list_community_posts(
-    limit: int = Query(default=30, ge=1, le=100),
-    offset: int = Query(default=0, ge=0),
-    user=Depends(get_current_user),
-):
-    try:
-        posts, has_more = get_community_posts(limit=limit, offset=offset)
-        return {
-            "posts": posts,
-            "total": None,
-            "limit": limit,
-            "offset": offset,
-            "has_more": has_more,
-        }
-    except Exception:
-        logger.exception("list_community_posts failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-
-@app.post("/api/community/posts")
-def add_community_post(payload: CommunityPostCreate, user=Depends(get_current_user)):
-    content = (payload.content or "").strip()
-    if not content:
-        raise HTTPException(status_code=400, detail="Το κείμενο του post είναι υποχρεωτικό.")
-    if len(content) > 2000:
-        raise HTTPException(status_code=413, detail="Το post είναι πολύ μεγάλο (max 2000 χαρακτήρες).")
-    try:
-        # Prefer profile username so the forum always shows each user's chosen name.
-        username = (
-            get_username_by_user_id(str(user.id))
-            or getattr(user, "user_metadata", {}).get("username")
-            or getattr(user, "email", "").split("@")[0]
-            or "Student"
-        )
-        post = create_community_post(
-            user_id=str(user.id),
-            username=username,
-            content=content,
-        )
-        return {"post": post}
-    except Exception:
-        logger.exception("add_community_post failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-@app.post("/api/community/posts/{post_id}/replies")
-def add_community_reply(post_id: int, payload: CommunityReplyCreate, user=Depends(get_current_user)):
-    content = (payload.content or "").strip()
-    if not content:
-        raise HTTPException(status_code=400, detail="Το κείμενο της απάντησης είναι υποχρεωτικό.")
-    if len(content) > 1500:
-        raise HTTPException(status_code=413, detail="Η απάντηση είναι πολύ μεγάλη (max 1500 χαρακτήρες).")
-    try:
-        username = (
-            get_username_by_user_id(str(user.id))
-            or getattr(user, "user_metadata", {}).get("username")
-            or getattr(user, "email", "").split("@")[0]
-            or "Student"
-        )
-        reply = create_community_reply(
-            post_id=post_id,
-            user_id=str(user.id),
-            username=username,
-            content=content,
-        )
-        return {"reply": reply}
-    except ValueError as e:
-        if str(e) == "POST_NOT_FOUND":
-            raise HTTPException(status_code=404, detail="Το post δεν βρέθηκε.")
-        raise HTTPException(status_code=400, detail="Μη έγκυρο αίτημα.")
-    except Exception:
-        logger.exception("add_community_reply failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-@app.delete("/api/community/posts/{post_id}")
-def remove_community_post(post_id: int, user=Depends(get_current_user)):
-    try:
-        deleted = delete_community_post(
-            post_id=post_id,
-            requester_user_id=str(user.id),
-            requester_is_admin=is_user_admin(str(user.id)),
-        )
-        if not deleted:
-            raise HTTPException(status_code=404, detail="Το post δεν βρέθηκε.")
-        return {"ok": True, "deleted_id": post_id}
-    except PermissionError:
-        raise HTTPException(status_code=403, detail="Δεν έχεις δικαίωμα να διαγράψεις αυτό το post.")
-    except HTTPException:
-        raise
-    except Exception:
-        logger.exception("remove_community_post failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-
-# ── Admin ─────────────────────────────────────────────────────────────────────
-
-@app.get("/api/admin/dashboard")
-def get_dashboard_stats(user=Depends(get_current_user)):
-    try:
-        if not is_user_admin(str(user.id)):
-            raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
-        return get_admin_stats()
-    except HTTPException:
-        raise
-    except Exception:
-        logger.exception("get_dashboard_stats failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-@app.get("/api/admin/users")
-def get_admin_users_endpoint(
-    limit: int = Query(default=50, ge=1, le=200),
-    offset: int = Query(default=0, ge=0),
-    user=Depends(get_current_user),
-):
-    try:
-        if not is_user_admin(str(user.id)):
-            raise HTTPException(status_code=403, detail="Access Forbidden: Admins only.")
-        users, total = get_admin_users(limit=limit, offset=offset)
-        return {
-            "users": users,
-            "total": total,
-            "limit": limit,
-            "offset": offset,
-        }
-    except HTTPException:
-        raise
-    except Exception:
-        logger.exception("get_admin_users_endpoint failed")
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 

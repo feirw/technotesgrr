@@ -15,8 +15,7 @@ import {
   TrendingUp,
   Filter,
 } from 'lucide-react';
-import { apiFetch } from '@/utils/apiClient';
-import { getBackendUrl } from '@/utils/backendUrl';
+import { fetchFlashcardsFromBackend } from '@/utils/flashcardsFetch';
 
 // --- Types & Interfaces ---
 
@@ -25,10 +24,6 @@ interface RawFlashcard {
   category: string;
   question: string;
   answer: string;
-}
-
-interface BackendFlashcardsResponse {
-  flashcards: RawFlashcard[];
 }
 
 interface FlashcardItem {
@@ -63,7 +58,6 @@ interface FlashcardProgress {
 
 // --- Constants ---
 
-const BACKEND_URL = getBackendUrl();
 const BRAND = '#ff6b7a';
 const STORAGE_KEY = 'flashcardProgress';
 const FLASHCARD_CACHE_KEY = 'flashcardData:v1';
@@ -117,14 +111,7 @@ const Flashcards: React.FC = () => {
         setLoading(false);
       }
 
-      const flashcardsData = await apiFetch<BackendFlashcardsResponse>(
-        `${BACKEND_URL}/api/flashcards`,
-        {
-          dedupeKey: 'flashcards:all',
-          cacheTtlMs: 5 * 60 * 1000,
-          cacheKey: 'flashcards:all',
-        }
-      );
+      const flashcardsData = await fetchFlashcardsFromBackend();
       const flashcards = flashcardsData.flashcards || [];
 
       const byCategory = flashcards.reduce<Record<string, RawFlashcard[]>>((acc, item) => {

@@ -24,8 +24,6 @@ import {
   ChevronRight,
   ChevronLeft,
 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/utils/supabaseClient';
 import { getBackendUrl } from '@/utils/backendUrl';
 import { apiFetch } from '@/utils/apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -499,19 +497,6 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
 // ─────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'prosanatolismos_v3';
 const ALL_IDS = Object.keys(QUESTIONS).map(Number);
-
-/** JWT για API — refresh αν λείπει token (restore καρτέλας). */
-async function getAccessToken(): Promise<string> {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (session?.access_token) return session.access_token;
-  const { data, error } = await supabase.auth.refreshSession();
-  if (error || !data.session?.access_token) {
-    throw new Error('Δεν υπάρχει ενεργή σύνδεση.');
-  }
-  return data.session.access_token;
-}
 const RANK_LABELS = ['🥇 Κορυφαία κλίση', '🥈 2η κλίση', '🥉 3η κλίση'];
 
 /** JSON/API συχνά επιστρέφουν "4" αντί για 4 — το παλιό `typeof === 'number'` έκανε όλα 3 → 0% παντού. */
@@ -598,7 +583,6 @@ function computeResults(answers: Record<number, number>): CalculationResult {
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────
 const Prosanatolismospage: React.FC = () => {
-  const { user } = useAuth();
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [results, setResults] = useState<CalculationResult | null>(null);
   const [error, setError] = useState('');
@@ -661,26 +645,17 @@ const Prosanatolismospage: React.FC = () => {
 
   useEffect(() => {
     const loadLatestSavedResult = async () => {
-      if (!user) return;
       if (Object.keys(answers).length > 0) return;
 
       setIsHydrating(true);
       try {
-        let token: string;
-        try {
-          token = await getAccessToken();
-        } catch {
-          return;
-        }
-
         const response = await apiFetch<{ found: boolean; result?: SavedResultApiShape }>(
           `${getBackendUrl()}/api/career-orientation/result`,
           {
             method: 'GET',
-            headers: { Authorization: `Bearer ${token}` },
             timeoutMs: 8000,
             retries: 1,
-            dedupeKey: `career-orientation-result:${user.id}`,
+            dedupeKey: 'career-orientation-result:public',
           }
         );
 
@@ -708,7 +683,7 @@ const Prosanatolismospage: React.FC = () => {
     };
 
     loadLatestSavedResult();
-  }, [user, answers]);
+  }, [answers]);
 
   const handleChange = useCallback((qId: number, score: number) => {
     if (score < 1 || score > 5) return;
@@ -731,13 +706,11 @@ const Prosanatolismospage: React.FC = () => {
 
   const saveToBackend = useCallback(
     async (calc: CalculationResult) => {
-      if (!user) return;
       setIsSaving(true);
       try {
-        const token = await getAccessToken();
         await apiFetch<{ message: string }>(`${getBackendUrl()}/api/career-orientation/submit`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             answers,
             results: {
@@ -770,7 +743,7 @@ const Prosanatolismospage: React.FC = () => {
         if (isMounted.current) setIsSaving(false);
       }
     },
-    [user, answers]
+    [answers]
   );
 
   const handleCalculate = useCallback(async () => {
