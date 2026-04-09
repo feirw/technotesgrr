@@ -34,7 +34,7 @@ import {
   Megaphone,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
-import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
+import { prefetchPrivateRouteChunks, shouldShowChatWidgetOnPath } from '@/routes/routes';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
@@ -65,7 +65,7 @@ interface MainLayoutProps {
 
 // --- Components ---
 
-const PrepMenu: React.FC = () => {
+const PrepMenu: React.FC<{ onMenuInteract?: () => void }> = ({ onMenuInteract }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -89,10 +89,17 @@ const PrepMenu: React.FC = () => {
   return (
     <div
       className="relative"
-      onMouseEnter={() => setOpen(true)}
+      onMouseEnter={() => {
+        onMenuInteract?.();
+        setOpen(true);
+      }}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light inline-flex items-center gap-1">
+      <button
+        type="button"
+        className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light inline-flex items-center gap-1"
+        onFocus={() => onMenuInteract?.()}
+      >
         Μάθηση
         <ChevronDown className="w-4 h-4" />
       </button>
@@ -216,14 +223,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     setShowPanic(true);
   };
 
-  // Prefetch heavy routes after idle.
-  useEffect(() => {
-    const run = () => prefetchCriticalPrivateRoutes();
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(run, { timeout: 8000 });
-    } else {
-      window.setTimeout(run, 3000);
-    }
+  const routeChunksPrefetched = useRef(false);
+  const onPrepMenuInteract = useCallback(() => {
+    if (routeChunksPrefetched.current) return;
+    routeChunksPrefetched.current = true;
+    prefetchPrivateRouteChunks();
   }, []);
 
   // Defer ChatWidget loading — μόνο σε δημόσιες αρχικές σελίδες (όχι quiz / flashcards / κ.λπ.).
@@ -310,7 +314,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
-              <PrepMenu />
+              <PrepMenu onMenuInteract={onPrepMenuInteract} />
             </div>
 
             {/* Mobile Menu Button */}

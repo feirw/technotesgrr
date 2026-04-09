@@ -36,17 +36,13 @@ export type RouteConfig = {
   children?: RouteConfig[];
 };
 
-/** Μόνο τα πιο συχνά routes — λιγότερο parse/main thread μετά το login (κοινότητα/progress κ.λπ. από hover). */
-export const prefetchCriticalPrivateRoutes = () => {
+/**
+ * Φόρτωση μόνο των JS chunks (quiz/flashcards) — χωρίς δίκτυο προς API.
+ * Καλείται από hover στο μενού «Μάθηση» ώστε να μην κλέβει bandwidth από LCP στην αρχική.
+ */
+export const prefetchPrivateRouteChunks = () => {
   void loadQuizPage();
   void loadFlashcardsPage();
-  // Ζέσταμα JSON quiz/flashcards ώστε η πρώτη επίσκεψη στις σελίδες να είναι πιο γρήγορη.
-  void import('@/utils/quizUtils').then((m) => {
-    void m.fetchAllQuizzes().catch(() => {});
-  });
-  void import('@/utils/flashcardsFetch').then((m) => {
-    void m.fetchFlashcardsFromBackend().catch(() => {});
-  });
 };
 
 /** Chat widget: μόνο δημόσιες «εισόδου» / αρχικές σελίδες — όχι quiz, flashcards, κ.λπ. */

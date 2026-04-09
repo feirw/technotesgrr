@@ -33,7 +33,10 @@ interface ContactFormState {
 }
 
 interface HeroImage {
+  /** JPEG fallback (πάντα) */
   src: string;
+  /** WebP από `prebuild` (scripts/optimize-hero-images.mjs) — αν λείπει, φορτώνει μόνο το JPG */
+  webp: string;
   alt: string;
   delay: number;
   rotation: number;
@@ -67,10 +70,34 @@ interface FaqItem {
 // ---------- MOCK DATA ----------
 
 const heroImages: HeroImage[] = [
-  { src: '/images/panellinies.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
-  { src: '/images/grades.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
-  { src: '/images/cat.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
-  { src: '/images/diav.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
+  {
+    src: '/images/panellinies.jpg',
+    webp: '/images/panellinies.webp',
+    alt: 'Algorithm flow chart',
+    delay: 0.1,
+    rotation: 3,
+  },
+  {
+    src: '/images/grades.jpg',
+    webp: '/images/grades.webp',
+    alt: 'Student using quiz',
+    delay: 0.3,
+    rotation: -4,
+  },
+  {
+    src: '/images/cat.jpg',
+    webp: '/images/cat.webp',
+    alt: 'Flashcards on screen',
+    delay: 0.5,
+    rotation: 5,
+  },
+  {
+    src: '/images/diav.jpg',
+    webp: '/images/diav.webp',
+    alt: 'Retro terminal interface',
+    delay: 0.7,
+    rotation: -2,
+  },
 ];
 
 const reviewsData: Review[] = [
@@ -225,6 +252,7 @@ const stagger = {
 
 interface AnimatedImageBoxProps {
   src: string;
+  webp: string;
   alt: string;
   delay: number;
   rotation: number;
@@ -235,6 +263,7 @@ interface AnimatedImageBoxProps {
 
 const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
   src,
+  webp,
   alt,
   delay,
   rotation,
@@ -259,17 +288,21 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
       boxShadow: '0 15px 40px rgba(255, 107, 122, 0.38)',
     }}
   >
-    <img
-      src={src}
-      alt={alt}
-      width={800}
-      height={600}
-      loading={loading}
-      decoding="async"
-      fetchPriority={fetchPriority}
-      className="w-full h-full object-cover rounded-md"
-      style={{ filter: 'grayscale(0.1) brightness(1.05)' }}
-    />
+    <picture className="block w-full h-full">
+      <source type="image/webp" srcSet={webp} />
+      <img
+        src={src}
+        alt={alt}
+        width={800}
+        height={600}
+        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 22vw"
+        loading={loading}
+        decoding="async"
+        fetchPriority={fetchPriority}
+        className="w-full h-full object-cover rounded-md"
+        style={{ filter: 'grayscale(0.1) brightness(1.05)' }}
+      />
+    </picture>
   </motion.div>
 );
 
@@ -512,18 +545,21 @@ const HeartsRain: React.FC<{ count?: number }> = ({ count = 14 }) => {
             filter: 'drop-shadow(0 2px 2px rgba(255, 107, 122, 0.36))',
           }}
         >
-          <img
-            src="/images/logo.png"
-            alt=""
-            width={48}
-            height={48}
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-            className="w-full h-full object-contain select-none"
-            draggable={false}
-            style={{ transform: `rotate(${h.rotate})` }}
-          />
+          <picture>
+            <source type="image/webp" srcSet="/images/logo-rain.webp" />
+            <img
+              src="/images/logo.png"
+              alt=""
+              width={48}
+              height={48}
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              className="w-full h-full object-contain select-none"
+              draggable={false}
+              style={{ transform: `rotate(${h.rotate})` }}
+            />
+          </picture>
         </span>
       ))}
 
@@ -731,6 +767,7 @@ const HomePage: React.FC = () => {
                 <AnimatedImageBox
                   key={index}
                   src={image.src}
+                  webp={image.webp}
                   alt={image.alt}
                   delay={image.delay}
                   rotation={image.rotation}

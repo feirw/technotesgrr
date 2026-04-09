@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>technotesgr — Γράψε 100 στην Πληροφορική</title>
 
+    <!-- API host: νωρίς handshake, λιγότερη καθυστέρηση στα πρώτα /api όταν ο χρήστης πάει σε quiz κ.λπ. -->
+    <link rel="dns-prefetch" href="https://technotesgrr.onrender.com" />
+    <link rel="preconnect" href="https://technotesgrr.onrender.com" crossorigin />
+
+    <!-- LCP hero (αρχική): δημιουργείται στο prebuild ως WebP -->
+    <link rel="preload" as="image" type="image/webp" href="/images/panellinies.webp" fetchpriority="high" />
+
     <!-- ?v= χαλάει το aggressive cache του browser όταν αλλάζεις εικονίδιο -->
     <link rel="icon" href="/favicon.ico?v=3" type="image/x-icon" sizes="any" />
     <link rel="icon" href="/favicon.png?v=3" type="image/png" sizes="32x32" />
@@ -67,7 +74,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="/env.js"></script>
+    <script src="/env.js" defer></script>
     <script type="module" src="/src/index.tsx"></script>
     <!-- <script src="https://app.embed.im/snow.js" defer></script> -->
   </body>
