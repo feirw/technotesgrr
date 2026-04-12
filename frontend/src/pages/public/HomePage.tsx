@@ -229,6 +229,27 @@ const stagger = {
   },
 };
 
+const REVIEW_CAROUSEL_INTERVAL_MS = 6000;
+
+/** Διεύθυνση: +1 = επόμενη κριτική (μπαίνει από δεξιά), -1 = προηγούμενη (από αριστερά). */
+const reviewCarouselVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 64 : -64,
+    opacity: 0,
+    scale: 0.97,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -64 : 64,
+    opacity: 0,
+    scale: 0.97,
+  }),
+};
+
 // ---------- Sub-Components ----------
 
 interface AnimatedImageBoxProps {
@@ -600,6 +621,30 @@ const HomePage: React.FC = () => {
   const successId = useId();
   const errorId = useId();
 
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const [reviewDirection, setReviewDirection] = useState(1);
+
+  const reviewCount = reviewsData.length;
+  const goNextReview = useCallback(() => {
+    setReviewDirection(1);
+    setReviewIndex((i) => (i + 1) % reviewCount);
+  }, [reviewCount]);
+  const goToReview = useCallback(
+    (target: number) => {
+      if (target === reviewIndex || target < 0 || target >= reviewCount) return;
+      const forward = (target - reviewIndex + reviewCount) % reviewCount;
+      const backward = (reviewIndex - target + reviewCount) % reviewCount;
+      setReviewDirection(forward <= backward ? 1 : -1);
+      setReviewIndex(target);
+    },
+    [reviewIndex, reviewCount]
+  );
+
+  useEffect(() => {
+    const id = window.setInterval(goNextReview, REVIEW_CAROUSEL_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [goNextReview]);
+
   // (Panic Button moved to the top navbar in MainLayout)
 
   // 1. Διόρθωση Contact Form: Καθαρισμός error όταν πληκτρολογεί
@@ -787,31 +832,63 @@ const HomePage: React.FC = () => {
           className="bg-[#ff8f8e]/[0.06] dark:bg-[#ff6b7a]/[0.08]"
         >
           <motion.div
-            className="max-w-5xl mx-auto space-y-6 sm:space-y-8"
+            className="max-w-2xl mx-auto px-2 sm:px-0"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            {reviewsData.map((review, idx) => (
-              <motion.div
-                key={idx}
-                className="mb-8 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50"
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ delay: idx * 0.1, duration: 0.6 }}
-                whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(255, 107, 122, 0.24)' }}
-              >
-                <StarRating value={review.rating} />
-                <p className="text-gray-700 dark:text-gray-300 mt-4 text-base sm:text-lg leading-relaxed italic">
-                  "{review.description}"
-                </p>
-                <p className="text-[#ff6b7a] dark:text-[#ffb0a4] font-bold mt-4 text-right">
-                  — {review.name}
-                </p>
-              </motion.div>
-            ))}
+            <div className="relative pt-3 pb-1">
+              {/* «Δεύτερη κάρτα» πίσω για αίσθηση στοίβας */}
+              <div
+                className="pointer-events-none absolute left-3 right-3 top-5 bottom-0 rounded-3xl bg-white/70 dark:bg-gray-800/55 border border-[#ff8f8e]/20 dark:border-gray-600/50 shadow-lg scale-[0.97] -z-10"
+                aria-hidden
+              />
+              <div className="relative min-h-[280px] sm:min-h-[260px] md:min-h-[230px]">
+                <AnimatePresence initial={false} custom={reviewDirection} mode="wait">
+                  <motion.div
+                    key={reviewIndex}
+                    custom={reviewDirection}
+                    variants={reviewCarouselVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-0 flex flex-col justify-center rounded-3xl border-2 border-[#ff8f8e]/35 dark:border-[#ff6b7a]/25 bg-white dark:bg-gray-800 p-8 sm:p-10 shadow-[0_20px_50px_-12px_rgba(255,107,122,0.28),0_8px_24px_-8px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] ring-1 ring-black/5 dark:ring-white/10"
+                  >
+                    <div
+                      className="absolute top-0 left-6 right-6 h-1 rounded-full bg-gradient-to-r from-transparent via-[#ff8f8e] to-transparent opacity-80"
+                      aria-hidden
+                    />
+                    <StarRating value={reviewsData[reviewIndex].rating} />
+                    <p className="text-gray-700 dark:text-gray-300 mt-5 text-base sm:text-lg leading-relaxed italic">
+                      "{reviewsData[reviewIndex].description}"
+                    </p>
+                    <p className="text-[#ff6b7a] dark:text-[#ffb0a4] font-bold mt-5 text-right">
+                      — {reviewsData[reviewIndex].name}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            <div className="flex justify-center items-center gap-2 mt-10" role="tablist" aria-label="Επιλογή κριτικής">
+              {reviewsData.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  role="tab"
+                  aria-selected={idx === reviewIndex}
+                  aria-label={`Κριτική ${idx + 1} από ${reviewCount}`}
+                  onClick={() => goToReview(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    idx === reviewIndex
+                      ? 'w-8 bg-[#ff6b7a] dark:bg-[#ffb0a4]'
+                      : 'w-2.5 bg-gray-300 dark:bg-gray-600 hover:bg-[#ff8f8e]/80'
+                  }`}
+                />
+              ))}
+            </div>
           </motion.div>
         </Section>
 

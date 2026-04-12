@@ -154,10 +154,10 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
     to={to}
     onClick={onClick}
     className={({ isActive }) =>
-      `relative block w-full text-left min-h-11 py-4 px-4 rounded-xl transition-all touch-manipulation ${
+      `relative block w-full text-left min-h-11 py-3.5 px-4 rounded-xl transition-all touch-manipulation border border-transparent ${
         isActive
-          ? 'text-white'
-          : 'text-gray-700 dark:text-gray-200 hover:bg-coral-wash dark:hover:bg-gray-800'
+          ? 'border-coral-accent/25 shadow-sm'
+          : 'text-gray-700 dark:text-gray-200 hover:bg-rose-50/90 dark:hover:bg-gray-800/90'
       }`
     }
   >
@@ -165,14 +165,20 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: I
       <>
         {isActive && (
           <motion.div
-            className="absolute inset-0 rounded-xl bg-coral-accent"
+            className="absolute inset-0 rounded-xl bg-rose-50 dark:bg-[rgba(255,107,122,0.14)] border border-coral-accent/20"
             layoutId="mobileActiveNav"
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 32 }}
           />
         )}
         <div className="flex items-center gap-3 relative z-10">
-          <Icon className="w-5 h-5" />
-          <span className="font-semibold">{children}</span>
+          <Icon
+            className={`w-5 h-5 shrink-0 ${isActive ? 'text-coral-accent dark:text-coral-light' : 'text-gray-500 dark:text-gray-400'}`}
+          />
+          <span
+            className={`font-semibold ${isActive ? 'text-slate-800 dark:text-gray-50' : ''}`}
+          >
+            {children}
+          </span>
         </div>
       </>
     )}
@@ -188,7 +194,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
   const [shouldLoadChat, setShouldLoadChat] = useState(false);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
-  const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -219,11 +224,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   // Prefetch heavy routes after idle.
   useEffect(() => {
     const run = () => prefetchCriticalPrivateRoutes();
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(run, { timeout: 8000 });
-    } else {
-      window.setTimeout(run, 3000);
+    if (typeof window.requestIdleCallback === 'function') {
+      const idleId = window.requestIdleCallback(run, { timeout: 8000 });
+      return () => window.cancelIdleCallback(idleId);
     }
+    const t = window.setTimeout(run, 3000);
+    return () => clearTimeout(t);
   }, []);
 
   // Defer ChatWidget loading — μόνο σε δημόσιες αρχικές σελίδες (όχι quiz / flashcards / κ.λπ.).
@@ -391,7 +397,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               role="dialog"
               aria-modal="true"
               aria-label="Κύριο μενού"
-              className="lg:hidden fixed top-0 right-0 h-[100dvh] max-h-[100dvh] w-[min(100vw-2.5rem,20rem)] max-w-sm bg-white dark:bg-gray-900 z-[90] shadow-2xl overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]"
+              className="lg:hidden fixed top-0 right-0 h-[100dvh] max-h-[100dvh] w-[min(100vw-2.5rem,20rem)] max-w-sm bg-white dark:bg-gray-900 z-[90] shadow-2xl overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] border-l-[3px] border-blue-500/85 dark:border-blue-400/70"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -455,14 +461,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     Quiz
                   </MobileNavButton>
                   <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
-                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
-                    GloGlossa
-                  </MobileNavButton>
                     Flashcards
                   </MobileNavButton>
                   <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
-
-                    Progress Tracker
+                    Tracker ύλης
+                  </MobileNavButton>
+                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
+                    GloGlossa
                   </MobileNavButton>
                   <MobileNavButton to="/study-timer" icon={Timer} onClick={closeMenu}>
                     Study Timer
