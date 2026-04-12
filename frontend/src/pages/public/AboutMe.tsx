@@ -394,7 +394,7 @@ const AboutPage: React.FC = () => {
                 className="text-gray-700 dark:text-gray-300 leading-relaxed text-base sm:text-lg"
                 variants={fadeIn}
               >
-                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση.Στείλε μου στο
+                Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση. Στείλε μου στο
                 Instagram μήνυμα αν θέλεις να μάθεις περισσότερα.
                 <a
                   href="https://www.instagram.com/technotesgr/"

@@ -448,16 +448,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     Ατζέντα
                   </MobileNavButton>
 
-                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
-                    GloGlossa
+                  <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
+                    Παλιά Θέματα
                   </MobileNavButton>
                   <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
                     Quiz
                   </MobileNavButton>
                   <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
+                  <MobileNavButton to="/gloglossa" icon={Globe} onClick={closeMenu}>
+                    GloGlossa
+                  </MobileNavButton>
                     Flashcards
                   </MobileNavButton>
                   <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
+
                     Progress Tracker
                   </MobileNavButton>
                   <MobileNavButton to="/study-timer" icon={Timer} onClick={closeMenu}>
@@ -474,9 +478,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </MobileNavButton>
                   <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
                     Algorithms
-                  </MobileNavButton>
-                  <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
-                    Παλιά Θέματα
                   </MobileNavButton>
                 </div>
               </div>
@@ -507,10 +508,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           }}
         />
 
-        <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-6 items-start max-w-[100vw]">
-          <motion.div {...fadeIn} className="text-center md:text-left">
+        <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 items-start w-full max-w-[100vw]">
+          <motion.div
+            {...fadeIn}
+            className="text-center md:text-left md:border-r md:border-coral-accent/25 md:pr-6 dark:md:border-gray-700"
+          >
             <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Νομικά</h3>
-            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm">
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm md:items-start md:mx-0 mx-auto max-w-xs md:max-w-none">
               <NavLink to="/privacy-policy" className="hover:text-coral-accent dark:hover:text-coral-light transition-colors">
                 Όροι Χρήσης & Πολιτική Απορρήτου
               </NavLink>
@@ -526,15 +530,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <motion.div
             {...fadeIn}
             transition={{ delay: 0.15 }}
-            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-700"
+            className="text-center md:border-r md:border-coral-accent/25 md:px-6 dark:md:border-gray-700 flex flex-col items-center"
           >
-            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Socials</h3>
-            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm">
+            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3 w-full">Socials</h3>
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm items-center">
               <a
                 href="https://instagram.com/technotesgr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center"
               >
                 <Instagram className="w-4 h-4" /> <span>Instagram</span>
               </a>
@@ -542,7 +546,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 href="https://tiktok.com/@technotesgr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center"
               >
                 <Music2 className="w-4 h-4" /> <span>TikTok</span>
               </a>
@@ -550,7 +554,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 href="https://www.linkedin.com/company/technotesgr/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center"
               >
                 <Linkedin className="w-4 h-4" /> <span>LinkedIn</span>
               </a>
@@ -558,7 +562,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 href="https://www.youtube.com/@technotesgr-elenizafeiri"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center md:justify-start"
+                className="inline-flex items-center gap-2 hover:text-coral-accent dark:hover:text-coral-light transition-colors justify-center"
               >
                 <Youtube className="w-4 h-4" /> <span>YouTube</span>
               </a>
@@ -568,11 +572,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <motion.div
             {...fadeIn}
             transition={{ delay: 0.25 }}
-            className="text-center md:text-left md:border-l md:border-coral-accent/25 md:pl-6 dark:md:border-gray-700"
+            className="text-center md:text-right md:pl-6 flex flex-col items-center md:items-end"
           >
-            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3">Τοποθεσία</h3>
-            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm">
-              <div className="inline-flex items-center gap-2 justify-center md:justify-start">
+            <h3 className="text-lg font-extrabold text-coral-accent dark:text-coral-light mb-3 w-full md:w-auto">Τοποθεσία</h3>
+            <div className="flex flex-col gap-2 text-gray-700 dark:text-gray-200 text-sm items-center md:items-end">
+              <div className="inline-flex items-center gap-2 justify-center md:justify-end">
                 <span role="img" aria-label="location">
                   📍
                 </span>

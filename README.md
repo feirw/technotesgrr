@@ -1,6 +1,12 @@
-# technotesgr — High School Informatics Hub
+# technotesgr — Greek high-school Informatics
 
-Modern learning platform for Greek high-school Informatics (Γ’ Λυκείου): quizzes, flashcards, community, progress tracking, study timer, chatbot and more. Built with React + Vite + Tailwind + Framer Motion (frontend) and FastAPI + PostgreSQL/Supabase (backend).
+## Overview
+
+**technotesgr** is a **free** web platform for students preparing for the **Greek national exams in Informatics** (final year of upper secondary school, “Γ’ Λυκείο”). It brings **revision**, **time management**, and **support** tools into one place, with straightforward navigation and a modern UI (light/dark theme).
+
+**What it includes:** interactive **quizzes** and **flashcards** backed by an API, a **leaderboard**, **study timer**, **progress tracker** for the syllabus, sections for **algorithms**, **past papers**, and **online** course material, **study-orientation** content, **announcements**, an embedded **Modern Greek (Glossology)** experience, an **AI chatbot** on selected public pages, a **contact form**, and pages about **university departments**, **merch**, and the creator. **Privacy** and **data protection** pages describe data use and cookies.
+
+**Stack:** **React + Vite + TypeScript + Tailwind + Framer Motion** on the frontend; **FastAPI** with **PostgreSQL** for quiz/flashcard/submission data and related APIs; **Google Gemini** for chat. The frontend is usually deployed as a static site (e.g. Netlify) with the API hosted separately (e.g. Render), with CORS configured for the official domains.
 
 ## Quick Start
 
@@ -37,43 +43,34 @@ Frontend:
 - `VITE_API_BASE` (e.g. `http://localhost:8000`)
 - `VITE_GEMINI_ENABLED` (optional flag to toggle chatbot UI)
 
-## Features
-- Quizzes with local-first submissions, offline queue, retry on reconnect and caching
-- Flashcards with smooth flip/vertical transitions, keyboard navigation, progress, optimized state
-- Community forum with user posts and profiles (Supabase-backed)
-- Admin dashboard (view users; protected endpoint `/api/admin/users`)
-- Study Timer page (start/pause/reset, progress/goal, pink theme)
-- Career Orientation (Προσανατολισμός) with backend persistence
-- Progress Tracker page (interactive syllabus tracking)
-- Dark mode (`darkMode: 'class'`, preference saved)
-- Chatbot (Google Gemini) with session-based history and persistent conversations
-- Web Vitals tracking (LCP/INP/CLS) and lightweight analytics hooks
-- Panic Button with curated supportive quotes (navbar)
-- Route-level lazy loading and reduced initial JS payload
+## Features (current product)
+- Quizzes and flashcards (API + frontend caching / deduplication)
+- Leaderboard, study timer, progress tracker
+- Algorithms, past papers, online material, orientation, schools directory
+- Announcements, Glossology embed, about / merch
+- Chat widget (Gemini) on selected public pages
+- Contact form · optional Web Vitals reporting to the backend
+- Dark mode, lazy routes, code-split JS chunks
 
 ## Project Structure
 ```
-backend/        FastAPI app, DB access, AI service, admin/users API
+backend/        FastAPI — quiz, flashcards, chat, contact, metrics, DB pool
 frontend/       React + Vite app
   src/
-    components/ Shared UI components (ChatWidget, quiz, flashcards)
-    pages/      Route pages (Home, About, Community, StudyTimer, etc.)
-    layouts/    MainLayout with navbar, dark mode, Panic Button
-    utils/      apiClient (retry/dedupe), quizUtils (cache), theme, webVitals
+    components/ ChatWidget, quiz, flashcards, shared UI
+    pages/      Public + learning-focused pages
+    layouts/    MainLayout — navbar, theme
+    utils/      apiClient, backendUrl, quizUtils, theme, webVitals
 ```
 
 ## Development Notes
-- Quizzes: No auto-advance; UI updates instantly; submissions sync in background; sessionStorage cache
-- Flashcards: In-place flip animation; vertical transitions; cleaned content; hint removed
-- Routing: Protected routes + gentle auth redirects; refresh keeps user on current page
-- Performance: Lazy `ChatWidget`, code-splitting heavy pages, request dedupe/retry, caching
-- Database: Idempotent init for `community_posts`; admin users endpoint with pagination
+- Quiz / flashcards: API requests try multiple backend base URLs when same-origin has no API
+- Performance: lazy `ChatWidget`, code-splitting, request dedupe/retry
+- Database: idempotent backend init for required tables/indexes
 
 ## Legal
-- Privacy/Terms are available in-app at:
-  - Privacy & Terms: `/privacy-policy`
-  - Data Protection: `/data`
-- Summary: We use Supabase Auth (email/username), store community posts and quiz progress, track anonymous Web Vitals, and respect dark mode/local preferences. See pages above for details.
+- Privacy & terms: `/privacy-policy` · Data protection: `/data`
+- For cookies, processing, and rights, see the in-app pages (they may reference services such as Supabase where used on the backend).
 
 ## Contributing
 Issues and PRs are welcome.

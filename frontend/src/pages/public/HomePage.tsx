@@ -19,6 +19,7 @@ import {
   School2Icon,
   Code,
   Terminal,
+  ListChecks,
   LucideIcon,
 } from 'lucide-react';
 
@@ -161,6 +162,13 @@ const featuresData: Feature[] = [
     badge: '08',
     icon: Terminal,
     path: '/gloglossa',
+  },
+  {
+    title: 'Tracker της ύλης',
+    desc: 'Παρακολούθησε κεφάλαια και ενότητες: δες τι έχεις καλύψει και τι απομένει πριν τις εξετάσεις.',
+    badge: '09',
+    icon: ListChecks,
+    path: '/progress-tracker',
   },
 ];
 
