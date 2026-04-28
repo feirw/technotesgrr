@@ -161,6 +161,8 @@ const achievementImages = [
   '/images/eg6.jpg',
 ];
 
+const personalCardImages = ['/images/c2.png', '/images/c3.png'];
+
 // --- Component ---
 
 const AboutPage: React.FC = () => {
@@ -233,6 +235,33 @@ const AboutPage: React.FC = () => {
                       src={imageSrc}
                       alt={`Επίτευγμα ${i + 1}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Personal Card Gallery */}
+            <motion.div
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-200/50 dark:border-gray-700/50"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold text-coral-accent dark:text-coral-light mb-4">
+                Προσωπική κάρτα
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {personalCardImages.map((imageSrc, i) => (
+                  <div
+                    key={imageSrc}
+                    className="aspect-[16/10] overflow-hidden rounded-2xl border border-coral-accent/25 dark:border-gray-700 bg-white dark:bg-gray-900"
+                  >
+                    <img
+                      src={imageSrc}
+                      alt={`Προσωπική εικόνα ${i + 1}`}
+                      className="w-full h-full object-contain"
                       loading="lazy"
                     />
                   </div>

@@ -22,6 +22,7 @@ import {
   ListChecks,
   LucideIcon,
 } from 'lucide-react';
+import { FiSend } from 'react-icons/fi';
 
 // --- Types & Interfaces ---
 
@@ -67,10 +68,10 @@ interface FaqItem {
 // ---------- MOCK DATA ----------
 
 const heroImages: HeroImage[] = [
-  { src: '/images/panellinies.jpg', alt: 'Algorithm flow chart', rotation: 3 },
-  { src: '/images/grades.jpg', alt: 'Student using quiz', rotation: -4 },
-  { src: '/images/cat.jpg', alt: 'Flashcards on screen', rotation: 5 },
-  { src: '/images/diav.jpg', alt: 'Retro terminal interface', rotation: -2 },
+  { src: '/images/a2.jpg', alt: 'Hero image 1', rotation: 3 },
+  { src: '/images/a3.jpg', alt: 'Hero image 2', rotation: -4 },
+  { src: '/images/a4.jpg', alt: 'Hero image 3', rotation: 5 },
+  { src: '/images/a5.jpg', alt: 'Hero image 4', rotation: -2 },
 ];
 
 const reviewsData: Review[] = [
@@ -249,7 +250,7 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
   fetchPriority = 'low',
 }) => (
   <motion.div
-    className={`relative w-full h-auto bg-white/90 border-4 border-[#ff8f8e] rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
+    className={`relative w-full h-auto bg-white/90 rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
     style={{ boxShadow: '0 10px 30px rgba(255, 143, 142, 0.38)' }}
     animate={{ opacity: 1, scale: 1, rotate: rotation }}
     transition={{ duration: 0 }}
@@ -976,17 +977,19 @@ const HomePage: React.FC = () => {
               />
             </div>
 
-            <div className="mt-8 flex items-center gap-4">
+            <div className="mt-8 flex flex-col items-start gap-3">
+              <p className="text-sm text-gray-500 dark:text-gray-400">* Υποχρεωτικά πεδία</p>
               <motion.button
                 type="submit"
                 disabled={contactSubmitting}
-                className="relative px-8 py-4 bg-[#ff6b7a] hover:bg-[#e85563] text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group transition-colors"
+                className="relative inline-flex items-center gap-2 px-8 py-4 bg-[#ff6b7a] hover:bg-[#e85563] text-white font-bold rounded-full shadow-lg disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden group transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="relative z-10">
-                  {contactSubmitting ? 'Αποστολή… ⏳' : 'Αποστολή ✉️'}
+                  {contactSubmitting ? 'Αποστολή…' : 'Αποστολή'}
                 </span>
+                <FiSend className="relative z-10 w-4 h-4" aria-hidden />
                 <motion.div
                   className="absolute inset-0 bg-[#ffb0a4]"
                   initial={{ x: '-100%' }}
@@ -994,7 +997,6 @@ const HomePage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 />
               </motion.button>
-              <p className="text-sm text-gray-500 dark:text-gray-400">* Υποχρεωτικά πεδία</p>
             </div>
           </motion.form>
         </Section>

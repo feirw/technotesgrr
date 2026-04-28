@@ -204,6 +204,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
   const [shouldLoadChat, setShouldLoadChat] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
+  const lastScrollYRef = React.useRef(0);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -269,7 +270,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     const onScroll = () => {
-      setShowNavbar(window.scrollY > 20);
+      const currentY = window.scrollY;
+      const prevY = lastScrollYRef.current;
+      const atTop = currentY <= 8;
+      const scrollingUp = currentY < prevY;
+      setShowNavbar(atTop || scrollingUp);
+      lastScrollYRef.current = currentY;
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -446,19 +452,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between px-4 py-2 mb-1">
-                    <span className="text-sm font-semibold">Θέμα</span>
-                    <button
-                      type="button"
-                      aria-label="Theme toggle"
-                      onClick={() => setIsDark(toggleTheme() === 'dark')}
-                      className="min-h-11 min-w-11 p-2 rounded-lg border border-coral-accent/35 text-coral-accent touch-manipulation inline-flex items-center justify-center"
-                    >
-                      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
-
                   <button
                     type="button"
                     onClick={() => {
@@ -482,6 +475,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
                     Ατζέντα
                   </MobileNavButton>
+                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
 
                   <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
                     Quiz
@@ -492,6 +486,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
                     Παλιά Θέματα
                   </MobileNavButton>
+                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
                     Tracker ύλης
                   </MobileNavButton>
@@ -524,6 +519,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   >
                     Μεθοδολογίες
                   </MobileNavButton>
+
+                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
+                  <div className="flex items-center justify-between px-4 py-2">
+                    <span className="text-sm font-semibold">Θέμα</span>
+                    <button
+                      type="button"
+                      aria-label="Theme toggle"
+                      onClick={() => setIsDark(toggleTheme() === 'dark')}
+                      className="min-h-11 min-w-11 p-2 rounded-lg border border-coral-accent/35 text-coral-accent touch-manipulation inline-flex items-center justify-center"
+                    >
+                      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>
