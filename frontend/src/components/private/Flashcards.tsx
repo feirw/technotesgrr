@@ -800,34 +800,6 @@ const Flashcards: React.FC = () => {
                 )}
               </motion.div>
 
-              {/* Tips */}
-              <motion.div
-                className="bg-gradient-to-r from-coral-wash to-coral-light/20 dark:from-gray-900 dark:to-gray-950 rounded-2xl p-4 sm:p-6 max-w-2xl w-full border border-transparent dark:border-gray-800"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
-                  <p className="font-semibold text-center">💡 Συμβουλές:</p>
-                  <ul className="list-disc list-inside space-y-1 text-xs sm:text-sm">
-                    <li>Κάνε κλικ στην κάρτα για να τη γυρίσεις</li>
-                    <li>Βελάκια ← → για προηγούμενη/επόμενη κάρτα</li>
-                    <li>Χρησιμοποίησε τα κουμπιά για να σημειώσεις την πρόοδό σου</li>
-                    <li>
-                      Πάτα <kbd className="px-1 py-0.5 bg-white dark:bg-gray-900 rounded border dark:border-gray-700">S</kbd> για
-                      ανακάτεμα
-                    </li>
-                    <li>
-                      Πάτα <kbd className="px-1 py-0.5 bg-white dark:bg-gray-900 rounded border dark:border-gray-700">R</kbd> για
-                      επαναφορά
-                    </li>
-                    <li>
-                      Πάτα <kbd className="px-1 py-0.5 bg-white dark:bg-gray-900 rounded border dark:border-gray-700">Esc</kbd> για
-                      επιστροφή
-                    </li>
-                  </ul>
-                </div>
-              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

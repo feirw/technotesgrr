@@ -36,7 +36,6 @@ interface ContactFormState {
 interface HeroImage {
   src: string;
   alt: string;
-  delay: number;
   rotation: number;
 }
 
@@ -68,10 +67,10 @@ interface FaqItem {
 // ---------- MOCK DATA ----------
 
 const heroImages: HeroImage[] = [
-  { src: '/images/panellinies.jpg', alt: 'Algorithm flow chart', delay: 0.1, rotation: 3 },
-  { src: '/images/grades.jpg', alt: 'Student using quiz', delay: 0.3, rotation: -4 },
-  { src: '/images/cat.jpg', alt: 'Flashcards on screen', delay: 0.5, rotation: 5 },
-  { src: '/images/diav.jpg', alt: 'Retro terminal interface', delay: 0.7, rotation: -2 },
+  { src: '/images/panellinies.jpg', alt: 'Algorithm flow chart', rotation: 3 },
+  { src: '/images/grades.jpg', alt: 'Student using quiz', rotation: -4 },
+  { src: '/images/cat.jpg', alt: 'Flashcards on screen', rotation: 5 },
+  { src: '/images/diav.jpg', alt: 'Retro terminal interface', rotation: -2 },
 ];
 
 const reviewsData: Review[] = [
@@ -209,26 +208,6 @@ const BACKEND_URL = getBackendUrl();
 
 /** Κοραλί (ζεστό): κύριο `#ff8f8e`, accent `#ff6b7a`, hover `#e85563`, ανοιχτό `#ffb0a4`. */
 
-// ---------- Motion Variants ----------
-const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0 },
-};
-
-const fadeIn = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-};
-
-const stagger = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
-  },
-};
-
 const REVIEW_CAROUSEL_INTERVAL_MS = 6000;
 
 /** Διεύθυνση: +1 = επόμενη κριτική (μπαίνει από δεξιά), -1 = προηγούμενη (από αριστερά). */
@@ -255,7 +234,6 @@ const reviewCarouselVariants = {
 interface AnimatedImageBoxProps {
   src: string;
   alt: string;
-  delay: number;
   rotation: number;
   widthClass: string;
   loading?: 'eager' | 'lazy';
@@ -265,7 +243,6 @@ interface AnimatedImageBoxProps {
 const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
   src,
   alt,
-  delay,
   rotation,
   widthClass,
   loading = 'lazy',
@@ -274,14 +251,8 @@ const AnimatedImageBox: React.FC<AnimatedImageBoxProps> = ({
   <motion.div
     className={`relative w-full h-auto bg-white/90 border-4 border-[#ff8f8e] rounded-lg overflow-hidden shadow-2xl ${widthClass} mx-auto cursor-pointer`}
     style={{ boxShadow: '0 10px 30px rgba(255, 143, 142, 0.38)' }}
-    initial={{ opacity: 0, scale: 0.8, rotate: rotation + 10 }}
     animate={{ opacity: 1, scale: 1, rotate: rotation }}
-    transition={{
-      type: 'spring',
-      stiffness: 80,
-      damping: 15,
-      delay: delay,
-    }}
+    transition={{ duration: 0 }}
     whileHover={{
       scale: 1.05,
       rotate: 0,
@@ -329,31 +300,17 @@ const Section: React.FC<SectionProps> = ({
     )}
     <div className="container mx-auto px-6 relative z-10">
       {title && (
-        <motion.header
-          className="text-center mb-16"
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={stagger}
-        >
-          <motion.h2
-            className="text-4xl md:text-5xl font-black tracking-tight text-[#ff6b7a] dark:text-[#ffb0a4] mb-4"
-            variants={fadeInUp}
-            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-          >
+        <header className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight text-[#ff6b7a] dark:text-[#ffb0a4] mb-4">
             {title}
-          </motion.h2>
+          </h2>
 
           {subtitle && (
-            <motion.p
-              className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-              variants={fadeIn}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {subtitle}
-            </motion.p>
+            </p>
           )}
-        </motion.header>
+        </header>
       )}
       {children}
     </div>
@@ -361,25 +318,17 @@ const Section: React.FC<SectionProps> = ({
 );
 
 interface FeatureCardProps extends Feature {
-  i: number;
   onClick?: () => void;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, i, icon: Icon, onClick }) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, desc, icon: Icon, onClick }) => (
   <motion.button
     type="button"
     className="group relative bg-white/85 dark:bg-[#17233a]/85 backdrop-blur-xl rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-[#ff8f8e]/35 dark:border-white/10 overflow-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-[#ff8f8e] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0f152a]"
     aria-label={title}
     onClick={onClick}
-    initial={{ opacity: 0, y: 30, rotateX: -5 }}
-    whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{
-      type: 'spring',
-      stiffness: 80,
-      damping: 20,
-      delay: i * 0.15,
-    }}
+    animate={{ opacity: 1, y: 0, rotateX: 0 }}
+    transition={{ duration: 0 }}
     whileHover={{
       y: -10,
       scale: 1.02,
@@ -737,29 +686,19 @@ const HomePage: React.FC = () => {
         <section className="relative min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-20 md:py-0">
           <HeroMeshBlurs />
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <motion.h1
+            <div>
+              <h1
                 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 text-[#ff6b7a] dark:text-[#ffb0a4] drop-shadow-lg leading-tight"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.8 }}
               >
                 Γράψε 100 στην Πληροφορική
-              </motion.h1>
+              </h1>
 
-              <motion.p
+              <p
                 className="text-base sm:text-lg md:text-2xl text-gray-700 dark:text-gray-300 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.65, duration: 0.8 }}
               >
                 Η <span className="font-bold text-[#ff6b7a] dark:text-[#ffb0a4]">ιδανική πλατφόρμα</span> προετοιμασίας
                 για τις Πανελλήνιες.
-              </motion.p>
+              </p>
 
               <motion.button
                 className="relative inline-flex items-center gap-3 px-9 py-4 bg-[#ff6b7a] hover:bg-[#e85563] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
@@ -777,7 +716,7 @@ const HomePage: React.FC = () => {
                 />
               </motion.button>
               <div className="mt-4 flex justify-center gap-3"></div>
-            </motion.div>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto mt-10 md:mt-16">
               {heroImages.map((image, index) => (
@@ -785,7 +724,6 @@ const HomePage: React.FC = () => {
                   key={index}
                   src={image.src}
                   alt={image.alt}
-                  delay={image.delay}
                   rotation={image.rotation}
                   widthClass="aspect-[4/3] h-auto"
                   loading={index === 0 ? 'eager' : 'lazy'}
@@ -805,24 +743,19 @@ const HomePage: React.FC = () => {
           subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες"
           withGradient
         >
-          <motion.div
+          <div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-12"
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.2 }}
           >
-            {featuresData.map((feat, idx) => (
+            {featuresData.map((feat) => (
               <FeatureCard
                 key={feat.title}
                 {...feat}
-                i={idx}
                 onClick={() => {
                   if (feat.path) navigate(feat.path);
                 }}
               />
             ))}
-          </motion.div>
+          </div>
         </Section>
 
         {/* Reviews Section */}

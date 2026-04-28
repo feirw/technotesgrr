@@ -144,7 +144,7 @@ const StudyTimerPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
-              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Συνεδρίες σήμερα</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Sessions σήμερα</div>
               <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{timer.sessionsToday}</div>
             </div>
             <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">

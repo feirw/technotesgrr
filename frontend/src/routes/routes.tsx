@@ -28,6 +28,8 @@ const NotFound = lazy(() => import('@/pages/other/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
+const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
+const PedioMathisiMoriaPage = lazy(() => import('@/pages/private/PedioMathisiMoriaPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -124,6 +126,14 @@ const routes: RouteConfig[] = [
   {
     path: '/progress-tracker',
     element: <ProgressTrackerPage />,
+  },
+  {
+    path: '/methodologies',
+    element: <MethodologiesPage />,
+  },
+  {
+    path: '/pedio-mathisi',
+    element: <PedioMathisiMoriaPage />,
   },
 
   {

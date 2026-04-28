@@ -25,13 +25,13 @@ import {
   Heart,
   Laugh,
   Wind,
-  Mail,
-  MapPin,
   Instagram,
   Linkedin,
   Youtube,
   Music2,
   Megaphone,
+  BookOpen,
+  Calculator,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
@@ -57,6 +57,8 @@ interface MobileNavButtonProps {
   children: React.ReactNode;
   icon: LucideIcon;
   onClick: () => void;
+  /** Παράκαμψη isActive (π.χ. `/methodologies?t=...`). */
+  isActiveOverride?: boolean;
 }
 
 interface MainLayoutProps {
@@ -107,14 +109,16 @@ const PrepMenu: React.FC = () => {
             <div className="grid grid-cols-2 gap-1">
               <LinkItem to="/quiz" label="Quiz" icon={Trophy} />
               <LinkItem to="/flashcards" label="Flashcards" icon={Brain} />
+              <LinkItem to="/paliathemata" label="Παλιά Θέματα" icon={FileText} />
               <LinkItem to="/gloglossa" label="GloGlossa" icon={Globe} />
               <LinkItem to="/progress-tracker" label="Progress Tracker" icon={Map} />
               <LinkItem to="/study-timer" label="Study Timer" icon={Timer} />
               <LinkItem to="/prosanatolismos" label="Προσανατολισμός" icon={Compass} />
-              <LinkItem to="/paliathemata" label="Παλιά Θέματα" icon={FileText} />
               <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
               <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
+              <LinkItem to="/pedio-mathisi" label="Υπολογισμός Μορίων" icon={Calculator} />
               <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
+              <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} />
             </div>
           </motion.div>
         )}
@@ -149,39 +153,45 @@ const NavButton: React.FC<NavButtonProps> = ({ to, children }) => (
   </NavLink>
 );
 
-const MobileNavButton: React.FC<MobileNavButtonProps> = ({ to, children, icon: Icon, onClick }) => (
+const MobileNavButton: React.FC<MobileNavButtonProps> = ({
+  to,
+  children,
+  icon: Icon,
+  onClick,
+  isActiveOverride,
+}) => (
   <NavLink
     to={to}
     onClick={onClick}
-    className={({ isActive }) =>
-      `relative block w-full text-left min-h-11 py-3.5 px-4 rounded-xl transition-all touch-manipulation border border-transparent ${
-        isActive
+    className={({ isActive }) => {
+      const active = isActiveOverride !== undefined ? isActiveOverride : isActive;
+      return `relative block w-full text-left min-h-11 py-3.5 px-4 rounded-xl transition-all touch-manipulation border border-transparent ${
+        active
           ? 'border-coral-accent/25 shadow-sm'
           : 'text-gray-700 dark:text-gray-200 hover:bg-rose-50/90 dark:hover:bg-gray-800/90'
-      }`
-    }
+      }`;
+    }}
   >
-    {({ isActive }) => (
-      <>
-        {isActive && (
-          <motion.div
-            className="absolute inset-0 rounded-xl bg-rose-50 dark:bg-[rgba(255,107,122,0.14)] border border-coral-accent/20"
-            layoutId="mobileActiveNav"
-            transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-          />
-        )}
-        <div className="flex items-center gap-3 relative z-10">
-          <Icon
-            className={`w-5 h-5 shrink-0 ${isActive ? 'text-coral-accent dark:text-coral-light' : 'text-gray-500 dark:text-gray-400'}`}
-          />
-          <span
-            className={`font-semibold ${isActive ? 'text-slate-800 dark:text-gray-50' : ''}`}
-          >
-            {children}
-          </span>
-        </div>
-      </>
-    )}
+    {({ isActive }) => {
+      const active = isActiveOverride !== undefined ? isActiveOverride : isActive;
+      return (
+        <>
+          {active && (
+            <motion.div
+              className="absolute inset-0 rounded-xl bg-rose-50 dark:bg-[rgba(255,107,122,0.14)] border border-coral-accent/20"
+              layoutId="mobileActiveNav"
+              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+            />
+          )}
+          <div className="flex items-center gap-3 relative z-10">
+            <Icon
+              className={`w-5 h-5 shrink-0 ${active ? 'text-coral-accent dark:text-coral-light' : 'text-gray-500 dark:text-gray-400'}`}
+            />
+            <span className={`font-semibold ${active ? 'text-slate-800 dark:text-gray-50' : ''}`}>{children}</span>
+          </div>
+        </>
+      );
+    }}
   </NavLink>
 );
 
@@ -193,6 +203,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
   const [shouldLoadChat, setShouldLoadChat] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(false);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -256,6 +267,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
   }, [chatPathAllowed]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setShowNavbar(window.scrollY > 20);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] text-gray-900 dark:text-gray-100 flex flex-col">
       {shouldLoadChat && chatPathAllowed && (
@@ -264,7 +284,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </Suspense>
       )}
       {/* Navbar Container */}
-      <div className="bg-white/55 dark:bg-[#0f152a]/75 backdrop-blur-md sticky top-0 z-30 border-b border-coral-accent/15 dark:border-white/10 pt-[env(safe-area-inset-top,0px)]">
+      <motion.div
+        initial={false}
+        animate={{
+          y: showNavbar ? 0 : -96,
+          opacity: showNavbar ? 1 : 0,
+          pointerEvents: showNavbar ? 'auto' : 'none',
+        }}
+        transition={{ duration: 0.22, ease: 'easeOut' }}
+        className="bg-white/55 dark:bg-[#0f152a]/75 backdrop-blur-md fixed top-0 left-0 right-0 z-30 border-b border-coral-accent/15 dark:border-white/10 pt-[env(safe-area-inset-top,0px)]"
+      >
         <div className="container mx-auto px-3 sm:px-6 max-w-[100vw]">
           <div className="flex justify-between items-center gap-2 py-3 sm:py-4 min-h-[3.25rem]">
             {/* Logo */}
@@ -334,7 +363,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Global Panic Modal */}
       <AnimatePresence>
@@ -454,14 +483,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     Ατζέντα
                   </MobileNavButton>
 
-                  <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
-                    Παλιά Θέματα
-                  </MobileNavButton>
                   <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
                     Quiz
                   </MobileNavButton>
                   <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
                     Flashcards
+                  </MobileNavButton>
+                  <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
+                    Παλιά Θέματα
                   </MobileNavButton>
                   <MobileNavButton to="/progress-tracker" icon={Map} onClick={closeMenu}>
                     Tracker ύλης
@@ -478,11 +507,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
                     Σχολές
                   </MobileNavButton>
+                  <MobileNavButton to="/pedio-mathisi" icon={Calculator} onClick={closeMenu}>
+                    Υπολογισμός Μορίων
+                  </MobileNavButton>
                   <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                     Online Μαθήματα
                   </MobileNavButton>
                   <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
                     Algorithms
+                  </MobileNavButton>
+                  <MobileNavButton
+                    to="/methodologies"
+                    icon={BookOpen}
+                    onClick={closeMenu}
+                    isActiveOverride={location.pathname === '/methodologies'}
+                  >
+                    Μεθοδολογίες
                   </MobileNavButton>
                 </div>
               </div>
@@ -492,7 +532,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)]">{children}</main>
+      <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)] pt-20">{children}</main>
 
       {/* Footer */}
       <footer className="relative overflow-hidden mt-12 -mt-px bg-transparent">

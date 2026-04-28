@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/select';
 
 // --- Types ---
-interface School {
+export interface School {
   id: string;
   name: string;
   uni: string;
@@ -74,7 +74,7 @@ const CATEGORIES: Record<string, { icon: React.ReactNode; color: string }> = {
 };
 
 // --- Full Data Array ---
-const ALL_SCHOOLS: School[] = [
+export const ALL_SCHOOLS: School[] = [
   // ΔΙΕΘΝΩΝ & ΕΥΡΩΠΑΪΚΩΝ
   {
     id: '161',
@@ -708,7 +708,7 @@ const ALL_SCHOOLS: School[] = [
     id: '629',
     name: 'Μηχανικών Παραγωγής και Διοίκησης',
     uni: 'ΔΙΠΑΕ',
-    city: 'Θεσσαλονική',
+    city: 'Θεσσαλονίκη',
     points: 12585,
     ebe: '10.50',
     category: 'Βιομηχανία',
@@ -1879,7 +1879,7 @@ const SchoolsPage: React.FC = () => {
                       <SelectItem
                         key={c}
                         value={c}
-                        className="font-semibold text-sm cursor-pointer hover:bg-coral-wash dark:hover:bg-gray-700 focus:bg-coral-wash dark:focus:bg-gray-700"
+                        className="font-semibold text-sm cursor-pointer"
                       >
                         {c}
                       </SelectItem>
@@ -1936,26 +1936,22 @@ const SchoolsPage: React.FC = () => {
 
 const SchoolCard: React.FC<{ school: School }> = ({ school }) => (
   <motion.div
-    whileHover={{ y: -8, scale: 1.01 }}
-    className="bg-white dark:bg-gray-900 p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-2xl hover:shadow-coral-accent/10 transition-all group overflow-hidden relative"
+    className="bg-white dark:bg-gray-900 p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden relative"
   >
     {/* Background Pattern */}
-    <div className="absolute -top-10 -right-10 w-24 h-24 bg-coral-accent/5 rounded-full blur-2xl group-hover:bg-coral-accent/10 transition-all" />
+    <div className="absolute -top-10 -right-10 w-24 h-24 bg-coral-accent/5 rounded-full blur-2xl" />
 
     <div className="flex justify-between items-start mb-4">
       <div className="space-y-1 pr-10">
         <span className="text-[10px] font-black text-coral-accent bg-coral-wash dark:bg-coral-accent/15 px-2 py-0.5 rounded-lg uppercase tracking-wider">
           {school.uni}
         </span>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight group-hover:text-coral-accent transition-colors">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
           {school.name}
         </h3>
       </div>
       <div className="shrink-0 bg-slate-50 dark:bg-gray-800 p-2 rounded-2xl">
-        <TrendingUp
-          className="text-gray-400 group-hover:text-coral-accent transition-colors"
-          size={18}
-        />
+        <TrendingUp className="text-gray-400" size={18} />
       </div>
     </div>
 
