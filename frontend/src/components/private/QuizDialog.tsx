@@ -73,7 +73,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   selectedAnswers,
 }) => {
   const [current, setCurrent] = useState<number>(0);
-  const [isSyncingAnswer, setIsSyncingAnswer] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [score, setScore] = useState<Score>({ correct: 0, total: 0 });
@@ -166,8 +165,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
         const nickname = 'Visitor';
 
-        setIsSyncingAnswer(true);
-        await apiFetch<SubmitResponse>(`${BACKEND_URL}/api/quiz/submit`, {
+        void apiFetch<SubmitResponse>(`${BACKEND_URL}/api/quiz/submit`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -180,12 +178,8 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             selected_answer: idx,
           }),
         });
-
-        // No auto-advance: user controls navigation with the next button.
       } catch (err) {
         console.error('Error submitting answer:', err);
-      } finally {
-        setIsSyncingAnswer(false);
       }
     },
     [selected, onQuestionAnswered, question, quiz]
@@ -399,10 +393,6 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
-            {isSyncingAnswer && (
-              <p className="text-xs text-gray-500 mb-3">Συγχρονισμός απάντησης...</p>
-            )}
-
             {/* Answers */}
             <div className="space-y-3 mb-8">
               {question?.answers?.map((ans, idx) => {
@@ -428,11 +418,10 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     animate={{
                       opacity: 1,
                       x: 0,
-                      scale: isRevealed && isSelected ? [1, 1.02, 1] : 1,
+                      scale: 1,
                     }}
                     transition={{
                       delay: idx * 0.08,
-                      scale: { duration: 0.3 },
                     }}
                     whileHover={!isRevealed ? { x: 6 } : {}}
                     whileTap={!isRevealed ? { scale: 0.98 } : {}}
