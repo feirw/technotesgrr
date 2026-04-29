@@ -30,8 +30,6 @@ import {
   Youtube,
   Music2,
   Megaphone,
-  BookOpen,
-  Calculator,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
@@ -116,9 +114,9 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/prosanatolismos" label="Προσανατολισμός" icon={Compass} />
               <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
               <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
-              <LinkItem to="/pedio-mathisi" label="Υπολογισμός Μορίων" icon={Calculator} />
+              {/* <LinkItem to="/pedio-mathisi" label="Υπολογισμός Μορίων" icon={Calculator} /> */}
               <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
-              <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} />
+              {/* <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} /> */}
             </div>
           </motion.div>
         )}
@@ -502,23 +500,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
                     Σχολές
                   </MobileNavButton>
-                  <MobileNavButton to="/pedio-mathisi" icon={Calculator} onClick={closeMenu}>
+                  {/* <MobileNavButton to="/pedio-mathisi" icon={Calculator} onClick={closeMenu}>
                     Υπολογισμός Μορίων
-                  </MobileNavButton>
+                  </MobileNavButton> */}
                   <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                     Online Μαθήματα
                   </MobileNavButton>
                   <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
                     Algorithms
                   </MobileNavButton>
-                  <MobileNavButton
+                  {/* <MobileNavButton
                     to="/methodologies"
                     icon={BookOpen}
                     onClick={closeMenu}
                     isActiveOverride={location.pathname === '/methodologies'}
                   >
                     Μεθοδολογίες
-                  </MobileNavButton>
+                  </MobileNavButton> */}
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">
