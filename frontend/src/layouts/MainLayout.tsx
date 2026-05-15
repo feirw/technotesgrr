@@ -30,6 +30,8 @@ import {
   Youtube,
   Music2,
   Megaphone,
+  BookOpen,
+  // ClipboardList,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
@@ -107,6 +109,8 @@ const PrepMenu: React.FC = () => {
             <div className="grid grid-cols-2 gap-1">
               <LinkItem to="/quiz" label="Quiz" icon={Trophy} />
               <LinkItem to="/flashcards" label="Flashcards" icon={Brain} />
+              <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} />
+              {/* <LinkItem to="/askiseis" label="Ασκήσεις" icon={ClipboardList} /> */}
               <LinkItem to="/paliathemata" label="Παλιά Θέματα" icon={FileText} />
               <LinkItem to="/gloglossa" label="GloGlossa" icon={Globe} />
               <LinkItem to="/progress-tracker" label="Progress Tracker" icon={Map} />
@@ -116,7 +120,6 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
               {/* <LinkItem to="/pedio-mathisi" label="Υπολογισμός Μορίων" icon={Calculator} /> */}
               <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
-              {/* <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} /> */}
             </div>
           </motion.div>
         )}
@@ -481,6 +484,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/flashcards" icon={Brain} onClick={closeMenu}>
                     Flashcards
                   </MobileNavButton>
+                  <MobileNavButton
+                    to="/methodologies"
+                    icon={BookOpen}
+                    onClick={closeMenu}
+                    isActiveOverride={location.pathname === '/methodologies'}
+                  >
+                    Μεθοδολογίες
+                  </MobileNavButton>
+                  {/* <MobileNavButton to="/askiseis" icon={ClipboardList} onClick={closeMenu}>
+                    Ασκήσεις
+                  </MobileNavButton> */}
                   <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
                     Παλιά Θέματα
                   </MobileNavButton>
@@ -509,14 +523,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
                     Algorithms
                   </MobileNavButton>
-                  {/* <MobileNavButton
-                    to="/methodologies"
-                    icon={BookOpen}
-                    onClick={closeMenu}
-                    isActiveOverride={location.pathname === '/methodologies'}
-                  >
-                    Μεθοδολογίες
-                  </MobileNavButton> */}
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">
