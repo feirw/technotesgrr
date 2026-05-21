@@ -11,11 +11,11 @@ import {
 } from 'framer-motion';
 import { apiFetch } from '@/utils/apiClient';
 import {
-  GraduationCap,
   Trophy,
   Layers,
   Timer,
-  Compass,
+  BookOpen,
+  ClipboardList,
   School2Icon,
   Code,
   Terminal,
@@ -108,39 +108,39 @@ const reviewsData: Review[] = [
 
 const featuresData: Feature[] = [
   {
-    title: 'Online Καταγεγραμμένα Μαθήματα',
-    desc: 'Καλύπτουν σε βάθος τη θεωρία, μεθοδολογίες της ύλης και λυμένες ασκήσεις.',
+    title: 'Μεθοδολογίες',
+    desc: 'Τυπικοί αλγόριθμοι σε ΓΛΩΣΣΑ — Όσο, πίνακες, στοίβα, ουρά και άλλες κατηγορίες της ύλης.',
     badge: '01',
-    icon: GraduationCap,
-    path: '/online',
+    icon: BookOpen,
+    path: '/methodologies',
+  },
+  {
+    title: 'Ασκήσεις',
+    desc: 'Προτεινόμενες ασκήσεις Θέμα Γ και Θέμα Δ με πλήρεις εκφωνήσεις για εξάσκηση.',
+    badge: '02',
+    icon: ClipboardList,
+    path: '/askiseis',
   },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
-    badge: '02',
+    badge: '03',
     icon: Trophy,
     path: '/quiz',
   },
   {
     title: 'Flashcards',
     desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
-    badge: '03',
+    badge: '04',
     icon: Layers,
     path: '/flashcards',
   },
   {
     title: 'Study Timer',
     desc: 'Οργάνωσε τον χρόνο μελέτης σου και παρακολούθησε την καθημερινή πρόοδό σου.',
-    badge: '04',
+    badge: '05',
     icon: Timer,
     path: '/study-timer',
-  },
-  {
-    title: 'Επαγγελματικός Προσανατολισμός',
-    desc: 'Απάντησε στο ερωτηματολόγιο και δες εξατομικευμένα αποτελέσματα κατεύθυνσης.',
-    badge: '05',
-    icon: Compass,
-    path: '/prosanatolismos',
   },
   {
     title: 'Σχολές και Καριέρα',

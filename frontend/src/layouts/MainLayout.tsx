@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
+import CookieConsent from '@/components/other/CookieConsent';
 const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 // --- Constants & Animations ---
@@ -649,6 +650,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
+
+      <CookieConsent />
     </div>
   );
 };
