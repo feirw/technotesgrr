@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
+import ScrollToTop from '@/components/other/ScrollToTop';
 import routes, { RouteConfig } from './routes/routes';
 
 const App: React.FC = () => {
@@ -12,6 +13,7 @@ const App: React.FC = () => {
 
   return (
     <MainLayout>
+      <ScrollToTop />
       <Routes>
         {routes.map((route: RouteConfig, index: number) => (
           <Route

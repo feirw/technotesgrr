@@ -752,7 +752,9 @@ const HomePage: React.FC = () => {
                 key={feat.title}
                 {...feat}
                 onClick={() => {
-                  if (feat.path) navigate(feat.path);
+                  if (!feat.path) return;
+                  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                  navigate(feat.path);
                 }}
               />
             ))}
