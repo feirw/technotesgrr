@@ -34,6 +34,11 @@ const StatementView: React.FC<{ statement: AskisiStatement; title: string }> = (
     {statement.introClosing && (
       <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 font-semibold">{statement.introClosing}</p>
     )}
+    {statement.note && (
+      <p className="mb-6 rounded-xl border border-amber-200 dark:border-amber-700/50 bg-amber-50/80 dark:bg-amber-900/20 px-4 py-3 text-sm text-amber-900 dark:text-amber-200 leading-relaxed">
+        <span className="font-bold">Σημείωση:</span> {statement.note}
+      </p>
+    )}
     <ol className="space-y-5">
       {statement.tasks.map((task) => (
         <li
