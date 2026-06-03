@@ -30,7 +30,7 @@ const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
-const CorrectorPage = lazy(() => import('@/pages/private/CorrectorPage'));
+// const CorrectorPage = lazy(() => import('@/pages/private/CorrectorPage'));
 // const PedioMathisiMoriaPage = lazy(() => import('@/pages/private/PedioMathisiMoriaPage'));
 
 // Type Definition
@@ -137,10 +137,10 @@ const routes: RouteConfig[] = [
     path: '/askiseis',
     element: <AskiseisPage />,
   },
-  {
-    path: '/corrector',
-    element: <CorrectorPage />,
-  },
+  // {
+  //   path: '/corrector',
+  //   element: <CorrectorPage />,
+  // },
   // {
   //   path: '/pedio-mathisi',
   //   element: <PedioMathisiMoriaPage />,
