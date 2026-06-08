@@ -356,7 +356,10 @@ const QuizPage: React.FC = () => {
   };
 
   const restartAllQuizzes = () => {
-    if (stats.answeredQuestions === 0) return;
+    if (stats.answeredQuestions === 0) {
+      window.alert('Δεν έχεις καμία απάντηση ακόμα — δεν υπάρχει κάτι προς επαναφορά.');
+      return;
+    }
     if (
       !window.confirm(
         'Θέλεις να επαναφέρεις όλα τα κουίζ; Θα χαθεί η πρόοδός σου σε όλα τα κεφάλαια ταυτόχρονα.'
@@ -438,17 +441,21 @@ const QuizPage: React.FC = () => {
                 </p>
               </motion.div>
 
-              {!loading && stats.answeredQuestions > 0 && (
+              {!loading && quizzes.length > 0 && (
                 <motion.button
                   onClick={restartAllQuizzes}
-                  className="shrink-0 px-3 sm:px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold flex items-center gap-2 transition-colors border border-white/30"
+                  className={`shrink-0 px-3 sm:px-4 py-2.5 rounded-xl backdrop-blur-sm font-semibold flex items-center gap-2 transition-colors border ${
+                    stats.answeredQuestions > 0
+                      ? 'bg-white/20 hover:bg-white/30 text-white border-white/30'
+                      : 'bg-white/10 text-white/70 border-white/20'
+                  }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   title="Επαναφορά όλων των κουίζ"
                   aria-label="Επαναφορά όλων των κουίζ"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  <span className="hidden sm:inline">Επαναφορά όλων</span>
+                  <span className="text-xs sm:text-sm">Επαναφορά όλων</span>
                 </motion.button>
               )}
             </div>

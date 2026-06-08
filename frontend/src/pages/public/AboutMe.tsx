@@ -132,7 +132,7 @@ const achievementImages = [
   '/images/eg2.jpg',
   '/images/eg3.jpg',
   '/images/eg4.jpg',
-  '/images/eg5.jpg',
+  '/images/eg5.jpg?v=20260608',
   '/images/eg6.jpg',
 ];
 
