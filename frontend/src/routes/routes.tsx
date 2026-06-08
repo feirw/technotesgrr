@@ -10,7 +10,6 @@ const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 
 // User Pages (Protected)
-// import NotesPage from '@/pages/private/NotesPage';
 const loadQuizPage = () => import('@/pages/private/QuizPage');
 const loadFlashcardsPage = () => import('@/pages/private/FlashcardsPage');
 const loadProgressTrackerPage = () => import('@/pages/private/ProgressTrackerPage');
@@ -30,8 +29,6 @@ const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
-// const CorrectorPage = lazy(() => import('@/pages/private/CorrectorPage'));
-// const PedioMathisiMoriaPage = lazy(() => import('@/pages/private/PedioMathisiMoriaPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -137,14 +134,6 @@ const routes: RouteConfig[] = [
     path: '/askiseis',
     element: <AskiseisPage />,
   },
-  // {
-  //   path: '/corrector',
-  //   element: <CorrectorPage />,
-  // },
-  // {
-  //   path: '/pedio-mathisi',
-  //   element: <PedioMathisiMoriaPage />,
-  // },
 
   {
     path: '*',

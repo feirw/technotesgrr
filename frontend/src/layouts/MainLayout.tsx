@@ -32,7 +32,6 @@ import {
   Megaphone,
   BookOpen,
   ClipboardList,
-  // PenTool,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
@@ -113,7 +112,6 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/flashcards" label="Flashcards" icon={Brain} />
               <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} />
               <LinkItem to="/askiseis" label="Ασκήσεις" icon={ClipboardList} />
-              {/* <LinkItem to="/corrector" label="AI Corrector" icon={PenTool} /> */}
               <LinkItem to="/paliathemata" label="Παλιά Θέματα" icon={FileText} />
               <LinkItem to="/gloglossa" label="GloGlossa" icon={Globe} />
               <LinkItem to="/progress-tracker" label="Progress Tracker" icon={Map} />
@@ -121,7 +119,6 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/prosanatolismos" label="Προσανατολισμός" icon={Compass} />
               <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
               <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
-              {/* <LinkItem to="/pedio-mathisi" label="Υπολογισμός Μορίων" icon={Calculator} /> */}
               <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
             </div>
           </motion.div>
@@ -498,9 +495,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/askiseis" icon={ClipboardList} onClick={closeMenu}>
                     Ασκήσεις
                   </MobileNavButton>
-                  {/* <MobileNavButton to="/corrector" icon={PenTool} onClick={closeMenu}>
-                    AI Corrector
-                  </MobileNavButton> */}
                   <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
                     Παλιά Θέματα
                   </MobileNavButton>
@@ -520,9 +514,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
                     Σχολές
                   </MobileNavButton>
-                  {/* <MobileNavButton to="/pedio-mathisi" icon={Calculator} onClick={closeMenu}>
-                    Υπολογισμός Μορίων
-                  </MobileNavButton> */}
                   <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                     Online Μαθήματα
                   </MobileNavButton>

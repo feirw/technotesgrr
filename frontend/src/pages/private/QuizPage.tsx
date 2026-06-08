@@ -347,13 +347,31 @@ const QuizPage: React.FC = () => {
         localStorage.setItem('quizProgress', JSON.stringify(newAnswers));
         return newAnswers;
       });
-      // Force refresh of quizzes state to reflect reset
       setQuizzes((prev) =>
         prev.map((q) =>
           q.id === quiz.id ? { ...q, percent: 0, answered: 0, correctAnswers: 0 } : q
         )
       );
     }
+  };
+
+  const restartAllQuizzes = () => {
+    if (stats.answeredQuestions === 0) return;
+    if (
+      !window.confirm(
+        'Θέλεις να επαναφέρεις όλα τα κουίζ; Θα χαθεί η πρόοδός σου σε όλα τα κεφάλαια ταυτόχρονα.'
+      )
+    ) {
+      return;
+    }
+
+    localStorage.removeItem('quizProgress');
+    setCategoryAnswers({});
+    setIsQuizDialogOpen(false);
+    setSelectedQuiz(null);
+    setQuizzes((prev) =>
+      prev.map((quiz) => ({ ...quiz, percent: 0, answered: 0, correctAnswers: 0 }))
+    );
   };
 
   // Background Component
@@ -411,7 +429,7 @@ const QuizPage: React.FC = () => {
         {/* Header */}
         <div className="sticky top-0 z-30 bg-coral-accent text-white p-6 shadow-xl shadow-coral-strong/25 dark:shadow-coral-accent/20">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between gap-4 mb-4">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                 <h3 className="text-2xl md:text-3xl font-black mb-1">📚 Επιλογή Κεφαλαίου</h3>
                 <p className="text-white/90 text-sm">
@@ -419,6 +437,20 @@ const QuizPage: React.FC = () => {
                   απαντήσεις
                 </p>
               </motion.div>
+
+              {!loading && stats.answeredQuestions > 0 && (
+                <motion.button
+                  onClick={restartAllQuizzes}
+                  className="shrink-0 px-3 sm:px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold flex items-center gap-2 transition-colors border border-white/30"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  title="Επαναφορά όλων των κουίζ"
+                  aria-label="Επαναφορά όλων των κουίζ"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span className="hidden sm:inline">Επαναφορά όλων</span>
+                </motion.button>
+              )}
             </div>
 
             {/* Stats Bar */}

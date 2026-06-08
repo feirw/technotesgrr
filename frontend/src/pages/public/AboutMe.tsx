@@ -3,19 +3,12 @@ import { motion, Variants } from 'framer-motion';
 import {
   BookOpenCheck,
   GraduationCap,
-  HeartHandshake,
   Lightbulb,
   Target,
   Users,
 } from 'lucide-react';
 
 // --- Types & Interfaces ---
-
-interface SkillItem {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}
 
 interface TimelineItem {
   period: string;
@@ -45,24 +38,6 @@ const stagger: Variants = {
 };
 
 // --- Data ---
-
-const skillsData: SkillItem[] = [
-  {
-    icon: <Lightbulb className="w-8 h-8 text-coral-accent" />,
-    title: 'Καινοτομία',
-    desc: 'Χρησιμοποιώ σύγχρονες τεχνολογίες για να δημιουργώ διαδραστικά εργαλεία μάθησης.',
-  },
-  {
-    icon: <HeartHandshake className="w-8 h-8 text-coral-accent" />,
-    title: 'Πάθος',
-    desc: 'Λατρεύω την εκπαίδευση και θέλω να συμβάλλω ουσιαστικά στη διδακτική της πληροφορικής.',
-  },
-  {
-    icon: <Users className="w-8 h-8 text-coral-accent" />,
-    title: 'Κοινότητα',
-    desc: 'Πιστεύω στη δύναμη της συνεργασίας των μαθητών για καλύτερη απόδοση και ουσιαστική πρόοδο.',
-  },
-];
 
 const funFactsData: string[] = [
   'Λατρεύω να μιλάω και να μεταδίδω την γνώση μου στους άλλους.',
@@ -435,44 +410,6 @@ const AboutPage: React.FC = () => {
                   @technotesgr
                 </a>
               </motion.p>
-            </motion.div>
-
-            {/* Skills/Values Section */}
-            <motion.div
-              className="grid md:grid-cols-3 gap-6"
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={stagger}
-            >
-              {skillsData.map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-gray-200/50 dark:border-gray-700/50 text-center group"
-                  variants={fadeInUp}
-                  whileHover={{
-                    y: -10,
-                    scale: 1.02,
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                    transition: { duration: 0.3 },
-                  }}
-                >
-                  <motion.div
-                    className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-coral-wash border border-coral-accent/25"
-                    whileHover={{
-                      scale: 1.1,
-                      rotate: 8,
-                      transition: { duration: 0.5 },
-                    }}
-                  >
-                    {item.icon}
-                  </motion.div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300">{item.desc}</p>
-                </motion.div>
-              ))}
             </motion.div>
 
             {/* Fun Facts */}

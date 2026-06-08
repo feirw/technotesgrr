@@ -16,7 +16,6 @@ import {
   Timer,
   BookOpen,
   ClipboardList,
-  // PenTool,
   School2Icon,
   Code,
   Terminal,
@@ -122,13 +121,6 @@ const featuresData: Feature[] = [
     icon: ClipboardList,
     path: '/askiseis',
   },
-  // {
-  //   title: 'AI Corrector',
-  //   desc: 'Ανέβασε φωτογραφία με τις λύσεις σου και πάρε αναλυτική διόρθωση και βαθμολογία από AI.',
-  //   badge: '03',
-  //   icon: PenTool,
-  //   path: '/corrector',
-  // },
   {
     title: 'Quiz',
     desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',

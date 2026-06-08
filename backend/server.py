@@ -39,12 +39,6 @@ except Exception:  # noqa: E722
     def user_facing_chat_error(_error_str: str) -> str:
         return "Δεν μπόρεσα να επεξεργαστώ το αίτημά σου. Δοκίμασε ξανά σε λίγο."
 
-# ── Corrector Service ─────────────────────────────────────────────────────────
-try:
-    from corrector_service import grade_image_base64
-except Exception:  # noqa: E722
-    grade_image_base64 = None  # type: ignore[assignment]
-
 # ── Database ──────────────────────────────────────────────────────────────────
 from database import (
     init_database,
@@ -539,44 +533,6 @@ def ingest_web_vitals(metric: WebVitalEvent):
         return {"ok": True}
     except Exception:
         logger.exception("ingest_web_vitals failed")
-        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
-
-
-# ── Corrector ─────────────────────────────────────────────────────────────────
-
-class CorrectorRequest(BaseModel):
-    image: str = Field(min_length=100, description="Base64-encoded image")
-    mime_type: str = Field(default="image/jpeg", max_length=50)
-    context: str = Field(default="", max_length=2000)
-
-@app.post("/api/corrector/grade")
-async def corrector_grade(req: CorrectorRequest):
-    if grade_image_base64 is None:
-        raise HTTPException(
-            status_code=503,
-            detail="Ο AI Corrector δεν είναι διαθέσιμος αυτή τη στιγμή.",
-        )
-
-    # Quick validation of base64 length (max ~20 MB image)
-    if len(req.image) > 20_000_000:
-        raise HTTPException(status_code=413, detail="Η εικόνα είναι πολύ μεγάλη (max 20 MB).")
-
-    allowed_mimes = {"image/jpeg", "image/png", "image/webp", "image/gif", "image/heic"}
-    if req.mime_type not in allowed_mimes:
-        raise HTTPException(status_code=422, detail=f"Μη υποστηριζόμενος τύπος: {req.mime_type}")
-
-    try:
-        result = await asyncio.to_thread(
-            grade_image_base64,
-            req.image,
-            req.mime_type,
-            req.context,
-        )
-        return {"success": True, "result": result}
-    except RuntimeError as e:
-        raise HTTPException(status_code=422, detail=str(e))
-    except Exception:
-        logger.exception("corrector_grade failed")
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 
