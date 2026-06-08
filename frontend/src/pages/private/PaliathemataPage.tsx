@@ -20,7 +20,9 @@ type ExamMode =
   | 'oefe-b'
   | 'eimaste-mesa-a'
   | 'eimaste-mesa-b'
-  | 'eimaste-mesa-c';
+  | 'eimaste-mesa-c'
+  | 'trapeza-thema-b'
+  | 'trapeza-thema-d';
 
 interface ExamItem {
   id: string;
@@ -88,6 +90,15 @@ const EIMASTE_MESA_A = EIMASTE_MESA_A_IDS.map(parseEimasteMesaId);
 const EIMASTE_MESA_B = EIMASTE_MESA_B_IDS.map(parseEimasteMesaId);
 const EIMASTE_MESA_C = EIMASTE_MESA_C_IDS.map(parseEimasteMesaId);
 
+const numberedTrapezaItems = (count: number): ExamItem[] =>
+  Array.from({ length: count }, (_, i) => {
+    const n = i + 1;
+    return { id: n.toString(), label: `Θέμα ${n}` };
+  });
+
+const TRAPEZA_THEMA_B = numberedTrapezaItems(17);
+const TRAPEZA_THEMA_D = numberedTrapezaItems(20);
+
 const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
   kanonikes: yearsToItems(KANONIKES_YEARS),
   epanaliptikes: yearsToItems(EPANALIPTIKES_YEARS),
@@ -96,6 +107,8 @@ const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
   'eimaste-mesa-a': EIMASTE_MESA_A,
   'eimaste-mesa-b': EIMASTE_MESA_B,
   'eimaste-mesa-c': EIMASTE_MESA_C,
+  'trapeza-thema-b': TRAPEZA_THEMA_B,
+  'trapeza-thema-d': TRAPEZA_THEMA_D,
 };
 
 const MODE_TABS: ModeTabConfig[] = [
@@ -111,22 +124,36 @@ const MODE_TABS: ModeTabConfig[] = [
   {
     mode: 'eimaste-mesa-a',
     label: 'Είμαστε Μέσα · Α',
-    mobileLabel: 'Μέσα · Α',
+    mobileLabel: 'Είμαστε Μέσα · Α',
     count: EIMASTE_MESA_A.length,
   },
   {
     mode: 'eimaste-mesa-b',
     label: 'Είμαστε Μέσα · Β',
-    mobileLabel: 'Μέσα · Β',
+    mobileLabel: 'Είμαστε Μέσα · Β',
     count: EIMASTE_MESA_B.length,
   },
   {
     mode: 'eimaste-mesa-c',
     label: 'Είμαστε Μέσα · Γ',
-    mobileLabel: 'Μέσα · Γ',
+    mobileLabel: 'Είμαστε Μέσα · Γ',
     count: EIMASTE_MESA_C.length,
   },
+  {
+    mode: 'trapeza-thema-b',
+    label: 'Τράπεζα Θεμάτων · Β',
+    mobileLabel: 'Τράπεζα · Β',
+    count: TRAPEZA_THEMA_B.length,
+  },
+  {
+    mode: 'trapeza-thema-d',
+    label: 'Τράπεζα Θεμάτων · Δ',
+    mobileLabel: 'Τράπεζα · Δ',
+    count: TRAPEZA_THEMA_D.length,
+  },
 ];
+
+const YEAR_MODES: ExamMode[] = ['kanonikes', 'epanaliptikes', 'oefe-a', 'oefe-b'];
 
 const getModeLabel = (currentMode: ExamMode): string => {
   const tab = MODE_TABS.find((t) => t.mode === currentMode);
@@ -141,7 +168,7 @@ const TOTAL_TOPIC_COUNT = MODE_TABS.reduce((sum, tab) => sum + tab.count, 0);
 
 const TopicCard: React.FC<TopicCardProps> = ({ item, mode, isSelected, onClick, index }) => {
   const staggerDelay = Math.min(index * 0.015, 0.2);
-  const isYearMode = !mode.startsWith('eimaste-mesa');
+  const isYearMode = YEAR_MODES.includes(mode);
 
   return (
     <motion.button
@@ -257,9 +284,15 @@ const PaliathemataPage: React.FC = () => {
 
   const searchPlaceholder = mode.startsWith('eimaste-mesa')
     ? 'Αναζήτηση περιόδου...'
-    : 'Αναζήτηση έτους...';
+    : mode.startsWith('trapeza')
+      ? 'Αναζήτηση θέματος...'
+      : 'Αναζήτηση έτους...';
 
-  const resultsLabel = mode.startsWith('eimaste-mesa') ? 'περίοδοι' : 'χρονιές';
+  const resultsLabel = mode.startsWith('eimaste-mesa')
+    ? 'περίοδοι'
+    : mode.startsWith('trapeza')
+      ? 'θέματα'
+      : 'χρονιές';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
@@ -332,7 +365,7 @@ const PaliathemataPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-5 sm:mb-6">
             <div
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2 w-full"
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-2 w-full"
               role="tablist"
               aria-label="Επιλογή κατηγορίας"
             >
@@ -355,7 +388,27 @@ const PaliathemataPage: React.FC = () => {
                 >
                   <div className="flex flex-col items-center gap-1 leading-tight">
                     <Calendar className="w-4 h-4 shrink-0" />
-                    <span className="sm:hidden">{tab.mobileLabel}</span>
+                    {tab.mode.startsWith('eimaste-mesa') ? (
+                      <span className="sm:hidden text-center text-[10px] leading-snug">
+                        <span className="block">Είμαστε Μέσα</span>
+                        <span className="block">
+                          {tab.mode === 'eimaste-mesa-a'
+                            ? 'Α Φάση'
+                            : tab.mode === 'eimaste-mesa-b'
+                              ? 'Β Φάση'
+                              : 'Γ Φάση'}
+                        </span>
+                      </span>
+                    ) : tab.mode.startsWith('trapeza') ? (
+                      <span className="sm:hidden text-center text-[10px] leading-snug">
+                        <span className="block">Τράπεζα Θεμάτων</span>
+                        <span className="block">
+                          {tab.mode === 'trapeza-thema-b' ? 'Θέμα Β' : 'Θέμα Δ'}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="sm:hidden">{tab.mobileLabel}</span>
+                    )}
                     <span className="hidden sm:inline">{tab.label}</span>
                     <span className="text-[10px] sm:text-xs opacity-75">({tab.count})</span>
                   </div>
