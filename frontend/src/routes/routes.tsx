@@ -3,7 +3,7 @@ import React, { lazy } from 'react';
 // Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
 const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
-const MerchPage = lazy(() => import('@/pages/public/MerchPage'));
+// const MerchPage = lazy(() => import('@/pages/public/MerchPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
 const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
@@ -20,7 +20,7 @@ const FlashcardsPage = lazy(loadFlashcardsPage);
 const LeaderboardPage = lazy(() => import('@/pages/public/LeaderboardPage'));
 const AlgorithmsPage = lazy(() => import('@/pages/private/AlgorithmsPage'));
 const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
-const OnlinePage = lazy(() => import('@/pages/private/OnlinePage'));
+// const OnlinePage = lazy(() => import('@/pages/private/OnlinePage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
 const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
 const NotFound = lazy(() => import('@/pages/other/NotFound'));
@@ -53,7 +53,7 @@ export const prefetchCriticalPrivateRoutes = () => {
 export function shouldShowChatWidgetOnPath(pathname: string): boolean {
   const p =
     pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
-  const allowList = new Set(['/', '/about', '/merch', '/privacy-policy', '/data', '/announcements']);
+  const allowList = new Set(['/', '/about', '/privacy-policy', '/data', '/announcements']);
   return allowList.has(p);
 }
 
@@ -66,10 +66,10 @@ const routes: RouteConfig[] = [
     path: '/about',
     element: <AboutPage />,
   },
-  {
-    path: '/merch',
-    element: <MerchPage />,
-  },
+  // {
+  //   path: '/merch',
+  //   element: <MerchPage />,
+  // },
   {
     path: '/privacy-policy',
     element: <PrivacyPolicyPage />,
@@ -106,10 +106,10 @@ const routes: RouteConfig[] = [
     path: '/paliathemata',
     element: <PaliathemataPage />,
   },
-  {
-    path: '/online',
-    element: <OnlinePage />,
-  },
+  // {
+  //   path: '/online',
+  //   element: <OnlinePage />,
+  // },
   {
     path: '/prosanatolismos',
     element: <ProsanatolismosPage />,

@@ -18,6 +18,15 @@ export interface Announcement {
 
 export const ANNOUNCEMENTS: Announcement[] = [
   {
+    id: '2',
+    date: '2026-06-18',
+    title: 'Αποτελέσματα Πανελληνίων',
+    body:
+      'Χρονοδιάγραμμα μέχρι τις Βάσεις 2026: 23/6 καταχώριση κινητού για SMS, 26/6 ανακοίνωση βαθμολογιών γενικής εξέτασης, 30/6 λήξη για password από τα Λύκεια. Οι βάσεις αναμένονται τέλη Ιουλίου (εκτίμηση 28–30/7).',
+    link: 'https://www.dnews.gr/eidhseis/paideia/594847/apotelesmata-panellinion-2026-oi-imerominies-orosimo-mexri-tis-vaseis',
+    linkLabel: 'Διάβασε στο Dnews',
+  },
+  {
     id: '1',
     date: '2026-04-09',
     title: 'ΠΡΟΓΡΑΜΜΑ ΠΑΝΕΛΛΗΝΙΩΝ',

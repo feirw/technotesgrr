@@ -10,9 +10,8 @@ import {
   FileText,
   Menu,
   X,
-  GraduationCap,
   Compass,
-  ShoppingBag,
+  // ShoppingBag,
   LucideIcon,
   User,
   ChevronDown,
@@ -112,14 +111,14 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/flashcards" label="Flashcards" icon={Brain} />
               <LinkItem to="/methodologies" label="Μεθοδολογίες" icon={BookOpen} />
               <LinkItem to="/askiseis" label="Ασκήσεις" icon={ClipboardList} />
+              <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
               <LinkItem to="/paliathemata" label="Παλιά Θέματα" icon={FileText} />
               <LinkItem to="/gloglossa" label="GloGlossa" icon={Globe} />
               <LinkItem to="/progress-tracker" label="Progress Tracker" icon={Map} />
               <LinkItem to="/study-timer" label="Study Timer" icon={Timer} />
               <LinkItem to="/prosanatolismos" label="Προσανατολισμός" icon={Compass} />
               <LinkItem to="/algorithms" label="Αλγόριθμοι" icon={Code} />
-              <LinkItem to="/sxoles" label="Σχολές" icon={School2Icon} />
-              <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} />
+              {/* <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} /> */}
             </div>
           </motion.div>
         )}
@@ -339,7 +338,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/about">Σχετικά με εμένα</NavButton>
               <NavButton to="/announcements">Ανακοινώσεις</NavButton>
               {/* GloGlossa moved into private "Μάθηση" menu */}
-              <NavButton to="/merch">Η Ατζέντα</NavButton>
+              {/* <NavButton to="/merch">Η Ατζέντα</NavButton> */}
               <button
                 type="button"
                 aria-label="Theme toggle"
@@ -473,9 +472,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/announcements" icon={Megaphone} onClick={closeMenu}>
                     Ανακοινώσεις
                   </MobileNavButton>
-                  <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
+                  {/* <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
                     Ατζέντα
-                  </MobileNavButton>
+                  </MobileNavButton> */}
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
 
                   <MobileNavButton to="/quiz" icon={Trophy} onClick={closeMenu}>
@@ -495,6 +494,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/askiseis" icon={ClipboardList} onClick={closeMenu}>
                     Ασκήσεις
                   </MobileNavButton>
+                  <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
+                    Σχολές
+                  </MobileNavButton>
                   <MobileNavButton to="/paliathemata" icon={FileText} onClick={closeMenu}>
                     Παλιά Θέματα
                   </MobileNavButton>
@@ -511,12 +513,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/prosanatolismos" icon={Compass} onClick={closeMenu}>
                     Προσανατολισμός
                   </MobileNavButton>
-                  <MobileNavButton to="/sxoles" icon={School2Icon} onClick={closeMenu}>
-                    Σχολές
-                  </MobileNavButton>
-                  <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
+                  {/* <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
                     Online Μαθήματα
-                  </MobileNavButton>
+                  </MobileNavButton> */}
                   <MobileNavButton to="/algorithms" icon={Code} onClick={closeMenu}>
                     Algorithms
                   </MobileNavButton>
