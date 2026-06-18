@@ -28,14 +28,16 @@ const mainSectionTitleClass =
 const ExampleList: React.FC<{ examples: OsoExample[] }> = ({ examples }) => (
   <motion.div className="mt-6 flex flex-col gap-4 text-gray-800 dark:text-gray-100">
     {examples.map((example, index) => (
-      <div key={`${example.sectionHeading ?? ''}-${example.title}`} className="pb-2">
+      <div key={`${index}-${example.sectionHeading ?? ''}-${example.title ?? ''}`} className="pb-2">
         {example.sectionHeading && <h3 className={sectionHeadingClass}>{example.sectionHeading}</h3>}
-        <h4 className={example.sectionHeading ? blockTitleAfterSectionClass : blockTitleClass}>
-          {index + 1}. {example.title}
-        </h4>
-        {example.parts?.map((part) => (
-          <div key={part.subtitle}>
-            <p className={partSubtitleClass}>{part.subtitle}</p>
+        {example.title && (
+          <h4 className={example.sectionHeading ? blockTitleAfterSectionClass : blockTitleClass}>
+            {index + 1}. {example.title}
+          </h4>
+        )}
+        {example.parts?.map((part, partIndex) => (
+          <div key={`${part.subtitle ?? partIndex}`}>
+            {part.subtitle && <p className={partSubtitleClass}>{part.subtitle}</p>}
             <pre className={preClass}>{part.code}</pre>
           </div>
         ))}

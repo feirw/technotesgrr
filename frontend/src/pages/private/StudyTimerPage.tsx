@@ -115,12 +115,12 @@ const StudyTimerPage: React.FC = () => {
             Βάλε χρόνο διαβάσματος και κάνε track την πρόοδό σου.
           </p>
 
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-coral-wash text-coral-strong dark:bg-coral-accent/15 dark:text-coral-light font-semibold mb-4 border border-coral-accent/20">
-              <Clock3 className="w-4 h-4" />
+          <div className="text-center mb-8 py-4 sm:py-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-coral-wash text-coral-strong dark:bg-coral-accent/15 dark:text-coral-light font-semibold mb-6 border border-coral-accent/20">
+              <Clock3 className="w-5 h-5" />
               Σημερινός χρόνος
             </div>
-            <div className="text-5xl sm:text-6xl font-black text-coral-accent dark:text-coral-light tracking-wider">
+            <div className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-coral-accent dark:text-coral-light tracking-wider tabular-nums leading-none">
               {formatTime(timer.elapsedMs)}
             </div>
           </div>
