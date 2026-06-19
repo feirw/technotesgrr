@@ -51,8 +51,8 @@ interface FaqItem {
 
 // ---------- MOCK DATA ----------
 
-const HERO_BACKGROUND_LIGHT = '/images/home%20page/untitled-design-1.jpg';
-const HERO_BACKGROUND_DARK = '/images/home%20page/untitled-design.jpg';
+const HERO_BACKGROUND_LIGHT = '/images/home%20page/bc11.jpg';
+const HERO_BACKGROUND_DARK = '/images/home%20page/night.jpg';
 
 const reviewsData: Review[] = [
   {
@@ -557,20 +557,20 @@ const HomePage: React.FC = () => {
           </div>
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20">
             <h1
-              className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight"
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight"
             >
-              Γράψε 100 στην Πληροφορική
+              Technotes
             </h1>
 
             <p
-              className="text-base sm:text-lg md:text-2xl text-gray-700 dark:text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
             >
               Η <span className="font-bold text-[#f07f97]">ιδανική πλατφόρμα</span> προετοιμασίας
               για τις Πανελλήνιες.
             </p>
 
             <motion.button
-              className="relative inline-flex items-center gap-3 px-9 py-4 bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
+              className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
               onClick={() => navigate('/quiz')}
               whileTap={{ scale: 0.98 }}
             >

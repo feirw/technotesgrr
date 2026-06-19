@@ -110,6 +110,12 @@ const PrepMenu: React.FC = () => {
                 iconClassName="w-10 h-10"
               />
               <LinkItem to="/sxoles" label="Σχολές" iconSrc={MENU_ICONS.schools} />
+              <LinkItem
+                to="/syntelestes-sxolon"
+                label="Συντελεστές Σχολών"
+                iconSrc={MENU_ICONS.syntelestesSxolon}
+                iconClassName="w-8 h-8"
+              />
               <LinkItem to="/paliathemata" label="Παλιά Θέματα" iconSrc={MENU_ICONS.paliathemata} />
               <LinkItem to="/gloglossa" label="GloGlossa" iconSrc={MENU_ICONS.gloglossa} />
               <LinkItem to="/progress-tracker" label="Progress Tracker" iconSrc={MENU_ICONS.progressTracker} />
@@ -207,6 +213,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const isSchoolsPage = location.pathname === '/sxoles';
   const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
@@ -293,8 +300,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div
       className={`min-h-screen overflow-x-hidden text-gray-900 dark:text-gray-100 flex flex-col ${
-        isHomePage
-          ? 'bg-coral-wash dark:bg-[#2d1c48]'
+        isHomePage || isSchoolsPage
+          ? 'bg-[#ff97b2] dark:bg-[#2d1c48]'
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]'
       }`}
     >
@@ -514,6 +521,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </MobileNavButton>
                   <MobileNavButton to="/sxoles" iconSrc={MENU_ICONS.schools} onClick={closeMenu}>
                     Σχολές
+                  </MobileNavButton>
+                  <MobileNavButton
+                    to="/syntelestes-sxolon"
+                    iconSrc={MENU_ICONS.syntelestesSxolon}
+                    iconClassName="w-9 h-9"
+                    onClick={closeMenu}
+                  >
+                    Συντελεστές Σχολών
                   </MobileNavButton>
                   <MobileNavButton to="/paliathemata" iconSrc={MENU_ICONS.paliathemata} onClick={closeMenu}>
                     Παλιά Θέματα

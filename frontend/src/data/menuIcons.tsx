@@ -9,6 +9,7 @@ export const MENU_ICONS = {
   prosanatolismos: '/images/home%20page/icon9.jpg',
   algorithms: '/images/home%20page/icon10.jpg',
   schools: '/images/home%20page/icon11.jpg',
+  syntelestesSxolon: '/images/home%20page/Untitled%20design.png',
   askiseis: '/images/home%20page/kitie.png',
   methodologies: '/images/home%20page/icon15.jpg',
   flashcards: '/images/home%20page/icon16.jpg',

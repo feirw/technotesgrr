@@ -4,8 +4,8 @@ import { Download, Printer, ExternalLink, Maximize, FileText } from 'lucide-reac
 
 const PaliaMobilePdf = lazy(() => import('./PaliaMobilePdf'));
 
-const BRAND = '#ff8f8e';
-const BRAND_DARK = '#e85563';
+const BRAND = '#fea2bb';
+const BRAND_DARK = '#f088a5';
 
 interface PaliaProps {
   pdfPath?: string;
@@ -91,7 +91,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
     'block w-full h-[min(720px,calc(100dvh-14rem))] sm:h-[min(720px,80dvh)] md:h-[720px]';
 
   return (
-    <div className="w-full bg-coral-wash p-2 sm:p-4">
+    <div className="w-full bg-[#fff5f8] p-2 sm:p-4">
       <motion.div
         ref={containerRef}
         className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden max-w-6xl mx-auto"
@@ -100,14 +100,17 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 380, damping: 28 }}
       >
-        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-3 sm:p-6">
+        <div
+          className="text-gray-900 p-3 sm:p-6"
+          style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
+        >
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/35 flex items-center justify-center shrink-0">
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div className="min-w-0">
               <h1 className="text-lg sm:text-2xl font-black truncate">Παλιό θέμα (PDF)</h1>
-              <p className="text-coral-light/95 text-xs sm:text-sm truncate">{fileName}</p>
+              <p className="text-gray-800/80 text-xs sm:text-sm truncate">{fileName}</p>
             </div>
           </div>
         </div>
@@ -167,11 +170,11 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
           )}
         </div>
 
-        <div className="p-3 sm:p-6 bg-coral-wash border-t-2 border-coral-accent/25">
+        <div className="p-3 sm:p-6 bg-[#fff5f8] border-t-2 border-[#fea2bb]/30">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
             <motion.button
               onClick={handleOpenNew}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold text-white shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold text-gray-900 shadow-lg touch-manipulation"
               style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})` }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -182,7 +185,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
             <motion.button
               onClick={handleDownload}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-[#fea2bb]/45 text-gray-800 hover:border-[#fea2bb] shadow-lg touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -192,7 +195,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
             <motion.button
               onClick={handlePrint}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-[#fea2bb]/45 text-gray-800 hover:border-[#fea2bb] shadow-lg touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -202,7 +205,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
 
             <motion.button
               onClick={handleFullscreen}
-              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-coral-accent/40 text-gray-800 hover:border-coral-accent shadow-lg touch-manipulation"
+              className="flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold bg-white border-2 border-[#fea2bb]/45 text-gray-800 hover:border-[#fea2bb] shadow-lg touch-manipulation"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
