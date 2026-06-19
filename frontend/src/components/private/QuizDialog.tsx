@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -61,8 +61,8 @@ interface SubmitResponse {
 
 // --- Constants ---
 
-const BRAND = '#fda8a9';
-const BRAND_DARK = '#f88b8c';
+const BRAND = '#f07f97';
+const BRAND_DARK = '#e06d88';
 const BACKEND_URL = getBackendUrl();
 
 const QuizDialog: React.FC<QuizDialogProps> = ({
@@ -274,17 +274,17 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
         {/* Dialog */}
         <motion.div
-          className="relative w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden bg-white"
-          style={{ border: `4px solid ${BRAND}`, maxHeight: '90vh' }}
+          className="relative w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden bg-white dark:bg-[#2d1c48] border-4 border-[#f07f97]"
+          style={{ maxHeight: '90vh' }}
           initial={{ scale: 0.9, opacity: 0, y: 50 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 50 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         >
           {/* Progress Bar */}
-          <div className="h-3 bg-gray-200 relative">
+          <div className="h-3 bg-gray-200 dark:bg-[#1a1028] relative">
             <motion.div
-              className="h-full bg-gradient-to-r from-pink-500 via-rose-500 to-red-500"
+              className="h-full bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88]"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -301,8 +301,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             <div className="flex items-center justify-between mb-6">
               <div className="flex-1">
                 <motion.h3
-                  className="text-xl md:text-2xl font-black"
-                  style={{ color: BRAND_DARK }}
+                  className="text-xl md:text-2xl font-black text-[#f07f97]"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                 >
@@ -317,13 +316,13 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                       animate={{ opacity: 1 }}
                     >
                       <Trophy className="w-5 h-5 text-yellow-500" />
-                      <span className="text-sm font-semibold text-gray-600">
+                      <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
                         Σκορ: {score.correct}/{score.total} ({scorePercentage}%)
                       </span>
                     </motion.div>
                   )}
                   {unansweredCount > 0 && (
-                    <span className="text-sm text-gray-500">{unansweredCount} αναπάντητες</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{unansweredCount} αναπάντητες</span>
                   )}
                 </div>
               </div>
@@ -334,8 +333,8 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                   onClick={toggleFlag}
                   className={`p-2 rounded-full transition-colors ${
                     isFlagged
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#3a2658] dark:text-gray-300 dark:hover:bg-[#4a3568]'
                   }`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -347,26 +346,25 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                 {/* Close Button */}
                 <motion.button
                   onClick={onClose}
-                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#3a2658] transition-colors"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   aria-label="Κλείσιμο"
                 >
-                  <X className="w-6 h-6 text-gray-600" />
+                  <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                 </motion.button>
               </div>
             </div>
 
             {/* Question */}
             <motion.div
-              className="mb-6 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-pink-50 to-rose-50"
-              style={{ border: `2px solid ${BRAND}` }}
+              className="mb-6 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-pink-50 to-rose-50 dark:from-[#3a2658] dark:to-[#342052] border-2 border-[#f07f97]"
               key={`question-${current}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="text-lg md:text-xl font-semibold text-gray-800 leading-relaxed">
+              <p className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-100 leading-relaxed">
                 {question?.question}
               </p>
             </motion.div>
@@ -375,7 +373,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             <AnimatePresence>
               {error && (
                 <motion.div
-                  className="mb-4 p-4 rounded-xl bg-red-50 border-2 border-red-300 flex items-center gap-3"
+                  className="mb-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border-2 border-red-300 dark:border-red-800 flex items-center gap-3"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -408,10 +406,10 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     className={`
                         relative flex items-center gap-4 w-full px-5 py-4 md:px-6 md:py-5 rounded-xl
                         border-2 font-semibold text-left transition-all
-                        ${!isRevealed ? 'bg-white border-pink-200 hover:border-pink-400 hover:shadow-xl cursor-pointer' : 'cursor-default'}
-                        ${isRevealed && isCorrect ? 'bg-green-50 border-green-500 shadow-lg' : ''}
-                        ${isRevealed && !isCorrect && isSelected ? 'bg-red-50 border-red-500 shadow-lg' : ''}
-                        ${isRevealed && !isCorrect && !isSelected ? 'bg-gray-50 border-gray-300 opacity-70' : ''}
+                        ${!isRevealed ? 'bg-white dark:bg-[#3a2658] border-pink-200 dark:border-white/15 hover:border-pink-400 dark:hover:border-[#f07f97] hover:shadow-xl cursor-pointer' : 'cursor-default'}
+                        ${isRevealed && isCorrect ? 'bg-green-50 dark:bg-green-950/40 border-green-500 dark:border-green-600 shadow-lg' : ''}
+                        ${isRevealed && !isCorrect && isSelected ? 'bg-red-50 dark:bg-red-950/40 border-red-500 dark:border-red-600 shadow-lg' : ''}
+                        ${isRevealed && !isCorrect && !isSelected ? 'bg-gray-50 dark:bg-[#342052] border-gray-300 dark:border-gray-600 opacity-70' : ''}
                         ${isRevealed ? '' : 'hover:transform hover:scale-[1.01]'}
                       `}
                     initial={{ opacity: 0, x: -30 }}
@@ -431,9 +429,9 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                       className={`
                           flex items-center justify-center w-10 h-10 rounded-full font-bold text-base flex-shrink-0
                           transition-all duration-300
-                          ${!isRevealed ? 'bg-pink-100 text-pink-600' : ''}
+                          ${!isRevealed ? 'bg-pink-100 text-pink-600 dark:bg-[#f07f97]/20 dark:text-[#f07f97]' : ''}
                           ${isRevealed && isCorrect ? 'bg-green-500 text-white' : ''}
-                          ${isRevealed && !isCorrect ? 'bg-gray-400 text-gray-700' : ''}
+                          ${isRevealed && !isCorrect ? 'bg-gray-400 text-gray-700 dark:bg-gray-600 dark:text-gray-200' : ''}
                         `}
                     >
                       {String.fromCharCode(65 + idx)}
@@ -443,9 +441,9 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     <span
                       className={`
                           flex-1 text-base md:text-lg
-                          ${isRevealed && isCorrect ? 'text-green-800 font-bold' : ''}
-                          ${isRevealed && !isCorrect && isSelected ? 'text-red-800' : ''}
-                          ${!isRevealed ? 'text-gray-800' : ''}
+                          ${isRevealed && isCorrect ? 'text-green-800 dark:text-green-300 font-bold' : ''}
+                          ${isRevealed && !isCorrect && isSelected ? 'text-red-800 dark:text-red-300' : ''}
+                          ${!isRevealed ? 'text-gray-800 dark:text-gray-100' : ''}
                         `}
                     >
                       {ans.text}
@@ -474,7 +472,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     {/* Keyboard Hint */}
                     {!isRevealed && (
                       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span className="text-xs font-mono bg-gray-200 px-2 py-1 rounded text-gray-600">
+                        <span className="text-xs font-mono bg-gray-200 dark:bg-[#2d1c48] px-2 py-1 rounded text-gray-600 dark:text-gray-300">
                           {idx + 1}
                         </span>
                       </div>
@@ -488,31 +486,31 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             <AnimatePresence>
               {selected !== null && question?.explanation && showExplanation && (
                 <motion.div
-                  className="mb-6 p-5 rounded-xl bg-blue-50 border-2 border-blue-200"
+                  className="mb-6 p-5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-200 dark:border-blue-800"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.4 }}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-bold text-blue-800 flex items-center gap-2">
+                    <h4 className="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2">
                       <Lightbulb className="w-5 h-5" />
                       Επεξήγηση:
                     </h4>
                     <button
                       onClick={() => setShowExplanation(false)}
-                      className="text-blue-600 hover:text-blue-800 text-sm underline"
+                      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm underline"
                     >
                       Απόκρυψη
                     </button>
                   </div>
-                  <p className="text-blue-700">{question.explanation}</p>
+                  <p className="text-blue-700 dark:text-blue-200">{question.explanation}</p>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Navigation */}
-            <div className="flex justify-between items-center pt-6 border-t-2 border-pink-100">
+            <div className="flex justify-between items-center pt-6 border-t-2 border-pink-100 dark:border-white/10">
               <motion.button
                 onClick={handlePrevious}
                 disabled={current === 0}
@@ -520,8 +518,8 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                   flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all
                   ${
                     current === 0
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-white text-gray-700 border-2 border-pink-200 hover:border-pink-400 hover:shadow-lg'
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-[#1a1028] dark:text-gray-600'
+                      : 'bg-white dark:bg-[#3a2658] text-gray-700 dark:text-gray-200 border-2 border-pink-200 dark:border-white/15 hover:border-pink-400 dark:hover:border-[#f07f97] hover:shadow-lg'
                   }
                 `}
                 whileHover={current > 0 ? { scale: 1.05, x: -4 } : {}}
@@ -548,16 +546,16 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                       onClick={() => goToQuestion(idx)}
                       className={`
                         relative w-8 h-8 rounded-full font-bold text-xs transition-all flex-shrink-0
-                        ${current === idx ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white scale-110 ring-2 ring-pink-300' : ''}
-                        ${isAnswered && current !== idx && isCorrectSelected ? 'bg-green-200 text-green-700' : ''}
-                        ${isAnswered && current !== idx && !isCorrectSelected ? 'bg-red-200 text-red-700' : ''}
-                        ${!isAnswered && current !== idx ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' : ''}
+                        ${current === idx ? 'bg-gradient-to-r from-[#f07f97] to-[#e06d88] text-white scale-110 ring-2 ring-[#f07f97]/40' : ''}
+                        ${isAnswered && current !== idx && isCorrectSelected ? 'bg-green-200 text-green-700 dark:bg-green-900/50 dark:text-green-300' : ''}
+                        ${isAnswered && current !== idx && !isCorrectSelected ? 'bg-red-200 text-red-700 dark:bg-red-900/50 dark:text-red-300' : ''}
+                        ${!isAnswered && current !== idx ? 'bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-[#3a2658] dark:text-gray-300 dark:hover:bg-[#4a3568]' : ''}
                       `}
                       aria-label={`Μετάβαση στην ερώτηση ${idx + 1}`}
                     >
                       {idx + 1}
                       {isFlaggedQ && (
-                        <Flag className="absolute -top-1 -right-1 w-3 h-3 text-red-500 fill-red-500 bg-white rounded-full p-0.5 border border-red-500" />
+                        <Flag className="absolute -top-1 -right-1 w-3 h-3 text-red-500 fill-red-500 bg-white dark:bg-[#2d1c48] rounded-full p-0.5 border border-red-500" />
                       )}
                     </button>
                   );

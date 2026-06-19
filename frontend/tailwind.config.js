@@ -22,7 +22,6 @@ module.exports = {
   				'Consolas',
   				'monospace',
   			],
-  			arcade: ['ArcadeClassic', 'Manrope', 'sans-serif'],
   		},
   		typography: (theme) => ({
   			DEFAULT: {
@@ -82,13 +81,13 @@ module.exports = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-  			/** Ροζ-κοραλί (ίδιο με HomePage) */
+  			/** Brand pink (#ff97b2) */
   			coral: {
-  				DEFAULT: '#ff8f8e',
-  				accent: '#ff6b7a',
-  				strong: '#e85563',
-  				light: '#ffb0a4',
-  				wash: '#fff5f4',
+  				DEFAULT: '#ff97b2',
+  				accent: '#ff97b2',
+  				strong: '#ff80a3',
+  				light: '#ffc4d6',
+  				wash: '#fff5f8',
   			},
   		}
   	},

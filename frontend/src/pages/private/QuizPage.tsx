@@ -380,7 +380,7 @@ const QuizPage: React.FC = () => {
   // Background Component
   const TechBackgroundPattern = useMemo(
     () => (
-      <div className="absolute inset-0 bg-gradient-to-br from-coral-wash via-white to-[#ffe8e5] dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 transition-colors duration-500">
+      <div className="absolute inset-0 bg-gradient-to-br from-coral-wash via-white to-[#ffe8e5] dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028] transition-colors duration-500">
         {/* Binary Code Pattern */}
         <div className="absolute inset-0 opacity-5 dark:opacity-5 font-mono text-xs overflow-hidden text-coral-accent/40 dark:text-purple-400/50">
           {Array.from({ length: 25 }).map((_, i) => (
@@ -417,7 +417,7 @@ const QuizPage: React.FC = () => {
         </div>
 
         {/* Gradient Overlay for soft edge */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/50 dark:from-gray-900/50 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/50 dark:from-[#2d1c48]/50 to-transparent pointer-events-none" />
       </div>
     ),
     []
@@ -653,7 +653,7 @@ const QuizPage: React.FC = () => {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               />
-              <p className="mt-4 text-gray-500 font-semibold">Φόρτωση κεφαλαίων...</p>
+              <p className="mt-4 text-gray-500 dark:text-gray-400 font-semibold">Φόρτωση κεφαλαίων...</p>
             </div>
           )}
 
@@ -664,10 +664,10 @@ const QuizPage: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
             >
               <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
                 {q.trim() ? 'Δεν βρέθηκαν αποτελέσματα' : 'Δεν βρέθηκαν κεφάλαια'}
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 {q.trim()
                   ? 'Δοκίμασε διαφορετική αναζήτηση'
                   : 'Κανένα κεφάλαιο διαθέσιμο αυτή τη στιγμή'}
@@ -696,7 +696,7 @@ const QuizPage: React.FC = () => {
                 return (
                   <motion.div
                     key={quiz.id}
-                    className="group relative p-6 rounded-2xl bg-white dark:bg-gray-700 border-2 border-coral-accent/25 hover:border-coral-accent hover:shadow-2xl transition-all overflow-hidden cursor-pointer"
+                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/25 dark:border-[#f07f97]/30 hover:border-coral-accent dark:hover:border-[#f07f97] hover:shadow-2xl transition-all overflow-hidden cursor-pointer"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
@@ -704,7 +704,7 @@ const QuizPage: React.FC = () => {
                     onClick={() => continueQuiz(quiz)}
                   >
                     {/* Progress Bar */}
-                    <div className="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-gray-600 rounded-t-2xl overflow-hidden">
+                    <div className="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-[#2d1c48] rounded-t-2xl overflow-hidden">
                       <motion.div
                         className="h-full bg-coral-accent"
                         initial={{ width: 0 }}

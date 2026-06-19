@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, FileText, X, ClipboardList } from 'lucide-react';
+import { Search, FileText, X } from 'lucide-react';
+import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import Palia from '@/components/private/Palia';
 import {
   ASKISI_THEMES,
@@ -222,8 +223,8 @@ const AskiseisPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 mb-4">
-            <ClipboardList className="w-8 h-8" aria-hidden />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4">
+            <MenuIconImg src={MENU_ICONS.askiseis} className="w-12 h-12" />
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight">Ασκήσεις</h1>
           <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">

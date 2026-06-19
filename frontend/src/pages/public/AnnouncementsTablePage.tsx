@@ -34,7 +34,7 @@ function AnnouncementLink({ row }: { row: Announcement }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 font-medium text-[#ff6b7a] dark:text-[#ffb0a4] underline underline-offset-2 hover:text-[#e85563] dark:hover:text-[#ffc9bd] break-all"
+      className="inline-flex items-center gap-1.5 font-medium text-[#f07f97] underline underline-offset-2 hover:text-[#e06d88] dark:hover:text-[#ffc4d6] break-all"
     >
       <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" aria-hidden />
       {label}
@@ -49,14 +49,14 @@ const AnnouncementsTablePage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#fff5f4] dark:bg-[#0b1020] text-gray-900 dark:text-gray-100">
-      <header className="border-b border-[#ff8f8e]/35 dark:border-white/10 bg-white/90 dark:bg-[#0f152a]/90 backdrop-blur-md">
+    <div className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#ff6b7a] dark:text-[#ffb0a4] mb-3">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#f07f97] mb-3">
             <Megaphone className="w-4 h-4" aria-hidden />
             technotesgr
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Ανακοινώσεις
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 max-w-xl leading-relaxed">
@@ -67,26 +67,26 @@ const AnnouncementsTablePage: React.FC = () => {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 pb-16">
         {rows.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-400 py-16 text-sm">
+          <p className="text-center text-gray-600 dark:text-gray-400 py-16 text-sm">
             Δεν υπάρχουν ανακοινώσεις ακόμα.
           </p>
         ) : (
           <>
             {/* Desktop / tablet: πίνακας */}
-            <div className="hidden sm:block overflow-x-auto rounded-2xl border border-[#ff8f8e]/25 dark:border-white/10 bg-white/95 dark:bg-[#17233a]/90 shadow-lg">
+            <div className="hidden sm:block overflow-x-auto rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#3a2658] shadow-lg">
               <table className="w-full text-left text-sm border-collapse">
                 <thead>
-                  <tr className="border-b border-[#ff8f8e]/20 dark:border-white/10 bg-[#fff5f4]/80 dark:bg-[#0f152a]/80">
-                    <th scope="col" className="px-4 py-3 font-bold text-[#ff6b7a] dark:text-[#ffb0a4] whitespace-nowrap w-36">
+                  <tr className="border-b border-[#f07f97]/20 dark:border-white/10 bg-[#fff5f8]/80 dark:bg-[#2d1c48]/80">
+                    <th scope="col" className="px-4 py-3 font-bold text-[#f07f97] whitespace-nowrap w-36">
                       Ημερομηνία
                     </th>
-                    <th scope="col" className="px-4 py-3 font-bold text-[#ff6b7a] dark:text-[#ffb0a4] min-w-[10rem]">
+                    <th scope="col" className="px-4 py-3 font-bold text-[#f07f97] min-w-[10rem]">
                       Τίτλος
                     </th>
-                    <th scope="col" className="px-4 py-3 font-bold text-[#ff6b7a] dark:text-[#ffb0a4]">
+                    <th scope="col" className="px-4 py-3 font-bold text-[#f07f97]">
                       Κείμενο
                     </th>
-                    <th scope="col" className="px-4 py-3 font-bold text-[#ff6b7a] dark:text-[#ffb0a4] min-w-[8rem]">
+                    <th scope="col" className="px-4 py-3 font-bold text-[#f07f97] min-w-[8rem]">
                       Σύνδεσμος
                     </th>
                   </tr>
@@ -95,7 +95,7 @@ const AnnouncementsTablePage: React.FC = () => {
                   {rows.map((row: Announcement) => (
                     <tr
                       key={row.id}
-                      className="border-b border-gray-200/70 dark:border-white/5 last:border-0 hover:bg-[#ff8f8e]/[0.06] dark:hover:bg-white/[0.04] transition-colors"
+                      className="border-b border-gray-200/70 dark:border-white/5 last:border-0 hover:bg-[#f07f97]/[0.06] dark:hover:bg-white/[0.04] transition-colors"
                     >
                       <td className="px-4 py-3 align-top text-gray-600 dark:text-gray-300 whitespace-nowrap tabular-nums">
                         {row.date}
@@ -120,9 +120,9 @@ const AnnouncementsTablePage: React.FC = () => {
               {rows.map((row: Announcement) => (
                 <li
                   key={row.id}
-                  className="rounded-2xl border border-[#ff8f8e]/25 dark:border-white/10 bg-white/95 dark:bg-[#17233a]/90 p-4 shadow-md"
+                  className="rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#3a2658] p-4 shadow-md"
                 >
-                  <p className="text-xs font-semibold text-[#ff6b7a] dark:text-[#ffb0a4] tabular-nums">{row.date}</p>
+                  <p className="text-xs font-semibold text-[#f07f97] tabular-nums">{row.date}</p>
                   <h2 className="mt-1 text-lg font-bold text-gray-900 dark:text-white">{row.title}</h2>
                   <p className="mt-2 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
                     {row.body}

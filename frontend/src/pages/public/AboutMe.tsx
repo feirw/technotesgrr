@@ -5,7 +5,6 @@ import {
   GraduationCap,
   Lightbulb,
   Target,
-  Users,
 } from 'lucide-react';
 
 // --- Types & Interfaces ---
@@ -242,45 +241,6 @@ const AboutPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </motion.div>
-
-            {/* Quick Stats */}
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-3 gap-4"
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={stagger}
-            >
-              {[
-                {
-                  label: 'Επίδοση Πανελλαδικών',
-                  value: '19.000 μόρια',
-                  icon: <Target className="w-5 h-5 text-coral-accent" />,
-                },
-                {
-                  label: 'Βαθμός Πληροφορικής',
-                  value: '99/100',
-                  icon: <BookOpenCheck className="w-5 h-5 text-coral-accent" />,
-                },
-                {
-                  label: 'Αποστολή',
-                  value: 'Προσβάσιμη γνώση',
-                  icon: <Users className="w-5 h-5 text-coral-accent" />,
-                },
-              ].map((item) => (
-                <motion.div
-                  key={item.label}
-                  variants={fadeInUp}
-                  className="rounded-2xl border border-coral-accent/25 bg-white/80 dark:bg-gray-800/80 p-5 shadow-lg"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    {item.icon}
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
-                  </div>
-                  <p className="text-xl font-black text-coral-accent">{item.value}</p>
-                </motion.div>
-              ))}
             </motion.div>
 
             {/* Story Section */}
