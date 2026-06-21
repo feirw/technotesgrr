@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -8,18 +8,19 @@ import {
   // ShoppingBag,
   LucideIcon,
   ChevronDown,
-  Sun,
-  Moon,
   Instagram,
   Linkedin,
   Youtube,
   Music2,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
-import { prefetchCriticalPrivateRoutes, shouldShowChatWidgetOnPath } from '@/routes/routes';
+import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import CookieConsent from '@/components/other/CookieConsent';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
-const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
+// const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
+
+const DARK_THEME_ICON = '/images/home%20page/starr.png';
+const LIGHT_THEME_ICON = '/images/home%20page/sun.png';
 
 // --- Constants & Animations ---
 
@@ -109,6 +110,12 @@ const PrepMenu: React.FC = () => {
                 iconSrc={MENU_ICONS.askiseis}
                 iconClassName="w-10 h-10"
               />
+              {/* <LinkItem
+                to="/ai-corrector"
+                label="AI Corrector"
+                iconSrc={MENU_ICONS.aiCorrector}
+                iconClassName="w-10 h-10"
+              /> */}
               <LinkItem to="/sxoles" label="Σχολές" iconSrc={MENU_ICONS.schools} />
               <LinkItem
                 to="/syntelestes-sxolon"
@@ -214,10 +221,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
-  const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
+  // const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
-  const [shouldLoadChat, setShouldLoadChat] = useState(false);
+  // const [shouldLoadChat, setShouldLoadChat] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
   const lastScrollYRef = React.useRef(0);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
@@ -259,29 +266,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return () => clearTimeout(t);
   }, []);
 
-  // Defer ChatWidget loading — μόνο σε δημόσιες αρχικές σελίδες (όχι quiz / flashcards / κ.λπ.).
-  useEffect(() => {
-    if (!chatPathAllowed) return;
-
-    const idle = (window as any).requestIdleCallback as
-      | ((cb: () => void, opts?: { timeout: number }) => number)
-      | undefined;
-    let timeoutId: number | undefined;
-    let idleId: number | undefined;
-
-    if (idle) {
-      idleId = idle(() => setShouldLoadChat(true), { timeout: 1500 });
-    } else {
-      timeoutId = window.setTimeout(() => setShouldLoadChat(true), 900);
-    }
-
-    return () => {
-      if (timeoutId) window.clearTimeout(timeoutId);
-      if (idleId && (window as any).cancelIdleCallback) {
-        (window as any).cancelIdleCallback(idleId);
-      }
-    };
-  }, [chatPathAllowed]);
+  // Chatbot — προσωρινά απενεργοποιημένο
+  // useEffect(() => {
+  //   if (!chatPathAllowed) return;
+  //   const idle = (window as any).requestIdleCallback as
+  //     | ((cb: () => void, opts?: { timeout: number }) => number)
+  //     | undefined;
+  //   let timeoutId: number | undefined;
+  //   let idleId: number | undefined;
+  //   if (idle) {
+  //     idleId = idle(() => setShouldLoadChat(true), { timeout: 1500 });
+  //   } else {
+  //     timeoutId = window.setTimeout(() => setShouldLoadChat(true), 900);
+  //   }
+  //   return () => {
+  //     if (timeoutId) window.clearTimeout(timeoutId);
+  //     if (idleId && (window as any).cancelIdleCallback) {
+  //       (window as any).cancelIdleCallback(idleId);
+  //     }
+  //   };
+  // }, [chatPathAllowed]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -305,11 +309,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]'
       }`}
     >
+      {/* Chatbot — προσωρινά απενεργοποιημένο
       {shouldLoadChat && chatPathAllowed && (
         <Suspense fallback={null}>
           <ChatWidget />
         </Suspense>
       )}
+      */}
       {/* Navbar Container */}
       <motion.div
         initial={false}
@@ -364,10 +370,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 type="button"
                 aria-label="Theme toggle"
                 onClick={() => setIsDark(toggleTheme() === 'dark')}
-                className="ml-2 min-h-11 min-w-11 p-2 rounded-xl border border-coral-accent/35 text-coral-accent hover:bg-coral-wash transition-colors touch-manipulation inline-flex items-center justify-center"
+                className="ml-2 min-h-11 min-w-11 p-1.5 rounded-xl border border-coral-accent/35 text-coral-accent hover:bg-coral-wash transition-colors touch-manipulation inline-flex items-center justify-center"
                 title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
               >
-                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {isDark ? (
+                  <img
+                    src={LIGHT_THEME_ICON}
+                    alt=""
+                    className="w-8 h-8 object-contain [image-rendering:pixelated]"
+                  />
+                ) : (
+                  <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
+                )}
               </button>
 
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
@@ -519,6 +533,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   >
                     Ασκήσεις
                   </MobileNavButton>
+                  {/* <MobileNavButton
+                    to="/ai-corrector"
+                    iconSrc={MENU_ICONS.aiCorrector}
+                    iconClassName="w-11 h-11"
+                    onClick={closeMenu}
+                  >
+                    AI Corrector
+                  </MobileNavButton> */}
                   <MobileNavButton to="/sxoles" iconSrc={MENU_ICONS.schools} onClick={closeMenu}>
                     Σχολές
                   </MobileNavButton>
@@ -560,9 +582,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       type="button"
                       aria-label="Theme toggle"
                       onClick={() => setIsDark(toggleTheme() === 'dark')}
-                      className="min-h-11 min-w-11 p-2 rounded-lg border border-coral-accent/35 text-coral-accent touch-manipulation inline-flex items-center justify-center"
+                      className="min-h-11 min-w-11 p-1.5 rounded-lg border border-coral-accent/35 text-coral-accent touch-manipulation inline-flex items-center justify-center"
                     >
-                      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                      {isDark ? (
+                        <img
+                          src={LIGHT_THEME_ICON}
+                          alt=""
+                          className="w-8 h-8 object-contain [image-rendering:pixelated]"
+                        />
+                      ) : (
+                        <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
+                      )}
                     </button>
                   </div>
                 </div>

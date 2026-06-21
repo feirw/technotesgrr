@@ -1,10 +1,31 @@
-/** Πρόγραμμα σπουδών — Τμήμα Πληροφορικής και Τηλεπικοινωνιών, ΕΚΠΑ */
+/** Πρόγραμμα σπουδών — τύποι και helpers */
+
+import { EKPA_IPT_CURRICULUM } from './ekpaIptCurriculum.generated';
+import { AUTH_INFORMATICS_CURRICULUM } from './authInformaticsCurriculum.generated';
+import { OPA_INFORMATICS_CURRICULUM } from './opaInformaticsCurriculum.generated';
+
+export { EKPA_IPT_CURRICULUM, AUTH_INFORMATICS_CURRICULUM, OPA_INFORMATICS_CURRICULUM };
+
+export type SemesterSlotMark = 'Υ' | 'B';
+
+export type CurriculumSlots = Partial<
+  Record<'s1' | 's2' | 's3' | 's4' | 's5' | 's6', SemesterSlotMark>
+>;
+
+export type CourseCategory =
+  | 'mandatory'
+  | 'mandatory-choice'
+  | 'elective'
+  | 'general'
+  | 'lab'
+  | 'project';
 
 export type CurriculumCourse = {
   name: string;
   code: string;
   ects: number;
   kind: string;
+  slots?: CurriculumSlots;
 };
 
 export type CurriculumSemester = {
@@ -18,156 +39,92 @@ export type SchoolCurriculum = {
   semesters: CurriculumSemester[];
 };
 
-export const EKPA_IPT_CURRICULUM: SchoolCurriculum = {
-  title: "Πληροφορικής και Τηλεπικοινωνιών",
-  subtitle: "ΕΚΠΑ · Αθήνα",
-  semesters: [
-    { semester: 1, courses: [
-      { code: "Κ03", ects: 6, name: "Γραμμική Άλγεβρα", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ09", ects: 7, name: "Διακριτά Μαθηματικά", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "ΓΠ07", ects: 2, name: "Εισαγωγή στην Πληροφορική και στις Τηλεπικοινωνίες", kind: "Γενικής Παιδείας (ΓΠ)" },
-      { code: "Κ04", ects: 7, name: "Εισαγωγή στον Προγραμματισμό", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "K02ε", ects: 2, name: "Εργαστήριο Λογικής Σχεδίασης", kind: "Αυτοτελές Προαιρετικό Εργαστήριο (ΕΡ)" },
-      { code: "Κ02", ects: 6, name: "Λογική Σχεδίαση", kind: "Υποχρεωτικό (ΥΜ)" },
-    ] },
-    { semester: 2, courses: [
-      { code: "Κ01", ects: 8, name: "Ανάλυση Ι", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ14", ects: 7, name: "Αρχιτεκτονική Υπολογιστών Ι", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ08", ects: 7, name: "Δομές Δεδομένων και Τεχνικές Προγραμματισμού", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ20β", ects: 6, name: "Εφαρμοσμένα Μαθηματικά", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ12", ects: 8, name: "Ηλεκτρομαγνητισμός – Οπτική και Σύγχρονη Φυσική", kind: "Υποχρεωτικό (ΥΜ)" },
-    ] },
-    { semester: 3, courses: [
-      { code: "Κ06", ects: 8, name: "Ανάλυση ΙΙ", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ10", ects: 8, name: "Αντικειμενοστραφής Προγραμματισμός", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ11ε", ects: 2, name: "Εργαστήριο Κυκλωμάτων και Συστημάτων", kind: "Αυτοτελές Προαιρετικό Εργαστήριο (ΕΡ)" },
-      { code: "Κ13", ects: 6, name: "Πιθανότητες και Στατιστική", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ11", ects: 6, name: "Σήματα και Συστήματα", kind: "Υποχρεωτικό (ΥΜ)" },
-    ] },
-    { semester: 4, courses: [
-      { code: "Κ17", ects: 8, name: "Αλγόριθμοι και Πολυπλοκότητα", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ16", ects: 6, name: "Δίκτυα Επικοινωνιών I", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ16ε", ects: 2, name: "Εργαστήριο Δικτύων Επικοινωνιών Ι", kind: "Αυτοτελές Προαιρετικό Εργαστήριο (ΕΡ)" },
-      { code: "Κ21", ects: 7, name: "Συστήματα Επικοινωνιών", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "Κ29", ects: 7, name: "Σχεδίαση και Χρήση Βάσεων Δεδομένων", kind: "Υποχρεωτικό (ΥΜ)" },
-    ] },
-    { semester: 5, courses: [
-      { code: "Κ15", ects: 6, name: "Αριθμητική Ανάλυση", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "ΘΠ01", ects: 6, name: "Αρχές Γλωσσών Προγραμματισμού", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ30", ects: 6, name: "Αρχιτεκτονική Υπολογιστών ΙΙ", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "ΕΠ13", ects: 6, name: "Ασύρματες Επικοινωνίες και Συστήματα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ02", ects: 6, name: "Γραφικά Ι", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ33", ects: 6, name: "Δίκτυα Επικοινωνιών II", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "Κ16ε", ects: 2, name: "Εργαστήριο Δικτύων Επικοινωνιών Ι", kind: "Αυτοτελές Προαιρετικό Εργαστήριο (ΕΡ)" },
-      { code: "ΕΠ05", ects: 6, name: "Κύματα, Κυματοδηγοί, Κεραίες", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ22", ects: 8, name: "Λειτουργικά Συστήματα", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "ΘΠ04", ects: 6, name: "Παράλληλα Συστήματα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ03", ects: 6, name: "Σχεδίαση Ψηφιακών Συστημάτων - VHDL", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ02", ects: 6, name: "Τεχνητή Νοημοσύνη I", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ20", ects: 6, name: "Τηλεπικοινωνιακά Δίκτυα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ18", ects: 6, name: "Υλοποίηση Συστημάτων Βάσεων Δεδομένων", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "Κ32", ects: 6, name: "Ψηφιακή Επεξεργασία Σήματος", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-    ] },
-    { semester: 6, courses: [
-      { code: "ΘΠ16β", ects: 6, name: "Αλγόριθμοι-Θεμελιώσεις Μηχανικής Μάθησης", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ08", ects: 6, name: "Αναγνώριση Προτύπων–Μηχανική Μάθηση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ04", ects: 6, name: "Ανάλυση/Σχεδίαση Συστημάτων Λογισμικού", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ18", ects: 6, name: "Ασύρματα Δίκτυα Αισθητήρων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ34", ects: 6, name: "Διαχείριση Δικτύων", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "ΕΠ22β", ects: 4, name: "Ειδικά Θέματα Επικοινωνιών και Επεξεργασίας Σήματος – Πολυμέσα και Ασύρματη Δικτύωση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ07", ects: 6, name: "Επεξεργασία Στοχαστικών Σημάτων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ03", ects: 6, name: "Επιστημονικοί Υπολογισμοί", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ19ε", ects: 6, name: "Εργαστήριο Ηλεκτρονικής", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "K19", ects: 6, name: "Ηλεκτρονική", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "Κ35", ects: 6, name: "Θεωρία Πληροφορίας", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "Κ25", ects: 6, name: "Θεωρία Υπολογισμού", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "ΥΣ05", ects: 6, name: "Λογικός Προγραμματισμός", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ20α", ects: 6, name: "Μαθηματικά Πληροφορικής", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "Κ31", ects: 6, name: "Μεταγλωττιστές", kind: "Κατ\' Επιλογή Υποχρεωτικό (ΕΥΜ)" },
-      { code: "Κ24", ects: 8, name: "Προγραμματισμός Συστήματος", kind: "Υποχρεωτικό (ΥΜ)" },
-      { code: "ΥΣ19", ects: 6, name: "Τεχνητή Νοημοσύνη ΙΙ (Βαθιά Μηχανική Μάθηση για την Επεξεργασία Φυσικής Γλώσσας)", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ11", ects: 6, name: "Τεχνικές Εξόρυξης Δεδομένων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ14", ects: 6, name: "Τεχνολογίες Εφαρμογών Διαδικτύου", kind: "Προαιρετικό (ΠΜ)" },
-    ] },
-    { semester: 7, courses: [
-      { code: "ΘΠ09", ects: 6, name: "Αλγοριθμική Επιχειρησιακή Έρευνα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ23", ects: 6, name: "Ανάλυση Εικόνας και Τεχνητή Όραση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ11", ects: 6, name: "Ανάπτυξη Εικονικών Οργάνων για Λήψη και Επεξεργασία Σημάτων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ23γ", ects: 8, name: "Ανάπτυξη Λογισμικού για Αλγοριθμικά Προβλήματα", kind: "Project" },
-      { code: "Κ23α", ects: 8, name: "Ανάπτυξη Λογισμικού για Πληροφοριακά Συστήματα", kind: "Project" },
-      { code: "Κ23β", ects: 8, name: "Ανάπτυξη Λογισμικού για Συστήματα Δικτύων και Τηλεπικοινωνιών", kind: "Project" },
-      { code: "ΥΣ10", ects: 6, name: "Διδακτική της Πληροφορικής", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΓΠ03", ects: 2, name: "Δομή και Θεσμοί της Ευρωπαϊκής Ένωσης", kind: "Γενικής Παιδείας (ΓΠ)" },
-      { code: "ΕΠ22στ", ects: 4, name: "Ειδικά Θέματα Επικοινωνιών και Επεξεργασίας Σήματος: Βαθιά Μάθηση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ22δ", ects: 4, name: "Ειδικά Θέματα Επικοινωνιών και Επεξεργασίας Σήματος: Ειδικά Θέματα Κβαντικής Πληροφορίας και Υπολογιστικής", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ16", ects: 4, name: "Ειδικά Θέματα Υπολογιστικών Συστημάτων και Εφαρμογών", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ16β", ects: 4, name: "Ειδικά Θέματα Υπολογιστικών Συστημάτων και Εφαρμογών – Τεχνολογίες Γνώσεων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ22α", ects: 6, name: "Ενισχυτική Μηχανική Μάθηση και Στοχαστικά Παίγνια", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ10", ects: 6, name: "Επεξεργασία Εικόνας", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ08", ects: 6, name: "Επικοινωνία Ανθρώπου Μηχανής", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ17", ects: 4, name: "Ηλεκτρονική Διακυβέρνηση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ08", ects: 6, name: "Θεωρία Αριθμών", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ16", ects: 6, name: "Οπτικές Επικοινωνίες και Οπτικά Δίκτυα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ07", ects: 6, name: "Πληροφοριακά Συστήματα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ12", ects: 6, name: "Προηγμένα Θέματα Αλγορίθμων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ18", ects: 6, name: "Προηγμένοι Επιστημονικοί Υπολογισμοί", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ18", ects: 6, name: "Συστήματα Κινητών και Προσωπικών Επικοινωνιών", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ01", ects: 6, name: "Σχεδίαση VLSI Κυκλωμάτων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ15", ects: 6, name: "Τεχνολογίες της Πληροφορίας και των Επικοινωνιών (ΤΠΕ) στη Μάθηση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ11", ects: 6, name: "Υπολογιστική Γεωμετρία", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ20", ects: 6, name: "Υπολογιστική Πολυπλοκότητα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ22", ects: 6, name: "Ψηφιακή Προσβασιμότητα και Υποστηρικτικές Τεχνολογίες Πληροφορικής", kind: "Προαιρετικό (ΠΜ)" },
-    ] },
-    { semester: 8, courses: [
-      { code: "ΘΠ24", ects: 6, name: "Αλγοριθμική Επίλυση Προβλημάτων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "Κ23δ", ects: 8, name: "Ανάπτυξη Υλικού-Λογισμικού για Ενσωματωμένα Συστήματα", kind: "Project" },
-      { code: "ΓΠ05", ects: 2, name: "Διοίκηση Έργων και Τεχνικές Παρουσίασης και Συγγραφής Επιστημονικών Εκθέσεων", kind: "Γενικής Παιδείας (ΓΠ)" },
-      { code: "ΕΠ22γ", ects: 4, name: "Ειδικά Θέματα Επικοινωνιών και Επεξεργασίας Σήματος: Γραμμές μεταφοράς, κυματοδηγοί και οπτικές ίνες", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ22ε", ects: 4, name: "Ειδικά Θέματα Επικοινωνιών και Επεξεργασίας Σήματος: Ειδικά Θέματα Κβαντικής Μηχανικής Μάθησης", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ16δ", ects: 6, name: "Ειδικά Θέματα Θεωρητικής Πληροφορικής: Αλγόριθμοι Δομικής Βιοπληροφορικής", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ16", ects: 4, name: "Ειδικά Θέματα Υπολογιστικών Συστημάτων και Εφαρμογών", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ16β", ects: 6, name: "Ειδικά Θέματα Υπολογιστικών Συστημάτων και Εφαρμογών: Αξιόπιστα Συστήματα Λογισμικού", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ16α", ects: 4, name: "Ειδικά Θέματα Υπολογιστικών Συστημάτων και Εφαρμογών: Υπολογιστικά Συστήματα Μεγάλης Κλίμακας", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ19", ects: 6, name: "Επεξεργασία Ομιλίας και Φυσικής Γλώσσας", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ10", ects: 6, name: "Θεωρία Γραφημάτων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ20", ects: 4, name: "Ιστορία της Πληροφορικής και των Τηλεπικοινωνιών", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ12", ects: 4, name: "Καινοτομία και Επιχειρηματικότητα", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ05", ects: 6, name: "Κρυπτογραφία", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ24", ects: 4, name: "Μικροοικονομική Ανάλυση", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ21", ects: 4, name: "Μουσική Πληροφορική", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ19", ects: 6, name: "Παράλληλοι Αλγόριθμοι", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ13", ects: 6, name: "Προστασία και Ασφάλεια Υπολογιστικών Συστημάτων", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ16α", ects: 6, name: "Σημασιολογία Γλωσσών Προγραμματισμού", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ24", ects: 6, name: "Σχεδίαση & Χρήση Περιβαλλόντων η-Μάθησης", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ21", ects: 6, name: "Σχολική Τάξη & Μικροδιδασκαλία", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΥΣ09", ects: 6, name: "Τεχνολογία Λογισμικού", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΘΠ23", ects: 6, name: "Υπολογιστική Θεωρία Μηχανικής Μάθησης", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ12", ects: 6, name: "Φωτονική", kind: "Προαιρετικό (ΠΜ)" },
-      { code: "ΕΠ04", ects: 6, name: "Ψηφιακές Επικοινωνίες", kind: "Προαιρετικό (ΠΜ)" },
-    ] },
-  ],
+export type CurriculumFilter = 'all' | 'mandatory' | 'elective';
+
+const CATEGORY_LABELS: Record<CourseCategory, string> = {
+  mandatory: 'Υποχρεωτικό',
+  'mandatory-choice': "Κατ' επιλογή",
+  elective: 'Επιλογής',
+  general: 'Γενικής επιλογής',
+  lab: 'Εργαστήριο',
+  project: 'Πτυχιακή / Project',
 };
 
-export function isMandatoryCourse(kind: string): boolean {
-  return kind.includes('Υποχρεωτικό (ΥΜ)');
+const CATEGORY_COLORS: Record<CourseCategory, string> = {
+  mandatory: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
+  'mandatory-choice': 'bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200',
+  elective: 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
+  general: 'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200',
+  lab: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-200',
+  project: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/40 dark:text-fuchsia-200',
+};
+
+export function getCourseCategory(kind: string): CourseCategory {
+  if (kind.includes('Υποχρεωτικό (ΥΜ)')) return 'mandatory';
+  if (kind.includes('ΕΥΜ') || kind.includes("Κατ' Επιλογή")) return 'mandatory-choice';
+  if (kind.toLowerCase() === 'project') return 'project';
+  if (kind.includes('Πρακτική')) return 'project';
+  if (kind.includes('ΓΠ') || kind.includes('Γενικής')) return 'general';
+  if (kind.includes('ΕΡ')) return 'lab';
+  return 'elective';
 }
 
-/** Μόνο υποχρεωτικά (ΥΜ) — χωρίς προαιρετικά, ΕΥΜ, εργαστήρια, project. */
-export function getMandatoryCurriculum(curriculum: SchoolCurriculum): SchoolCurriculum {
+export function getCourseCategoryLabel(kind: string): string {
+  return CATEGORY_LABELS[getCourseCategory(kind)];
+}
+
+export function getCourseCategoryClass(kind: string): string {
+  return CATEGORY_COLORS[getCourseCategory(kind)];
+}
+
+export function isMandatoryCourse(kind: string): boolean {
+  return getCourseCategory(kind) === 'mandatory';
+}
+
+export function isElectiveCourse(kind: string): boolean {
+  const cat = getCourseCategory(kind);
+  return cat === 'elective' || cat === 'lab' || cat === 'project';
+}
+
+export function matchesCurriculumFilter(course: CurriculumCourse, filter: CurriculumFilter): boolean {
+  if (filter === 'all') return true;
+  if (filter === 'mandatory') {
+    const cat = getCourseCategory(course.kind);
+    return cat === 'mandatory' || cat === 'mandatory-choice';
+  }
+  return isElectiveCourse(course.kind) || getCourseCategory(course.kind) === 'general';
+}
+
+export function filterCurriculum(
+  curriculum: SchoolCurriculum,
+  filter: CurriculumFilter,
+): SchoolCurriculum {
   return {
     ...curriculum,
     semesters: curriculum.semesters
       .map((sem) => ({
         ...sem,
-        courses: sem.courses.filter((c) => isMandatoryCourse(c.kind)),
+        courses: sem.courses.filter((c) => matchesCurriculumFilter(c, filter)),
       }))
       .filter((sem) => sem.courses.length > 0),
   };
 }
 
+export function countCurriculumCourses(
+  curriculum: SchoolCurriculum,
+  predicate: (course: CurriculumCourse) => boolean,
+): number {
+  return curriculum.semesters.reduce(
+    (n, sem) => n + sem.courses.filter(predicate).length,
+    0,
+  );
+}
+
 /** Αντιστοίχιση school.id → πρόγραμμα σπουδών */
 export const SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
-  "330": EKPA_IPT_CURRICULUM,
+  '330': EKPA_IPT_CURRICULUM,
+  '338': AUTH_INFORMATICS_CURRICULUM,
+  '333': OPA_INFORMATICS_CURRICULUM,
 };
 
 export function hasSchoolCurriculum(schoolId: string): boolean {

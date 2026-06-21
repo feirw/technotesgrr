@@ -41,3 +41,6 @@ ai.md
 # Miscellaneous
 # ===================
 *.db
+
+# Local ΑΕΠΠ lesson source files for AI corrector KB (run scripts/build_corrector_knowledge.py)
+frontend/ΜΑΘΗΜΑΤΑ/

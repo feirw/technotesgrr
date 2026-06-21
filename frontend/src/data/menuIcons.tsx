@@ -11,6 +11,7 @@ export const MENU_ICONS = {
   schools: '/images/home%20page/icon11.jpg',
   syntelestesSxolon: '/images/home%20page/Untitled%20design.png',
   askiseis: '/images/home%20page/kitie.png',
+  aiCorrector: '/images/home%20page/grad.png',
   methodologies: '/images/home%20page/icon15.jpg',
   flashcards: '/images/home%20page/icon16.jpg',
   about: '/images/icon20.jpg',

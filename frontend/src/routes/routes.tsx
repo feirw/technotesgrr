@@ -29,6 +29,7 @@ const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
+// const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 
 // Type Definition
@@ -135,6 +136,10 @@ const routes: RouteConfig[] = [
     path: '/askiseis',
     element: <AskiseisPage />,
   },
+  // {
+  //   path: '/ai-corrector',
+  //   element: <AiCorrectorPage />,
+  // },
   {
     path: '/syntelestes-sxolon',
     element: <SchoolCoefficientsPage />,

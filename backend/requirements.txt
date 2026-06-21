@@ -6,3 +6,4 @@ pydantic
 python-dotenv
 uvicorn
 supabase
+pypdf

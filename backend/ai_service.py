@@ -19,7 +19,9 @@ ai_service.py  –  Google Gemini για το TechNotesGR chatbot
 
 import logging
 import os
-from typing import Iterator
+import re
+import base64
+from typing import Any, Iterator, Literal
 
 from dotenv import load_dotenv
 
@@ -244,3 +246,301 @@ def iter_ai_response_stream(message: str, session_id: str = "default") -> Iterat
         logger.exception("Gemini generate_content_stream failed")
         _rollback_last_user(history)
         raise RuntimeError(user_facing_chat_error(error_str)) from e
+
+
+# ── AI Corrector (ΑΕΠΠ exercise grading) ────────────────────────────────────
+
+CORRECT_FIELD_MAX_LEN = 5000
+CORRECTOR_MAX_OUTPUT_TOKENS = max(256, min(8192, _env_int("CORRECTOR_MAX_OUTPUT_TOKENS", 1500)))
+CORRECTOR_OCR_MAX_OUTPUT_TOKENS = max(256, min(8192, _env_int("CORRECTOR_OCR_MAX_OUTPUT_TOKENS", 2048)))
+CORRECTOR_MODEL = (os.getenv("AI_MODEL") or GEMINI_MODEL).strip()
+CORRECTOR_MAX_IMAGES = max(1, min(6, _env_int("CORRECTOR_MAX_IMAGES", 4)))
+CORRECTOR_MAX_IMAGE_BYTES = max(256_000, min(6_000_000, _env_int("CORRECTOR_MAX_IMAGE_BYTES", 4_000_000)))
+
+try:
+    from corrector_knowledge import retrieve_corrector_context
+except Exception:  # noqa: E722
+
+    def retrieve_corrector_context(_exercise: str, _student_answer: str) -> str:
+        return ""
+
+
+def build_corrector_prompt(exercise: str, student_answer: str, *, lesson_context: str = "") -> str:
+    context_block = ""
+    if lesson_context.strip():
+        context_block = f"""
+Χρησιμοποίησε ως επίσημη αναφορά την παρακάτω ύλη μαθημάτων ΑΕΠΠ (από τα μαθήματα της πλατφόρμας).
+Η βαθμολόγηση και τα σχόλια πρέπει να ευθυγραμμίζονται με αυτή την ύλη, τη σωστή ψευδογλώσσα και τα κριτήρια του μαθήματος:
+
+\"\"\"
+{lesson_context.strip()}
+\"\"\"
+"""
+
+    return f"""Είσαι αυστηρός αλλά βοηθητικός καθηγητής Πληροφορικής Γ' Λυκείου (μάθημα ΑΕΠΠ).
+{context_block}
+Θα σου δοθεί η εκφώνηση μιας άσκησης και η απάντηση ενός μαθητή σε ελληνική ψευδογλώσσα.
+Διόρθωσε την απάντηση ελέγχοντας:
+- σωστή λογική λύσης
+- σωστή χρήση μεταβλητών
+- σωστή δήλωση μεταβλητών
+- σωστή χρήση δομών ΑΝ...ΤΕΛΟΣ_ΑΝ, ΓΙΑ...ΤΕΛΟΣ_ΓΙΑ, ΟΣΟ...ΤΕΛΟΣ_ΟΣΟ, ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ...ΜΕΧΡΙΣ_ΟΤΟΥ
+- σωστή σύνταξη ψευδογλώσσας (ΑΡΧΗ/ΤΕΛΟΣ προγράμματος, ΔΙΑΒΑΣΕ, ΓΡΑΨΕ, ανάθεση τιμών κ.λπ.)
+- αν η απάντηση καλύπτει πλήρως την εκφώνηση
+
+Βαθμολόγησε με βάση το ακόλουθο rubric (σύνολο 10 μονάδων):
+- Λογική λύσης: 4 μονάδες
+- Σωστή χρήση δομών: 2 μονάδες
+- Μεταβλητές και δηλώσεις: 1 μονάδα
+- Σύνταξη ψευδογλώσσας: 2 μονάδες
+- Καθαρότητα λύσης: 1 μονάδα
+
+Η εκφώνηση είναι:
+\"\"\"
+{exercise}
+\"\"\"
+
+Η απάντηση του μαθητή είναι:
+\"\"\"
+{student_answer}
+\"\"\"
+
+Απάντησε ΑΥΣΤΗΡΑ σε αυτή τη μορφή, χωρίς κανένα επιπλέον κείμενο πριν ή μετά:
+
+Βαθμός: Χ/10
+Σωστά:
+- ...
+- ...
+Λάθη:
+- ...
+- ...
+Διορθωμένη λύση:
+```text
+...
+```
+Εξήγηση:
+..."""
+
+
+def _parse_bullet_section(text: str) -> list[str]:
+    items: list[str] = []
+    for line in text.strip().splitlines():
+        cleaned = line.strip()
+        if not cleaned:
+            continue
+        cleaned = re.sub(r"^[-•*]\s*", "", cleaned)
+        if cleaned:
+            items.append(cleaned)
+    return items
+
+
+def parse_corrector_response(raw: str) -> dict[str, Any]:
+    text = (raw or "").strip()
+    if not text:
+        return {"raw": raw or ""}
+
+    score_match = re.search(r"Βαθμός:\s*(\d+(?:[.,]\d+)?)\s*/\s*10", text, re.IGNORECASE)
+    score: int | float | None = None
+    if score_match:
+        score_val = score_match.group(1).replace(",", ".")
+        score = float(score_val)
+        if score.is_integer():
+            score = int(score)
+
+    correct_match = re.search(
+        r"Σωστά:\s*(.*?)(?=\nΛάθη:|\nΔιορθωμένη λύση:|\nΕξήγηση:|$)",
+        text,
+        re.DOTALL | re.IGNORECASE,
+    )
+    mistakes_match = re.search(
+        r"Λάθη:\s*(.*?)(?=\nΔιορθωμένη λύση:|\nΕξήγηση:|$)",
+        text,
+        re.DOTALL | re.IGNORECASE,
+    )
+    solution_match = re.search(
+        r"Διορθωμένη λύση:\s*(?:```(?:text)?\s*)?(.*?)(?:```\s*)?(?=\nΕξήγηση:|$)",
+        text,
+        re.DOTALL | re.IGNORECASE,
+    )
+    explanation_match = re.search(r"Εξήγηση:\s*(.*)$", text, re.DOTALL | re.IGNORECASE)
+
+    correct_points = _parse_bullet_section(correct_match.group(1)) if correct_match else []
+    mistakes = _parse_bullet_section(mistakes_match.group(1)) if mistakes_match else []
+    corrected_solution = solution_match.group(1).strip() if solution_match else ""
+    explanation = explanation_match.group(1).strip() if explanation_match else ""
+
+    parsed_ok = score is not None or correct_points or mistakes or corrected_solution or explanation
+    if not parsed_ok:
+        return {"raw": text}
+
+    result: dict[str, Any] = {
+        "maxScore": 10,
+        "correctPoints": correct_points,
+        "mistakes": mistakes,
+        "correctedSolution": corrected_solution,
+        "explanation": explanation,
+    }
+    if score is not None:
+        result["score"] = score
+    return result
+
+
+def _make_corrector_generate_config(*, max_output_tokens: int | None = None):
+    assert types is not None
+    gen_cfg_kwargs = dict(
+        max_output_tokens=max_output_tokens or CORRECTOR_MAX_OUTPUT_TOKENS,
+        temperature=0.35,
+    )
+    _tc = _optional_thinking_config()
+    if _tc is not None:
+        gen_cfg_kwargs["thinking_config"] = _tc
+    return types.GenerateContentConfig(**gen_cfg_kwargs)
+
+
+def _parse_image_data_url(data_url: str) -> tuple[str, bytes]:
+    raw = (data_url or "").strip()
+    if not raw:
+        raise ValueError("Empty image payload")
+
+    mime_type = "image/jpeg"
+    payload = raw
+    if raw.startswith("data:"):
+        header, _, payload = raw.partition(",")
+        if not payload:
+            raise ValueError("Invalid image data URL")
+        mime_match = re.match(r"data:([^;]+)", header)
+        if mime_match:
+            mime_type = mime_match.group(1).strip().lower()
+
+    try:
+        image_bytes = base64.b64decode(payload, validate=True)
+    except Exception as exc:
+        raise ValueError("Invalid base64 image payload") from exc
+
+    if len(image_bytes) > CORRECTOR_MAX_IMAGE_BYTES:
+        raise ValueError("Image too large")
+    if not mime_type.startswith("image/"):
+        raise ValueError("Unsupported image type")
+    return mime_type, image_bytes
+
+
+def _ocr_prompt_for(kind: Literal["exercise", "solution"]) -> str:
+    if kind == "exercise":
+        return (
+            "Διάβασε προσεκτικά την/τις εικόνα/ες και εξήγαγε ΟΛΗ την εκφώνηση της άσκησης ΑΕΠΠ.\n"
+            "Κράτα ακριβώς τη διατύπωση, αρίθμηση και σύμβολα.\n"
+            "Αν υπάρχουν πολλές σελίδες, ενώσε το κείμενο με σειρά.\n"
+            "Επίστρεψε ΜΟΝΟ το εξαγόμενο κείμενο, χωρίς σχόλια ή εξήγηση."
+        )
+    return (
+        "Διάβασε προσεκτικά την/τις εικόνα/ες και εξήγαγε ΟΛΗ τη λύση σε ελληνική ψευδογλώσσα.\n"
+        "Διατήρησε εσοχές, κεφαλαία, γραμμές κώδικα και εντολές (π.χ. ΑΡΧΗ_ΠΡΟΓΡΑΜΜΑΤΟΣ, ΟΣΟ, ΓΙΑ, ΤΕΛΟΣ_ΟΣΟ).\n"
+        "Μην διορθώνεις λάθη του μαθητή — αντέγραψε ό,τι βλέπεις.\n"
+        "Αν υπάρχουν πολλές σελίδες, ενώσε το κείμενο με σειρά.\n"
+        "Επίστρεψε ΜΟΝΟ το εξαγόμενο κείμενο, χωρίς σχόλια ή εξήγηση."
+    )
+
+
+def extract_text_from_images(
+    images: list[str],
+    kind: Literal["exercise", "solution"],
+) -> str:
+    """OCR handwritten/printed exercise or pseudocode via Gemini vision."""
+    if not images:
+        return ""
+    if not _GENAI_IMPORT_OK:
+        raise RuntimeError("AI SDK not available")
+    if not GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY not configured")
+
+    client = _get_genai_client()
+    if client is None:
+        raise RuntimeError("AI client not configured")
+
+    assert types is not None
+    parts: list[Any] = [types.Part(text=_ocr_prompt_for(kind))]
+    for image_data in images[:CORRECTOR_MAX_IMAGES]:
+        mime_type, image_bytes = _parse_image_data_url(image_data)
+        parts.append(types.Part.from_bytes(data=image_bytes, mime_type=mime_type))
+
+    try:
+        response = client.models.generate_content(
+            model=CORRECTOR_MODEL,
+            contents=[types.Content(role="user", parts=parts)],
+            config=_make_corrector_generate_config(max_output_tokens=CORRECTOR_OCR_MAX_OUTPUT_TOKENS),
+        )
+        text = (response.text or "").strip()
+        if not text:
+            raise RuntimeError("Empty OCR response")
+        return text[:CORRECT_FIELD_MAX_LEN]
+    except RuntimeError:
+        raise
+    except ValueError:
+        raise
+    except Exception as e:
+        logger.exception("Gemini extract_text_from_images failed")
+        raise RuntimeError(str(e)) from e
+
+
+def correct_exercise(
+    exercise: str,
+    student_answer: str,
+    *,
+    exercise_images: list[str] | None = None,
+    student_answer_images: list[str] | None = None,
+) -> dict[str, Any]:
+    """OCR images if needed, then grade pseudocode via Gemini."""
+    if not _GENAI_IMPORT_OK:
+        raise RuntimeError("AI SDK not available")
+    if not GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY not configured")
+
+    resolved_exercise = (exercise or "").strip()
+    resolved_answer = (student_answer or "").strip()
+    used_ocr = False
+
+    if not resolved_exercise and exercise_images:
+        resolved_exercise = extract_text_from_images(exercise_images, "exercise").strip()
+        used_ocr = True
+    if not resolved_answer and student_answer_images:
+        resolved_answer = extract_text_from_images(student_answer_images, "solution").strip()
+        used_ocr = True
+
+    if not resolved_exercise or not resolved_answer:
+        raise ValueError("Missing exercise or student answer after OCR")
+
+    if len(resolved_exercise) > CORRECT_FIELD_MAX_LEN or len(resolved_answer) > CORRECT_FIELD_MAX_LEN:
+        raise ValueError("Extracted text too long")
+
+    client = _get_genai_client()
+    if client is None:
+        raise RuntimeError("AI client not configured")
+
+    prompt = build_corrector_prompt(
+        resolved_exercise,
+        resolved_answer,
+        lesson_context=retrieve_corrector_context(resolved_exercise, resolved_answer),
+    )
+    assert types is not None
+
+    try:
+        response = client.models.generate_content(
+            model=CORRECTOR_MODEL,
+            contents=[types.Content(role="user", parts=[types.Part(text=prompt)])],
+            config=_make_corrector_generate_config(),
+        )
+        raw_text = (response.text or "").strip()
+        if not raw_text:
+            raise RuntimeError("Empty AI response")
+        result = parse_corrector_response(raw_text)
+        if used_ocr:
+            result["extractedExercise"] = resolved_exercise
+            result["extractedStudentAnswer"] = resolved_answer
+        return result
+    except RuntimeError:
+        raise
+    except ValueError:
+        raise
+    except Exception as e:
+        logger.exception("Gemini correct_exercise failed")
+        raise RuntimeError(str(e)) from e

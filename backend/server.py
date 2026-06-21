@@ -26,7 +26,13 @@ INTERNAL_ERROR_DETAIL = "Προέκυψε εσωτερικό σφάλμα. Δο�
 
 # ── AI Service ────────────────────────────────────────────────────────────────
 try:
-    from ai_service import get_ai_response, iter_ai_response_stream, user_facing_chat_error
+    from ai_service import (
+        correct_exercise,
+        get_ai_response,
+        iter_ai_response_stream,
+        user_facing_chat_error,
+    )
+    from corrector_knowledge import get_knowledge_stats
 except Exception:  # noqa: E722
 
     def get_ai_response(msg: str, session_id: str = "default") -> str:
@@ -38,6 +44,12 @@ except Exception:  # noqa: E722
 
     def user_facing_chat_error(_error_str: str) -> str:
         return "Δεν μπόρεσα να επεξεργαστώ το αίτημά σου. Δοκίμασε ξανά σε λίγο."
+
+    def correct_exercise(_exercise: str, _student_answer: str) -> dict[str, Any]:
+        raise RuntimeError("AI Service not configured.")
+
+    def get_knowledge_stats() -> dict[str, Any]:
+        return {"loaded": False, "chunkCount": 0, "fileCount": 0}
 
 # ── Database ──────────────────────────────────────────────────────────────────
 from database import (
@@ -129,6 +141,16 @@ class ChatMessage(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
     session_id: Optional[str] = Field(default="default", max_length=120)
 
+
+class CorrectRequest(BaseModel):
+    exercise: str = Field(default="", max_length=5000)
+    studentAnswer: str = Field(default="", max_length=5000)
+    exerciseImages: list[str] = Field(default_factory=list, max_length=4)
+    studentAnswerImages: list[str] = Field(default_factory=list, max_length=4)
+
+
+CORRECT_FIELD_MAX_LEN = 5000
+
 class CareerOrientationSubmission(BaseModel):
     answers: dict[str, Any] = Field(min_length=1, max_length=500)
     results: dict[str, Any] = Field(min_length=1, max_length=100)
@@ -202,6 +224,55 @@ def readiness_check():
         app.state.db_ready = False
         logger.exception("readiness_check failed")
         raise HTTPException(status_code=503, detail="Database is not ready.")
+
+
+# ── AI Corrector ──────────────────────────────────────────────────────────────
+
+@app.get("/api/correct/knowledge")
+async def corrector_knowledge_status():
+    return get_knowledge_stats()
+
+
+@app.post("/api/correct")
+async def correct_student_exercise(body: CorrectRequest):
+    exercise = (body.exercise or "").strip()
+    student_answer = (body.studentAnswer or "").strip()
+    exercise_images = [img.strip() for img in (body.exerciseImages or []) if img and img.strip()]
+    student_answer_images = [
+        img.strip() for img in (body.studentAnswerImages or []) if img and img.strip()
+    ]
+
+    has_exercise = bool(exercise) or bool(exercise_images)
+    has_answer = bool(student_answer) or bool(student_answer_images)
+    if not has_exercise or not has_answer:
+        raise HTTPException(
+            status_code=400,
+            detail="Δώσε εκφώνηση και λύση (κείμενο ή φωτογραφία).",
+        )
+    if len(exercise) > CORRECT_FIELD_MAX_LEN or len(student_answer) > CORRECT_FIELD_MAX_LEN:
+        raise HTTPException(status_code=400, detail="Το κείμενο είναι πολύ μεγάλο.")
+    if len(exercise_images) > 4 or len(student_answer_images) > 4:
+        raise HTTPException(status_code=400, detail="Μέγιστο 4 φωτογραφίες ανά πεδίο.")
+
+    try:
+        return await asyncio.to_thread(
+            correct_exercise,
+            exercise,
+            student_answer,
+            exercise_images=exercise_images or None,
+            student_answer_images=student_answer_images or None,
+        )
+    except ValueError as exc:
+        detail = str(exc) or "Μη έγκυρα δεδομένα."
+        if "image" in detail.lower() or "base64" in detail.lower():
+            detail = "Η φωτογραφία δεν ήταν έγκυρη ή είναι πολύ μεγάλη."
+        raise HTTPException(status_code=400, detail=detail) from exc
+    except Exception:
+        logger.exception("correct_student_exercise failed")
+        raise HTTPException(
+            status_code=502,
+            detail="Η αυτόματη διόρθωση απέτυχε προσωρινά. Δοκίμασε ξανά.",
+        )
 
 
 # ── Chat ──────────────────────────────────────────────────────────────────────
