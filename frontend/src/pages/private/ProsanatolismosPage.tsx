@@ -27,6 +27,7 @@ import {
 import { getBackendUrl } from '@/utils/backendUrl';
 import { apiFetch } from '@/utils/apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PageMenuIcon } from '@/data/menuIcons';
 
 // ─────────────────────────────────────────────────────────────
 // TYPES
@@ -777,6 +778,10 @@ const Prosanatolismospage: React.FC = () => {
     <div className="max-w-3xl mx-auto px-4 py-6 md:py-10 bg-white dark:bg-gray-900 min-h-screen">
       {/* HEADER */}
       <header className="text-center mb-8">
+        <PageMenuIcon
+          icon="prosanatolismos"
+          wrapperClassName="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-50 dark:bg-gray-800 mx-auto mb-3"
+        />
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-1">
           Επαγγελματικός Προσανατολισμός
         </h1>

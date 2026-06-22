@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Calendar, FileText, X } from 'lucide-react';
+import { Search, Calendar, X, FileText } from 'lucide-react';
 import Palia from '@/components/private/Palia';
+import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -96,7 +97,13 @@ const numberedTrapezaItems = (count: number): ExamItem[] =>
     return { id: n.toString(), label: `Θέμα ${n}` };
   });
 
-const TRAPEZA_THEMA_B = numberedTrapezaItems(17);
+/** Θέμα 2 δεν υπάρχει ως PDF στο public/pdfs/trapeza-thema-b/ */
+const TRAPEZA_B_NUMBERS = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+
+const TRAPEZA_THEMA_B: ExamItem[] = TRAPEZA_B_NUMBERS.map((n) => ({
+  id: n.toString(),
+  label: `Θέμα ${n}`,
+}));
 const TRAPEZA_THEMA_D = numberedTrapezaItems(20);
 
 const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
@@ -332,7 +339,7 @@ const PaliathemataPage: React.FC = () => {
             transition={{ delay: 0.2 }}
           >
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-2 sm:mb-4 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <FileText className="w-8 h-8 sm:w-12 sm:h-12 shrink-0" />
+              <MenuIconImg src={MENU_ICONS.paliathemata} className="w-10 h-10 sm:w-14 sm:h-14 shrink-0" />
               Παλιά Θέματα
             </h1>
             <p className="text-base sm:text-xl md:text-2xl text-white/85 mb-4 sm:mb-8 px-1">

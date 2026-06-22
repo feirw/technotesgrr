@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Target, Clock3, Trophy } from 'lucide-react';
+import { PageMenuIcon } from '@/data/menuIcons';
 
 const STORAGE_KEY = 'studyTimer:v1';
 
@@ -108,9 +109,15 @@ const StudyTimerPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-3xl border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl p-6 sm:p-8"
         >
-          <h1 className="text-3xl sm:text-4xl font-black text-coral-accent dark:text-coral-light text-center mb-2">
-            Study Timer
-          </h1>
+          <div className="flex flex-col items-center mb-2">
+            <PageMenuIcon
+              icon="studyTimer"
+              wrapperClassName="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-coral-wash dark:bg-coral-accent/10 mb-2"
+            />
+            <h1 className="text-3xl sm:text-4xl font-black text-coral-accent dark:text-coral-light text-center">
+              Study Timer
+            </h1>
+          </div>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
             Βάλε χρόνο διαβάσματος και κάνε track την πρόοδό σου.
           </p>

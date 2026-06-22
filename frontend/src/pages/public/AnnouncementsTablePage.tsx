@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { ExternalLink, Megaphone } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { ANNOUNCEMENTS, type Announcement } from '@/data/announcements';
+import { PageMenuIcon } from '@/data/menuIcons';
 
 function parseSortKey(dateStr: string): number {
   const t = Date.parse(dateStr);
@@ -52,10 +53,11 @@ const AnnouncementsTablePage: React.FC = () => {
     <div className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
       <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#f07f97] mb-3">
-            <Megaphone className="w-4 h-4" aria-hidden />
-            technotesgr
-          </div>
+          <PageMenuIcon
+            icon="announcements"
+            wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
+            className="w-9 h-9"
+          />
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Ανακοινώσεις
           </h1>

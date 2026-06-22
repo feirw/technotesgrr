@@ -1,13 +1,12 @@
 import React from 'react';
-import { motion, Variants } from 'framer-motion';
-import {
-  BookOpenCheck,
-  GraduationCap,
-  Lightbulb,
-  Target,
-} from 'lucide-react';
+import { MenuIconImg } from '@/data/menuIcons';
 
-// --- Types & Interfaces ---
+const HP = '/images/home%20page';
+const ABOUT_SECTION_ICONS = {
+  story: `${HP}/18.png`,
+  work: `${HP}/19.png`,
+  funFacts: `${HP}/20.png`,
+} as const;
 
 interface TimelineItem {
   period: string;
@@ -15,34 +14,11 @@ interface TimelineItem {
   description: string;
 }
 
-// --- Motion Variants ---
-
-const fadeInUp: Variants = {
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0 },
-};
-
-const fadeIn: Variants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-};
-
-const stagger: Variants = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-// --- Data ---
-
 const funFactsData: string[] = [
   'Λατρεύω να μιλάω και να μεταδίδω την γνώση μου στους άλλους.',
   'Πηγαίνω συνέχεια σε events σχετικά με την τεχνολογία και την εκπαίδευση.',
   'Διαβάζω συνεχώς για νέες τεχνολογίες και εφαρμογές τους στην διδακτική.',
-  'Ονειρεύομαι να ανοίξω το δικό μου φροντιστήριο.',
+  'Ονειρεύομαι να ανοίξω το δικό μου διαδικτυακό φροντιστήριο.',
 ];
 
 const timelineData: TimelineItem[] = [
@@ -137,73 +113,35 @@ const achievementImages = [
 
 const personalCardImages = ['/images/c2.png', '/images/c3.png'];
 
-// --- Component ---
+const cardClass =
+  'bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md rounded-3xl shadow-xl p-6 md:p-8 border border-[#f07f97]/25 dark:border-white/10';
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-coral-wash/90 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 opacity-30 dark:opacity-20 pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-coral/35 dark:bg-coral-accent/25 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob" />
-          <div className="absolute top-40 right-10 w-72 h-72 bg-coral-light/40 dark:bg-coral-strong/20 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-coral-wash dark:bg-coral-accent/20 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl animate-blob animation-delay-4000" />
-        </div>
-
-        <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-coral-wash text-coral-strong font-semibold border border-coral-accent/20"
-          >
-            <GraduationCap className="w-4 h-4" />
-            technotesgr
-          </motion.div>
-
-          <motion.h1
-            className="text-4xl sm:text-5xl md:text-7xl font-black mb-6 tracking-tight"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <span className="text-coral-accent dark:text-coral-light">
-              Σχετικά με εμένα
-            </span>
-          </motion.h1>
-
-          <motion.p
-            className="text-base sm:text-lg md:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            Γεια σου! Είμαι η Ελένη, δημιουργός του{' '}
-            <span className="font-bold text-coral-accent dark:text-coral-light">technotesgr</span>
-          </motion.p>
+    <div className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+      <section className="pt-10 sm:pt-12 pb-4 sm:pb-6">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 tracking-tight text-white drop-shadow-sm">
+            Γεια σου! Είμαι η Ελένη
+          </h1>
+          <p className="text-base sm:text-lg md:text-xl text-white/95 max-w-3xl mx-auto leading-relaxed">
+            δημιουργός του <span className="font-bold">technotesgr</span>
+          </p>
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="py-16 md:py-20 relative">
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="max-w-5xl mx-auto space-y-12">
-            {/* Achievements Gallery */}
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-200/50 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <h2 className="text-2xl md:text-3xl font-bold text-coral-accent dark:text-coral-light mb-4">
+      <section className="pt-2 pb-16 md:pt-4 md:pb-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="max-w-5xl mx-auto space-y-8 sm:space-y-10">
+            <div className={cardClass}>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#f07f97] dark:text-[#ff97b2] mb-4">
                 Some cool moments
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {achievementImages.map((imageSrc, i) => (
                   <div
                     key={imageSrc}
-                    className="aspect-square overflow-hidden rounded-2xl border border-coral-accent/25 dark:border-gray-700 bg-coral-wash dark:bg-gray-700/40"
+                    className="aspect-square overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
                   >
                     <img
                       src={imageSrc}
@@ -214,23 +152,14 @@ const AboutPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
-            {/* Personal Card Gallery */}
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-200/50 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <h2 className="text-2xl md:text-3xl font-bold text-coral-accent dark:text-coral-light mb-4">
-                Προσωπική κάρτα
-              </h2>
+            <div className={cardClass}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {personalCardImages.map((imageSrc, i) => (
                   <div
                     key={imageSrc}
-                    className="aspect-[16/10] overflow-hidden rounded-2xl border border-coral-accent/25 dark:border-gray-700 bg-white dark:bg-gray-900"
+                    className="aspect-[16/10] overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
                   >
                     <img
                       src={imageSrc}
@@ -241,49 +170,24 @@ const AboutPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
-            {/* Story Section */}
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-gray-200/50 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6 }}
-            >
-              <motion.div
-                className="flex items-center gap-4 mb-6"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                variants={stagger}
-              >
-                <motion.div className="text-coral-accent" variants={fadeInUp}>
-                  <BookOpenCheck className="w-9 h-9" />
-                </motion.div>
-                <motion.h2
-                  className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light"
-                  variants={fadeInUp}
-                >
+            <div className={cardClass}>
+              <div className="flex items-center gap-4 mb-6">
+                <MenuIconImg src={ABOUT_SECTION_ICONS.story} className="w-9 h-9" />
+                <h2 className="text-3xl md:text-4xl font-bold text-[#f07f97] dark:text-[#ff97b2]">
                   Η ιστορία μου
-                </motion.h2>
-              </motion.div>
+                </h2>
+              </div>
 
-              <motion.div
-                className="space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed text-base sm:text-lg"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                variants={stagger}
-              >
-                <motion.p variants={fadeIn}>
+              <div className="space-y-4 text-gray-700 dark:text-gray-200 leading-relaxed text-base sm:text-lg">
+                <p>
                   Είμαι η Ελένη και είμαι φοιτήτρια του τμήματος Πληροφορικής και Τηλεπικοινωνιών
                   του Εθνικού και Καποδιστριακού Πανεπιστημίου Αθηνών. Στις πανελλήνιες του 2024
                   συγκέντρωσα 19.000 μόρια και συγκεκριμένα στην πληροφορική πέτυχα 99/100. Επίσης,
                   κατάγομαι από ένα μικρό χωριό της Φθιώτιδας.
-                </motion.p>
-
-                <motion.p variants={fadeIn}>
+                </p>
+                <p>
                   Όταν ήμουν μαθήτρια Γ' Λυκείου, κατάλαβα πόσο δύσκολο μπορεί να είναι να βρεις
                   οργανωμένο και ποιοτικό υλικό μελέτης. Αυτή η εμπειρία με ώθησε να δημιουργήσω μια
                   πλατφόρμα που θα έκανε τη μελέτη πιο εύκολη και αποτελεσματική. Επίσης, η
@@ -293,24 +197,23 @@ const AboutPage: React.FC = () => {
                     href="https://www.vrisko.gr/details/21a516312h3ja01e0bd_4d_26h3j0jc0#:~:text=E%20%2D%20%CE%9C%CE%91%CE%98%CE%97%CE%A3%CE%97%20%2D%20e%2D%CE%BC%CE%AC%CE%B8%CE%B7%CF%83%CE%B7%20(%CE%A4%CF%83%CF%8E%CE%BD%CE%BF%CF%85%20%CE%95%CE%BB%CE%AD%CE%BD%CE%B7%20%CE%91.)&text=%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1%20%CE%A0%CF%81%CE%BF%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B9%CF%83%CE%BC%CE%BF%CF%8D%2C%20%CE%A6%CF%81%CE%BF%CE%BD%CF%84%CE%B9%CF%83%CF%84%CE%AE%CF%81%CE%B9%CE%B1%20%CE%9C%CE%AD%CF%83%CE%B7%CF%82%20%CE%95%CE%BA%CF%80%CE%B1%CE%AF%CE%B4%CE%B5%CF%85%CF%83%CE%B7%CF%82,%CE%A6%CE%98%CE%99%CE%A9%CE%A4%CE%99%CE%A4%CE%91%CE%A3%20%2C%206976681079%20%7C%20vrisko.gr"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-coral-accent dark:text-coral-light font-bold hover:underline"
+                    className="text-[#f07f97] dark:text-[#ff97b2] font-bold hover:underline"
                   >
                     Λένα Τσώνου
                   </a>{' '}
                   με έκανε να την αγαπήσω!
-                </motion.p>
-
-                <motion.p variants={fadeIn}>
+                </p>
+                <p>
                   Το technotesgr δεν είναι απλά μια ιστοσελίδα. Είναι μια συνεχής προσπάθεια να
                   γίνει η εκπαίδευση πιο δομημένη, πρακτική και προσβάσιμη για κάθε μαθητή.
-                </motion.p>
-                <motion.p variants={fadeIn}>
+                </p>
+                <p>
                   Αυτή η σελίδα δεν θα μπορούσε να γίνει χωρίς τον{' '}
                   <a
                     href="https://github.com/mgiannopoulos24"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-bold text-coral-accent dark:text-coral-light hover:underline"
+                    className="font-bold text-[#f07f97] dark:text-[#ff97b2] hover:underline"
                   >
                     deathwish
                   </a>{' '}
@@ -319,141 +222,77 @@ const AboutPage: React.FC = () => {
                     href="https://github.com/a-reynbaw"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-bold text-coral-accent dark:text-coral-light hover:underline"
+                    className="font-bold text-[#f07f97] dark:text-[#ff97b2] hover:underline"
                   >
                     a‑reynbaw
                   </a>
                   .
-                </motion.p>
-              </motion.div>
-            </motion.div>
+                </p>
+              </div>
+            </div>
 
-            {/* Mission Section */}
-            <motion.div
-              className="bg-gradient-to-br from-coral-wash to-coral-light/20 dark:from-gray-800/80 dark:to-purple-900/30 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-coral-accent/25 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <motion.div
-                className="flex items-center gap-4 mb-6"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                variants={stagger}
-              >
-                <motion.div className="text-coral-accent" variants={fadeInUp}>
-                  <Target className="w-9 h-9" />
-                </motion.div>
-                <motion.h2
-                  className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light"
-                  variants={fadeInUp}
-                >
+            <div className={cardClass}>
+              <div className="flex items-center gap-4 mb-6">
+                <MenuIconImg src={ABOUT_SECTION_ICONS.work} className="w-9 h-9" />
+                <h2 className="text-3xl md:text-4xl font-bold text-[#f07f97] dark:text-[#ff97b2]">
                   Η δουλειά μου
-                </motion.h2>
-              </motion.div>
-
-              <motion.p
-                className="text-gray-700 dark:text-gray-300 leading-relaxed text-base sm:text-lg"
-                variants={fadeIn}
-              >
+                </h2>
+              </div>
+              <p className="text-gray-700 dark:text-gray-200 leading-relaxed text-base sm:text-lg">
                 Πέρα από το technotesgr, ασχολούμαι ενεργά με την εκπαίδευση. Στείλε μου στο
                 Instagram μήνυμα αν θέλεις να μάθεις περισσότερα.
                 <a
                   href="https://www.instagram.com/technotesgr/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-coral-accent dark:text-coral-light font-bold hover:underline"
+                  className="text-[#f07f97] dark:text-[#ff97b2] font-bold hover:underline"
                 >
                   {' '}
                   @technotesgr
                 </a>
-              </motion.p>
-            </motion.div>
+              </p>
+            </div>
 
-            {/* Fun Facts */}
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-gray-200/50 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <motion.div
-                className="flex items-center gap-4 mb-6"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                variants={stagger}
-              >
-                <motion.div className="text-coral-accent" variants={fadeInUp}>
-                  <Lightbulb className="w-9 h-9" />
-                </motion.div>
-                <motion.h2
-                  className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light"
-                  variants={fadeInUp}
-                >
+            <div className={cardClass}>
+              <div className="flex items-center gap-4 mb-6">
+                <MenuIconImg src={ABOUT_SECTION_ICONS.funFacts} className="w-9 h-9" />
+                <h2 className="text-3xl md:text-4xl font-bold text-[#f07f97] dark:text-[#ff97b2]">
                   Fun Facts About Me
-                </motion.h2>
-              </motion.div>
-
-              <motion.ul
-                className="space-y-4"
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                variants={stagger}
-              >
+                </h2>
+              </div>
+              <ul className="space-y-4">
                 {funFactsData.map((fact, i) => (
-                  <motion.li
+                  <li
                     key={i}
-                    className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-base sm:text-lg"
-                    variants={fadeIn}
-                    whileHover={{
-                      x: 10,
-                      transition: { duration: 0.2 },
-                    }}
+                    className="flex items-start gap-3 text-gray-700 dark:text-gray-200 text-base sm:text-lg"
                   >
-                    <span className="flex-shrink-0 w-2 h-2 bg-coral-accent rounded-full mt-2" />
+                    <span className="flex-shrink-0 w-2 h-2 bg-[#f07f97] dark:bg-[#ff97b2] rounded-full mt-2" />
                     <span>{fact}</span>
-                  </motion.li>
+                  </li>
                 ))}
-              </motion.ul>
-            </motion.div>
+              </ul>
+            </div>
 
-            {/* Timeline */}
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 lg:p-12 border border-gray-200/50 dark:border-gray-700/50"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-coral-accent dark:text-coral-light mb-8">
+            <div className={cardClass}>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#f07f97] dark:text-[#ff97b2] mb-8">
                 Timeline 2022 - Σήμερα
               </h2>
-
               <div className="space-y-5">
                 {timelineData.map((item, idx) => (
-                  <motion.div
+                  <div
                     key={`${item.period}-${idx}`}
-                    className="relative pl-6 sm:pl-8 pb-4 border-l-2 border-coral-accent/30"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ delay: idx * 0.03 }}
+                    className="relative pl-6 sm:pl-8 pb-4 border-l-2 border-[#f07f97]/30 dark:border-[#ff97b2]/30"
                   >
-                    <span className="absolute -left-[7px] sm:-left-[9px] top-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-coral-accent" />
-                    <p className="text-sm font-bold text-coral-accent mb-1">{item.period}</p>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                      {item.title}
-                    </h3>
+                    <span className="absolute -left-[7px] sm:-left-[9px] top-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#f07f97] dark:bg-[#ff97b2]" />
+                    <p className="text-sm font-bold text-[#f07f97] dark:text-[#ff97b2] mb-1">
+                      {item.period}
+                    </p>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

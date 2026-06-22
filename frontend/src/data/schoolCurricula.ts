@@ -3,8 +3,24 @@
 import { EKPA_IPT_CURRICULUM } from './ekpaIptCurriculum.generated';
 import { AUTH_INFORMATICS_CURRICULUM } from './authInformaticsCurriculum.generated';
 import { OPA_INFORMATICS_CURRICULUM } from './opaInformaticsCurriculum.generated';
+import { UNIPI_INFORMATICS_CURRICULUM } from './unipiInformaticsCurriculum.generated';
+import { PAMAK_CSC_CURRICULUM } from './pamakCscCurriculum.generated';
+import { PAMAK_ISC_CURRICULUM } from './pamakIscCurriculum.generated';
+import { HAROKOPIO_INFORMATICS_CURRICULUM } from './harokopioInformaticsCurriculum.generated';
+import { PAPEI_DIGITAL_SYSTEMS_CURRICULUM } from './papeiDigitalSystemsCurriculum.generated';
+import { UOC_CS_CURRICULUM } from './uocCsCurriculum.generated';
 
-export { EKPA_IPT_CURRICULUM, AUTH_INFORMATICS_CURRICULUM, OPA_INFORMATICS_CURRICULUM };
+export {
+  EKPA_IPT_CURRICULUM,
+  AUTH_INFORMATICS_CURRICULUM,
+  OPA_INFORMATICS_CURRICULUM,
+  UNIPI_INFORMATICS_CURRICULUM,
+  PAMAK_CSC_CURRICULUM,
+  PAMAK_ISC_CURRICULUM,
+  HAROKOPIO_INFORMATICS_CURRICULUM,
+  PAPEI_DIGITAL_SYSTEMS_CURRICULUM,
+  UOC_CS_CURRICULUM,
+};
 
 export type SemesterSlotMark = 'Υ' | 'B';
 
@@ -20,11 +36,20 @@ export type CourseCategory =
   | 'lab'
   | 'project';
 
+export type CourseHours = {
+  lecture: number;
+  /** Ε — εργαστήριο */
+  lab?: number;
+  /** Φ — φροντιστήριο */
+  tutorial?: number;
+};
+
 export type CurriculumCourse = {
   name: string;
   code: string;
   ects: number;
   kind: string;
+  hours?: CourseHours;
   slots?: CurriculumSlots;
 };
 
@@ -36,6 +61,8 @@ export type CurriculumSemester = {
 export type SchoolCurriculum = {
   title: string;
   subtitle?: string;
+  /** Σημείωση για ώρες διδασκαλίας (π.χ. Ε=εργαστήριο, Φ=φροντιστήριο) */
+  hoursNote?: string;
   semesters: CurriculumSemester[];
 };
 
@@ -60,8 +87,14 @@ const CATEGORY_COLORS: Record<CourseCategory, string> = {
 };
 
 export function getCourseCategory(kind: string): CourseCategory {
-  if (kind.includes('Υποχρεωτικό (ΥΜ)')) return 'mandatory';
-  if (kind.includes('ΕΥΜ') || kind.includes("Κατ' Επιλογή")) return 'mandatory-choice';
+  if (kind.includes('Υποχρεωτικό κατεύθυνσης') || kind.includes('Υποχρεωτικό δευτερεύουσας')) {
+    return 'mandatory-choice';
+  }
+  if (kind.includes('Υποχρεωτικό (ΥΜ)') || kind.includes('Υποχρεωτικό κορμού')) return 'mandatory';
+  if (kind.includes('Υποχρεωτικό')) return 'mandatory';
+  if (kind.includes('ΕΥΜ') || kind.includes("Κατ' Επιλογή") || kind.includes('Επιλογής Υποχρεωτικό')) {
+    return 'mandatory-choice';
+  }
   if (kind.toLowerCase() === 'project') return 'project';
   if (kind.includes('Πρακτική')) return 'project';
   if (kind.includes('ΓΠ') || kind.includes('Γενικής')) return 'general';
@@ -121,10 +154,23 @@ export function countCurriculumCourses(
 }
 
 /** Αντιστοίχιση school.id → πρόγραμμα σπουδών */
+export function formatCourseHours(hours: CourseHours): string {
+  const parts = [`${hours.lecture}`];
+  if (hours.tutorial) parts.push(`${hours.tutorial}Φ`);
+  if (hours.lab) parts.push(`${hours.lab}Ε`);
+  return parts.join('+');
+}
+
 export const SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '330': EKPA_IPT_CURRICULUM,
   '338': AUTH_INFORMATICS_CURRICULUM,
   '333': OPA_INFORMATICS_CURRICULUM,
+  '339': UNIPI_INFORMATICS_CURRICULUM,
+  '1211': PAMAK_CSC_CURRICULUM,
+  '1212': PAMAK_ISC_CURRICULUM,
+  '412': HAROKOPIO_INFORMATICS_CURRICULUM,
+  '262': PAPEI_DIGITAL_SYSTEMS_CURRICULUM,
+  '216': UOC_CS_CURRICULUM,
 };
 
 export function hasSchoolCurriculum(schoolId: string): boolean {

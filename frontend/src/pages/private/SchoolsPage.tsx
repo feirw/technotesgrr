@@ -19,6 +19,7 @@ import {
   Info,
   ChevronDown,
 } from 'lucide-react';
+import { MenuIconImg, MENU_ICONS } from '@/data/menuIcons';
 import {
   Select,
   SelectContent,
@@ -1853,8 +1854,11 @@ const SchoolsPage: React.FC = () => {
       <nav className="sticky top-0 z-50 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-xl border-b border-[#f07f97]/30 dark:border-white/10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-28 flex flex-col justify-center">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <h1 className="text-xl font-black text-gray-900 dark:text-[#faf5ef] shrink-0">
-              Σχολές <span className="text-[#f07f97] dark:text-[#ff97b2]">4ο Επιστημονικό πεδίο</span>
+            <h1 className="text-xl font-black text-gray-900 dark:text-[#faf5ef] shrink-0 flex items-center gap-2.5">
+              <MenuIconImg src={MENU_ICONS.schools} className="w-8 h-8 shrink-0" />
+              <span>
+                Σχολές <span className="text-[#f07f97] dark:text-[#ff97b2]">4ο Επιστημονικό πεδίο</span>
+              </span>
             </h1>
 
             <div className="flex w-full max-w-3xl gap-3">
@@ -1900,7 +1904,12 @@ const SchoolsPage: React.FC = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 mt-12">
+      <main className="max-w-7xl mx-auto px-4 mt-8 sm:mt-10">
+        <p className="mb-8 rounded-2xl border border-[#f07f97]/30 dark:border-white/15 bg-white/90 dark:bg-[#3a2658]/90 px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed shadow-sm">
+          <span className="font-bold text-[#f07f97] dark:text-[#ff97b2]">Note:</span> Η ιδέα για να
+          εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας!
+        </p>
+
         {Object.entries(CATEGORIES).map(([catName, config]) => {
           const schools = filteredSchools.filter((s) => s.category === catName);
           if (schools.length === 0) return null;

@@ -7,6 +7,7 @@ import {
   type MethodologyTopicId,
   type OsoExample,
 } from '@/data/methodologies';
+import { PageMenuIcon } from '@/data/menuIcons';
 
 const preClass =
   'mt-3 mb-2 rounded-xl bg-slate-900/95 text-slate-100 p-4 text-sm font-mono leading-relaxed overflow-x-auto border border-slate-700/80 whitespace-pre';
@@ -77,6 +78,10 @@ const MethodologiesPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
+          <PageMenuIcon
+            icon="methodologies"
+            wrapperClassName="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#fea2bb]/15 mx-auto mb-3"
+          />
           <h1 className="text-3xl sm:text-4xl font-black text-[#fea2bb] dark:text-[#fea2bb] tracking-tight">
             Μεθοδολογίες
           </h1>

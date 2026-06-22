@@ -1,4 +1,5 @@
 import React from 'react';
+import { DATA_PROTECTION_LAST_UPDATED } from '@/data/legalDates';
 
 const DataProtectionPage: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const DataProtectionPage: React.FC = () => {
         <strong>Ιστοσελίδα:</strong> technotesgr
       </p>
       <p className="mb-6">
-        <strong>Ημερομηνία τελευταίας ενημέρωσης:</strong> {new Date().toLocaleDateString('el-GR')}
+        <strong>Ημερομηνία τελευταίας ενημέρωσης:</strong> {DATA_PROTECTION_LAST_UPDATED}
       </p>
 
       <hr className="my-6" />

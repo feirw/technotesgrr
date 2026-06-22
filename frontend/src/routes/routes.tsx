@@ -8,6 +8,7 @@ const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'))
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
 const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
+const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -87,6 +88,10 @@ const routes: RouteConfig[] = [
   {
     path: '/announcements',
     element: <AnnouncementsPage />,
+  },
+  {
+    path: '/faq',
+    element: <FaqPage />,
   },
   {
     path: '/quiz',

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { MenuIconImg, MENU_ICONS } from '@/data/menuIcons';
 
 const EMBED_URL = 'https://gloglossa.gr/';
 
@@ -16,7 +17,10 @@ const GloglossaEmbedPage: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto w-full flex flex-col gap-2 sm:gap-3 flex-1 min-h-0">
         <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
-          <h1 className="text-2xl sm:text-3xl font-black text-coral-accent dark:text-coral-light">GloGlossa</h1>
+          <div className="flex items-center gap-3">
+            <MenuIconImg src={MENU_ICONS.gloglossa} className="w-9 h-9 sm:w-10 sm:h-10" />
+            <h1 className="text-2xl sm:text-3xl font-black text-coral-accent dark:text-coral-light">GloGlossa</h1>
+          </div>
           <a
             href={EMBED_URL}
             target="_blank"

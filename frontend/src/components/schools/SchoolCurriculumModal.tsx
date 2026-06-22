@@ -4,6 +4,7 @@ import { X, BookOpen, List, LayoutGrid, Filter } from 'lucide-react';
 import {
   countCurriculumCourses,
   filterCurriculum,
+  formatCourseHours,
   getCourseCategory,
   getCourseCategoryClass,
   getCourseCategoryLabel,
@@ -51,7 +52,14 @@ function CourseCard({ course }: { course: CurriculumCourse }) {
     <article className="rounded-xl border border-[#f07f97]/20 dark:border-white/15 bg-white dark:bg-[#2d1c48]/60 p-3 space-y-2">
       <div className="flex items-start justify-between gap-2">
         <span className="font-mono text-xs text-gray-500 dark:text-gray-400">{course.code}</span>
-        <span className="font-black text-[#f07f97] dark:text-[#ff97b2] text-sm">{course.ects} ECTS</span>
+        <div className="text-right shrink-0">
+          <span className="font-black text-[#f07f97] dark:text-[#ff97b2] text-sm">{course.ects} ECTS</span>
+          {course.hours && (
+            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 mt-0.5">
+              {formatCourseHours(course.hours)} ώρες
+            </p>
+          )}
+        </div>
       </div>
       <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 leading-snug">{course.name}</h4>
       <CategoryBadge kind={course.kind} />
@@ -90,6 +98,16 @@ export const SchoolCurriculumModal: React.FC<SchoolCurriculumModalProps> = ({
   const filtered = useMemo(
     () => filterCurriculum(curriculum, activeFilter),
     [curriculum, activeFilter],
+  );
+
+  const showHoursColumn = useMemo(
+    () => curriculum.semesters.some((sem) => sem.courses.some((c) => c.hours)),
+    [curriculum],
+  );
+
+  const showSlotsColumn = useMemo(
+    () => curriculum.semesters.some((sem) => sem.courses.some((c) => c.slots && Object.keys(c.slots).length > 0)),
+    [curriculum],
   );
 
   const mandatoryCount = countCurriculumCourses(
@@ -175,6 +193,9 @@ export const SchoolCurriculumModal: React.FC<SchoolCurriculumModalProps> = ({
                   <p className="text-xs text-white/80 mt-2 font-semibold">
                     {totalCourses} μαθήματα · {mandatoryCount} υποχρεωτικά · {electiveCount} επιλογής
                   </p>
+                  {curriculum.hoursNote && (
+                    <p className="text-xs text-white/75 mt-1">{curriculum.hoursNote}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -242,21 +263,29 @@ export const SchoolCurriculumModal: React.FC<SchoolCurriculumModalProps> = ({
                     </div>
                   ) : (
                     <div className="rounded-2xl border border-[#f07f97]/25 dark:border-white/15 overflow-x-auto">
-                      <table className="w-full text-sm min-w-[720px]">
+                      <table
+                        className={`w-full text-sm ${showSlotsColumn ? 'min-w-[720px]' : 'min-w-[480px]'}`}
+                      >
                         <thead>
                           <tr className="bg-[#fff5f8] dark:bg-[#2d1c48]/80 text-left">
                             <th className="px-3 py-2.5 font-bold text-gray-500 dark:text-gray-400 w-16">Κωδ.</th>
                             <th className="px-3 py-2.5 font-bold text-gray-500 dark:text-gray-400">Μάθημα</th>
                             <th className="px-3 py-2.5 font-bold text-gray-500 dark:text-gray-400 w-14 text-right">ECTS</th>
-                            <th className="px-3 py-2.5 font-bold text-gray-500 dark:text-gray-400 min-w-[8rem]">Τύπος</th>
-                            {SLOT_KEYS.map((k) => (
-                              <th
-                                key={k}
-                                className="px-2 py-2.5 font-bold text-gray-500 dark:text-gray-400 w-10 text-center"
-                              >
-                                {k.toUpperCase()}
+                            {showHoursColumn && (
+                              <th className="px-3 py-2.5 font-bold text-gray-500 dark:text-gray-400 w-20 text-right">
+                                Ώρες
                               </th>
-                            ))}
+                            )}
+                            <th className="px-3 py-2.5 font-bold text-gray-500 dark:text-gray-400 min-w-[8rem]">Τύπος</th>
+                            {showSlotsColumn &&
+                              SLOT_KEYS.map((k) => (
+                                <th
+                                  key={k}
+                                  className="px-2 py-2.5 font-bold text-gray-500 dark:text-gray-400 w-10 text-center"
+                                >
+                                  {k.toUpperCase()}
+                                </th>
+                              ))}
                           </tr>
                         </thead>
                         <tbody>
@@ -274,14 +303,20 @@ export const SchoolCurriculumModal: React.FC<SchoolCurriculumModalProps> = ({
                               <td className="px-3 py-2.5 font-bold text-[#f07f97] dark:text-[#ff97b2] text-right align-top">
                                 {course.ects}
                               </td>
+                              {showHoursColumn && (
+                                <td className="px-3 py-2.5 text-xs font-semibold text-gray-600 dark:text-gray-300 text-right align-top whitespace-nowrap">
+                                  {course.hours ? formatCourseHours(course.hours) : '—'}
+                                </td>
+                              )}
                               <td className="px-3 py-2.5 align-top">
                                 <CategoryBadge kind={course.kind} />
                               </td>
-                              {SLOT_KEYS.map((key) => (
-                                <td key={key} className="px-2 py-2.5 text-center align-top">
-                                  <SlotCell mark={course.slots?.[key]} />
-                                </td>
-                              ))}
+                              {showSlotsColumn &&
+                                SLOT_KEYS.map((key) => (
+                                  <td key={key} className="px-2 py-2.5 text-center align-top">
+                                    <SlotCell mark={course.slots?.[key]} />
+                                  </td>
+                                ))}
                             </tr>
                           ))}
                         </tbody>

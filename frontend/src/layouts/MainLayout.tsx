@@ -16,7 +16,8 @@ import {
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import CookieConsent from '@/components/other/CookieConsent';
-import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
+import { MENU_ICONS, MenuIconImg, MenuNavIcon } from '@/data/menuIcons';
+import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 // const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
@@ -43,7 +44,6 @@ interface MobileNavButtonProps {
   children: React.ReactNode;
   icon?: LucideIcon;
   iconSrc?: string;
-  iconClassName?: string;
   onClick: () => void;
   /** Παράκαμψη isActive (π.χ. `/methodologies?t=...`). */
   isActiveOverride?: boolean;
@@ -64,21 +64,22 @@ const PrepMenu: React.FC = () => {
     label: string;
     icon?: LucideIcon;
     iconSrc?: string;
-    iconClassName?: string;
     onPrefetch?: () => void;
-  }> = ({ to, label, icon: Icon, iconSrc, iconClassName, onPrefetch }) => (
+  }> = ({ to, label, icon: Icon, iconSrc, onPrefetch }) => (
     <button
       type="button"
       onClick={() => navigate(to)}
       onMouseEnter={() => onPrefetch?.()}
-      className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-coral-wash dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 text-left"
+      className="flex w-full min-h-11 items-center gap-3 px-3 py-2 rounded-lg hover:bg-coral-wash dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 text-left"
     >
       {iconSrc ? (
-        <MenuIconImg src={iconSrc} className={iconClassName} />
+        <MenuNavIcon src={iconSrc} />
       ) : Icon ? (
-        <Icon className="w-7 h-7 text-coral-accent shrink-0" />
+        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center" aria-hidden>
+          <Icon className="h-7 w-7 text-coral-accent" />
+        </span>
       ) : null}
-      <span className="font-semibold">{label}</span>
+      <span className="font-semibold leading-tight">{label}</span>
     </button>
   );
 
@@ -104,24 +105,13 @@ const PrepMenu: React.FC = () => {
               <LinkItem to="/quiz" label="Quiz" iconSrc={MENU_ICONS.quiz} />
               <LinkItem to="/flashcards" label="Flashcards" iconSrc={MENU_ICONS.flashcards} />
               <LinkItem to="/methodologies" label="Μεθοδολογίες" iconSrc={MENU_ICONS.methodologies} />
-              <LinkItem
-                to="/askiseis"
-                label="Ασκήσεις"
-                iconSrc={MENU_ICONS.askiseis}
-                iconClassName="w-10 h-10"
-              />
-              {/* <LinkItem
-                to="/ai-corrector"
-                label="AI Corrector"
-                iconSrc={MENU_ICONS.aiCorrector}
-                iconClassName="w-10 h-10"
-              /> */}
+              <LinkItem to="/askiseis" label="Ασκήσεις" iconSrc={MENU_ICONS.askiseis} />
+              {/* <LinkItem to="/ai-corrector" label="AI Corrector" iconSrc={MENU_ICONS.aiCorrector} /> */}
               <LinkItem to="/sxoles" label="Σχολές" iconSrc={MENU_ICONS.schools} />
               <LinkItem
                 to="/syntelestes-sxolon"
                 label="Συντελεστές Σχολών"
                 iconSrc={MENU_ICONS.syntelestesSxolon}
-                iconClassName="w-8 h-8"
               />
               <LinkItem to="/paliathemata" label="Παλιά Θέματα" iconSrc={MENU_ICONS.paliathemata} />
               <LinkItem to="/gloglossa" label="GloGlossa" iconSrc={MENU_ICONS.gloglossa} />
@@ -158,8 +148,8 @@ const NavButton: React.FC<NavButtonProps> = ({ to, children, iconSrc }) => (
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           />
         )}
-        <span className="relative z-10 inline-flex items-center gap-2.5">
-          {iconSrc ? <MenuIconImg src={iconSrc} /> : null}
+        <span className="relative z-10 inline-flex items-center gap-2">
+          {iconSrc ? <MenuNavIcon src={iconSrc} compact /> : null}
           {children}
         </span>
       </>
@@ -172,7 +162,6 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
   children,
   icon: Icon,
   iconSrc,
-  iconClassName,
   onClick,
   isActiveOverride,
 }) => (
@@ -199,15 +188,19 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
             />
           )}
-          <div className="flex items-center gap-3.5 relative z-10">
+          <div className="flex items-center gap-3 relative z-10">
             {iconSrc ? (
-              <MenuIconImg src={iconSrc} className={iconClassName ?? 'w-8 h-8'} />
+              <MenuNavIcon src={iconSrc} />
             ) : Icon ? (
-              <Icon
-                className={`w-8 h-8 shrink-0 ${active ? 'text-coral-accent dark:text-coral-light' : 'text-gray-500 dark:text-gray-400'}`}
-              />
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center" aria-hidden>
+                <Icon
+                  className={`h-7 w-7 ${active ? 'text-coral-accent dark:text-coral-light' : 'text-gray-500 dark:text-gray-400'}`}
+                />
+              </span>
             ) : null}
-            <span className={`font-semibold ${active ? 'text-slate-800 dark:text-gray-50' : ''}`}>{children}</span>
+            <span className={`font-semibold leading-tight ${active ? 'text-slate-800 dark:text-gray-50' : ''}`}>
+              {children}
+            </span>
           </div>
         </>
       );
@@ -221,6 +214,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
+  const isAboutPage = location.pathname === '/about';
   // const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
@@ -304,7 +298,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div
       className={`min-h-screen overflow-x-hidden text-gray-900 dark:text-gray-100 flex flex-col ${
-        isHomePage || isSchoolsPage
+        isHomePage || isSchoolsPage || isAboutPage
           ? 'bg-[#ff97b2] dark:bg-[#2d1c48]'
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]'
       }`}
@@ -364,6 +358,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/" iconSrc={MENU_ICONS.home}>Αρχική</NavButton>
               <NavButton to="/about" iconSrc={MENU_ICONS.about}>Σχετικά με εμένα</NavButton>
               <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements}>Ανακοινώσεις</NavButton>
+              <NavButton to="/faq" iconSrc={MENU_ICONS.faq}>FAQ</NavButton>
               {/* GloGlossa moved into private "Μάθηση" menu */}
               {/* <NavButton to="/merch">Η Ατζέντα</NavButton> */}
               <button
@@ -424,7 +419,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             >
               <div className="flex items-center gap-3 mb-3">
-                <MenuIconImg src={MENU_ICONS.takeABreath} className="w-10 h-10" />
+                <MenuNavIcon src={MENU_ICONS.takeABreath} />
                 <h3 className="text-xl font-black text-gray-900 dark:text-white">Take a breath</h3>
               </div>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{panicMsg.text}</p>
@@ -491,10 +486,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       triggerPanic();
                       closeMenu();
                     }}
-                    className="w-full flex items-center gap-4 py-4 px-4 rounded-xl text-coral-strong dark:text-coral-light bg-coral-wash dark:bg-coral-accent/15 font-bold border border-coral-accent/30 dark:border-coral-accent/35 touch-manipulation min-h-11"
+                    className="w-full flex min-h-11 items-center gap-3 py-3.5 px-4 rounded-xl text-coral-strong dark:text-coral-light bg-coral-wash dark:bg-coral-accent/15 font-bold border border-coral-accent/30 dark:border-coral-accent/35 touch-manipulation"
                   >
-                    <MenuIconImg src={MENU_ICONS.takeABreath} className="w-11 h-11 shrink-0" />
-                    <span>Take a breath</span>
+                    <MenuNavIcon src={MENU_ICONS.takeABreath} />
+                    <span className="leading-tight">Take a breath</span>
                   </button>
 
                   <MobileNavButton to="/" iconSrc={MENU_ICONS.home} onClick={closeMenu}>
@@ -505,6 +500,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </MobileNavButton>
                   <MobileNavButton to="/announcements" iconSrc={MENU_ICONS.announcements} onClick={closeMenu}>
                     Ανακοινώσεις
+                  </MobileNavButton>
+                  <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
+                    FAQ
                   </MobileNavButton>
                   {/* <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
                     Ατζέντα
@@ -525,20 +523,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   >
                     Μεθοδολογίες
                   </MobileNavButton>
-                  <MobileNavButton
-                    to="/askiseis"
-                    iconSrc={MENU_ICONS.askiseis}
-                    iconClassName="w-11 h-11"
-                    onClick={closeMenu}
-                  >
+                  <MobileNavButton to="/askiseis" iconSrc={MENU_ICONS.askiseis} onClick={closeMenu}>
                     Ασκήσεις
                   </MobileNavButton>
-                  {/* <MobileNavButton
-                    to="/ai-corrector"
-                    iconSrc={MENU_ICONS.aiCorrector}
-                    iconClassName="w-11 h-11"
-                    onClick={closeMenu}
-                  >
+                  {/* <MobileNavButton to="/ai-corrector" iconSrc={MENU_ICONS.aiCorrector} onClick={closeMenu}>
                     AI Corrector
                   </MobileNavButton> */}
                   <MobileNavButton to="/sxoles" iconSrc={MENU_ICONS.schools} onClick={closeMenu}>
@@ -547,7 +535,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton
                     to="/syntelestes-sxolon"
                     iconSrc={MENU_ICONS.syntelestesSxolon}
-                    iconClassName="w-9 h-9"
                     onClick={closeMenu}
                   >
                     Συντελεστές Σχολών
@@ -555,12 +542,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/paliathemata" iconSrc={MENU_ICONS.paliathemata} onClick={closeMenu}>
                     Παλιά Θέματα
                   </MobileNavButton>
-                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
-                  <MobileNavButton to="/progress-tracker" iconSrc={MENU_ICONS.progressTracker} onClick={closeMenu}>
-                    Tracker ύλης
-                  </MobileNavButton>
                   <MobileNavButton to="/gloglossa" iconSrc={MENU_ICONS.gloglossa} onClick={closeMenu}>
                     GloGlossa
+                  </MobileNavButton>
+                  <MobileNavButton to="/progress-tracker" iconSrc={MENU_ICONS.progressTracker} onClick={closeMenu}>
+                    Progress Tracker
                   </MobileNavButton>
                   <MobileNavButton to="/study-timer" iconSrc={MENU_ICONS.studyTimer} onClick={closeMenu}>
                     Study Timer
@@ -568,11 +554,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/prosanatolismos" iconSrc={MENU_ICONS.prosanatolismos} onClick={closeMenu}>
                     Προσανατολισμός
                   </MobileNavButton>
-                  {/* <MobileNavButton to="/online" icon={GraduationCap} onClick={closeMenu}>
-                    Online Μαθήματα
-                  </MobileNavButton> */}
                   <MobileNavButton to="/algorithms" iconSrc={MENU_ICONS.algorithms} onClick={closeMenu}>
-                    Algorithms
+                    Αλγόριθμοι
                   </MobileNavButton>
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
@@ -625,7 +608,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 Προστασία Προσωπικών Δεδομένων
               </NavLink>
               <span className="text-xs text-black dark:text-gray-100">
-                Τελευταία ενημέρωση: {new Date().toLocaleDateString('el-GR')}
+                Τελευταία ενημέρωση: {TERMS_LAST_UPDATED}
               </span>
             </div>
           </motion.div>

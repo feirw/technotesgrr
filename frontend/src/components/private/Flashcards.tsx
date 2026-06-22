@@ -16,6 +16,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { fetchFlashcardsFromBackend } from '@/utils/flashcardsFetch';
+import { PageMenuIcon } from '@/data/menuIcons';
 
 // --- Types & Interfaces ---
 
@@ -424,8 +425,12 @@ const Flashcards: React.FC = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
+          <PageMenuIcon
+            icon="flashcards"
+            wrapperClassName="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/80 dark:bg-gray-900/90 mx-auto mb-3"
+          />
           <h1 className="text-4xl sm:text-5xl font-black mb-4 text-coral-accent dark:text-coral-light">
-            ⚡ Flashcards
+            Flashcards
           </h1>
           {selectedSetIndex === null && (
             <div className="flex flex-wrap justify-center gap-4 mt-4">
