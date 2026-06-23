@@ -80,6 +80,7 @@ const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/sxoles', label: 'Σχολές', iconSrc: MENU_ICONS.schools },
   { to: '/syntelestes-sxolon', label: 'Συντελεστές Σχολών', iconSrc: MENU_ICONS.syntelestesSxolon },
   { to: '/prosanatolismos', label: 'Προσανατολισμός', iconSrc: MENU_ICONS.prosanatolismos },
+  { to: '/ypologismos-morion', label: 'Υπολογισμός Μορίων', iconSrc: MENU_ICONS.ypologismosMorion },
 ];
 
 const MobileMenuSectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (

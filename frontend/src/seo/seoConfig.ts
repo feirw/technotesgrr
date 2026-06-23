@@ -250,6 +250,18 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Συντελεστές Σχολών', path: '/syntelestes-sxolon' },
     ],
   },
+  '/ypologismos-morion': {
+    path: '/ypologismos-morion',
+    slug: 'ypologismos-morion',
+    title: 'Υπολογισμός Μορίων | Πανελλήνιες 4ο Πεδίο',
+    description:
+      'Υπολογισμός μορίων Πανελληνίων για 4ο πεδίο: βάλε βαθμούς, δες μόρια ανά σχολή, βάσεις 2025 και διαφορά από ΕΒΕ.',
+    ogImage: og('ypologismos-morion'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Υπολογισμός Μορίων', path: '/ypologismos-morion' },
+    ],
+  },
 };
 
 export const NOT_FOUND_SEO: PageSeo = {
