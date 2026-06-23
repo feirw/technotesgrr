@@ -17,6 +17,7 @@ import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import CookieConsent from '@/components/other/CookieConsent';
 import { MENU_ICONS, MenuIconImg, MenuNavIcon } from '@/data/menuIcons';
+import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 // const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
@@ -55,30 +56,50 @@ interface MainLayoutProps {
 
 // --- Components ---
 
-const PrepMenu: React.FC = () => {
+// --- Menu structure ---
+
+type MenuLinkItem = {
+  to: string;
+  label: string;
+  iconSrc: string;
+  onPrefetch?: () => void;
+};
+
+const PREP_MENU_ITEMS: MenuLinkItem[] = [
+  { to: '/quiz', label: 'Quiz', iconSrc: MENU_ICONS.quiz },
+  { to: '/flashcards', label: 'Flashcards', iconSrc: MENU_ICONS.flashcards },
+  { to: '/methodologies', label: 'Μεθοδολογίες', iconSrc: MENU_ICONS.methodologies },
+  { to: '/paliathemata', label: 'Παλιά Θέματα', iconSrc: MENU_ICONS.paliathemata },
+  { to: '/askiseis', label: 'Ασκήσεις', iconSrc: MENU_ICONS.askiseis },
+  { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
+  { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
+  { to: '/gloglossa', label: 'GloGlossa', iconSrc: MENU_ICONS.gloglossa },
+];
+
+const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [
+  { to: '/sxoles', label: 'Σχολές', iconSrc: MENU_ICONS.schools },
+  { to: '/syntelestes-sxolon', label: 'Συντελεστές Σχολών', iconSrc: MENU_ICONS.syntelestesSxolon },
+  { to: '/prosanatolismos', label: 'Προσανατολισμός', iconSrc: MENU_ICONS.prosanatolismos },
+];
+
+const MobileMenuSectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <p className="px-4 pt-4 pb-1 text-[11px] font-black uppercase tracking-wide text-gray-500 dark:text-gray-400">
+    {children}
+  </p>
+);
+
+const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[] }> = ({ title, items }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const LinkItem: React.FC<{
-    to: string;
-    label: string;
-    icon?: LucideIcon;
-    iconSrc?: string;
-    onPrefetch?: () => void;
-  }> = ({ to, label, icon: Icon, iconSrc, onPrefetch }) => (
+  const LinkItem: React.FC<MenuLinkItem> = ({ to, label, iconSrc, onPrefetch }) => (
     <button
       type="button"
       onClick={() => navigate(to)}
       onMouseEnter={() => onPrefetch?.()}
       className="flex w-full min-h-11 items-center gap-3 px-3 py-2 rounded-lg hover:bg-coral-wash dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 text-left"
     >
-      {iconSrc ? (
-        <MenuNavIcon src={iconSrc} />
-      ) : Icon ? (
-        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center" aria-hidden>
-          <Icon className="h-7 w-7 text-coral-accent" />
-        </span>
-      ) : null}
+      <MenuNavIcon src={iconSrc} />
       <span className="font-semibold leading-tight">{label}</span>
     </button>
   );
@@ -90,7 +111,7 @@ const PrepMenu: React.FC = () => {
       onMouseLeave={() => setOpen(false)}
     >
       <button className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light inline-flex items-center gap-1">
-        Μάθηση
+        {title}
         <ChevronDown className="w-4 h-4" />
       </button>
       <AnimatePresence>
@@ -102,24 +123,9 @@ const PrepMenu: React.FC = () => {
             exit={{ opacity: 0, y: -10 }}
           >
             <div className="flex flex-col gap-1">
-              <LinkItem to="/quiz" label="Quiz" iconSrc={MENU_ICONS.quiz} />
-              <LinkItem to="/flashcards" label="Flashcards" iconSrc={MENU_ICONS.flashcards} />
-              <LinkItem to="/methodologies" label="Μεθοδολογίες" iconSrc={MENU_ICONS.methodologies} />
-              <LinkItem to="/askiseis" label="Ασκήσεις" iconSrc={MENU_ICONS.askiseis} />
-              {/* <LinkItem to="/ai-corrector" label="AI Corrector" iconSrc={MENU_ICONS.aiCorrector} /> */}
-              <LinkItem to="/sxoles" label="Σχολές" iconSrc={MENU_ICONS.schools} />
-              <LinkItem
-                to="/syntelestes-sxolon"
-                label="Συντελεστές Σχολών"
-                iconSrc={MENU_ICONS.syntelestesSxolon}
-              />
-              <LinkItem to="/paliathemata" label="Παλιά Θέματα" iconSrc={MENU_ICONS.paliathemata} />
-              <LinkItem to="/gloglossa" label="GloGlossa" iconSrc={MENU_ICONS.gloglossa} />
-              <LinkItem to="/progress-tracker" label="Progress Tracker" iconSrc={MENU_ICONS.progressTracker} />
-              <LinkItem to="/study-timer" label="Study Timer" iconSrc={MENU_ICONS.studyTimer} />
-              <LinkItem to="/prosanatolismos" label="Προσανατολισμός" iconSrc={MENU_ICONS.prosanatolismos} />
-              <LinkItem to="/algorithms" label="Αλγόριθμοι" iconSrc={MENU_ICONS.algorithms} />
-              {/* <LinkItem to="/online" label="Online Μαθήματα" icon={GraduationCap} /> */}
+              {items.map((item) => (
+                <LinkItem key={item.to} {...item} />
+              ))}
             </div>
           </motion.div>
         )}
@@ -231,20 +237,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     type: 'tip',
     text: '',
   });
-  const panicMessages: Array<{ type: 'tip' | 'joke' | 'breath'; text: string }> = [
-    { type: 'tip', text: 'Δεν χρειάζεται να είμαι τέλειος — αρκεί να προσπαθώ.' },
-    { type: 'tip', text: 'Κάθε μέρα που διαβάζω, έρχομαι πιο κοντά στον στόχο μου.' },
-    { type: 'tip', text: 'Το άγχος είναι προσωρινό, οι προσπάθειές μου μένουν.' },
-    { type: 'tip', text: 'Μπορώ να τα καταφέρω — το έχω ξανακάνει σε δύσκολα.' },
-    { type: 'tip', text: 'Ένα βήμα τη φορά είναι αρκετό.' },
-    { type: 'tip', text: 'Δεν με καθορίζει ένα διαγώνισμα ή μια εξέταση.' },
-    { type: 'tip', text: 'Αξίζω, ανεξάρτητα από τους βαθμούς μου.' },
-    { type: 'tip', text: 'Η πρόοδος είναι πιο σημαντική από την τελειότητα.' },
-    { type: 'tip', text: 'Αν κουραστώ, κάνω διάλειμμα — δεν τα παρατάω.' },
-    { type: 'tip', text: 'Το μέλλον μου δεν κρίνεται μόνο από αυτή τη στιγμή.' },
-  ];
   const triggerPanic = () => {
-    const pick = panicMessages[Math.floor(Math.random() * panicMessages.length)];
+    const pick = PANIC_MESSAGES[Math.floor(Math.random() * PANIC_MESSAGES.length)];
     setPanicMsg(pick);
     setShowPanic(true);
   };
@@ -328,7 +322,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavLink to="/" className="flex items-center gap-3 group shrink-0">
                 <motion.img
                   src="/images/logo.png"
-                  alt="Technotesgr"
+                  alt="Λογότυπο Technotes — Πληροφορική Πανελλήνιες"
                   width={40}
                   height={40}
                   decoding="async"
@@ -359,8 +353,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/about" iconSrc={MENU_ICONS.about}>Σχετικά με εμένα</NavButton>
               <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements}>Ανακοινώσεις</NavButton>
               <NavButton to="/faq" iconSrc={MENU_ICONS.faq}>FAQ</NavButton>
-              {/* GloGlossa moved into private "Μάθηση" menu */}
-              {/* <NavButton to="/merch">Η Ατζέντα</NavButton> */}
+
+              <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
+
+              <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
+              <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
+
               <button
                 type="button"
                 aria-label="Theme toggle"
@@ -378,10 +376,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
                 )}
               </button>
-
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-2"></div>
-
-              <PrepMenu />
             </div>
 
             {/* Mobile Menu Button */}
@@ -504,59 +498,33 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
                     FAQ
                   </MobileNavButton>
-                  {/* <MobileNavButton to="/merch" icon={ShoppingBag} onClick={closeMenu}>
-                    Ατζέντα
-                  </MobileNavButton> */}
-                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
 
-                  <MobileNavButton to="/quiz" iconSrc={MENU_ICONS.quiz} onClick={closeMenu}>
-                    Quiz
-                  </MobileNavButton>
-                  <MobileNavButton to="/flashcards" iconSrc={MENU_ICONS.flashcards} onClick={closeMenu}>
-                    Flashcards
-                  </MobileNavButton>
-                  <MobileNavButton
-                    to="/methodologies"
-                    iconSrc={MENU_ICONS.methodologies}
-                    onClick={closeMenu}
-                    isActiveOverride={location.pathname === '/methodologies'}
-                  >
-                    Μεθοδολογίες
-                  </MobileNavButton>
-                  <MobileNavButton to="/askiseis" iconSrc={MENU_ICONS.askiseis} onClick={closeMenu}>
-                    Ασκήσεις
-                  </MobileNavButton>
-                  {/* <MobileNavButton to="/ai-corrector" iconSrc={MENU_ICONS.aiCorrector} onClick={closeMenu}>
-                    AI Corrector
-                  </MobileNavButton> */}
-                  <MobileNavButton to="/sxoles" iconSrc={MENU_ICONS.schools} onClick={closeMenu}>
-                    Σχολές
-                  </MobileNavButton>
-                  <MobileNavButton
-                    to="/syntelestes-sxolon"
-                    iconSrc={MENU_ICONS.syntelestesSxolon}
-                    onClick={closeMenu}
-                  >
-                    Συντελεστές Σχολών
-                  </MobileNavButton>
-                  <MobileNavButton to="/paliathemata" iconSrc={MENU_ICONS.paliathemata} onClick={closeMenu}>
-                    Παλιά Θέματα
-                  </MobileNavButton>
-                  <MobileNavButton to="/gloglossa" iconSrc={MENU_ICONS.gloglossa} onClick={closeMenu}>
-                    GloGlossa
-                  </MobileNavButton>
-                  <MobileNavButton to="/progress-tracker" iconSrc={MENU_ICONS.progressTracker} onClick={closeMenu}>
-                    Progress Tracker
-                  </MobileNavButton>
-                  <MobileNavButton to="/study-timer" iconSrc={MENU_ICONS.studyTimer} onClick={closeMenu}>
-                    Study Timer
-                  </MobileNavButton>
-                  <MobileNavButton to="/prosanatolismos" iconSrc={MENU_ICONS.prosanatolismos} onClick={closeMenu}>
-                    Προσανατολισμός
-                  </MobileNavButton>
-                  <MobileNavButton to="/algorithms" iconSrc={MENU_ICONS.algorithms} onClick={closeMenu}>
-                    Αλγόριθμοι
-                  </MobileNavButton>
+                  <MobileMenuSectionTitle>Προετοιμασία</MobileMenuSectionTitle>
+                  {PREP_MENU_ITEMS.map((item) => (
+                    <MobileNavButton
+                      key={item.to}
+                      to={item.to}
+                      iconSrc={item.iconSrc}
+                      onClick={closeMenu}
+                      isActiveOverride={
+                        item.to === '/methodologies' ? location.pathname === '/methodologies' : undefined
+                      }
+                    >
+                      {item.label}
+                    </MobileNavButton>
+                  ))}
+
+                  <MobileMenuSectionTitle>Σχολές</MobileMenuSectionTitle>
+                  {SCHOOLS_MENU_ITEMS.map((item) => (
+                    <MobileNavButton
+                      key={item.to}
+                      to={item.to}
+                      iconSrc={item.iconSrc}
+                      onClick={closeMenu}
+                    >
+                      {item.label}
+                    </MobileNavButton>
+                  ))}
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">

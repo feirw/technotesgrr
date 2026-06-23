@@ -24,6 +24,55 @@ export const MENU_ICONS = {
   faq: `${HP}/17.png`,
 } as const;
 
+/** Pixel icons 22–39 — κατηγορίες στη σελίδα Σχολών. */
+export const SCHOOL_CATEGORY_ICONS = {
+  economics: `${HP}/22.png`,
+  informatics: `${HP}/23.png`,
+  energy: `${HP}/24.png`,
+  industry: `${HP}/25.png`,
+  accounting: `${HP}/26.png`,
+  marketing: `${HP}/27.png`,
+  management: `${HP}/28.png`,
+  international: `${HP}/29.png`,
+  statistics: `${HP}/30.png`,
+  security: `${HP}/31.png`,
+  maritime: `${HP}/32.png`,
+  education: `${HP}/33.png`,
+  humanities: `${HP}/34.png`,
+  music: `${HP}/35.png`,
+  arts: `${HP}/36.png`,
+  sports: `${HP}/37.png`,
+  geography: `${HP}/38.png`,
+  fashion: `${HP}/39.png`,
+} as const;
+
+export const SCHOOL_CATEGORY_ICON_BY_NAME: Record<string, string> = {
+  Πληροφορική: SCHOOL_CATEGORY_ICONS.informatics,
+  'Ενέργεια & Μηχανική': SCHOOL_CATEGORY_ICONS.energy,
+  'Βιομηχανία & Προϊόν': SCHOOL_CATEGORY_ICONS.industry,
+  Βιομηχανία: SCHOOL_CATEGORY_ICONS.industry,
+  Οικονομικά: SCHOOL_CATEGORY_ICONS.economics,
+  'Λογιστική & Χρηματοοικονομικά': SCHOOL_CATEGORY_ICONS.accounting,
+  'Διοίκηση Επιχειρήσεων': SCHOOL_CATEGORY_ICONS.management,
+  'Marketing & Επικοινωνία': SCHOOL_CATEGORY_ICONS.marketing,
+  'Διοικητικής Επιστήμης': SCHOOL_CATEGORY_ICONS.statistics,
+  'Διεθνών & Ευρωπαϊκών': SCHOOL_CATEGORY_ICONS.international,
+  Στατιστική: SCHOOL_CATEGORY_ICONS.statistics,
+  'Σώματα Ασφαλείας & Στρατιωτικές': SCHOOL_CATEGORY_ICONS.security,
+  'Ναυτιλιακά & Τουρισμός': SCHOOL_CATEGORY_ICONS.maritime,
+  Παιδαγωγικά: SCHOOL_CATEGORY_ICONS.education,
+  'Ανθρωπιστικά & Κοινωνικά': SCHOOL_CATEGORY_ICONS.humanities,
+  'Μουσική & Πολιτισμός': SCHOOL_CATEGORY_ICONS.music,
+  Τέχνες: SCHOOL_CATEGORY_ICONS.arts,
+  Αθλητισμός: SCHOOL_CATEGORY_ICONS.sports,
+  'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)': SCHOOL_CATEGORY_ICONS.geography,
+  'Σχέδιο Μόδας': SCHOOL_CATEGORY_ICONS.fashion,
+};
+
+export function getSchoolCategoryIcon(category: string): string {
+  return SCHOOL_CATEGORY_ICON_BY_NAME[category] ?? SCHOOL_CATEGORY_ICONS.education;
+}
+
 export type MenuIconKey = keyof typeof MENU_ICONS;
 
 /** Σταθερό πλαίσιο + μέγεθος για ευθυγράμμιση icons στο μενού. */
@@ -31,13 +80,15 @@ export const MENU_ICON_SLOT = 'inline-flex h-9 w-9 shrink-0 items-center justify
 export const MENU_ICON_SIZE = 'h-8 w-8';
 export const MENU_ICON_SIZE_COMPACT = 'h-7 w-7';
 
-export const MenuIconImg: React.FC<{ src: string; className?: string }> = ({
+export const MenuIconImg: React.FC<{ src: string; className?: string; alt?: string }> = ({
   src,
   className = MENU_ICON_SIZE,
+  alt,
 }) => (
   <img
     src={src}
-    alt=""
+    alt={alt ?? ''}
+    aria-hidden={alt ? undefined : true}
     className={`${className} object-contain shrink-0 mix-blend-normal [image-rendering:pixelated]`}
     decoding="async"
   />

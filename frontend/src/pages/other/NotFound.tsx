@@ -6,10 +6,15 @@ const NotFound: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 text-center">
       <div className="text-9xl mb-4">🤔</div>
-      <h1 className="text-6xl font-black text-gray-900 dark:text-white mb-2">404</h1>
-      <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6">
+      <p className="text-6xl font-black text-gray-900 dark:text-white mb-2" aria-hidden="true">
+        404
+      </p>
+      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-2">
         Η σελίδα δεν βρέθηκε
-      </h2>
+      </h1>
+      <p className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-6">
+        Δεν υπάρχει αυτή η σελίδα στο Technotes
+      </p>
       <p className="text-gray-500 dark:text-gray-400 max-w-md mb-8">
         Η σελίδα που ψάχνεις ίσως έχει μετακινηθεί ή διαγραφεί.
       </p>

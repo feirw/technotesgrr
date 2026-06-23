@@ -2,24 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Search,
-  Laptop,
-  Coins,
-  Landmark,
-  BarChart3,
-  Ship,
-  ShieldCheck,
-  Globe,
-  Trophy,
-  Music,
-  Users,
-  GraduationCap,
-  BookOpen,
   MapPin,
-  TrendingUp,
   Info,
   ChevronDown,
+  BookOpen,
+  TrendingUp,
 } from 'lucide-react';
-import { MenuIconImg, MENU_ICONS } from '@/data/menuIcons';
+import { MenuIconImg, MENU_ICONS, SCHOOL_CATEGORY_ICON_BY_NAME } from '@/data/menuIcons';
 import {
   Select,
   SelectContent,
@@ -43,37 +32,39 @@ export interface School {
 }
 
 // --- Configuration ---
-const CATEGORIES: Record<string, { icon: React.ReactNode; color: string }> = {
-  Πληροφορική: { icon: <Laptop size={20} />, color: 'bg-blue-100 text-blue-600' },
-  'Βιομηχανία & Προϊόν': { icon: <Laptop size={20} />, color: 'bg-blue-100 text-blue-600' },
-  Οικονομικά: { icon: <Coins size={20} />, color: 'bg-emerald-100 text-emerald-600' },
+const CATEGORIES: Record<string, { iconSrc: string; color: string }> = {
+  Πληροφορική: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Πληροφορική'], color: 'bg-blue-100 text-blue-600' },
+  'Ενέργεια & Μηχανική': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Ενέργεια & Μηχανική'], color: 'bg-amber-100 text-amber-700' },
+  'Βιομηχανία & Προϊόν': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Βιομηχανία & Προϊόν'], color: 'bg-blue-100 text-blue-600' },
+  Βιομηχανία: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Βιομηχανία'], color: 'bg-blue-100 text-blue-600' },
+  Οικονομικά: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Οικονομικά'], color: 'bg-emerald-100 text-emerald-600' },
   'Λογιστική & Χρηματοοικονομικά': {
-    icon: <BarChart3 size={20} />,
+    iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Λογιστική & Χρηματοοικονομικά'],
     color: 'bg-teal-100 text-teal-600',
   },
-  'Διοίκηση Επιχειρήσεων': { icon: <Landmark size={20} />, color: 'bg-indigo-100 text-indigo-600' },
-  'Marketing & Επικοινωνία': { icon: <TrendingUp size={20} />, color: 'bg-coral-wash text-coral-accent' },
+  'Διοίκηση Επιχειρήσεων': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Διοίκηση Επιχειρήσεων'], color: 'bg-indigo-100 text-indigo-600' },
+  'Marketing & Επικοινωνία': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Marketing & Επικοινωνία'], color: 'bg-coral-wash text-coral-accent' },
   'Διοικητικής Επιστήμης': {
-    icon: <GraduationCap size={20} />,
+    iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Διοικητικής Επιστήμης'],
     color: 'bg-orange-100 text-orange-600',
   },
-  'Διεθνών & Ευρωπαϊκών': { icon: <Globe size={20} />, color: 'bg-sky-100 text-sky-600' },
-  Στατιστική: { icon: <BookOpen size={20} />, color: 'bg-gray-100 text-gray-600' },
+  'Διεθνών & Ευρωπαϊκών': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Διεθνών & Ευρωπαϊκών'], color: 'bg-sky-100 text-sky-600' },
+  Στατιστική: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Στατιστική'], color: 'bg-gray-100 text-gray-600' },
   'Σώματα Ασφαλείας & Στρατιωτικές': {
-    icon: <ShieldCheck size={20} />,
+    iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Σώματα Ασφαλείας & Στρατιωτικές'],
     color: 'bg-slate-100 text-slate-600',
   },
-  'Ναυτιλιακά & Τουρισμός': { icon: <Ship size={20} />, color: 'bg-cyan-100 text-cyan-600' },
-  Παιδαγωγικά: { icon: <GraduationCap size={20} />, color: 'bg-orange-100 text-orange-600' },
-  'Ανθρωπιστικά & Κοινωνικά': { icon: <Users size={20} />, color: 'bg-coral-light/30 text-coral-strong' },
-  'Μουσική & Πολιτισμός': { icon: <Music size={20} />, color: 'bg-purple-100 text-purple-600' },
-  Τέχνες: { icon: <BookOpen size={20} />, color: 'bg-gray-100 text-gray-600' },
-  Αθλητισμός: { icon: <Trophy size={20} />, color: 'bg-amber-100 text-amber-600' },
+  'Ναυτιλιακά & Τουρισμός': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Ναυτιλιακά & Τουρισμός'], color: 'bg-cyan-100 text-cyan-600' },
+  Παιδαγωγικά: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Παιδαγωγικά'], color: 'bg-orange-100 text-orange-600' },
+  'Ανθρωπιστικά & Κοινωνικά': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Ανθρωπιστικά & Κοινωνικά'], color: 'bg-coral-light/30 text-coral-strong' },
+  'Μουσική & Πολιτισμός': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Μουσική & Πολιτισμός'], color: 'bg-purple-100 text-purple-600' },
+  Τέχνες: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Τέχνες'], color: 'bg-gray-100 text-gray-600' },
+  Αθλητισμός: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Αθλητισμός'], color: 'bg-amber-100 text-amber-600' },
   'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)': {
-    icon: <BookOpen size={20} />,
+    iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Άλλα (Γεωγραφία, Περιβάλλον κ.α.)'],
     color: 'bg-gray-100 text-gray-600',
   },
-  'Σχέδιο Μόδας': { icon: <BookOpen size={20} />, color: 'bg-gray-100 text-gray-600' },
+  'Σχέδιο Μόδας': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Σχέδιο Μόδας'], color: 'bg-gray-100 text-gray-600' },
 };
 
 // --- Full Data Array ---
@@ -189,7 +180,7 @@ export const ALL_SCHOOLS: School[] = [
     requirements: 'Ξένη Γλώσσα',
   },
   {
-    id: '613',
+    id: '612',
     name: 'Οικονομικής και Διοίκησης Τουρισμού',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Χίος',
@@ -199,7 +190,7 @@ export const ALL_SCHOOLS: School[] = [
     requirements: 'Ξένη Γλώσσα',
   },
   {
-    id: '616',
+    id: '613',
     name: 'Αστε Ρόδου (ΑΣΤΕΡ)',
     uni: 'ΑΣΤΕ',
     city: 'Ρόδος',
@@ -294,7 +285,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Διοίκηση Επιχειρήσεων',
   },
   {
-    id: '575',
+    id: '669',
     name: 'Διοίκησης Επιχειρήσεων',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
@@ -303,7 +294,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Διοίκηση Επιχειρήσεων',
   },
   {
-    id: '583',
+    id: '1605',
     name: 'Διοίκησης Οργανισμών, Marketing και Τουρισμού',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
@@ -340,7 +331,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Ναυτιλιακά & Τουρισμός',
   },
   {
-    id: '591',
+    id: '1518',
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Τρίπολη',
@@ -358,11 +349,11 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Διοίκηση Επιχειρήσεων',
   },
   {
-    id: '580',
-    name: 'Διοίκησης Επιχειρήσεων',
+    id: '1514',
+    name: 'Διοίκησης Επιχειρήσεων και Οργανισμών',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Καλαμάτα',
-    points: 7715,
+    points: 9715,
     ebe: '8.40',
     category: 'Διοίκηση Επιχειρήσεων',
   },
@@ -675,7 +666,7 @@ export const ALL_SCHOOLS: School[] = [
     city: 'Λάρισα',
     points: 8990,
     ebe: '8.40',
-    category: 'Πληροφορική',
+    category: 'Ενέργεια & Μηχανική',
   },
   {
     id: '1250',
@@ -699,7 +690,7 @@ export const ALL_SCHOOLS: School[] = [
   //βιομηχανια
 
   {
-    id: '560',
+    id: '336',
     name: 'Βιομηχανικής Διοίκησης και Τεχνολογίας',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
@@ -708,7 +699,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Βιομηχανία',
   },
   {
-    id: '629',
+    id: '1624',
     name: 'Μηχανικών Παραγωγής και Διοίκησης',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
@@ -836,7 +827,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Οικονομικά',
   },
   {
-    id: '646',
+    id: '144',
     name: 'Οικονομίας και Βιώσιμης Ανάπτυξης',
     uni: 'ΧΑΡΟΚΟΠΕΙΟ',
     city: 'Αθήνα',
@@ -973,7 +964,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Λογιστική & Χρηματοοικονομικά',
   },
   {
-    id: '617',
+    id: '672',
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
@@ -1047,7 +1038,7 @@ export const ALL_SCHOOLS: School[] = [
 
   //στατιστική
   {
-    id: '703',
+    id: '329',
     name: 'Στατιστικής',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
@@ -1056,7 +1047,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Στατιστική',
   },
   {
-    id: '702',
+    id: '318',
     name: 'Στατιστικής και Ασφαλιστικής Επιστήμης',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
@@ -1065,7 +1056,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Στατιστική',
   },
   {
-    id: '700',
+    id: '218',
     name: 'Στατιστικής και Αναλογιστικών-Χρηματοοικονομικών Μαθηματικών',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Σάμος',
@@ -1074,7 +1065,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Στατιστική',
   },
   {
-    id: '701',
+    id: '1547',
     name: 'Στατιστικής',
     uni: 'Δυτικής Μακεδονίας',
     city: 'Γρεβενά',
@@ -1092,6 +1083,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 17590,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '887',
@@ -1101,6 +1093,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 17465,
     ebe: '12.60',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '877',
@@ -1110,6 +1103,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 17460,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '872',
@@ -1119,6 +1113,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 17370,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '886',
@@ -1128,6 +1123,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 17260,
     ebe: '12.60',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '881',
@@ -1137,6 +1133,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 16650,
     ebe: '9.45',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '880',
@@ -1146,6 +1143,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 16030,
     ebe: '10.50',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '876',
@@ -1155,6 +1153,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 14460,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '882',
@@ -1164,6 +1163,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 13970,
     ebe: '9.45',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '863',
@@ -1173,6 +1173,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 13080,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '870',
@@ -1182,6 +1183,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 11710,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
   },
   {
     id: '871',
@@ -1191,6 +1193,7 @@ export const ALL_SCHOOLS: School[] = [
     points: 9940,
     ebe: '8.40',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα · Μόνο για Πυροσβέστες',
   },
   {
     id: '864',
@@ -1200,6 +1203,122 @@ export const ALL_SCHOOLS: School[] = [
     points: 8940,
     ebe: '9.45',
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
+  },
+  {
+    id: '862',
+    name: 'ΣΜΥ - Όπλα',
+    uni: 'ΣΤΡΑΤΟΣ',
+    city: 'Μη προσδιορισμένη',
+    points: 9170,
+    ebe: '8.40',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
+  },
+  {
+    id: '801',
+    name: 'Ευελπίδων (ΣΣΕ) - Όπλα',
+    uni: 'ΣΤΡΑΤΟΣ',
+    city: 'Μη προσδιορισμένη',
+    points: 10865,
+    ebe: '12.60',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
+  },
+  {
+    id: '806',
+    name: 'Ευελπίδων (ΣΣΕ) - Σώματα',
+    uni: 'ΣΤΡΑΤΟΣ',
+    city: 'Μη προσδιορισμένη',
+    points: 13055,
+    ebe: '12.60',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
+  },
+  {
+    id: '878',
+    name: 'ΣΜΥΑ - Κατ. Τεχνολογικής Υποστήριξης',
+    uni: 'ΑΕΡΟΠΟΡΙΑ',
+    city: 'Μη προσδιορισμένη',
+    points: 11095,
+    ebe: '11.05',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα · Επιπλέον προϋποθέσεις',
+  },
+  {
+    id: '879',
+    name: 'ΣΜΥΑ - Κατ. Επιχειρησιακής Υποστήριξης',
+    uni: 'ΑΕΡΟΠΟΡΙΑ',
+    city: 'Μη προσδιορισμένη',
+    points: 12265,
+    ebe: '12.27',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα · Επιπλέον προϋποθέσεις',
+  },
+  {
+    id: '888',
+    name: 'ΣΜΥΑ - Κατ. Επιχειρησιακής Υποστήριξης - Ραδιοναυτίλοι',
+    uni: 'ΑΕΡΟΠΟΡΙΑ',
+    city: 'Μη προσδιορισμένη',
+    points: 14150,
+    ebe: '12.27',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα · Επιπλέον προϋποθέσεις',
+  },
+  {
+    id: '873',
+    name: 'ΣΔΣ Λ.Σ. (για Στελέχη ΛΣ-ΕΛ.ΑΚΤ.)',
+    uni: 'ΛΙΜΕΝΙΚΟ',
+    city: 'Μη προσδιορισμένη',
+    points: 16650,
+    ebe: '9.45',
+    category: 'Σώματα Ασφαλείας & Στρατιωτικές',
+    requirements: 'Αγωνίσματα',
+  },
+  {
+    id: '1061',
+    name: 'Δασολογίας και Διαχείρισης Φυσικού Περιβάλλοντος',
+    uni: 'ΓΕΩΠΟΝΙΚΟ',
+    city: 'Καρπενήσι',
+    points: 9700,
+    ebe: '8.40',
+    category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
+  },
+  {
+    id: '342',
+    name: 'Επιστήμης της Πληροφορίας',
+    uni: 'ΙΟΝΙΟ',
+    city: 'Κέρκυρα',
+    points: 8525,
+    ebe: '8.40',
+    category: 'Πληροφορική',
+  },
+  {
+    id: '146',
+    name: 'Θεατρικών Σπουδών',
+    uni: 'ΕΚΠΑ',
+    city: 'Αθήνα',
+    points: 10550,
+    ebe: '8.40',
+    category: 'Μουσική & Πολιτισμός',
+  },
+  {
+    id: '362',
+    name: 'Θεατρικών Σπουδών',
+    uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
+    city: 'Ναύπλιο',
+    points: 9075,
+    ebe: '9.04',
+    category: 'Μουσική & Πολιτισμός',
+  },
+  {
+    id: '169',
+    name: 'Θεατρικών Σπουδών',
+    uni: 'ΠΑΤΡΩΝ',
+    city: 'Πάτρα',
+    points: 9040,
+    ebe: '8.40',
+    category: 'Μουσική & Πολιτισμός',
   },
 
   // ΜΟΥΣΙΚΗ & ΠΟΛΙΤΙΣΜΟΣ
@@ -1253,7 +1372,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Μουσική & Πολιτισμός',
   },
   {
-    id: '641',
+    id: '1248',
     name: 'Μουσικών Σπουδών',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Άρτα',
@@ -1272,7 +1391,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Μουσική & Πολιτισμός',
   },
   {
-    id: '610',
+    id: '168',
     name: 'Θεάτρου',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
@@ -1281,7 +1400,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Μουσική & Πολιτισμός',
   },
   {
-    id: '715',
+    id: '1011',
     name: 'Ψηφιακών Τεχνών και Κινηματογράφου',
     uni: 'ΕΚΠΑ',
     city: 'Ψαχνά',
@@ -1469,7 +1588,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Παιδαγωγικά',
   },
   {
-    id: '552',
+    id: '673',
     name: 'Αγωγής και Φροντίδας στην Πρώιμη Παιδική Ηλικία',
     uni: 'Παδά',
     city: 'Αιγάλεω',
@@ -1642,7 +1761,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Ανθρωπιστικά & Κοινωνικά',
   },
   {
-    id: '557',
+    id: '668',
     name: 'Αρχειονομίας,Βιβλιοθηκονομίας και Συστημάτων Πληροφόρησης',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
@@ -1677,15 +1796,6 @@ export const ALL_SCHOOLS: School[] = [
     ebe: '8.40',
     category: 'Ανθρωπιστικά & Κοινωνικά',
   },
-  {
-    id: '1669',
-    name: 'Αρχειονομίας και Βιβλιοθηκονομίας',
-    uni: 'ΙΟΝΙΟ',
-    city: 'Κέρκυρα',
-    points: 8525,
-    ebe: '8.40',
-    category: 'Ανθρωπιστικά & Κοινωνικά',
-  },
 
   // ΑΛΛΑ (ΠΕΡΙΒΑΛΛΟΝ, ΓΕΩΓΡΑΦΙΑ κλπ)
 
@@ -1717,7 +1827,7 @@ export const ALL_SCHOOLS: School[] = [
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
   },
   {
-    id: '548',
+    id: '353',
     name: 'Αγροτικής Ανάπτυξης',
     uni: 'ΔΠΘ',
     city: 'Ορεστιάδα',
@@ -1814,7 +1924,7 @@ export const ALL_SCHOOLS: School[] = [
 
   //Σχεδιο Μοδας
   {
-    id: '566',
+    id: '1627',
     name: 'Δημιουργικού Σχεδιασμού και Ένδυσης',
     uni: 'ΔΙΠΑΕ',
     city: 'Κιλκίς',
@@ -1905,6 +2015,13 @@ const SchoolsPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 mt-8 sm:mt-10">
+        <p className="mb-4 rounded-2xl border border-amber-400/40 dark:border-amber-300/25 bg-amber-50/90 dark:bg-amber-950/30 px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed shadow-sm">
+          <span className="font-bold text-amber-800 dark:text-amber-200">Πανελλήνιες 2026:</span>{' '}
+          Οι βάσεις 2025 προέρχονται από τα επίσημα αποτελέσματα. Ορισμένα τμήματα προστέθηκαν ή
+          ενημερώθηκαν στη λίστα φέτος (2026), με τους επίσημους κωδικούς τους από το Υπουργείο
+          Παιδείας.
+        </p>
+
         <p className="mb-8 rounded-2xl border border-[#f07f97]/30 dark:border-white/15 bg-white/90 dark:bg-[#3a2658]/90 px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed shadow-sm">
           <span className="font-bold text-[#f07f97] dark:text-[#ff97b2]">Note:</span> Η ιδέα για να
           εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας!
@@ -1923,8 +2040,10 @@ const SchoolsPage: React.FC = () => {
               className="mb-16"
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className={`p-3 rounded-2xl ${config.color} shadow-sm border border-white/20`}>
-                  {config.icon}
+                <div
+                  className={`flex items-center justify-center w-12 h-12 rounded-2xl ${config.color} shadow-sm border border-white/20 shrink-0`}
+                >
+                  <MenuIconImg src={config.iconSrc} className="w-10 h-10 sm:w-11 sm:h-11" />
                 </div>
                 <div>
                   <h2 className="text-xl font-black text-gray-800 dark:text-white tracking-tight">

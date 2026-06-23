@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
 import ScrollToTop from '@/components/other/ScrollToTop';
+import SeoHead from '@/seo/SeoHead';
 import routes, { RouteConfig } from './routes/routes';
 
 const App: React.FC = () => {
@@ -13,6 +14,7 @@ const App: React.FC = () => {
 
   return (
     <MainLayout>
+      <SeoHead />
       <ScrollToTop />
       <Routes>
         {routes.map((route: RouteConfig, index: number) => (

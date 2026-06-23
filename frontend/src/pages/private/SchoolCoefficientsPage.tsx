@@ -8,48 +8,7 @@ import {
   SCHOOL_COEFFICIENTS_2026,
   type SchoolCoefficientsEntry,
 } from '@/data/schoolCoefficients2026';
-
-const CORE_EXAM_SUBJECTS = new Set([
-  'Νεοελληνική Γλώσσα και Λογοτεχνία',
-  'Μαθηματικά',
-  'Πληροφορική',
-  'Οικονομία',
-]);
-
-function normalizeSearch(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/ς/g, 'σ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function tokenizeSearch(query: string): string[] {
-  return normalizeSearch(query).split(/\s+/).filter(Boolean);
-}
-
-/** Κείμενο αναζήτησης: όνομα σχολής + ειδικά μαθήματα/σημειώσεις (όχι τα 4 βασικά πανελληνιακά). */
-function schoolSearchText(school: SchoolCoefficientsEntry): string {
-  const parts = [school.name];
-  for (const coef of school.coefficients) {
-    if (!CORE_EXAM_SUBJECTS.has(coef.subject)) {
-      parts.push(coef.subject);
-    }
-    if (coef.note) {
-      parts.push(coef.note);
-    }
-  }
-  return normalizeSearch(parts.join(' '));
-}
-
-function matchesSchool(school: SchoolCoefficientsEntry, query: string): boolean {
-  const tokens = tokenizeSearch(query);
-  if (tokens.length === 0) return true;
-  const haystack = schoolSearchText(school);
-  return tokens.every((token) => haystack.includes(token));
-}
+import { matchesSchool } from '@/utils/schoolCoefficientsUtils';
 
 const SchoolCard: React.FC<{ school: SchoolCoefficientsEntry; index: number }> = ({
   school,

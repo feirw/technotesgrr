@@ -1,6 +1,6 @@
 {
-  "name": "technotesgr",
-  "short_name": "technotesgr",
+  "name": "Technotes — Πληροφορική Πανελλήνιες",
+  "short_name": "Technotes",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

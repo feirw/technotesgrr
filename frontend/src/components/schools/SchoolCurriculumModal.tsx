@@ -22,6 +22,8 @@ const SEMESTER_LABEL: Record<number, string> = {
   6: '6ο',
   7: '7ο',
   8: '8ο',
+  9: '9ο',
+  10: '10ο',
 };
 
 const SLOT_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6'] as const;

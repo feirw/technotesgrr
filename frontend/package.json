@@ -23,6 +23,8 @@
   },
   "scripts": {
     "dev": "vite",
+    "generate:seo": "bun ../scripts/generate-sitemap.mjs && bun ../scripts/generate-og-images.mjs",
+    "prebuild": "bun run generate:seo",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss}\""
@@ -51,6 +53,7 @@
     "globals": "15.15.0",
     "postcss": "^8.4.49",
     "prettier": "^3.6.0",
+    "sharp": "^0.35.2",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"

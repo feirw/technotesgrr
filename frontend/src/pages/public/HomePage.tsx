@@ -543,23 +543,25 @@ const HomePage: React.FC = () => {
           <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
             <img
               src={HERO_BACKGROUND_LIGHT}
-              alt=""
-              className="w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center dark:hidden"
+              alt="Φόντο πλατφόρμας προετοιμασίας Πανελληνίων Πληροφορικής Technotes"
               decoding="async"
               fetchPriority="high"
             />
             <img
               src={HERO_BACKGROUND_DARK}
-              alt=""
+              alt="Φόντο πλατφόρμας προετοιμασίας Πανελληνίων Πληροφορικής Technotes (σκοτεινό θέμα)"
               className="hidden w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center dark:block"
               decoding="async"
             />
           </div>
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20">
             <h1
-              className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight"
             >
-              Technotes
+              <span className="block">Πληροφορική Πανελλήνιες</span>
+              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-[#e06d88] dark:text-[#ff97b2]">
+                Technotes
+              </span>
             </h1>
 
             <p

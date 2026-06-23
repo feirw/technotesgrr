@@ -9,6 +9,21 @@ import { PAMAK_ISC_CURRICULUM } from './pamakIscCurriculum.generated';
 import { HAROKOPIO_INFORMATICS_CURRICULUM } from './harokopioInformaticsCurriculum.generated';
 import { PAPEI_DIGITAL_SYSTEMS_CURRICULUM } from './papeiDigitalSystemsCurriculum.generated';
 import { UOC_CS_CURRICULUM } from './uocCsCurriculum.generated';
+import { DIPAE_CPE_CURRICULUM } from './dipaeCpeCurriculum.generated';
+import { DIPAE_SERRES_CPE_CURRICULUM } from './dipaeSerresCpeCurriculum.generated';
+import { DPTH_KAVALA_INFORMATICS_CURRICULUM } from './dpthKavalaInformaticsCurriculum.generated';
+import { UTH_BIOMED_INFORMATICS_CURRICULUM } from './uthBiomedInformaticsCurriculum.generated';
+import { UOP_TRIPOLI_ICT_CURRICULUM } from './uopTripoliIctCurriculum.generated';
+import { UTH_ICT_CURRICULUM } from './uthIctCurriculum.generated';
+import { UTH_DIGITAL_SYSTEMS_CURRICULUM } from './uthDigitalSystemsCurriculum.generated';
+import { UOWM_KASTORIA_INFORMATICS_CURRICULUM } from './uowmKastoriaInformaticsCurriculum.generated';
+import { ELMEPA_ECE_CURRICULUM } from './elmepaEceCurriculum.generated';
+import { AEGEAN_SAMOS_ICS_CURRICULUM } from './aegeanSamosIcsCurriculum.generated';
+import { UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM } from './uopSpartaDigitalSystemsCurriculum.generated';
+import { UTH_ENERGY_SYSTEMS_CURRICULUM } from './uthEnergySystemsCurriculum.generated';
+import { UOI_ARTA_ICT_CURRICULUM } from './uoiArtaIctCurriculum.generated';
+import { IONIO_CORFU_INFORMATICS_CURRICULUM } from './ionioCorfuInformaticsCurriculum.generated';
+import { PADA_CPE_CURRICULUM } from './padaCpeCurriculum.generated';
 
 export {
   EKPA_IPT_CURRICULUM,
@@ -20,6 +35,21 @@ export {
   HAROKOPIO_INFORMATICS_CURRICULUM,
   PAPEI_DIGITAL_SYSTEMS_CURRICULUM,
   UOC_CS_CURRICULUM,
+  DIPAE_CPE_CURRICULUM,
+  DIPAE_SERRES_CPE_CURRICULUM,
+  DPTH_KAVALA_INFORMATICS_CURRICULUM,
+  UTH_BIOMED_INFORMATICS_CURRICULUM,
+  UOP_TRIPOLI_ICT_CURRICULUM,
+  UTH_ICT_CURRICULUM,
+  UTH_DIGITAL_SYSTEMS_CURRICULUM,
+  UOWM_KASTORIA_INFORMATICS_CURRICULUM,
+  ELMEPA_ECE_CURRICULUM,
+  AEGEAN_SAMOS_ICS_CURRICULUM,
+  UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM,
+  UTH_ENERGY_SYSTEMS_CURRICULUM,
+  UOI_ARTA_ICT_CURRICULUM,
+  IONIO_CORFU_INFORMATICS_CURRICULUM,
+  PADA_CPE_CURRICULUM,
 };
 
 export type SemesterSlotMark = 'Υ' | 'B';
@@ -87,18 +117,34 @@ const CATEGORY_COLORS: Record<CourseCategory, string> = {
 };
 
 export function getCourseCategory(kind: string): CourseCategory {
+  if (kind.includes('Υποχρεωτικό-Επιλογής') || kind.includes('ΥΠ-ΕΠ')) {
+    return 'mandatory-choice';
+  }
+  if (kind.includes('Εξειδίκευση')) return 'mandatory-choice';
+  if (kind.includes('Εργαλειοθήκη')) return 'elective';
+  if (kind.includes('Βασικά κατεύθυνσης') || kind.includes('Υποχρεωτικό ροής')) {
+    return 'mandatory-choice';
+  }
   if (kind.includes('Υποχρεωτικό κατεύθυνσης') || kind.includes('Υποχρεωτικό δευτερεύουσας')) {
     return 'mandatory-choice';
   }
   if (kind.includes('Υποχρεωτικό (ΥΜ)') || kind.includes('Υποχρεωτικό κορμού')) return 'mandatory';
+  if (kind.includes('υποβάθρου')) return 'mandatory';
   if (kind.includes('Υποχρεωτικό')) return 'mandatory';
   if (kind.includes('ΕΥΜ') || kind.includes("Κατ' Επιλογή") || kind.includes('Επιλογής Υποχρεωτικό')) {
     return 'mandatory-choice';
   }
+  if (kind.includes('ΓΟΕΥ') || kind.includes('Γενικής Ομάδας')) return 'mandatory-choice';
+  if (kind.startsWith('Ροής ·')) return 'mandatory-choice';
   if (kind.toLowerCase() === 'project') return 'project';
-  if (kind.includes('Πρακτική')) return 'project';
-  if (kind.includes('ΓΠ') || kind.includes('Γενικής')) return 'general';
+  if (kind.includes('Διπλωματική') || kind.includes('Πτυχιακή')) return 'project';
+  if (kind.includes('Πρακτική') || kind.includes('Δεξιοτήτων')) return 'project';
+  if (kind.includes('ΓΠ') || kind.includes('Γενικής') || kind.includes('Γνώσεων') || kind.includes('Ελεύθερης') || kind.includes('Παιδαγωγικής') || kind.includes('Επάρκειας') || kind.includes('Προαιρετικό')) {
+    return 'general';
+  }
   if (kind.includes('ΕΡ')) return 'lab';
+  if (kind.includes('Επιλογής ροής') || kind.includes('Επιλογής (όλες')) return 'elective';
+  if (kind.includes('Επιλογής') && !kind.includes('Υποχρεωτικό')) return 'elective';
   return 'elective';
 }
 
@@ -161,6 +207,16 @@ export function formatCourseHours(hours: CourseHours): string {
   return parts.join('+');
 }
 
+/** ΣΣΑΣ — ίδιο ακαδημαϊκό πρόγραμμα με ΑΠΘ Πληροφορικής + στρατιωτική εκπαίδευση */
+export const SSAS_INFORMATICS_CURRICULUM: SchoolCurriculum = {
+  ...AUTH_INFORMATICS_CURRICULUM,
+  title: 'Πληροφορικής (ΣΣΑΣ)',
+  subtitle: 'ΣΣΑΣ · Θεσσαλονίκη',
+  hoursNote:
+    'Ακολουθεί το πρόγραμμα σπουδών της Πληροφορικής ΑΠΘ. ' +
+    'Παράλληλα παρέχεται στρατιωτική εκπαίδευση.',
+};
+
 export const SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '330': EKPA_IPT_CURRICULUM,
   '338': AUTH_INFORMATICS_CURRICULUM,
@@ -171,6 +227,22 @@ export const SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '412': HAROKOPIO_INFORMATICS_CURRICULUM,
   '262': PAPEI_DIGITAL_SYSTEMS_CURRICULUM,
   '216': UOC_CS_CURRICULUM,
+  '1625': DIPAE_CPE_CURRICULUM,
+  '1622': DIPAE_SERRES_CPE_CURRICULUM,
+  '1630': DPTH_KAVALA_INFORMATICS_CURRICULUM,
+  '369': UTH_BIOMED_INFORMATICS_CURRICULUM,
+  '98': UOP_TRIPOLI_ICT_CURRICULUM,
+  '99': UTH_ICT_CURRICULUM,
+  '1439': UTH_DIGITAL_SYSTEMS_CURRICULUM,
+  '1554': UOWM_KASTORIA_INFORMATICS_CURRICULUM,
+  '1662': ELMEPA_ECE_CURRICULUM,
+  '344': AEGEAN_SAMOS_ICS_CURRICULUM,
+  '1519': UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM,
+  '1436': UTH_ENERGY_SYSTEMS_CURRICULUM,
+  '1250': UOI_ARTA_ICT_CURRICULUM,
+  '366': IONIO_CORFU_INFORMATICS_CURRICULUM,
+  '390': PADA_CPE_CURRICULUM,
+  '889': SSAS_INFORMATICS_CURRICULUM,
 };
 
 export function hasSchoolCurriculum(schoolId: string): boolean {

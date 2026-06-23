@@ -430,7 +430,7 @@ const Flashcards: React.FC = () => {
             wrapperClassName="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/80 dark:bg-gray-900/90 mx-auto mb-3"
           />
           <h1 className="text-4xl sm:text-5xl font-black mb-4 text-coral-accent dark:text-coral-light">
-            Flashcards
+            Flashcards Πληροφορικής Πανελληνίων
           </h1>
           {selectedSetIndex === null && (
             <div className="flex flex-wrap justify-center gap-4 mt-4">

@@ -1,0 +1,93 @@
+import type { BreadcrumbItem, PageSeo } from '@/seo/seoConfig';
+import {
+  DEFAULT_SITE_ORIGIN,
+  LOGO_URL,
+  SITE_NAME,
+  SITE_NAME_FULL,
+  SITE_TAGLINE,
+  SOCIAL_LINKS,
+  absoluteUrl,
+  canonicalUrl,
+} from '@/seo/siteMeta';
+
+export function buildOrganizationSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
+    name: SITE_NAME,
+    alternateName: SITE_NAME_FULL,
+    url: DEFAULT_SITE_ORIGIN,
+    logo: LOGO_URL,
+    description:
+      'Online πλατφόρμα προετοιμασίας για Πανελλήνιες Πληροφορικής: quiz, flashcards, ΑΕΠΠ, δομημένος προγραμματισμός και ασκήσεις.',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Greece',
+    },
+    inLanguage: 'el-GR',
+    sameAs: [...SOCIAL_LINKS],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      availableLanguage: ['Greek'],
+      url: SOCIAL_LINKS[0],
+    },
+  };
+}
+
+export function buildCourseSchema(pageUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: 'Προετοιμασία Πανελληνίων Πληροφορικής',
+    description:
+      'Δωρεάν online μαθήματα προετοιμασίας για το μάθημα Πληροφορικής Γ\' Λυκείου: ΑΕΠΠ, δομημένος προγραμματισμός, θεωρία, quiz και ασκήσεις.',
+    provider: {
+      '@type': 'EducationalOrganization',
+      name: SITE_NAME,
+      url: DEFAULT_SITE_ORIGIN,
+    },
+    url: pageUrl,
+    inLanguage: 'el-GR',
+    educationalLevel: 'Secondary education',
+    teaches: [
+      'ΑΕΠΠ',
+      'Δομημένος Προγραμματισμός',
+      'Πληροφορική Πανελλήνιες',
+      'Αλγόριθμοι',
+    ],
+    hasCourseInstance: {
+      '@type': 'CourseInstance',
+      courseMode: 'online',
+      courseWorkload: 'P1Y',
+    },
+  };
+}
+
+export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
+  };
+}
+
+export function buildStructuredData(page: PageSeo, pathname: string): object[] {
+  const pageUrl = canonicalUrl(pathname);
+  const graphs: object[] = [buildOrganizationSchema()];
+
+  if (page.includeCourseSchema) {
+    graphs.push(buildCourseSchema(pageUrl));
+  }
+
+  if (page.breadcrumbs && page.breadcrumbs.length > 0) {
+    graphs.push(buildBreadcrumbSchema(page.breadcrumbs));
+  }
+
+  return graphs;
+}

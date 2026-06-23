@@ -433,11 +433,12 @@ const QuizPage: React.FC = () => {
         {/* Header */}
         <div className="sticky top-0 z-30 bg-coral-accent text-white p-6 shadow-xl shadow-coral-strong/25 dark:shadow-coral-accent/20">
           <div className="max-w-7xl mx-auto">
+            <h1 className="sr-only">Quiz Πληροφορικής Πανελληνίων</h1>
             <div className="flex items-center justify-between gap-4 mb-4">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3">
-                <MenuIconImg src={MENU_ICONS.quiz} className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" />
+                <MenuIconImg src={MENU_ICONS.quiz} className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" alt="Εικονίδιο quiz Πληροφορικής" />
                 <div>
-                <h3 className="text-2xl md:text-3xl font-black mb-1">Επιλογή Κεφαλαίου</h3>
+                <h2 className="text-2xl md:text-3xl font-black mb-1">Επιλογή Κεφαλαίου</h2>
                 <p className="text-white/90 text-sm">
                   {quizzes.length} διαθέσιμα κεφάλαια • {stats.answeredQuestions} συνολικές
                   απαντήσεις
