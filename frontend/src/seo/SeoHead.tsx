@@ -67,7 +67,7 @@ const SeoHead: React.FC = () => {
     const ogTitle = page.ogTitle ?? page.title;
     const imagePath = page.ogImage ?? DEFAULT_OG_IMAGE_PATH;
     const imageUrl = ogImageUrl(imagePath);
-    const imageAlt = `${ogTitle} — ${SITE_TAGLINE}`;
+    const imageAlt = `${ogTitle} | ${SITE_TAGLINE}`;
 
     document.title = page.title;
     document.documentElement.lang = 'el';

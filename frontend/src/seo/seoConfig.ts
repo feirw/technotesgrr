@@ -27,7 +27,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
   '/': {
     path: '/',
     slug: 'home',
-    title: 'Πληροφορική Πανελλήνιες | Technotes — ΑΕΠΠ & Quiz',
+    title: 'Πληροφορική Πανελλήνιες | Technotes | ΑΕΠΠ & Quiz',
     description:
       'Δωρεάν προετοιμασία Πανελληνίων Πληροφορικής: quiz, flashcards, ΑΕΠΠ, δομημένος προγραμματισμός, παλιά θέματα και ασκήσεις για Γ\' Λυκείου. Ξεκίνα τώρα!',
     ogImage: og('home'),
@@ -36,7 +36,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
   '/about': {
     path: '/about',
     slug: 'about',
-    title: 'Σχετικά | Technotes — Ιδιαίτερα Πληροφορικής',
+    title: 'Σχετικά | Technotes | Ιδιαίτερα Πληροφορικής',
     description:
       'Γνώρισε την Ελένη και το Technotes: online φροντιστήριο Πληροφορικής για Πανελλήνιες, με έμφαση σε ΑΕΠΠ, θεωρία και πρακτική εξάσκηση.',
     ogImage: og('about'),
@@ -75,7 +75,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     slug: 'gloglossa',
     title: 'GloGlossa | Ορολογία Πληροφορικής Πανελληνίων',
     description:
-      'GloGlossa: γλωσσάρι όρων Πληροφορικής για Πανελλήνιες — ΑΕΠΠ, αλγόριθμοι, δομές δεδομένων και θεωρία μαθήματος Γ\' Λυκείου.',
+      'GloGlossa: γλωσσάρι όρων Πληροφορικής για Πανελλήνιες, ΑΕΠΠ, αλγόριθμοι, δομές δεδομένων και θεωρία μαθήματος Γ\' Λυκείου.',
     ogImage: og('gloglossa'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
@@ -255,7 +255,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
 export const NOT_FOUND_SEO: PageSeo = {
   path: '/404',
   slug: '404',
-  title: '404 — Η σελίδα δεν βρέθηκε | Technotes',
+  title: '404 | Η σελίδα δεν βρέθηκε | Technotes',
   description:
     'Η σελίδα που ζητήσατε δεν υπάρχει. Επιστρέψτε στην αρχική για προετοιμασία Πανελληνίων Πληροφορικής με το Technotes.',
   ogImage: DEFAULT_OG_IMAGE_PATH,
