@@ -2024,7 +2024,7 @@ const SchoolsPage: React.FC = () => {
 
         <p className="mb-8 rounded-2xl border border-[#f07f97]/30 dark:border-white/15 bg-white/90 dark:bg-[#3a2658]/90 px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed shadow-sm">
           <span className="font-bold text-[#f07f97] dark:text-[#ff97b2]">Note:</span> Η ιδέα για να
-          εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας!
+          εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας και της Δέσποινας!
         </p>
 
         {Object.entries(CATEGORIES).map(([catName, config]) => {
