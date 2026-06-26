@@ -14,6 +14,7 @@ export const MENU_ICONS = {
   aiCorrector: `${HP}/5.png`,
   schools: `${HP}/6.png`,
   syntelestesSxolon: `${HP}/15.png`,
+  ypologismosMorion: `${HP}/40.png`,
   paliathemata: `${HP}/2.png`,
   gloglossa: `${HP}/12.png`,
   progressTracker: `${HP}/14.png`,

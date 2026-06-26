@@ -7,6 +7,10 @@ import {
   ChevronDown,
   BookOpen,
   TrendingUp,
+  GraduationCap,
+  Heart,
+  BookMarked,
+  type LucideIcon,
 } from 'lucide-react';
 import { MenuIconImg, MENU_ICONS, SCHOOL_CATEGORY_ICON_BY_NAME } from '@/data/menuIcons';
 import {
@@ -1934,6 +1938,89 @@ export const ALL_SCHOOLS: School[] = [
   },
 ];
 
+type PageNoticeVariant = 'amber' | 'coral' | 'slate';
+
+const PAGE_NOTICE_STYLES: Record<
+  PageNoticeVariant,
+  { row: string; iconWrap: string; icon: string; label: string }
+> = {
+  amber: {
+    row: 'bg-amber-50/80 dark:bg-amber-950/20',
+    iconWrap: 'bg-amber-100 dark:bg-amber-900/40 ring-amber-200/80 dark:ring-amber-700/40',
+    icon: 'text-amber-700 dark:text-amber-300',
+    label: 'text-amber-800 dark:text-amber-200',
+  },
+  coral: {
+    row: 'bg-[#fff5f8]/90 dark:bg-[#3a2658]/50',
+    iconWrap: 'bg-[#f07f97]/15 dark:bg-[#f07f97]/25 ring-[#f07f97]/25 dark:ring-[#f07f97]/30',
+    icon: 'text-[#f07f97] dark:text-[#ff97b2]',
+    label: 'text-[#f07f97] dark:text-[#ff97b2]',
+  },
+  slate: {
+    row: 'bg-white/70 dark:bg-[#2d1c48]/40',
+    iconWrap: 'bg-gray-100 dark:bg-white/10 ring-gray-200/80 dark:ring-white/10',
+    icon: 'text-gray-600 dark:text-gray-300',
+    label: 'text-gray-700 dark:text-gray-200',
+  },
+};
+
+function PageNotice({
+  icon: Icon,
+  label,
+  children,
+  variant,
+}: {
+  icon: LucideIcon;
+  label: string;
+  children: React.ReactNode;
+  variant: PageNoticeVariant;
+}) {
+  const styles = PAGE_NOTICE_STYLES[variant];
+
+  return (
+    <div className={`flex gap-3.5 sm:gap-4 px-4 py-3.5 sm:px-5 sm:py-4 ${styles.row}`}>
+      <div
+        className={`flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl ring-1 ${styles.iconWrap}`}
+      >
+        <Icon className={`h-5 w-5 ${styles.icon}`} strokeWidth={2.25} />
+      </div>
+      <div className="min-w-0 pt-0.5">
+        <p className={`text-[11px] sm:text-xs font-black uppercase tracking-[0.14em] ${styles.label}`}>
+          {label}
+        </p>
+        <p className="mt-1 text-sm sm:text-[15px] text-gray-700 dark:text-gray-200 leading-relaxed">
+          {children}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SchoolsPageNotices() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="mb-8 overflow-hidden rounded-3xl border border-white/60 dark:border-white/10 bg-white/95 dark:bg-[#3a2658]/85 shadow-lg shadow-[#f07f97]/10 dark:shadow-black/20 backdrop-blur-sm divide-y divide-[#f07f97]/10 dark:divide-white/10"
+    >
+      <PageNotice icon={GraduationCap} label="Πανελλήνιες 2026" variant="amber">
+        Οι βάσεις 2025 προέρχονται από τα επίσημα αποτελέσματα. Ορισμένα τμήματα προστέθηκαν ή
+        ενημερώθηκαν στη λίστα φέτος (2026), με τους επίσημους κωδικούς τους από το Υπουργείο
+        Παιδείας.
+      </PageNotice>
+      <PageNotice icon={Heart} label="Credits" variant="coral">
+        Η ιδέα για να εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας και της
+        Δέσποινας!
+      </PageNotice>
+      <PageNotice icon={BookMarked} label="Σημείωση" variant="slate">
+        Το πρόγραμμα περιλαμβάνει υποχρεωτικά μαθήματα και μαθήματα επιλογής. Η ακριβής κατανομή
+        και οι επιλογές ορίζονται από το τμήμα.
+      </PageNotice>
+    </motion.div>
+  );
+}
+
 const SchoolsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [activeCity, setActiveCity] = useState('Όλες');
@@ -2015,17 +2102,7 @@ const SchoolsPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 mt-8 sm:mt-10">
-        <p className="mb-4 rounded-2xl border border-amber-400/40 dark:border-amber-300/25 bg-amber-50/90 dark:bg-amber-950/30 px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed shadow-sm">
-          <span className="font-bold text-amber-800 dark:text-amber-200">Πανελλήνιες 2026:</span>{' '}
-          Οι βάσεις 2025 προέρχονται από τα επίσημα αποτελέσματα. Ορισμένα τμήματα προστέθηκαν ή
-          ενημερώθηκαν στη λίστα φέτος (2026), με τους επίσημους κωδικούς τους από το Υπουργείο
-          Παιδείας.
-        </p>
-
-        <p className="mb-8 rounded-2xl border border-[#f07f97]/30 dark:border-white/15 bg-white/90 dark:bg-[#3a2658]/90 px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed shadow-sm">
-          <span className="font-bold text-[#f07f97] dark:text-[#ff97b2]">Note:</span> Η ιδέα για να
-          εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας και της Δέσποινας!
-        </p>
+        <SchoolsPageNotices />
 
         {Object.entries(CATEGORIES).map(([catName, config]) => {
           const schools = filteredSchools.filter((s) => s.category === catName);

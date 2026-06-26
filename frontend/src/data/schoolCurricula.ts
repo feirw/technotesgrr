@@ -4,27 +4,36 @@ import { EKPA_IPT_CURRICULUM } from './ekpaIptCurriculum.generated';
 import { EKPA_DIGITAL_INDUSTRY_CURRICULUM } from './ekpaDigitalIndustryCurriculum.generated';
 import { EKPA_ECONOMIC_SCIENCE_CURRICULUM } from './ekpaEconomicScienceCurriculum.generated';
 import { AUTH_INFORMATICS_CURRICULUM } from './authInformaticsCurriculum.generated';
+import { AUTH_ECONOMIC_SCIENCE_CURRICULUM } from './authEconomicScienceCurriculum.generated';
 import { OPA_INFORMATICS_CURRICULUM } from './opaInformaticsCurriculum.generated';
 import { OPA_ECONOMIC_SCIENCE_CURRICULUM } from './opaEconomicScienceCurriculum.generated';
+import { OPA_REGIONAL_DEVELOPMENT_CURRICULUM } from './opaRegionalDevelopmentCurriculum.generated';
 import { UNIPI_INFORMATICS_CURRICULUM } from './unipiInformaticsCurriculum.generated';
 import { PAMAK_CSC_CURRICULUM } from './pamakCscCurriculum.generated';
 import { PAMAK_ECONOMIC_SCIENCE_CURRICULUM } from './pamakEconomicScienceCurriculum.generated';
 import { PAMAK_ISC_CURRICULUM } from './pamakIscCurriculum.generated';
 import { HAROKOPIO_INFORMATICS_CURRICULUM } from './harokopioInformaticsCurriculum.generated';
+import { HAROKOPIO_SUSTAINABLE_ECONOMY_CURRICULUM } from './harokopioSustainableEconomyCurriculum.generated';
 import { PAPEI_DIGITAL_SYSTEMS_CURRICULUM } from './papeiDigitalSystemsCurriculum.generated';
 import { PAPEI_INDUSTRIAL_MANAGEMENT_CURRICULUM } from './papeiIndustrialManagementCurriculum.generated';
 import { PAPEI_ECONOMIC_SCIENCE_CURRICULUM } from './papeiEconomicScienceCurriculum.generated';
 import { UOC_CS_CURRICULUM } from './uocCsCurriculum.generated';
+import { UOC_RETHYMNO_ECONOMIC_SCIENCE_CURRICULUM } from './uocRethymnoEconomicScienceCurriculum.generated';
 import { DIPAE_CPE_CURRICULUM } from './dipaeCpeCurriculum.generated';
 import { DIPAE_PRODUCTION_MANAGEMENT_CURRICULUM } from './dipaeProductionManagementCurriculum.generated';
 import { TUC_PRODUCTION_MANAGEMENT_CURRICULUM } from './tucProductionManagementCurriculum.generated';
 import { DIPAE_SERRES_CPE_CURRICULUM } from './dipaeSerresCpeCurriculum.generated';
+import { DIPAE_SERRES_ECONOMIC_SCIENCE_CURRICULUM } from './dipaeSerresEconomicScienceCurriculum.generated';
 import { DPTH_KAVALA_INFORMATICS_CURRICULUM } from './dpthKavalaInformaticsCurriculum.generated';
+import { DPTH_KOMOTINI_ECONOMIC_SCIENCE_CURRICULUM } from './dpthKomotiniEconomicScienceCurriculum.generated';
 import { DPTH_PRODUCTION_MANAGEMENT_CURRICULUM } from './dpthProductionManagementCurriculum.generated';
 import { UTH_BIOMED_INFORMATICS_CURRICULUM } from './uthBiomedInformaticsCurriculum.generated';
+import { UOP_TRIPOLI_ECONOMIC_SCIENCE_CURRICULUM } from './uopTripoliEconomicScienceCurriculum.generated';
 import { UOP_TRIPOLI_ICT_CURRICULUM } from './uopTripoliIctCurriculum.generated';
+import { UOP_PATRAS_ECONOMIC_SCIENCE_CURRICULUM } from './uopPatrasEconomicScienceCurriculum.generated';
 import { UTH_ICT_CURRICULUM } from './uthIctCurriculum.generated';
 import { UTH_DIGITAL_SYSTEMS_CURRICULUM } from './uthDigitalSystemsCurriculum.generated';
+import { UOWM_KASTORIA_ECONOMIC_SCIENCE_CURRICULUM } from './uowmKastoriaEconomicScienceCurriculum.generated';
 import { UOWM_KASTORIA_INFORMATICS_CURRICULUM } from './uowmKastoriaInformaticsCurriculum.generated';
 import { UOWM_KOZANI_PRODUCT_DESIGN_CURRICULUM } from './uowmKozaniProductDesignCurriculum.generated';
 import { ELMEPA_ECE_CURRICULUM } from './elmepaEceCurriculum.generated';
@@ -32,37 +41,50 @@ import { AEGEAN_SAMOS_ICS_CURRICULUM } from './aegeanSamosIcsCurriculum.generate
 import { AEGEAN_SYROS_PRODUCT_DESIGN_CURRICULUM } from './aegeanSyrosProductDesignCurriculum.generated';
 import { UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM } from './uopSpartaDigitalSystemsCurriculum.generated';
 import { UTH_ENERGY_SYSTEMS_CURRICULUM } from './uthEnergySystemsCurriculum.generated';
+import { UTH_VOLOS_ECONOMIC_SCIENCE_CURRICULUM } from './uthVolosEconomicScienceCurriculum.generated';
 import { UOI_ARTA_ICT_CURRICULUM } from './uoiArtaIctCurriculum.generated';
+import { UOI_ECONOMIC_SCIENCE_CURRICULUM } from './uoiEconomicScienceCurriculum.generated';
 import { IONIO_CORFU_INFORMATICS_CURRICULUM } from './ionioCorfuInformaticsCurriculum.generated';
 import { PADA_CPE_CURRICULUM } from './padaCpeCurriculum.generated';
 import { PADA_INDUSTRIAL_DESIGN_PRODUCTION_CURRICULUM } from './padaIndustrialDesignProductionCurriculum.generated';
+import { AUA_AGRICULTURAL_ECONOMICS_CURRICULUM } from './auaAgriculturalEconomicsCurriculum.generated';
+import { AUA_AMFISSA_REGIONAL_DEVELOPMENT_CURRICULUM } from './auaAmfissaRegionalDevelopmentCurriculum.generated';
 
 export {
   EKPA_IPT_CURRICULUM,
   EKPA_DIGITAL_INDUSTRY_CURRICULUM,
   EKPA_ECONOMIC_SCIENCE_CURRICULUM,
   AUTH_INFORMATICS_CURRICULUM,
+  AUTH_ECONOMIC_SCIENCE_CURRICULUM,
   OPA_INFORMATICS_CURRICULUM,
   OPA_ECONOMIC_SCIENCE_CURRICULUM,
+  OPA_REGIONAL_DEVELOPMENT_CURRICULUM,
   UNIPI_INFORMATICS_CURRICULUM,
   PAMAK_CSC_CURRICULUM,
   PAMAK_ECONOMIC_SCIENCE_CURRICULUM,
   PAMAK_ISC_CURRICULUM,
   HAROKOPIO_INFORMATICS_CURRICULUM,
+  HAROKOPIO_SUSTAINABLE_ECONOMY_CURRICULUM,
   PAPEI_DIGITAL_SYSTEMS_CURRICULUM,
   PAPEI_INDUSTRIAL_MANAGEMENT_CURRICULUM,
   PAPEI_ECONOMIC_SCIENCE_CURRICULUM,
   UOC_CS_CURRICULUM,
+  UOC_RETHYMNO_ECONOMIC_SCIENCE_CURRICULUM,
   DIPAE_CPE_CURRICULUM,
   DIPAE_PRODUCTION_MANAGEMENT_CURRICULUM,
   TUC_PRODUCTION_MANAGEMENT_CURRICULUM,
   DIPAE_SERRES_CPE_CURRICULUM,
+  DIPAE_SERRES_ECONOMIC_SCIENCE_CURRICULUM,
   DPTH_KAVALA_INFORMATICS_CURRICULUM,
+  DPTH_KOMOTINI_ECONOMIC_SCIENCE_CURRICULUM,
   DPTH_PRODUCTION_MANAGEMENT_CURRICULUM,
   UTH_BIOMED_INFORMATICS_CURRICULUM,
+  UOP_TRIPOLI_ECONOMIC_SCIENCE_CURRICULUM,
   UOP_TRIPOLI_ICT_CURRICULUM,
+  UOP_PATRAS_ECONOMIC_SCIENCE_CURRICULUM,
   UTH_ICT_CURRICULUM,
   UTH_DIGITAL_SYSTEMS_CURRICULUM,
+  UOWM_KASTORIA_ECONOMIC_SCIENCE_CURRICULUM,
   UOWM_KASTORIA_INFORMATICS_CURRICULUM,
   UOWM_KOZANI_PRODUCT_DESIGN_CURRICULUM,
   ELMEPA_ECE_CURRICULUM,
@@ -70,10 +92,14 @@ export {
   AEGEAN_SYROS_PRODUCT_DESIGN_CURRICULUM,
   UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM,
   UTH_ENERGY_SYSTEMS_CURRICULUM,
+  UTH_VOLOS_ECONOMIC_SCIENCE_CURRICULUM,
   UOI_ARTA_ICT_CURRICULUM,
+  UOI_ECONOMIC_SCIENCE_CURRICULUM,
   IONIO_CORFU_INFORMATICS_CURRICULUM,
   PADA_CPE_CURRICULUM,
   PADA_INDUSTRIAL_DESIGN_PRODUCTION_CURRICULUM,
+  AUA_AGRICULTURAL_ECONOMICS_CURRICULUM,
+  AUA_AMFISSA_REGIONAL_DEVELOPMENT_CURRICULUM,
 };
 
 export type SemesterSlotMark = 'Υ' | 'B';
@@ -231,6 +257,16 @@ export function formatCourseHours(hours: CourseHours): string {
   return parts.join('+');
 }
 
+export const CURRICULUM_KIND_NOTE =
+  'Σημείωση: Το πρόγραμμα περιλαμβάνει υποχρεωτικά μαθήματα και μαθήματα επιλογής. ' +
+  'Η ακριβής κατανομή και οι επιλογές ορίζονται από το τμήμα.';
+
+export function curriculumHasLab(curriculum: SchoolCurriculum): boolean {
+  return curriculum.semesters.some((sem) =>
+    sem.courses.some((c) => c.hours?.lab != null && c.hours.lab > 0),
+  );
+}
+
 /** ΣΣΑΣ — ίδιο ακαδημαϊκό πρόγραμμα με ΑΠΘ Πληροφορικής + στρατιωτική εκπαίδευση */
 export const SSAS_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   ...AUTH_INFORMATICS_CURRICULUM,
@@ -245,7 +281,9 @@ export const SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '309': EKPA_ECONOMIC_SCIENCE_CURRICULUM,
   '330': EKPA_IPT_CURRICULUM,
   '338': AUTH_INFORMATICS_CURRICULUM,
+  '311': AUTH_ECONOMIC_SCIENCE_CURRICULUM,
   '312': OPA_ECONOMIC_SCIENCE_CURRICULUM,
+  '152': OPA_REGIONAL_DEVELOPMENT_CURRICULUM,
   '333': OPA_INFORMATICS_CURRICULUM,
   '339': UNIPI_INFORMATICS_CURRICULUM,
   '1008': EKPA_DIGITAL_INDUSTRY_CURRICULUM,
@@ -253,29 +291,40 @@ export const SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '1212': PAMAK_ISC_CURRICULUM,
   '317': PAMAK_ECONOMIC_SCIENCE_CURRICULUM,
   '412': HAROKOPIO_INFORMATICS_CURRICULUM,
+  '144': HAROKOPIO_SUSTAINABLE_ECONOMY_CURRICULUM,
   '238': AEGEAN_SYROS_PRODUCT_DESIGN_CURRICULUM,
   '262': PAPEI_DIGITAL_SYSTEMS_CURRICULUM,
   '315': PAPEI_ECONOMIC_SCIENCE_CURRICULUM,
   '336': PAPEI_INDUSTRIAL_MANAGEMENT_CURRICULUM,
+  '321': UOC_RETHYMNO_ECONOMIC_SCIENCE_CURRICULUM,
   '216': UOC_CS_CURRICULUM,
   '1625': DIPAE_CPE_CURRICULUM,
   '1624': DIPAE_PRODUCTION_MANAGEMENT_CURRICULUM,
+  '97': DPTH_KOMOTINI_ECONOMIC_SCIENCE_CURRICULUM,
   '224': DPTH_PRODUCTION_MANAGEMENT_CURRICULUM,
   '230': TUC_PRODUCTION_MANAGEMENT_CURRICULUM,
+  '1602': DIPAE_SERRES_ECONOMIC_SCIENCE_CURRICULUM,
   '1622': DIPAE_SERRES_CPE_CURRICULUM,
   '1630': DPTH_KAVALA_INFORMATICS_CURRICULUM,
   '369': UTH_BIOMED_INFORMATICS_CURRICULUM,
+  '319': UOP_PATRAS_ECONOMIC_SCIENCE_CURRICULUM,
+  '361': UOP_TRIPOLI_ECONOMIC_SCIENCE_CURRICULUM,
   '98': UOP_TRIPOLI_ICT_CURRICULUM,
   '99': UTH_ICT_CURRICULUM,
   '1439': UTH_DIGITAL_SYSTEMS_CURRICULUM,
   '1542': UOWM_KOZANI_PRODUCT_DESIGN_CURRICULUM,
+  '1548': UOWM_KASTORIA_ECONOMIC_SCIENCE_CURRICULUM,
   '1554': UOWM_KASTORIA_INFORMATICS_CURRICULUM,
   '1662': ELMEPA_ECE_CURRICULUM,
   '344': AEGEAN_SAMOS_ICS_CURRICULUM,
   '1519': UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM,
+  '350': UTH_VOLOS_ECONOMIC_SCIENCE_CURRICULUM,
   '1436': UTH_ENERGY_SYSTEMS_CURRICULUM,
+  '345': UOI_ECONOMIC_SCIENCE_CURRICULUM,
   '1250': UOI_ARTA_ICT_CURRICULUM,
   '366': IONIO_CORFU_INFORMATICS_CURRICULUM,
+  '326': AUA_AGRICULTURAL_ECONOMICS_CURRICULUM,
+  '1064': AUA_AMFISSA_REGIONAL_DEVELOPMENT_CURRICULUM,
   '389': PADA_INDUSTRIAL_DESIGN_PRODUCTION_CURRICULUM,
   '390': PADA_CPE_CURRICULUM,
   '889': SSAS_INFORMATICS_CURRICULUM,
