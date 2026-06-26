@@ -32,7 +32,7 @@ const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage')
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
 // const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
-// const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
+const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -150,10 +150,10 @@ const routes: RouteConfig[] = [
     path: '/syntelestes-sxolon',
     element: <SchoolCoefficientsPage />,
   },
-  // {
-  //   path: '/ypologismos-morion',
-  //   element: <MoriaCalculatorPage />,
-  // },
+  {
+    path: '/ypologismos-morion',
+    element: <MoriaCalculatorPage />,
+  },
 
   {
     path: '*',
