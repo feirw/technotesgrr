@@ -25,6 +25,13 @@ export const MENU_ICONS = {
   faq: `${HP}/17.png`,
 } as const;
 
+/** Εικονίδια σημειώσεων στη σελίδα Σχολών. */
+export const SCHOOL_PAGE_NOTICE_ICONS = {
+  panellinies: `${HP}/41.png`,
+  credits: `${HP}/42.png`,
+  note: `${HP}/43.png`,
+} as const;
+
 /** Pixel icons 22–39 — κατηγορίες στη σελίδα Σχολών. */
 export const SCHOOL_CATEGORY_ICONS = {
   economics: `${HP}/22.png`,

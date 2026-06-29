@@ -9,7 +9,7 @@ import {
   SCHOOL_COEFFICIENTS_2026,
   type SchoolCoefficientsEntry,
 } from '@/data/schoolCoefficients2026';
-import type { School } from '@/pages/private/SchoolsPage';
+import type { School } from '@/data/schools';
 import {
   calculateSchoolMoria,
   coreGradesComplete,
@@ -21,6 +21,7 @@ import {
 import {
   averageCoreGrade,
   formatGradeDisplay,
+  formatEbeDisplay,
   formatMoriaDisplay,
   matchSchoolBasis,
   parseEbeGrade,
@@ -156,7 +157,7 @@ const SchoolResultCard: React.FC<{ row: SchoolRow; averageGrade: number | null; 
             </StatCell>
             <StatCell label="ΕΒΕ 2025">
               {basis ? (
-                <span>{basis.ebe.replace('.', ',')}</span>
+                <span>{formatEbeDisplay(basis.ebe)}</span>
               ) : (
                 <span className="text-gray-400">—</span>
               )}

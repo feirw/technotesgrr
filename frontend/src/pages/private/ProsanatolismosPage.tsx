@@ -224,56 +224,56 @@ const SECTIONS: Section[] = [
     id: 'thinking',
     title: 'Τρόπος Σκέψης',
     icon: Brain,
-    color: 'text-violet-600',
-    bg: 'bg-violet-50 dark:bg-violet-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   },
   {
     id: 'decisions',
     title: 'Λήψη Αποφάσεων',
     icon: Zap,
-    color: 'text-amber-600',
-    bg: 'bg-amber-50 dark:bg-amber-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [11, 12, 13, 14, 15, 16, 17, 18],
   },
   {
     id: 'social',
     title: 'Κοινωνική Συμπεριφορά',
     icon: Users,
-    color: 'text-sky-600',
-    bg: 'bg-sky-50 dark:bg-sky-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [19, 20, 21, 22, 23, 24, 25, 26],
   },
   {
     id: 'stress',
     title: 'Αντίδραση στο Στρες',
     icon: Wind,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [27, 28, 29, 30, 31, 32, 33, 34],
   },
   {
     id: 'motivation',
     title: 'Κίνητρα & Αξίες',
     icon: Target,
-    color: 'text-rose-600',
-    bg: 'bg-rose-50 dark:bg-rose-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [35, 36, 37, 38, 39, 40, 41],
   },
   {
     id: 'creativity',
     title: 'Δημιουργικότητα',
     icon: Lightbulb,
-    color: 'text-fuchsia-600',
-    bg: 'bg-fuchsia-50 dark:bg-fuchsia-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [42, 43, 44, 45, 46, 47],
   },
   {
     id: 'practical',
     title: 'Πρακτική Νοημοσύνη',
     icon: Code,
-    color: 'text-teal-600',
-    bg: 'bg-teal-50 dark:bg-teal-900/20',
+    color: 'text-[#f07f97] dark:text-[#ff97b2]',
+    bg: 'bg-[#fff5f8] dark:bg-[#2d1c48]/80 border border-[#f07f97]/20 dark:border-white/10',
     questions: [48, 49, 50],
   },
 ];
@@ -293,34 +293,38 @@ const CAT_NAMES: CategoryKey[] = [
 ];
 
 const BORDER_MAP: Record<CategoryKey, string> = {
-  INFO: 'border-fuchsia-500',
-  FIN: 'border-pink-500',
-  DIOIK: 'border-rose-500',
-  OIK: 'border-red-400',
-  SERV: 'border-purple-500',
-  PEDAGOGIKA: 'border-pink-300',
-  SOMATA: 'border-orange-400',
-  TEXNES: 'border-fuchsia-600',
+  INFO: 'border-[#f07f97]',
+  FIN: 'border-[#e06d88]',
+  DIOIK: 'border-[#ff97b2]',
+  OIK: 'border-[#d96a85]',
+  SERV: 'border-[#f07f97]/80',
+  PEDAGOGIKA: 'border-[#ffb3c7]',
+  SOMATA: 'border-[#e06d88]/90',
+  TEXNES: 'border-[#f07f97]',
 };
 const BAR_MAP: Record<CategoryKey, string> = {
-  INFO: 'from-fuchsia-400 to-fuchsia-600',
-  FIN: 'from-pink-400 to-pink-600',
-  DIOIK: 'from-rose-400 to-rose-600',
-  OIK: 'from-red-400 to-red-500',
-  SERV: 'from-purple-400 to-purple-600',
-  PEDAGOGIKA: 'from-pink-300 to-pink-500',
-  SOMATA: 'from-orange-400 to-orange-500',
-  TEXNES: 'from-fuchsia-500 to-fuchsia-700',
+  INFO: 'from-[#f07f97] to-[#e06d88]',
+  FIN: 'from-[#e06d88] to-[#d96a85]',
+  DIOIK: 'from-[#ff97b2] to-[#f07f97]',
+  OIK: 'from-[#f07f97] to-[#ff97b2]',
+  SERV: 'from-[#d96a85] to-[#f07f97]',
+  PEDAGOGIKA: 'from-[#ffb3c7] to-[#f07f97]',
+  SOMATA: 'from-[#e06d88] to-[#ff97b2]',
+  TEXNES: 'from-[#f07f97] to-[#d96a85]',
 };
+
+const CATEGORY_ACCENT = 'text-[#f07f97] dark:text-[#ff97b2]';
+const CATEGORY_GRADIENT =
+  'from-[#fff5f8] to-white dark:from-[#2d1c48]/70 dark:to-[#3a2658]';
 
 const RESULTS: Record<CategoryKey, CategoryData> = {
   INFO: {
-    title: 'Πληροφορική & Τεχνολογική Διοίκηση 🚀',
+    title: 'Πληροφορική & Τεχνολογική Διοίκηση',
     description:
       'Σκέφτεσαι αναλυτικά, αγαπάς τα δεδομένα και σε συναρπάζει η τεχνολογία. Ταιριάζεις σε ρόλους που συνδυάζουν λογική και ψηφιακά εργαλεία.',
     icon: Code,
-    color: 'text-fuchsia-600',
-    gradient: 'from-fuchsia-50 to-white dark:from-fuchsia-900/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       {
         name: 'Διοικητικής Επιστήμης & Τεχνολογίας (ΟΠΑ)',
@@ -333,12 +337,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   FIN: {
-    title: 'Λογιστική, Χρηματοοικονομικά & Στατιστική 📊',
+    title: 'Λογιστική, Χρηματοοικονομικά & Στατιστική',
     description:
       'Είσαι μεθοδικός/ή και ακριβής. Σε ελκύει ο κόσμος των αριθμών, των επενδύσεων και της ανάλυσης κινδύνου.',
     icon: DollarSign,
-    color: 'text-pink-600',
-    gradient: 'from-pink-50 to-white dark:from-pink-900/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       { name: 'Λογιστικής & Χρηματοοικονομικής (ΟΠΑ)', city: 'Αθήνα', code: 347, base: '15.775' },
       {
@@ -351,12 +355,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   DIOIK: {
-    title: 'Οργάνωση, Διοίκηση & Marketing 🎯',
+    title: 'Οργάνωση, Διοίκηση & Marketing',
     description:
       'Έχεις φυσική κλίση στην ηγεσία, στη στρατηγική και στο να κινητοποιείς ανθρώπους. Σε βλέπουμε ως manager ή επιχειρηματία.',
     icon: Briefcase,
-    color: 'text-rose-600',
-    gradient: 'from-rose-50 to-white dark:from-rose-900/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       {
         name: 'Οργάνωσης & Διοίκησης Επιχειρήσεων (ΟΠΑ)',
@@ -369,12 +373,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   OIK: {
-    title: 'Θεωρητικά & Ακαδημαϊκά Οικονομικά 🎓',
+    title: 'Θεωρητικά & Ακαδημαϊκά Οικονομικά',
     description:
       'Σε ελκύει η βαθιά ανάλυση, η θεωρία και η έρευνα. Ταιριάζεις σε ακαδημαϊκό ή ερευνητικό περιβάλλον.',
     icon: TrendingUp,
-    color: 'text-red-500',
-    gradient: 'from-red-50 to-white dark:from-red-900/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       { name: 'Οικονομικής Επιστήμης (ΟΠΑ)', city: 'Αθήνα', code: 312, base: '15.900' },
       { name: 'Οικονομικών Επιστημών (ΕΚΠΑ)', city: 'Αθήνα', code: 309, base: '13.896' },
@@ -382,12 +386,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   SERV: {
-    title: 'Διεθνείς Σπουδές, Τουρισμός & Ναυτιλία 🌎',
+    title: 'Διεθνείς Σπουδές, Τουρισμός & Ναυτιλία',
     description:
       'Σε ελκύει η επαφή με διαφορετικούς ανθρώπους, το διεθνές περιβάλλον και η δυναμική των υπηρεσιών.',
     icon: Globe,
-    color: 'text-purple-600',
-    gradient: 'from-purple-50 to-white dark:from-purple-900/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       {
         name: 'Διεθνών & Ευρωπαϊκών Σπουδών (ΠΑΜΑΚ)',
@@ -413,12 +417,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   PEDAGOGIKA: {
-    title: 'Παιδαγωγικές Σπουδές & Εκπαίδευση 🍎',
+    title: 'Παιδαγωγικές Σπουδές & Εκπαίδευση',
     description:
       'Έχεις εξαιρετική ενσυναίσθηση, υπομονή και αληθινή επιθυμία να βοηθάς άλλους να μαθαίνουν.',
     icon: GraduationCap,
-    color: 'text-pink-500',
-    gradient: 'from-pink-50 to-white dark:from-pink-800/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       {
         name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης (ΕΚΠΑ)',
@@ -436,12 +440,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   SOMATA: {
-    title: 'Σώματα Ασφαλείας & Φυσική Αγωγή 🛡️',
+    title: 'Σώματα Ασφαλείας & Φυσική Αγωγή',
     description:
       'Έχεις ψυχραιμία υπό πίεση, πειθαρχία και ισχυρή φυσική παρουσία. Απαιτούνται Αγωνίσματα & Υγειονομικές Εξετάσεις.',
     icon: Shield,
-    color: 'text-orange-500',
-    gradient: 'from-orange-50 to-white dark:from-orange-900/30 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       {
         name: 'ΣΣΑΣ Πληροφορικής / Οικονομικό',
@@ -467,12 +471,12 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
     ],
   },
   TEXNES: {
-    title: 'Τέχνες, Design & Μουσική 🎨',
+    title: 'Τέχνες, Design & Μουσική',
     description:
       'Η δημιουργικότητα είναι ο τρόπος που σκέφτεσαι. Ταιριάζεις σε σχολές που απαιτούν Ειδικά Μαθήματα.',
     icon: Palette,
-    color: 'text-fuchsia-700',
-    gradient: 'from-fuchsia-100 to-white dark:from-fuchsia-900/40 dark:to-gray-900',
+    color: CATEGORY_ACCENT,
+    gradient: CATEGORY_GRADIENT,
     schools: [
       {
         name: 'Μουσικής Επιστήμης & Τέχνης (ΠΑΜΑΚ)',
@@ -498,7 +502,7 @@ const RESULTS: Record<CategoryKey, CategoryData> = {
 // ─────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'prosanatolismos_v3';
 const ALL_IDS = Object.keys(QUESTIONS).map(Number);
-const RANK_LABELS = ['🥇 Κορυφαία κλίση', '🥈 2η κλίση', '🥉 3η κλίση'];
+const RANK_LABELS = ['1η κλίση', '2η κλίση', '3η κλίση'];
 
 /** JSON/API συχνά επιστρέφουν "4" αντί για 4 — το παλιό `typeof === 'number'` έκανε όλα 3 → 0% παντού. */
 function coerceLikert1to5(v: unknown): number | null {
@@ -671,7 +675,7 @@ const Prosanatolismospage: React.FC = () => {
           setAnswers(restoredAnswers);
           // If backend payload is partial, compute safely from answers.
           setResults(computeResults(restoredAnswers));
-          setSuccess('✅ Φορτώθηκε το τελευταίο αποθηκευμένο αποτέλεσμα.');
+          setSuccess('Φορτώθηκε το τελευταίο αποθηκευμένο αποτέλεσμα.');
           setTimeout(() => {
             if (isMounted.current) setSuccess('');
           }, 4500);
@@ -728,7 +732,7 @@ const Prosanatolismospage: React.FC = () => {
           retries: 1,
         });
         if (isMounted.current) {
-          setSuccess('✅ Αποθηκεύτηκε!');
+          setSuccess('Αποθηκεύτηκε επιτυχώς.');
           setTimeout(() => {
             if (isMounted.current) setSuccess('');
           }, 4000);
@@ -775,276 +779,309 @@ const Prosanatolismospage: React.FC = () => {
   const sectionFull = (sec: Section) => sectionDone(sec) === sec.questions.length;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6 md:py-10 bg-white dark:bg-gray-900 min-h-screen">
-      {/* HEADER */}
-      <header className="text-center mb-8">
-        <PageMenuIcon
-          icon="prosanatolismos"
-          wrapperClassName="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-50 dark:bg-gray-800 mx-auto mb-3"
-        />
-        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-1">
-          Επαγγελματικός Προσανατολισμός
-        </h1>
-        <p className="text-gray-400 text-sm mb-4">
-          50 ερωτήσεις βιωματικής προσωπικότητας · 8 κατηγορίες
-        </p>
-        <div className="max-w-sm mx-auto">
-          <div className="flex justify-between text-xs text-gray-400 mb-1">
-            <span>
-              <strong className="text-rose-500">{totalAnswered}</strong>/{totalQuestions}
-            </span>
-            <div className="flex items-center gap-2">
-              <span>{progress}%</span>
-              {totalAnswered > 0 && (
-                <button
-                  onClick={handleReset}
-                  title="Επαναφορά"
-                  className="text-red-400 hover:text-red-600 transition-colors"
-                >
-                  <RotateCcw className="w-3 h-3" />
-                </button>
-              )}
+    <motion.div
+      className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Hero */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white py-10 sm:py-14 px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <PageMenuIcon
+            icon="prosanatolismos"
+            wrapperClassName="inline-flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-2xl bg-white/20 mb-4"
+            className="w-14 h-14"
+          />
+          <h1 className="text-3xl sm:text-4xl font-black mb-2 tracking-tight">
+            Επαγγελματικός Προσανατολισμός
+          </h1>
+          <p className="text-sm sm:text-base text-white/90 max-w-xl mx-auto leading-relaxed">
+            50 ερωτήσεις προσωπικότητας · 8 κατηγορίες σπουδών
+          </p>
+
+          <div className="max-w-md mx-auto mt-6">
+            <div className="flex justify-between text-xs text-white/80 mb-2 font-semibold">
+              <span>
+                {totalAnswered}/{totalQuestions} απαντήσεις
+              </span>
+              <div className="flex items-center gap-2">
+                <span>{progress}%</span>
+                {totalAnswered > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    title="Επαναφορά"
+                    className="p-1 rounded-lg bg-white/15 hover:bg-white/25 transition-colors"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="w-full bg-white/25 rounded-full h-2 overflow-hidden">
+              <motion.div
+                className="h-full bg-white rounded-full"
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+              />
             </div>
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-rose-500 to-pink-400"
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            />
-          </div>
         </div>
-      </header>
+      </div>
 
       {isHydrating && (
-        <div className="mb-4 inline-flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
-          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          Ανάκτηση τελευταίου αποθηκευμένου αποτελέσματος...
+        <div className="max-w-3xl mx-auto px-4 pt-4">
+          <div className="inline-flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300 bg-white/90 dark:bg-[#3a2658]/90 px-3 py-2 rounded-xl border border-[#f07f97]/20">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#f07f97]" />
+            Ανάκτηση τελευταίου αποθηκευμένου αποτελέσματος…
+          </div>
         </div>
       )}
 
-      {/* ΑΠΟΤΕΛΕΣΜΑΤΑ */}
-      <AnimatePresence>
-        {results && (
-          <motion.section
-            ref={resultsAnchorRef}
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mb-10 p-5 md:p-7 rounded-2xl bg-gradient-to-br from-rose-50 to-white dark:from-gray-800 dark:to-gray-800 border border-rose-200 dark:border-rose-800 shadow-xl scroll-mt-24"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 mb-1">
-              <h2 className="text-xl font-bold text-rose-700 dark:text-rose-300 text-center">
-                🏆 Τα Αποτελέσματά Σου
-              </h2>
-              {isSaving && (
-                <span className="flex items-center justify-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-                  Αποθήκευση online…
-                </span>
-              )}
-            </div>
-            <p className="text-center text-xs text-gray-400 mb-6">
-              Το % δείχνει πόσο <em>ξεπερνάς το ουδέτερο</em> σε κάθε κατηγορία, σε σχέση με την
-              κορυφαία σου κλίση
-            </p>
-
-            {/* Top 3 cards */}
-            <div className="grid sm:grid-cols-3 gap-4 mb-6">
-              {results.sortedScores.slice(0, 3).map((item, rank) => (
-                <ResultCard
-                  key={item.category}
-                  category={item.category}
-                  displayPct={item.displayPct}
-                  rank={rank + 1}
-                />
-              ))}
-            </div>
-
-            {/* Full ranking */}
-            <div className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
-                Πλήρης Κατάταξη
-              </p>
-              <div className="space-y-2">
-                {results.sortedScores.map((item, idx) => {
-                  const data = RESULTS[item.category];
-                  const Icon = data.icon;
-                  return (
-                    <div key={item.category} className="flex items-center gap-2">
-                      <span className="text-[10px] text-gray-400 w-4 text-right shrink-0">
-                        {idx + 1}
-                      </span>
-                      <Icon className={`w-3.5 h-3.5 shrink-0 ${data.color}`} />
-                      <span className="text-xs text-gray-600 dark:text-gray-300 w-32 truncate shrink-0">
-                        {data.title.split(' ').slice(0, 2).join(' ')}
-                      </span>
-                      <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
-                        <motion.div
-                          className={`h-full rounded-full bg-gradient-to-r ${BAR_MAP[item.category]}`}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${item.displayPct}%` }}
-                          transition={{ duration: 0.6, delay: idx * 0.07, ease: 'easeOut' }}
-                        />
-                      </div>
-                      <span className="text-xs font-bold text-gray-600 dark:text-gray-300 w-9 text-right shrink-0">
-                        {item.displayPct}%
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
-
-      {/* SECTION PILLS */}
-      <div className="flex gap-1.5 mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-        {SECTIONS.map((sec, idx) => {
-          const Icon = sec.icon;
-          const done = sectionFull(sec);
-          const active = sectionIdx === idx;
-          return (
-            <button
-              key={sec.id}
-              onClick={() => setSectionIdx(idx)}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all shrink-0 ${
-                active
-                  ? 'bg-rose-500 text-white border-rose-500 shadow'
-                  : done
-                    ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700'
-                    : 'bg-white dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700 hover:border-rose-300'
-              }`}
-            >
-              <Icon className="w-3 h-3" />
-              {sec.title}
-              {done && !active && <span className="ml-0.5 text-green-500 text-[10px]">✓</span>}
-              {!done && !active && (
-                <span className="ml-0.5 text-gray-300 dark:text-gray-600 text-[10px]">
-                  {sectionDone(sec)}/{sec.questions.length}
-                </span>
-              )}
-            </button>
-          );
-        })}
+      {/* Section nav */}
+      <div className="sticky top-20 z-20 bg-white/95 dark:bg-[#3a2658]/95 backdrop-blur-lg border-b border-[#f07f97]/20 dark:border-white/10 shadow-sm">
+        <div className="max-w-3xl mx-auto px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+            {SECTIONS.map((sec, idx) => {
+              const Icon = sec.icon;
+              const done = sectionFull(sec);
+              const active = sectionIdx === idx;
+              return (
+                <button
+                  key={sec.id}
+                  type="button"
+                  onClick={() => setSectionIdx(idx)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all shrink-0 ${
+                    active
+                      ? 'bg-[#f07f97] text-white border-[#f07f97] shadow-sm'
+                      : done
+                        ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                        : 'bg-white dark:bg-[#2d1c48] text-gray-600 dark:text-gray-300 border-[#f07f97]/20 dark:border-white/10 hover:border-[#f07f97]/40'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {sec.title}
+                  {done && !active ? (
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                  ) : !done && !active ? (
+                    <span className="text-[10px] font-semibold opacity-60">
+                      {sectionDone(sec)}/{sec.questions.length}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* ΕΡΩΤΗΣΕΙΣ */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentSection.id}
-          initial={{ opacity: 0, x: 16 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -16 }}
-          transition={{ duration: 0.18 }}
-        >
-          <div className={`flex items-center gap-2 px-4 py-3 rounded-xl mb-4 ${currentSection.bg}`}>
-            {React.createElement(currentSection.icon, {
-              className: `w-5 h-5 ${currentSection.color}`,
-            })}
-            <h2 className={`font-bold ${currentSection.color}`}>{currentSection.title}</h2>
-            <span className="ml-auto text-xs text-gray-400">
-              {sectionDone(currentSection)}/{currentSection.questions.length}
-            </span>
-          </div>
-
-          <p className="text-xs text-gray-400 mb-4 px-1">
-            Απάντα αυθόρμητα.&nbsp;
-            <span className="font-medium text-gray-500 dark:text-gray-400">
-              1 = Διαφωνώ απόλυτα&nbsp;·&nbsp;5 = Συμφωνώ απόλυτα
-            </span>
-          </p>
-
-          <div className="space-y-3">
-            {currentSection.questions.map((id) => (
-              <QuestionBlock
-                key={id}
-                qId={id}
-                question={QUESTIONS[id]}
-                selectedScore={answers[id]}
-                onChange={handleChange}
-                accentColor={currentSection.color}
-              />
-            ))}
-          </div>
-
-          {/* Prev / Next */}
-          <div className="flex justify-between mt-6">
-            <button
-              onClick={() => setSectionIdx((i) => Math.max(0, i - 1))}
-              disabled={sectionIdx === 0}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 disabled:opacity-25 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" /> Προηγούμενη
-            </button>
-
-            {sectionIdx < SECTIONS.length - 1 ? (
-              <button
-                onClick={() => setSectionIdx((i) => i + 1)}
-                className="flex items-center gap-1 px-5 py-2 text-sm font-semibold bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors shadow-sm"
-              >
-                Επόμενη <ChevronRight className="w-4 h-4" />
-              </button>
-            ) : (
-              <button
-                onClick={handleCalculate}
-                disabled={totalAnswered < totalQuestions || isCalc}
-                className={`flex items-center gap-1.5 px-6 py-2 text-sm font-extrabold rounded-lg shadow transition-all ${
-                  totalAnswered < totalQuestions || isCalc
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
-                    : 'bg-rose-600 text-white hover:bg-rose-700 hover:scale-105 active:scale-95'
-                }`}
-              >
-                {isCalc ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" /> Υπολογισμός…
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" /> Δες τα αποτελέσματά σου
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* ΜΗΝΥΜΑΤΑ */}
-      <div className="mt-5 flex flex-col items-center gap-2">
+      <main className="max-w-3xl mx-auto px-4 py-8 sm:py-10 pb-16">
+        {/* ΑΠΟΤΕΛΕΣΜΑΤΑ */}
         <AnimatePresence>
-          {success && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
+          {results && (
+            <motion.section
+              ref={resultsAnchorRef}
+              initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="inline-flex items-center gap-2 text-green-700 bg-green-50 border border-green-300 px-4 py-2 rounded-lg text-sm font-semibold"
+              className="mb-10 rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#3a2658] shadow-lg overflow-hidden scroll-mt-28"
             >
-              <CheckCircle2 className="w-4 h-4" />
-              {success}
-            </motion.div>
-          )}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="inline-flex items-center gap-2 text-red-700 bg-red-50 border border-red-300 px-4 py-2 rounded-lg text-sm font-semibold"
-            >
-              <AlertCircle className="w-4 h-4" />
-              {error}
-            </motion.div>
+              <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8] dark:bg-[#2d1c48]/80">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">
+                    Τα αποτελέσματά σου
+                  </h2>
+                  {isSaving && (
+                    <span className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-[#f07f97]" />
+                      Αποθήκευση online…
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Το % δείχνει πόσο ξεπερνάς το ουδέτερο σε κάθε κατηγορία, σε σχέση με την κορυφαία σου
+                  κλίση.
+                </p>
+              </div>
+
+              <div className="p-5 sm:p-6 space-y-6">
+                <div className="grid sm:grid-cols-3 gap-4">
+                  {results.sortedScores.slice(0, 3).map((item, rank) => (
+                    <ResultCard
+                      key={item.category}
+                      category={item.category}
+                      displayPct={item.displayPct}
+                      rank={rank + 1}
+                    />
+                  ))}
+                </div>
+
+                <div className="rounded-xl border border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8]/60 dark:bg-[#2d1c48]/50 p-4 sm:p-5">
+                  <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[#f07f97] dark:text-[#ff97b2] mb-4">
+                    Πλήρης κατάταξη
+                  </p>
+                  <div className="space-y-3">
+                    {results.sortedScores.map((item, idx) => {
+                      const data = RESULTS[item.category];
+                      const Icon = data.icon;
+                      return (
+                        <div key={item.category} className="flex items-center gap-3">
+                          <span className="text-[11px] font-bold text-gray-400 w-5 text-right shrink-0 tabular-nums">
+                            {idx + 1}
+                          </span>
+                          <Icon className={`w-4 h-4 shrink-0 ${data.color}`} />
+                          <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 flex-1 min-w-0 truncate">
+                            {data.title}
+                          </span>
+                          <div className="hidden sm:block flex-[1.5] max-w-[140px] bg-white dark:bg-[#3a2658] rounded-full h-2 overflow-hidden border border-[#f07f97]/10">
+                            <motion.div
+                              className={`h-full rounded-full bg-gradient-to-r ${BAR_MAP[item.category]}`}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${item.displayPct}%` }}
+                              transition={{ duration: 0.6, delay: idx * 0.05, ease: 'easeOut' }}
+                            />
+                          </div>
+                          <span className="text-xs font-black text-[#f07f97] dark:text-[#ff97b2] w-10 text-right shrink-0 tabular-nums">
+                            {item.displayPct}%
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </motion.section>
           )}
         </AnimatePresence>
-        {totalAnswered < totalQuestions && (
-          <p className="text-xs text-gray-400">
-            Απομένουν <strong className="text-rose-500">{totalQuestions - totalAnswered}</strong>{' '}
-            ερωτήσεις
-          </p>
-        )}
-      </div>
-    </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSection.id}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -12 }}
+            transition={{ duration: 0.2 }}
+            className="rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#3a2658] shadow-md overflow-hidden"
+          >
+            <div className={`flex items-center gap-3 px-4 sm:px-5 py-4 ${currentSection.bg}`}>
+              {React.createElement(currentSection.icon, {
+                className: `w-5 h-5 shrink-0 ${currentSection.color}`,
+              })}
+              <div className="min-w-0">
+                <h2 className={`font-black text-base sm:text-lg ${currentSection.color}`}>
+                  {currentSection.title}
+                </h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Ενότητα {sectionIdx + 1} από {SECTIONS.length}
+                </p>
+              </div>
+              <span className="ml-auto text-xs font-bold text-gray-500 dark:text-gray-400 shrink-0 tabular-nums">
+                {sectionDone(currentSection)}/{currentSection.questions.length}
+              </span>
+            </div>
+
+            <div className="px-4 sm:px-5 py-5 sm:py-6">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-5 px-1 leading-relaxed">
+                Απάντα αυθόρμητα.{' '}
+                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                  1 = Διαφωνώ απόλυτα · 5 = Συμφωνώ απόλυτα
+                </span>
+              </p>
+
+              <div className="space-y-3">
+                {currentSection.questions.map((id) => (
+                  <QuestionBlock
+                    key={id}
+                    qId={id}
+                    question={QUESTIONS[id]}
+                    selectedScore={answers[id]}
+                    onChange={handleChange}
+                  />
+                ))}
+              </div>
+
+              <div className="flex justify-between items-center mt-6 pt-5 border-t border-[#f07f97]/15 dark:border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setSectionIdx((i) => Math.max(0, i - 1))}
+                  disabled={sectionIdx === 0}
+                  className="flex items-center gap-1 px-3 sm:px-4 py-2.5 text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 disabled:opacity-30 transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" /> Προηγούμενη
+                </button>
+
+                {sectionIdx < SECTIONS.length - 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => setSectionIdx((i) => i + 1)}
+                    className="flex items-center gap-1 px-5 py-2.5 text-sm font-bold bg-[#f07f97] text-white rounded-xl hover:bg-[#e06d88] transition-colors shadow-sm"
+                  >
+                    Επόμενη <ChevronRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleCalculate}
+                    disabled={totalAnswered < totalQuestions || isCalc}
+                    className={`flex items-center gap-1.5 px-5 sm:px-6 py-2.5 text-sm font-black rounded-xl transition-all ${
+                      totalAnswered < totalQuestions || isCalc
+                        ? 'bg-gray-200 dark:bg-[#2d1c48] text-gray-400 cursor-not-allowed'
+                        : 'bg-[#f07f97] text-white hover:bg-[#e06d88] shadow-md'
+                    }`}
+                  >
+                    {isCalc ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Υπολογισμός…
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" /> Δες τα αποτελέσματά σου
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <AnimatePresence>
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="inline-flex items-center gap-2 text-emerald-800 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-4 py-2.5 rounded-xl text-sm font-semibold"
+              >
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                {success}
+              </motion.div>
+            )}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="inline-flex items-center gap-2 text-red-800 dark:text-red-200 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 px-4 py-2.5 rounded-xl text-sm font-semibold"
+              >
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+          {totalAnswered < totalQuestions && (
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Απομένουν{' '}
+              <strong className="text-[#f07f97] dark:text-[#ff97b2]">
+                {totalQuestions - totalAnswered}
+              </strong>{' '}
+              ερωτήσεις
+            </p>
+          )}
+        </div>
+      </main>
+    </motion.div>
   );
 };
 
@@ -1062,21 +1099,23 @@ const ResultCard: React.FC<{ category: CategoryKey; displayPct: number; rank: nu
   const bar = BAR_MAP[category];
   return (
     <div
-      className={`p-4 border-t-4 ${border} rounded-xl shadow-md bg-gradient-to-br ${data.gradient} hover:shadow-lg transition-shadow`}
+      className={`p-4 sm:p-5 rounded-2xl border border-[#f07f97]/15 dark:border-white/10 border-t-4 ${border} bg-gradient-to-br ${data.gradient}`}
     >
-      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-2">
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#f07f97] dark:text-[#ff97b2] mb-3">
         {RANK_LABELS[rank - 1]}
       </p>
-      <div className="flex items-start gap-2 mb-3">
-        <Icon className={`w-5 h-5 mt-0.5 ${data.color} shrink-0`} />
-        <h3 className={`text-sm font-extrabold ${data.color} leading-tight`}>{data.title}</h3>
-      </div>
-      <div className="mb-3">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-400">Ταύτιση</span>
-          <span className={`font-bold ${data.color}`}>{displayPct}%</span>
+      <div className="flex items-start gap-2.5 mb-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#fff5f8] dark:bg-[#2d1c48] border border-[#f07f97]/15">
+          <Icon className={`w-4 h-4 ${data.color}`} />
         </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+        <h3 className="text-sm font-black text-gray-900 dark:text-white leading-snug">{data.title}</h3>
+      </div>
+      <div className="mb-4">
+        <div className="flex justify-between text-xs mb-1.5">
+          <span className="text-gray-500 dark:text-gray-400">Ταύτιση</span>
+          <span className={`font-black tabular-nums ${data.color}`}>{displayPct}%</span>
+        </div>
+        <div className="w-full bg-white dark:bg-[#2d1c48] rounded-full h-2 overflow-hidden border border-[#f07f97]/10">
           <motion.div
             className={`h-full rounded-full bg-gradient-to-r ${bar}`}
             initial={{ width: 0 }}
@@ -1085,26 +1124,24 @@ const ResultCard: React.FC<{ category: CategoryKey; displayPct: number; rank: nu
           />
         </div>
       </div>
-      <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
-        {data.description}
-      </p>
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
-        <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-          Προτεινόμενες Σχολές:
+      <p className="text-xs text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">{data.description}</p>
+      <div className="border-t border-[#f07f97]/15 dark:border-white/10 pt-3">
+        <p className="text-[11px] font-black uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400 mb-2">
+          Προτεινόμενες σχολές
         </p>
-        <ul className="space-y-1.5">
+        <ul className="space-y-2">
           {data.schools.map((s) => (
             <li
               key={s.code}
-              className="flex items-start gap-1.5 bg-white/70 dark:bg-gray-800/70 p-2 rounded-lg"
+              className="flex items-start gap-2 bg-white/80 dark:bg-[#2d1c48]/80 p-2.5 rounded-xl border border-[#f07f97]/10 dark:border-white/5"
             >
               <CheckCircle className={`w-3.5 h-3.5 mt-0.5 ${data.color} shrink-0`} />
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs font-semibold text-gray-900 dark:text-white leading-snug">
-                  {s.name} ({s.city})
+                  {s.name}
                 </p>
-                <p className="text-[10px] text-gray-400">
-                  Κωδ.: {s.code} · Βάση: {s.base}
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                  {s.city} · Κωδ. {s.code} · Βάση {s.base}
                   {s.note ? ` · ${s.note}` : ''}
                 </p>
               </div>
@@ -1124,33 +1161,32 @@ const QuestionBlock: React.FC<{
   question: string;
   selectedScore?: number;
   onChange: (id: number, score: number) => void;
-  accentColor?: string;
-}> = ({ qId, question, selectedScore, onChange, accentColor = 'text-rose-500' }) => (
-  <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 hover:border-rose-300 dark:hover:border-rose-700 transition-colors">
-    <p className="text-sm text-gray-800 dark:text-gray-200 mb-3 leading-relaxed">
-      <span className={`${accentColor} font-bold mr-1.5 text-xs`}>{qId}.</span>
+}> = ({ qId, question, selectedScore, onChange }) => (
+  <div className="p-4 rounded-xl border border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8]/40 dark:bg-[#2d1c48]/40 hover:border-[#f07f97]/30 transition-colors">
+    <p className="text-sm text-gray-800 dark:text-gray-100 mb-3.5 leading-relaxed">
+      <span className="text-[#f07f97] dark:text-[#ff97b2] font-black mr-2 text-xs tabular-nums">
+        {qId}.
+      </span>
       {question}
     </p>
-    <div className="flex items-center gap-1 sm:gap-2">
-      <span className="text-[10px] text-gray-400 w-12 hidden sm:block leading-tight">Διαφωνώ</span>
+    <div className="flex items-center gap-1 sm:gap-1.5">
+      <span className="text-[10px] text-gray-400 w-10 hidden sm:block leading-tight">Όχι</span>
       {[1, 2, 3, 4, 5].map((score) => (
-        <motion.button
+        <button
           key={score}
           type="button"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
           onClick={() => onChange(qId, score)}
-          className={`flex-1 sm:flex-none sm:w-10 h-9 rounded-lg text-sm font-bold transition-all ${
+          className={`flex-1 h-10 rounded-xl text-sm font-black transition-all ${
             selectedScore === score
-              ? 'bg-rose-500 text-white shadow ring-2 ring-rose-300 dark:ring-rose-700'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600'
+              ? 'bg-[#f07f97] text-white shadow-sm ring-2 ring-[#f07f97]/30 dark:ring-[#ff97b2]/30'
+              : 'bg-white dark:bg-[#3a2658] text-gray-600 dark:text-gray-300 border border-[#f07f97]/10 dark:border-white/10 hover:border-[#f07f97]/40 hover:text-[#f07f97] dark:hover:text-[#ff97b2]'
           }`}
         >
           {score}
-        </motion.button>
+        </button>
       ))}
-      <span className="text-[10px] text-gray-400 w-12 text-right hidden sm:block leading-tight">
-        Συμφωνώ
+      <span className="text-[10px] text-gray-400 w-10 text-right hidden sm:block leading-tight">
+        Ναι
       </span>
     </div>
   </div>

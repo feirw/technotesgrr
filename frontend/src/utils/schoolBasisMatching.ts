@@ -1,6 +1,6 @@
 import type { SchoolCoefficientsEntry } from '@/data/schoolCoefficients2026';
-import type { School } from '@/pages/private/SchoolsPage';
-import { ALL_SCHOOLS } from '@/pages/private/SchoolsPage';
+import type { School } from '@/data/schools';
+import { ALL_SCHOOLS } from '@/data/schools';
 import { normalizeSearch } from '@/utils/schoolCoefficientsUtils';
 
 /** Συντομογραφίες παν/νίων: συντελεστές AeiTei → δεδομένα βάσεων (Σχολές). */
@@ -341,6 +341,10 @@ export function parseEbeGrade(raw: string): number | null {
   if (!trimmed) return null;
   const value = Number(trimmed);
   return Number.isFinite(value) ? value : null;
+}
+
+export function formatEbeDisplay(raw: string): string {
+  return raw.replace('.', ',');
 }
 
 export function formatMoriaPoints(value: number): string {
