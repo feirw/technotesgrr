@@ -3,11 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeftRight, GitCompare, Search, X } from 'lucide-react';
 import { SchoolCourseCompareView } from '@/components/schools/SchoolCourseCompareView';
 import { ALL_SCHOOLS } from '@/data/schools';
-import {
-  SCHOOL_CURRICULA,
-  hasSchoolCurriculum,
-  type CurriculumFilter,
-} from '@/data/schoolCurricula';
+import { SCHOOL_CURRICULA, hasSchoolCurriculum } from '@/data/schoolCurricula';
 import { compareCurricula, type ComparedSchool } from '@/utils/curriculumComparison';
 
 const CURRICULUM_SCHOOLS = ALL_SCHOOLS.filter((school) => hasSchoolCurriculum(school.id)).sort(
@@ -136,8 +132,6 @@ export const SchoolCourseComparePanel: React.FC<SchoolCourseComparePanelProps> =
   onSchoolBChange,
   onSwapSchools,
 }) => {
-  const [filter, setFilter] = useState<CurriculumFilter>('all');
-
   const comparedSchools = useMemo((): ComparedSchool[] | null => {
     if (!schoolAId || !schoolBId || schoolAId === schoolBId) return null;
     const schoolA = CURRICULUM_SCHOOLS.find((school) => school.id === schoolAId);
@@ -153,8 +147,8 @@ export const SchoolCourseComparePanel: React.FC<SchoolCourseComparePanelProps> =
 
   const comparison = useMemo(() => {
     if (!comparedSchools) return null;
-    return compareCurricula(comparedSchools, filter);
-  }, [comparedSchools, filter]);
+    return compareCurricula(comparedSchools, 'all');
+  }, [comparedSchools]);
 
   return (
     <div className="space-y-6">
@@ -213,11 +207,7 @@ export const SchoolCourseComparePanel: React.FC<SchoolCourseComparePanelProps> =
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <SchoolCourseCompareView
-            comparison={comparison}
-            filter={filter}
-            onFilterChange={setFilter}
-          />
+          <SchoolCourseCompareView comparison={comparison} />
         </motion.div>
       )}
     </div>
