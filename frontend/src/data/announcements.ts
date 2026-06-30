@@ -18,6 +18,15 @@ export interface Announcement {
 
 export const ANNOUNCEMENTS: Announcement[] = [
   {
+    id: '3',
+    date: '2026-06-29',
+    title: 'Μηχανογραφικό 2026: Προθεσμία κωδικού',
+    body:
+      'Λήγει την Τρίτη 30 Ιουνίου η προθεσμία για απόκτηση προσωπικού κωδικού ασφαλείας (password) από το Λύκειο — απαραίτητου για υποβολή Μηχανογραφικού Δελτίου και Παράλληλου Μηχανογραφικού (ΣΑΕΚ). Ισχύει για υποψηφίους ΓΕΛ/ΕΠΑΛ 2026, αποφοίτους 10% και τελειόφοιους που υποβάλλουν μόνο Π.Μ.Δ. Μην αφήνετε την τελευταία στιγμή.',
+    link: 'https://www.dnews.gr/eidhseis/paideia/596808/vaseis-2026-ligei-tin-triti-30-iouniou-i-prothesmia-gia-ton-kodiko-gia-ypovoli-mixanografikoy',
+    linkLabel: 'Διάβασε στο Dnews',
+  },
+  {
     id: '2',
     date: '2026-06-18',
     title: 'Αποτελέσματα Πανελληνίων',

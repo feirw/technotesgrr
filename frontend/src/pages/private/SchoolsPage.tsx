@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import {
   Search,
   MapPin,
@@ -7,6 +8,8 @@ import {
   ChevronDown,
   BookOpen,
   TrendingUp,
+  GitCompare,
+  LayoutGrid,
 } from 'lucide-react';
 import {
   MenuIconImg,
@@ -21,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseComparePanel';
 import { SchoolCurriculumModal } from '@/components/schools/SchoolCurriculumModal';
 import { SCHOOL_CURRICULA, hasSchoolCurriculum } from '@/data/schoolCurricula';
 
@@ -89,16 +93,18 @@ function PageNotice({
   label,
   children,
   variant,
+  href,
 }: {
   iconSrc: string;
   label: string;
   children: React.ReactNode;
   variant: PageNoticeVariant;
+  href?: string;
 }) {
   const styles = PAGE_NOTICE_STYLES[variant];
 
-  return (
-    <div className={`flex gap-3.5 sm:gap-4 px-4 py-3.5 sm:px-5 sm:py-4 ${styles.row}`}>
+  const inner = (
+    <>
       <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center">
         <MenuIconImg src={iconSrc} className="h-10 w-10 sm:h-11 sm:w-11" />
       </div>
@@ -110,8 +116,25 @@ function PageNotice({
           {children}
         </p>
       </div>
-    </div>
+    </>
   );
+
+  const rowClass = `flex gap-3.5 sm:gap-4 px-4 py-3.5 sm:px-5 sm:py-4 ${styles.row}`;
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${rowClass} transition-colors hover:brightness-[0.97] dark:hover:brightness-110`}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return <div className={rowClass}>{inner}</div>;
 }
 
 function SchoolsPageNotices() {
@@ -139,10 +162,58 @@ function SchoolsPageNotices() {
   );
 }
 
+type SchoolsPageView = 'schools' | 'compare';
+
 const SchoolsPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [activeCity, setActiveCity] = useState('Όλες');
   const [curriculumSchoolId, setCurriculumSchoolId] = useState<string | null>(null);
+
+  const view: SchoolsPageView =
+    searchParams.get('view') === 'compare' || searchParams.has('a') || searchParams.has('b')
+      ? 'compare'
+      : 'schools';
+  const schoolAId = searchParams.get('a') ?? '';
+  const schoolBId = searchParams.get('b') ?? '';
+
+  const setView = (nextView: SchoolsPageView) => {
+    const next = new URLSearchParams(searchParams);
+    if (nextView === 'compare') {
+      next.set('view', 'compare');
+    } else {
+      next.delete('view');
+      next.delete('a');
+      next.delete('b');
+    }
+    setSearchParams(next, { replace: true });
+  };
+
+  const setSchoolAId = (id: string) => {
+    const next = new URLSearchParams(searchParams);
+    next.set('view', 'compare');
+    if (id) next.set('a', id);
+    else next.delete('a');
+    setSearchParams(next, { replace: true });
+  };
+
+  const setSchoolBId = (id: string) => {
+    const next = new URLSearchParams(searchParams);
+    next.set('view', 'compare');
+    if (id) next.set('b', id);
+    else next.delete('b');
+    setSearchParams(next, { replace: true });
+  };
+
+  const swapSchools = () => {
+    const next = new URLSearchParams(searchParams);
+    next.set('view', 'compare');
+    if (schoolAId) next.set('b', schoolAId);
+    else next.delete('b');
+    if (schoolBId) next.set('a', schoolBId);
+    else next.delete('a');
+    setSearchParams(next, { replace: true });
+  };
 
   const activeCurriculum = curriculumSchoolId
     ? SCHOOL_CURRICULA[curriculumSchoolId]
@@ -164,10 +235,10 @@ const SchoolsPage: React.FC = () => {
   }, [search, activeCity]);
 
   return (
-    <div className="-mt-20 pt-20 min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500 pb-24">
+    <div className="-mt-20 pt-24 min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500 pb-24">
       {/* Navbar / Filters */}
       <nav className="sticky top-0 z-50 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-xl border-b border-[#f07f97]/30 dark:border-white/10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-28 flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 min-h-28 py-3 sm:py-4 flex flex-col justify-center">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <h1 className="text-xl font-black text-gray-900 dark:text-[#faf5ef] shrink-0 flex items-center gap-2.5">
               <MenuIconImg src={MENU_ICONS.schools} className="w-8 h-8 shrink-0" />
@@ -176,7 +247,35 @@ const SchoolsPage: React.FC = () => {
               </span>
             </h1>
 
-            <div className="flex w-full max-w-3xl gap-3">
+            <div className="flex w-full max-w-3xl gap-3 flex-wrap md:flex-nowrap">
+              <div className="inline-flex shrink-0 rounded-2xl border border-[#f07f97]/30 dark:border-white/15 bg-[#fff5f8] dark:bg-[#2d1c48] p-1">
+                <button
+                  type="button"
+                  onClick={() => setView('schools')}
+                  className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-black transition-colors ${
+                    view === 'schools'
+                      ? 'bg-[#f07f97] text-white shadow-sm'
+                      : 'text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#f07f97]/10'
+                  }`}
+                >
+                  <LayoutGrid size={16} />
+                  Σχολές
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView('compare')}
+                  className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-black transition-colors ${
+                    view === 'compare'
+                      ? 'bg-[#f07f97] text-white shadow-sm'
+                      : 'text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#f07f97]/10'
+                  }`}
+                >
+                  <GitCompare size={16} />
+                  Σύγκριση
+                </button>
+              </div>
+              {view === 'schools' ? (
+              <>
               <div className="relative flex-1 group">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#f07f97] transition-colors"
@@ -213,6 +312,8 @@ const SchoolsPage: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
+              </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -220,6 +321,16 @@ const SchoolsPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 mt-8 sm:mt-10">
+        {view === 'compare' ? (
+          <SchoolCourseComparePanel
+            schoolAId={schoolAId}
+            schoolBId={schoolBId}
+            onSchoolAChange={setSchoolAId}
+            onSchoolBChange={setSchoolBId}
+            onSwapSchools={swapSchools}
+          />
+        ) : (
+          <>
         <SchoolsPageNotices />
 
         {Object.entries(CATEGORIES).map(([catName, config]) => {
@@ -267,6 +378,8 @@ const SchoolsPage: React.FC = () => {
             </motion.section>
           );
         })}
+          </>
+        )}
       </main>
 
       {activeCurriculum && (

@@ -23,6 +23,7 @@ import {
   formatGradeDisplay,
   formatEbeDisplay,
   formatMoriaDisplay,
+  getSchoolDisplayCity,
   matchSchoolBasis,
   parseEbeGrade,
 } from '@/utils/schoolBasisMatching';
@@ -100,6 +101,8 @@ const SchoolResultCard: React.FC<{ row: SchoolRow; averageGrade: number | null; 
   const ebe = basis ? parseEbeGrade(basis.ebe) : null;
   const ebeDiff = averageGrade !== null && ebe !== null ? averageGrade - ebe : null;
   const uniLabel = extractUniLabel(school.name);
+  const city = getSchoolDisplayCity(school, basis);
+  const locationLabel = [uniLabel, city].filter(Boolean).join(' · ');
   const departmentName = school.name.replace(/\s*\([^)]+\)\s*$/, '').replace(/\s*\([^)]+\)\s*$/, '');
 
   return (
@@ -111,9 +114,9 @@ const SchoolResultCard: React.FC<{ row: SchoolRow; averageGrade: number | null; 
     >
       <div className="p-4 sm:p-5 flex flex-col lg:flex-row gap-4 lg:items-start">
         <div className="flex-1 min-w-0">
-          {uniLabel ? (
+          {locationLabel ? (
             <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
-              {uniLabel}
+              {locationLabel}
             </p>
           ) : null}
           <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-white leading-snug">
@@ -369,7 +372,7 @@ const MoriaCalculatorPage: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="π.χ. ΟΠΑ, Πάτρα, Αγγλικά..."
+                placeholder="π.χ. ΟΠΑ, Αθήνα, Πάτρα, Αγγλικά..."
                 className="w-full px-3 py-2 pl-9 rounded-xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#3a2658] outline-none focus:border-[#f07f97]"
               />
               <Search className="absolute left-3 top-[2.15rem] w-4 h-4 text-gray-400" aria-hidden />

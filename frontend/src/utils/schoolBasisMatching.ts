@@ -320,6 +320,21 @@ function fuzzyMatchBasis(parsed: {
   return best?.school ?? null;
 }
 
+/** Πόλη εμφάνισης: προτεραιότητα στα δεδομένα βάσεων, αλλιώς από το όνομα συντελεστών. */
+export function getSchoolDisplayCity(
+  entry: SchoolCoefficientsEntry,
+  basis: School | null,
+): string | null {
+  if (basis?.city && basis.city !== 'Μη προσδιορισμένη') {
+    return basis.city;
+  }
+  const parsed = parseCoefficientSchoolName(entry.name);
+  if (parsed?.city && parsed.city !== 'Μη προσδιορισμένη') {
+    return parsed.city;
+  }
+  return null;
+}
+
 export function matchSchoolBasis(entry: SchoolCoefficientsEntry): School | null {
   const mappedId = COEFFICIENT_BASIS_SCHOOL_ID[entry.id];
   if (mappedId) {

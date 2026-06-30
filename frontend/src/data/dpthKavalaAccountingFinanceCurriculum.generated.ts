@@ -1,0 +1,88 @@
+/** ΔΠΘ · Λογιστικής & Χρηματοοικονομικής (Καβάλα) — ΠΣ από 2025 */
+import type { SchoolCurriculum } from './schoolCurricula';
+
+export const DPTH_KAVALA_ACCOUNTING_FINANCE_CURRICULUM: SchoolCurriculum = {
+  title: "Λογιστικής & Χρηματοοικονομικής",
+  subtitle: "ΔΠΘ · Καβάλα",
+  hoursNote:
+    "Ώρες/εβδομάδα: θεωρία. 5ο εξ.: 3 από 5 κατ' επιλογήν υποχρεωτικά · 6ο: 2 από 5 · 7ο: 3 από 5 · 8ο: 4 από 5. Πτυχιακή εργασία (10 ECTS) και προαιρετικά μαθήματα σύμφωνα με τον οδηγό σπουδών.",
+  semesters: [
+    { semester: 1, courses: [
+      { code: "N1Y1", ects: 5, name: "Μικροοικονομική", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N1Y2", ects: 5, name: "Εισαγωγή στη χρηματοοικονομική", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N1Y3", ects: 5, name: "Χρηματοοικονομική Λογιστική Ι", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N1Y4", ects: 5, name: "Χρηματοοικονομικά Μαθηματικά Ι", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N1Y5", ects: 5, name: "Διοίκηση επιχειρήσεων και οργανισμών", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N1Y6", ects: 5, name: "Πληροφορική Ι", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+    ] },
+    { semester: 2, courses: [
+      { code: "N2Y1", ects: 5, name: "Μακροοικονομική", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N2Y2", ects: 5, name: "Χρηματοοικονομική Λογιστική ΙΙ", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N2Y3", ects: 5, name: "Εμπορικό δίκαιο", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N2Y4", ects: 5, name: "Πληροφορική ΙΙ", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N2Y5", ects: 5, name: "Χρηματοοικονομικά μαθηματικά ΙΙ", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N2Y6", ects: 5, name: "Χρηματοοικονομική των επιχειρήσεων", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+    ] },
+    { semester: 3, courses: [
+      { code: "N3Y1", ects: 5, name: "Λογιστικά πρότυπα", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N3Y2", ects: 5, name: "Χρηματοπιστωτικοί οργανισμοί και αγορές", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N3Y3", ects: 5, name: "Λογιστική κόστους Ι", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N3Y4", ects: 5, name: "Στατιστική Επιχειρήσεων", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N3Y5", ects: 5, name: "Φορολογική Λογιστική Ι", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N3Y6", ects: 5, name: "Ηλεκτρονική Επιχειρησιακή Δράση", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+    ] },
+    { semester: 4, courses: [
+      { code: "N4Y1", ects: 5, name: "Τραπεζική Διοικητική", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N4Y2", ects: 5, name: "Λογιστική Κόστους ΙΙ", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N4Y3", ects: 5, name: "Διεθνείς οικονομικές σχέσεις", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N4Y4", ects: 5, name: "Διοίκηση Ανθρώπινου Δυναμικού", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N4Y5", ects: 5, name: "Μεθοδολογία Έρευνας", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N4Y6", ects: 5, name: "Ξένη Γλώσσα Ι", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+    ] },
+    { semester: 5, courses: [
+      { code: "N5Y1", ects: 5, name: "Ανάλυση χρηματοοικονομικών καταστάσεων", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N5Y2", ects: 5, name: "Στρατηγικός προγραμματισμός επιχειρήσεων", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N5Y3", ects: 5, name: "Εταιρική Διακυβέρνηση / Εσωτερικός Έλεγχος", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N5E5", ects: 5, name: "Ξένη Γλώσσα II", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N5E1", ects: 5, name: "Πολυεθνικές επιχειρήσεις - Άμεσες Ξένες Επενδύσεις", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N5E2", ects: 5, name: "Κοινωνική πολιτική και πολιτικές απασχόλησης", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N5E3", ects: 5, name: "Μάρκετινγκ", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N5E4", ects: 5, name: "Εργατικό - Ασφαλιστικό Δίκαιο", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+    ] },
+    { semester: 6, courses: [
+      { code: "N6Y1", ects: 5, name: "Μηχανογραφημένη Λογιστική", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N6Y2", ects: 5, name: "Χρηματοδότηση επιχειρήσεων", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N6Y3", ects: 5, name: "Φορολογική Λογιστική ΙΙ", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N6Y4", ects: 5, name: "Ελεγκτική", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N6E1", ects: 5, name: "Πληροφοριακά συστήματα Διοίκησης", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N6E2", ects: 5, name: "Λογιστικές εργασίες τέλους χρήσης", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N6E3", ects: 5, name: "Εφαρμοσμένη Στατιστική", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N6E4", ects: 5, name: "Διαχείριση κινδύνων", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N6E5", ects: 5, name: "Διοίκηση Εφοδιαστικής αλυσίδας", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+    ] },
+    { semester: 7, courses: [
+      { code: "N7Y1", ects: 5, name: "Οικονομοτεχνικές μελέτες", kind: "Υποχρεωτικό", hours: { lecture: 4 } },
+      { code: "N7Y2", ects: 5, name: "Επιχειρηματικότητα", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N7Y3", ects: 5, name: "Λογιστική των μετασχηματισμών των επιχειρήσεων", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N7E1", ects: 5, name: "Βιώσιμη χρηματοοικονομική πληροφόρηση - ESG", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N7E2", ects: 5, name: "Εκπαιδευτική τεχνολογία", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N7E3", ects: 5, name: "Αποτίμηση επιχειρήσεων", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N7E4", ects: 5, name: "Θεσμοί και Πολιτικές της Ε.Ε.", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N7E5", ects: 5, name: "Διοίκηση Επιχειρηματικών Διαδικασιών", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+    ] },
+    { semester: 8, courses: [
+      { code: "N8Y1", ects: 5, name: "Διεθνή Πρότυπα Χρηματοοικονομικής Αναφοράς", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N8Y2", ects: 5, name: "Λογιστική Δημοσίου Τομέα", kind: "Υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N8E1", ects: 5, name: "Ενοποιημένες χρηματοοικονομικές καταστάσεις", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N8E2", ects: 5, name: "Κοινωνική οικονομία", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N8E3", ects: 5, name: "Συμπεριφορική Χρηματοοικονομική & Λογιστική", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N8E4", ects: 5, name: "Χρηματοοικονομική τεχνολογία", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+      { code: "N8E5", ects: 5, name: "Επιχειρηματική Αναλυτική", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 3 } },
+    ] },
+    { semester: 9, courses: [
+      { code: "ΠΕ", ects: 10, name: "Πτυχιακή εργασία (αντιστοιχεί σε 2 μαθήματα)", kind: "Κατ' επιλογήν υποχρεωτικό", hours: { lecture: 6 } },
+      { code: "ΠΑ", ects: 3, name: "Πρακτική άσκηση", kind: "Προαιρετικό" },
+      { code: "ΣΛΧ", ects: 2, name: "Ειδικά θέματα λογιστικής και χρηματοοικονομικής (σεμινάριο)", kind: "Προαιρετικό" },
+    ] },
+  ],
+};

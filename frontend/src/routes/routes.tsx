@@ -1,4 +1,5 @@
 import React, { lazy } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
 // Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
@@ -27,12 +28,20 @@ const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
 const NotFound = lazy(() => import('@/pages/other/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
+
+function SchoolCompareRedirect() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  params.set('view', 'compare');
+  return <Navigate to={`/sxoles?${params.toString()}`} replace />;
+}
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
 // const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
+const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -131,6 +140,10 @@ const routes: RouteConfig[] = [
     element: <SchoolsPage />,
   },
   {
+    path: '/sygkrisi-mathimaton',
+    element: <SchoolCompareRedirect />,
+  },
+  {
     path: '/progress-tracker',
     element: <ProgressTrackerPage />,
   },
@@ -153,6 +166,10 @@ const routes: RouteConfig[] = [
   {
     path: '/ypologismos-morion',
     element: <MoriaCalculatorPage />,
+  },
+  {
+    path: '/saek',
+    element: <SaekPage />,
   },
 
   {
