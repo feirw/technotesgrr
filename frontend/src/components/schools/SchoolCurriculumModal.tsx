@@ -73,7 +73,7 @@ export const SchoolCurriculumModal: React.FC<SchoolCurriculumModalProps> = ({
           aria-labelledby="curriculum-modal-title"
         >
           <motion.div
-            className="relative flex flex-col w-[94%] max-w-lg sm:w-full sm:max-w-3xl lg:max-w-6xl max-h-[68vh] sm:max-h-[min(85vh,800px)] bg-white dark:bg-[#3a2658] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#f07f97]/20 dark:border-white/10"
+            className="relative flex flex-col w-[88%] max-w-md sm:w-full sm:max-w-xl lg:max-w-2xl max-h-[58vh] sm:max-h-[min(72vh,640px)] bg-white dark:bg-[#3a2658] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#f07f97]/20 dark:border-white/10"
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.96, opacity: 0 }}

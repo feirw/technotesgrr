@@ -1,6 +1,6 @@
 export type PanicMessage = { type: 'tip' | 'joke' | 'breath'; text: string };
 
-/** Κινητικά μηνύματα για το Panic Button — 30 επιλεγμένα. */
+/** Κινητικά μηνύματα για το Take a breath — 30 επιλεγμένα. */
 export const PANIC_MESSAGES: PanicMessage[] = [
   { type: 'tip', text: 'Τα καλά πράγματα έρχονται σε αυτούς που προσπαθούν! Μπράβο!' },
   { type: 'tip', text: 'Μπορείς να πετύχεις οτιδήποτε αποφασίσεις!' },

@@ -97,14 +97,8 @@ const numberedTrapezaItems = (count: number): ExamItem[] =>
     return { id: n.toString(), label: `Θέμα ${n}` };
   });
 
-/** Θέμα 2 δεν υπάρχει ως PDF στο public/pdfs/trapeza-thema-b/ */
-const TRAPEZA_B_NUMBERS = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-
-const TRAPEZA_THEMA_B: ExamItem[] = TRAPEZA_B_NUMBERS.map((n) => ({
-  id: n.toString(),
-  label: `Θέμα ${n}`,
-}));
-const TRAPEZA_THEMA_D = numberedTrapezaItems(20);
+const TRAPEZA_THEMA_B = numberedTrapezaItems(75);
+const TRAPEZA_THEMA_D = numberedTrapezaItems(80);
 
 const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
   kanonikes: yearsToItems(KANONIKES_YEARS),
@@ -166,8 +160,6 @@ const getModeLabel = (currentMode: ExamMode): string => {
   const tab = MODE_TABS.find((t) => t.mode === currentMode);
   return tab?.label ?? '';
 };
-
-const TOTAL_TOPIC_COUNT = MODE_TABS.reduce((sum, tab) => sum + tab.count, 0);
 
 // ═══════════════════════════════════════════════════════════════
 // 🎴 TOPIC CARD COMPONENT
@@ -342,27 +334,6 @@ const PaliathemataPage: React.FC = () => {
               <MenuIconImg src={MENU_ICONS.paliathemata} className="w-10 h-10 sm:w-14 sm:h-14 shrink-0" />
               Παλιά Θέματα
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl text-white/85 mb-4 sm:mb-8 px-1">
-              Πανελλήνιες Πληροφορικής • Όλες οι Χρονιές
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="hidden sm:flex flex-wrap justify-center gap-4 md:gap-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            {MODE_TABS.map((tab) => (
-              <div key={tab.mode} className="text-center min-w-[5.5rem]">
-                <div className="text-2xl md:text-3xl font-bold">{tab.count}</div>
-                <div className="text-sm text-white/85 leading-tight">{tab.label}</div>
-              </div>
-            ))}
-            <div className="text-center min-w-[5.5rem]">
-              <div className="text-2xl md:text-3xl font-bold">{TOTAL_TOPIC_COUNT}</div>
-              <div className="text-sm text-white/85">Σύνολο Θεμάτων</div>
-            </div>
           </motion.div>
         </div>
       </div>

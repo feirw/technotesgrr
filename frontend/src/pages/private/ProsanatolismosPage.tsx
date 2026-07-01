@@ -28,11 +28,15 @@ import { getBackendUrl } from '@/utils/backendUrl';
 import { apiFetch } from '@/utils/apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageMenuIcon } from '@/data/menuIcons';
+import {
+  type CategoryKey,
+  computeCareerOrientationResults,
+  normalizeAnswersMap,
+} from '@/utils/careerOrientationScoring';
 
 // ─────────────────────────────────────────────────────────────
 // TYPES
 // ─────────────────────────────────────────────────────────────
-type CategoryKey = 'INFO' | 'FIN' | 'DIOIK' | 'OIK' | 'SERV' | 'PEDAGOGIKA' | 'SOMATA' | 'TEXNES';
 
 interface School {
   name: string;
@@ -49,17 +53,7 @@ interface CategoryData {
   gradient: string;
   schools: School[];
 }
-interface ScoredCategory {
-  category: CategoryKey;
-  rawScore: number;
-  displayPct: number; // 0-100, normalized above-neutral
-}
-interface CalculationResult {
-  finalScores: Record<CategoryKey, number>;
-  topCategory: CategoryKey;
-  tiedCategories: CategoryKey[];
-  sortedScores: ScoredCategory[];
-}
+type CalculationResult = ReturnType<typeof computeCareerOrientationResults>;
 interface Section {
   id: string;
   title: string;
@@ -91,9 +85,9 @@ const QUESTIONS: Record<number, string> = {
   9: 'Σε συζήτηση, συχνά εσύ λες "ναι, αλλά αν το δούμε από την άλλη πλευρά...".',
   10: 'Όταν κάτι πάει στραβά, ψάχνεις πρώτα την αιτία — όχι τον ένοχο.',
   // ΛΗΨΗ ΑΠΟΦΑΣΕΩΝ (11-18)
-  11: 'Μεταξύ μιας σίγουρης/μέτριας επιλογής και μιας ριψοκίνδυνης/πολλά υποσχόμενης, διαλέγεις την ριψοκίνδυνη. (1=ποτέ → 5=πάντα)',
+  11: 'Μεταξύ μιας σίγουρης/μέτριας επιλογής και μιας ριψοκίνδυνης/πολλά υποσχόμενης, διαλέγεις την ριψοκίνδυνη.',
   12: 'Μετά από λάθος απόφαση, αναλύεις τι πήγε στραβά αντί να μετανιώνεις απλώς.',
-  13: 'Παίρνεις σημαντικές αποφάσεις κυρίως με βάση το ένστικτο/συναίσθημα, όχι υπολογισμό. (1=σπάνια → 5=συχνά)',
+  13: 'Παίρνεις σημαντικές αποφάσεις κυρίως με βάση το ένστικτο/συναίσθημα, όχι υπολογισμό.',
   14: 'Αν φίλος σε πιέζει να κάνεις κάτι που δεν θέλεις, του λες εύκολα "όχι" χωρίς τύψεις.',
   15: 'Πριν αγοράσεις κάτι αξίας 50€+, κάνεις πάντα σύγκριση και ανάγνωση κριτικών.',
   16: 'Αν ανακαλύψεις στη μέση ενός project ότι η προσέγγισή σου ήταν λάθος, σταματάς και αλλάζεις κατεύθυνση.',
@@ -113,12 +107,12 @@ const QUESTIONS: Record<number, string> = {
   28: 'Αν σε εξέταση "κολλήσεις" σε ερώτηση, προχωράς αμέσως στην επόμενη χωρίς να χάσεις ρυθμό.',
   29: 'Σε κατάσταση έκτακτης ανάγκης (ατύχημα, πανικός), παραμένεις ψύχραιμος/η και οργανώνεις.',
   30: 'Αν αποτύχεις σε κάτι σημαντικό, το ξεπερνάς σε λίγες μέρες και συνεχίζεις.',
-  31: 'Το να μην ξέρεις τι σου επιφυλάσσει το μέλλον (π.χ. σχολή, δουλειά) σε αγχώνει έντονα. (1=καθόλου → 5=πολύ)',
+  31: 'Το να μην ξέρεις τι σου επιφυλάσσει το μέλλον (π.χ. σχολή, δουλειά) σε αγχώνει έντονα.',
   32: 'Αν σε κριτικάρουν άδικα μπροστά σε άλλους, το αφήνεις πίσω σου χωρίς να σε "κατατρώει".',
   33: 'Σε περιόδους έντονης πίεσης, γίνεσαι πιο focused και παραγωγικός/ή παρά να μπλοκάρεις.',
   34: 'Όταν αλλάζει κάτι απρόσμενα, προσαρμόζεσαι γρήγορα αντί να κολλάς σε ό,τι χάθηκε.',
   // ΚΙΝΗΤΡΑ & ΑΞΙΕΣ (35-41)
-  35: 'Αν επέλεγες καριέρα, θα έδινες βαρύτητα στις υψηλές αποδοχές έναντι του νοήματος. (1=νόημα πρώτα → 5=χρήματα πρώτα)',
+  35: 'Αν επέλεγες καριέρα, θα έδινες βαρύτητα στις υψηλές αποδοχές έναντι του νοήματος.',
   36: 'Σε παρακινεί περισσότερο η αναγνώριση και ο έπαινος παρά η προσωπική σου ικανοποίηση.',
   37: 'Θέλεις η δουλειά σου να έχει άμεση επίδραση σε ζωές ανθρώπων — να βλέπεις τη διαφορά που κάνεις.',
   38: 'Αν εταιρεία που εκτιμάς κάνει κάτι ανήθικο, θα σταματούσες να τη στηρίζεις έστω και αν κοστίζει.',
@@ -136,84 +130,6 @@ const QUESTIONS: Record<number, string> = {
   48: 'Αν κάτι χαλάσει, η πρώτη σου αντίδραση είναι να το φτιάξεις μόνος/η — όχι να καλέσεις κάποιον.',
   49: 'Μαθαίνεις πολύ καλύτερα κάνοντας κάτι παρά ακούγοντας θεωρία.',
   50: 'Αν έπρεπε να μάθεις κάτι δύσκολο σε μια εβδομάδα, το αντιμετωπίζεις ως συναρπαστική πρόκληση.',
-};
-
-// ─────────────────────────────────────────────────────────────
-// SCORE MATRIX  [INFO, FIN, DIOIK, OIK, SERV, PED, SOM, TEX]
-// ─────────────────────────────────────────────────────────────
-const SCORE_MATRIX: Record<number, number[]> = {
-  1: [4, 3, 1, 3, 0, 0, 1, 0],
-  2: [4, 2, 0, 3, 0, 0, 0, 1],
-  3: [4, 1, 0, 3, 1, 0, 0, 2],
-  4: [3, 1, 2, 2, 1, 0, 0, 4],
-  5: [2, 4, 3, 2, 0, 1, 3, 0],
-  6: [3, 4, 1, 3, 0, 0, 1, 0],
-  7: [4, 3, 0, 3, 0, 0, 0, 0],
-  8: [2, 0, 1, 0, 0, 1, 0, 4],
-  9: [3, 1, 2, 4, 1, 0, 0, 1],
-  10: [3, 3, 2, 3, 0, 0, 1, 0],
-  11: [2, 0, 3, 0, 4, 0, 2, 3],
-  12: [3, 4, 1, 3, 0, 0, 1, 0],
-  13: [0, 0, 1, 0, 1, 4, 0, 3],
-  14: [2, 1, 4, 1, 2, 0, 3, 0],
-  15: [2, 4, 1, 2, 0, 0, 0, 0],
-  16: [3, 3, 2, 2, 1, 0, 1, 1],
-  17: [1, 2, 3, 2, 2, 3, 1, 0],
-  18: [3, 3, 2, 3, 0, 0, 1, 0],
-  19: [1, 0, 5, 0, 3, 1, 2, 0],
-  20: [2, 1, 3, 1, 1, 1, 1, 0],
-  21: [1, 0, 4, 0, 4, 2, 2, 1],
-  22: [3, 2, 0, 3, 0, 0, 0, 4],
-  23: [0, 0, 2, 0, 2, 5, 0, 0],
-  24: [1, 0, 3, 0, 4, 3, 0, 1],
-  25: [4, 3, 0, 3, 0, 0, 0, 3],
-  26: [1, 0, 2, 1, 2, 4, 1, 1],
-  27: [2, 4, 3, 2, 1, 1, 3, 0],
-  28: [3, 3, 3, 2, 1, 0, 3, 0],
-  29: [1, 2, 3, 1, 2, 1, 5, 0],
-  30: [3, 2, 3, 1, 3, 0, 4, 1],
-  31: [0, 3, 1, 2, 0, 1, 4, 0],
-  32: [2, 2, 3, 1, 2, 0, 4, 0],
-  33: [3, 2, 3, 1, 2, 0, 3, 0],
-  34: [3, 1, 3, 0, 3, 0, 2, 2],
-  35: [1, 5, 3, 1, 2, 0, 1, 0],
-  36: [1, 1, 4, 0, 2, 0, 4, 2],
-  37: [1, 0, 2, 1, 3, 5, 1, 1],
-  38: [1, 0, 1, 2, 1, 5, 0, 3],
-  39: [1, 2, 5, 0, 2, 0, 3, 0],
-  40: [3, 3, 1, 4, 0, 2, 1, 2],
-  41: [1, 0, 1, 2, 1, 5, 0, 4],
-  42: [3, 0, 1, 0, 0, 1, 0, 5],
-  43: [3, 0, 2, 1, 2, 0, 0, 4],
-  44: [4, 1, 1, 3, 1, 0, 0, 3],
-  45: [4, 0, 2, 1, 1, 0, 0, 4],
-  46: [0, 0, 1, 0, 0, 0, 0, 5],
-  47: [3, 0, 2, 1, 2, 0, 0, 4],
-  48: [4, 1, 2, 0, 1, 0, 3, 2],
-  49: [3, 0, 2, 0, 2, 1, 4, 2],
-  50: [4, 1, 3, 1, 3, 0, 2, 3],
-};
-
-// Υπολογισμένα από Python: Σ(weight[i]*3) για neutral, Σ(weight[i]*5) για max
-const NEUTRAL_SCORES: Record<CategoryKey, number> = {
-  INFO: 345,
-  FIN: 234,
-  DIOIK: 309,
-  OIK: 222,
-  SERV: 198,
-  PEDAGOGIKA: 141,
-  SOMATA: 204,
-  TEXNES: 228,
-};
-const SPREAD_SCORES: Record<CategoryKey, number> = {
-  INFO: 230,
-  FIN: 156,
-  DIOIK: 206,
-  OIK: 148,
-  SERV: 132,
-  PEDAGOGIKA: 94,
-  SOMATA: 136,
-  TEXNES: 152,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -504,86 +420,6 @@ const STORAGE_KEY = 'prosanatolismos_v3';
 const ALL_IDS = Object.keys(QUESTIONS).map(Number);
 const RANK_LABELS = ['1η κλίση', '2η κλίση', '3η κλίση'];
 
-/** JSON/API συχνά επιστρέφουν "4" αντί για 4 — το παλιό `typeof === 'number'` έκανε όλα 3 → 0% παντού. */
-function coerceLikert1to5(v: unknown): number | null {
-  if (typeof v === 'number' && Number.isFinite(v)) {
-    const r = Math.round(v);
-    if (r >= 1 && r <= 5) return r;
-    return null;
-  }
-  if (typeof v === 'string') {
-    const n = Number(String(v).trim());
-    if (!Number.isFinite(n)) return null;
-    const r = Math.round(n);
-    if (r >= 1 && r <= 5) return r;
-  }
-  return null;
-}
-
-function normalizeAnswersMap(raw: Record<string, unknown>): Record<number, number> {
-  const out: Record<number, number> = {};
-  for (const [k, v] of Object.entries(raw)) {
-    const qId = Number(k);
-    const score = coerceLikert1to5(v);
-    if (Number.isFinite(qId) && qId >= 1 && score !== null) out[qId] = score;
-  }
-  return out;
-}
-
-// ─────────────────────────────────────────────────────────────
-// SCORING LOGIC  (pure function — εύκολο να τεσταριστεί)
-// ─────────────────────────────────────────────────────────────
-function computeResults(answers: Record<number, number>): CalculationResult {
-  // 1. Raw scores — κάθε απάντηση 1–5 πολλαπλασιάζεται με το βάρος της ερώτησης ανά κατηγορία.
-  // Για μερικώς συμπληρωμένα δεδομένα (π.χ. παλιό API) λείπουσες ερωτήσεις → ουδέτερο 3.
-  const raw: Record<CategoryKey, number> = {
-    INFO: 0,
-    FIN: 0,
-    DIOIK: 0,
-    OIK: 0,
-    SERV: 0,
-    PEDAGOGIKA: 0,
-    SOMATA: 0,
-    TEXNES: 0,
-  };
-  ALL_IDS.forEach((id) => {
-    const w = SCORE_MATRIX[id];
-    if (!w) return;
-    const cell = answers[id] ?? (answers as unknown as Record<string, unknown>)[String(id)];
-    const value = coerceLikert1to5(cell) ?? 3;
-    CAT_NAMES.forEach((cat, i) => {
-      raw[cat] += value * w[i];
-    });
-  });
-
-  // 2. Above-neutral ratio:  (score - neutral) / spread  → [0, 1]
-  //    Κλιπάρουμε στο 0 (αρνητικό = λιγότερο από neutral)
-  const aboveNeutral: Record<CategoryKey, number> = {} as any;
-  CAT_NAMES.forEach((cat) => {
-    aboveNeutral[cat] = Math.max(0, (raw[cat] - NEUTRAL_SCORES[cat]) / SPREAD_SCORES[cat]);
-  });
-
-  // 3. Normalize: ο winner παίρνει 100, οι υπόλοιποι αναλογικά
-  const topRatio = Math.max(...CAT_NAMES.map((c) => aboveNeutral[c]));
-
-  const sorted: ScoredCategory[] = CAT_NAMES.map((cat) => ({
-    category: cat,
-    rawScore: raw[cat],
-    // Αν topRatio=0 (όλα neutral) → 0%, αλλιώς relative
-    displayPct: topRatio > 0 ? Math.round((aboveNeutral[cat] / topRatio) * 100) : 0,
-  })).sort((a, b) => b.rawScore - a.rawScore);
-
-  const topScore = sorted[0].rawScore;
-  const tied = sorted.filter((x) => x.rawScore === topScore).map((x) => x.category);
-
-  return {
-    finalScores: raw,
-    topCategory: sorted[0].category,
-    tiedCategories: tied,
-    sortedScores: sorted,
-  };
-}
-
 // ─────────────────────────────────────────────────────────────
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────
@@ -599,7 +435,12 @@ const Prosanatolismospage: React.FC = () => {
   const isMounted = useRef(true);
   /** Κύλιση προς τα αποτελέσματα μόνο μετά «Υπολογισμός» ή φόρτωση αποθηκευμένου — όχι σε κάθε re-render. */
   const resultsAnchorRef = useRef<HTMLElement | null>(null);
+  const sectionNavRef = useRef<HTMLDivElement | null>(null);
   const scrollResultsAfterUpdate = useRef<'off' | 'calculate' | 'hydrate'>('off');
+
+  const scrollSectionNav = useCallback((direction: -1 | 1) => {
+    sectionNavRef.current?.scrollBy({ left: direction * 220, behavior: 'smooth' });
+  }, []);
 
   const totalAnswered = ALL_IDS.filter((id) => answers[id] !== undefined).length;
   const totalQuestions = ALL_IDS.length;
@@ -649,6 +490,13 @@ const Prosanatolismospage: React.FC = () => {
   }, [results]);
 
   useEffect(() => {
+    const nav = sectionNavRef.current;
+    if (!nav) return;
+    const active = nav.querySelector<HTMLElement>(`[data-section-idx="${sectionIdx}"]`);
+    active?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [sectionIdx]);
+
+  useEffect(() => {
     const loadLatestSavedResult = async () => {
       if (Object.keys(answers).length > 0) return;
 
@@ -674,7 +522,7 @@ const Prosanatolismospage: React.FC = () => {
           scrollResultsAfterUpdate.current = 'hydrate';
           setAnswers(restoredAnswers);
           // If backend payload is partial, compute safely from answers.
-          setResults(computeResults(restoredAnswers));
+          setResults(computeCareerOrientationResults(restoredAnswers));
           setSuccess('Φορτώθηκε το τελευταίο αποθηκευμένο αποτέλεσμα.');
           setTimeout(() => {
             if (isMounted.current) setSuccess('');
@@ -760,7 +608,7 @@ const Prosanatolismospage: React.FC = () => {
     setIsCalc(true);
     setError('');
     try {
-      const calc = computeResults(answers);
+      const calc = computeCareerOrientationResults(answers);
       if (isMounted.current) {
         scrollResultsAfterUpdate.current = 'calculate';
         setResults(calc);
@@ -840,38 +688,60 @@ const Prosanatolismospage: React.FC = () => {
       )}
 
       {/* Section nav */}
-      <div className="sticky top-20 z-20 bg-white/95 dark:bg-[#3a2658]/95 backdrop-blur-lg border-b border-[#f07f97]/20 dark:border-white/10 shadow-sm">
-        <div className="max-w-3xl mx-auto px-4 py-3">
-          <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-            {SECTIONS.map((sec, idx) => {
-              const Icon = sec.icon;
-              const done = sectionFull(sec);
-              const active = sectionIdx === idx;
-              return (
-                <button
-                  key={sec.id}
-                  type="button"
-                  onClick={() => setSectionIdx(idx)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all shrink-0 ${
-                    active
-                      ? 'bg-[#f07f97] text-white border-[#f07f97] shadow-sm'
-                      : done
-                        ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
-                        : 'bg-white dark:bg-[#2d1c48] text-gray-600 dark:text-gray-300 border-[#f07f97]/20 dark:border-white/10 hover:border-[#f07f97]/40'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {sec.title}
-                  {done && !active ? (
-                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                  ) : !done && !active ? (
-                    <span className="text-[10px] font-semibold opacity-60">
-                      {sectionDone(sec)}/{sec.questions.length}
-                    </span>
-                  ) : null}
-                </button>
-              );
-            })}
+      <div className="sticky top-20 z-20 bg-white/95 dark:bg-[#3a2658]/95 backdrop-blur-lg shadow-sm">
+        <div className="max-w-3xl mx-auto px-3 sm:px-4 py-3">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => scrollSectionNav(-1)}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 shrink-0 p-2 rounded-xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48] text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#fff5f8] dark:hover:bg-white/5 transition-colors touch-manipulation shadow-sm"
+              aria-label="Κύλιση ενότητων αριστερά"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div
+              ref={sectionNavRef}
+              className="scrollbar-none flex gap-2 overflow-x-auto mx-11 sm:mx-12 scroll-smooth"
+            >
+              {SECTIONS.map((sec, idx) => {
+                const Icon = sec.icon;
+                const done = sectionFull(sec);
+                const active = sectionIdx === idx;
+                return (
+                  <button
+                    key={sec.id}
+                    type="button"
+                    data-section-idx={idx}
+                    onClick={() => setSectionIdx(idx)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all shrink-0 ${
+                      active
+                        ? 'bg-[#f07f97] text-white border-[#f07f97] shadow-sm'
+                        : done
+                          ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                          : 'bg-white dark:bg-[#2d1c48] text-gray-600 dark:text-gray-300 border-[#f07f97]/20 dark:border-white/10 hover:border-[#f07f97]/40'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {sec.title}
+                    {done && !active ? (
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                    ) : !done && !active ? (
+                      <span className="text-[10px] font-semibold opacity-60">
+                        {sectionDone(sec)}/{sec.questions.length}
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => scrollSectionNav(1)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 shrink-0 p-2 rounded-xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48] text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#fff5f8] dark:hover:bg-white/5 transition-colors touch-manipulation shadow-sm"
+              aria-label="Κύλιση ενότητων δεξιά"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>
@@ -900,8 +770,8 @@ const Prosanatolismospage: React.FC = () => {
                   )}
                 </div>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                  Το % δείχνει πόσο ξεπερνάς το ουδέτερο σε κάθε κατηγορία, σε σχέση με την κορυφαία σου
-                  κλίση.
+                  Το % δείχνει τη σχετική προτίμησή σου ανάμεσα στις 8 κατηγορίες (η 1η κλίση = 100%).
+                  Η κατάταξη βασίζεται στο πόσο ξεχωρίζει κάθε κατηγορία από το ουδέτερο προφίλ σου.
                 </p>
               </div>
 

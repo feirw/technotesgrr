@@ -111,6 +111,32 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
     }
   }, [isOpen, quiz]);
 
+  // Lock background scroll while quiz is open (iOS-safe).
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const scrollY = window.scrollY;
+    const { body } = document;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOpen]);
+
   // Show explanation automatically if the current question is already answered
   useEffect(() => {
     if (selected !== null) {
@@ -231,10 +257,10 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+      <div className="fixed inset-0 flex items-center justify-center p-4 z-50 overflow-hidden overscroll-none">
         {/* Backdrop */}
         <motion.div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm touch-none"
           onClick={onClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

@@ -1,13 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  motion,
-  useScroll,
-  useTransform,
-  MotionConfig,
-  AnimatePresence,
-  useSpring,
-} from 'framer-motion';
+import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
@@ -398,13 +391,6 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Scroll Progress
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1]), {
-    stiffness: 100,
-    damping: 30,
-  });
-
   // Contact form state (προσωρινά απενεργοποιημένη η φόρμα)
   /*
   const [contactForm, setContactForm] = useState<ContactFormState>({
@@ -452,7 +438,7 @@ const HomePage: React.FC = () => {
     return () => window.clearInterval(id);
   }, [goNextReview]);
 
-  // (Panic Button moved to the top navbar in MainLayout)
+  // (Take a breath moved to the top navbar in MainLayout)
 
   /*
   const handleContactInputChange = useCallback(
@@ -533,11 +519,6 @@ const HomePage: React.FC = () => {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen transition-colors duration-500 bg-[#ff97b2] dark:bg-[#2d1c48]">
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-[#f07f97] origin-left z-50 shadow-lg shadow-[#f07f97]/35"
-          style={{ scaleX }}
-        />
-
         {/* 🚀 HERO SECTION 🚀 */}
         <section className="relative w-full min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
@@ -587,7 +568,7 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* Panic Button relocated to navbar (MainLayout) */}
+        {/* Take a breath relocated to navbar (MainLayout) */}
 
         {/* Features Section */}
         <Section

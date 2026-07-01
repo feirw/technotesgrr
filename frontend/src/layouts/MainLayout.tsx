@@ -233,7 +233,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const closeMenu = () => setIsMenuOpen(false);
 
-  // Global Panic Button (top-left)
+  // Take a breath (global wellness prompt)
   const [showPanic, setShowPanic] = useState(false);
   const [panicMsg, setPanicMsg] = useState<{ type: 'tip' | 'joke' | 'breath'; text: string }>({
     type: 'tip',
@@ -315,7 +315,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           pointerEvents: showNavbar ? 'auto' : 'none',
         }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
-        className="bg-white/55 dark:bg-[#0f152a]/75 backdrop-blur-md fixed top-0 left-0 right-0 z-30 border-b border-coral-accent/15 dark:border-white/10 pt-[env(safe-area-inset-top,0px)]"
+        className="bg-white/55 dark:bg-[#0f152a]/75 backdrop-blur-md fixed top-0 left-0 right-0 z-30 pt-[env(safe-area-inset-top,0px)]"
       >
         <div className="container mx-auto px-3 sm:px-6 max-w-[100vw]">
           <div className="flex justify-between items-center gap-2 py-3 sm:py-4 min-h-[3.25rem]">
@@ -341,15 +341,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
-              {/* Panic Button moved right and enlarged */}
+              {/* Take a breath */}
               <button
                 type="button"
                 onClick={triggerPanic}
                 className="mr-2 px-6 py-3 rounded-full bg-coral-accent hover:bg-coral-strong text-white font-black shadow-lg hover:shadow-xl touch-manipulation min-h-11 transition-colors"
-                title="Panic Button"
-                aria-label="Panic Button"
+                title="Take a breath"
+                aria-label="Take a breath"
               >
-                Panic Button
+                Take a breath
               </button>
               <NavButton to="/" iconSrc={MENU_ICONS.home}>Αρχική</NavButton>
               <NavButton to="/about" iconSrc={MENU_ICONS.about}>Σχετικά με εμένα</NavButton>
@@ -397,7 +397,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </div>
       </motion.div>
 
-      {/* Global Panic Modal */}
+      {/* Take a breath modal */}
       <AnimatePresence>
         {showPanic && (
           <motion.div

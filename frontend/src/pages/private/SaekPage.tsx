@@ -3,6 +3,7 @@ import { ExternalLink } from 'lucide-react';
 import { MenuIconImg, SCHOOL_PAGE_NOTICE_ICONS } from '@/data/menuIcons';
 
 const DYPA_SAEK_URL = 'https://schools.dypa.gov.gr/schools-cat/saek/page/2/#sxoles-feed';
+const EDUCATION_PUBLIC_IEK_URL = 'https://education.gr/lista-dimosia-iek/';
 
 const cardClass =
   'bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md rounded-2xl border border-[#f07f97]/25 dark:border-white/10';
@@ -64,17 +65,29 @@ const SaekPage: React.FC = () => {
 
         <section className={`${cardClass} px-5 sm:px-6 py-6 text-center`}>
           <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed mb-4">
-            Δες όλες τις σχολές και τις ειδικότητες ΣΑΕΚ στην επίσημη σελίδα της ΔΥΠΑ.
+            Δες όλες τις σχολές και τις ειδικότητες ΣΑΕΚ στην επίσημη σελίδα της ΔΥΠΑ ή τη λίστα
+            δημόσιων ΙΕΚ / ΣΑΕΚ ανά περιοχή στο Education.gr.
           </p>
-          <a
-            href={DYPA_SAEK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#f07f97] hover:bg-[#e76a85] text-white font-bold text-sm sm:text-base px-5 py-3 transition-colors"
-          >
-            Δες όλες τις σχολές ΣΑΕΚ
-            <ExternalLink className="w-4 h-4" aria-hidden />
-          </a>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+            <a
+              href={DYPA_SAEK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#f07f97] hover:bg-[#e76a85] text-white font-bold text-sm sm:text-base px-5 py-3 transition-colors"
+            >
+              Σχολές ΣΑΕΚ · ΔΥΠΑ
+              <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
+            </a>
+            <a
+              href={EDUCATION_PUBLIC_IEK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f07f97]/40 dark:border-[#ff97b2]/40 bg-white dark:bg-[#2d1c48]/60 hover:bg-[#fff5f8] dark:hover:bg-white/5 text-[#f07f97] dark:text-[#ff97b2] font-bold text-sm sm:text-base px-5 py-3 transition-colors"
+            >
+              Δημόσια ΙΕΚ / ΣΑΕΚ ανά περιοχή
+              <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
+            </a>
+          </div>
         </section>
       </main>
     </div>

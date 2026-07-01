@@ -116,3 +116,45 @@ code {
     @apply transition-colors duration-200;
   }
 }
+
+@layer utilities {
+  .horizontal-scroll-bar {
+    scrollbar-width: thin;
+    scrollbar-color: #f07f97 #fff5f8;
+  }
+
+  .horizontal-scroll-bar::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .horizontal-scroll-bar::-webkit-scrollbar-track {
+    background: #fff5f8;
+    border-radius: 9999px;
+  }
+
+  .horizontal-scroll-bar::-webkit-scrollbar-thumb {
+    background: #f07f97;
+    border-radius: 9999px;
+  }
+
+  .dark .horizontal-scroll-bar {
+    scrollbar-color: #ff97b2 #2d1c48;
+  }
+
+  .dark .horizontal-scroll-bar::-webkit-scrollbar-track {
+    background: #2d1c48;
+  }
+
+  .dark .horizontal-scroll-bar::-webkit-scrollbar-thumb {
+    background: #ff97b2;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
