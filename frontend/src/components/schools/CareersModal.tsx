@@ -98,7 +98,7 @@ export const CareersModal: React.FC<CareersModalProps> = ({
           aria-labelledby="careers-modal-title"
         >
           <motion.div
-            className="relative flex flex-col w-[min(92vw,20rem)] sm:w-[min(88vw,22rem)] max-h-[min(88vh,22rem)] sm:max-h-[min(85vh,24rem)] bg-white dark:bg-[#3a2658] rounded-2xl shadow-2xl overflow-hidden border border-[#f07f97]/20 dark:border-white/10"
+            className="relative flex flex-col w-[min(92vw,28rem)] sm:w-[min(88vw,30rem)] max-h-[min(88vh,30rem)] sm:max-h-[min(85vh,32rem)] bg-white dark:bg-[#3a2658] rounded-2xl shadow-2xl overflow-hidden border border-[#f07f97]/20 dark:border-white/10"
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.96, opacity: 0 }}
