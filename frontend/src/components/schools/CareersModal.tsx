@@ -98,74 +98,74 @@ export const CareersModal: React.FC<CareersModalProps> = ({
           aria-labelledby="careers-modal-title"
         >
           <motion.div
-            className="relative flex flex-col w-[92%] max-w-lg sm:w-full sm:max-w-2xl lg:max-w-3xl max-h-[70vh] sm:max-h-[min(80vh,720px)] bg-white dark:bg-[#3a2658] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#f07f97]/20 dark:border-white/10"
+            className="relative flex flex-col w-[min(92vw,20rem)] sm:w-[min(88vw,22rem)] max-h-[min(88vh,22rem)] sm:max-h-[min(85vh,24rem)] bg-white dark:bg-[#3a2658] rounded-2xl shadow-2xl overflow-hidden border border-[#f07f97]/20 dark:border-white/10"
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.96, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 320, damping: 32 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="shrink-0 bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white px-4 sm:px-6 py-4 sm:py-5">
-              <div className="flex items-start gap-3 pr-8 sm:pr-10">
+            <div className="shrink-0 bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white px-3 sm:px-4 py-3">
+              <div className="flex items-start gap-2 pr-7 sm:pr-8">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="sm:hidden mt-0.5 p-1.5 -ml-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors shrink-0"
+                  className="sm:hidden mt-0.5 p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors shrink-0"
                   aria-label="Πίσω"
                 >
-                  <ArrowLeft size={18} />
+                  <ArrowLeft size={16} />
                 </button>
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
-                  <MenuIconImg src={FUTURE_CAREERS_ICON} className="h-8 w-8" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20">
+                  <MenuIconImg src={FUTURE_CAREERS_ICON} className="h-6 w-6" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 id="careers-modal-title" className="text-lg sm:text-2xl font-black leading-tight">
+                  <h2 id="careers-modal-title" className="text-base sm:text-lg font-black leading-tight">
                     {title}
                   </h2>
-                  <p className="mt-1 text-sm text-white/90 font-medium">{subtitle}</p>
+                  <p className="mt-0.5 text-xs text-white/90 font-medium leading-snug">{subtitle}</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="hidden sm:flex absolute top-3.5 right-3.5 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                className="hidden sm:flex absolute top-2.5 right-2.5 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
                 aria-label="Κλείσιμο"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
-            <div className="shrink-0 px-3 sm:px-6 py-3 border-b border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8] dark:bg-[#2d1c48]/60">
+            <div className="shrink-0 px-3 py-2 border-b border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8] dark:bg-[#2d1c48]/60">
               <div className="relative">
                 <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={16}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={14}
                 />
                 <input
                   type="text"
-                  placeholder="Αναζήτηση επαγγέλματος..."
+                  placeholder="Αναζήτηση..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#3a2658] border border-[#f07f97]/25 dark:border-white/15 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-[#f07f97]/40 dark:text-white"
+                  className="w-full pl-8 pr-3 py-2 bg-white dark:bg-[#3a2658] border border-[#f07f97]/25 dark:border-white/15 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-[#f07f97]/40 dark:text-white"
                 />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto overscroll-contain px-3 sm:px-6 py-4 min-h-0">
+            <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-2 min-h-0">
               {filtered.length === 0 ? (
                 <p className="text-center text-sm text-gray-500 dark:text-gray-400 py-8">
                   Δεν βρέθηκαν επαγγέλματα.
                 </p>
               ) : (
-                <div className="overflow-x-auto rounded-xl border border-[#f07f97]/20 dark:border-white/15">
-                  <table className="w-full text-left text-sm">
+                <div className="overflow-x-auto rounded-lg border border-[#f07f97]/20 dark:border-white/15">
+                  <table className="w-full text-left text-xs">
                     <thead className="sticky top-0 z-10 bg-[#fff5f8] dark:bg-[#2d1c48]">
                       <tr>
-                        <th className="px-3 sm:px-4 py-2.5 font-black text-[#f07f97] dark:text-[#ff97b2] uppercase tracking-wide text-xs whitespace-nowrap">
+                        <th className="px-2 py-2 font-black text-[#f07f97] dark:text-[#ff97b2] uppercase tracking-wide text-[10px]">
                           {columnTitle}
                         </th>
-                        <th className="px-3 sm:px-4 py-2.5 font-black text-[#f07f97] dark:text-[#ff97b2] uppercase tracking-wide text-xs">
-                          Σύντομη περιγραφή
+                        <th className="px-2 py-2 font-black text-[#f07f97] dark:text-[#ff97b2] uppercase tracking-wide text-[10px]">
+                          Περιγραφή
                         </th>
                       </tr>
                     </thead>
@@ -176,7 +176,7 @@ export const CareersModal: React.FC<CareersModalProps> = ({
                             <tr className="bg-[#fff5f8] dark:bg-[#2d1c48]">
                               <td
                                 colSpan={2}
-                                className="px-3 sm:px-4 py-2.5 font-black text-[#f07f97] dark:text-[#ff97b2] text-xs uppercase tracking-wide"
+                                className="px-2 py-2 font-black text-[#f07f97] dark:text-[#ff97b2] text-[10px] uppercase tracking-wide"
                               >
                                 {heading}
                               </td>
@@ -187,10 +187,10 @@ export const CareersModal: React.FC<CareersModalProps> = ({
                               key={`${heading ?? 'row'}-${career.title}`}
                               className="bg-white dark:bg-[#3a2658]/40 hover:bg-[#fff5f8]/80 dark:hover:bg-[#2d1c48]/80 transition-colors"
                             >
-                              <td className="px-3 sm:px-4 py-3 font-bold text-gray-900 dark:text-white align-top whitespace-nowrap">
+                              <td className="px-2 py-2 font-bold text-gray-900 dark:text-white align-top">
                                 {career.title}
                               </td>
-                              <td className="px-3 sm:px-4 py-3 text-gray-700 dark:text-gray-200 leading-relaxed align-top">
+                              <td className="px-2 py-2 text-gray-700 dark:text-gray-200 leading-snug align-top">
                                 {career.description}
                               </td>
                             </tr>
@@ -203,19 +203,19 @@ export const CareersModal: React.FC<CareersModalProps> = ({
               )}
             </div>
 
-            <div className="shrink-0 px-3 sm:px-6 py-3 border-t border-[#f07f97]/20 dark:border-white/10 bg-[#fff5f8] dark:bg-[#2d1c48]/80 flex gap-2">
+            <div className="shrink-0 px-3 py-2 border-t border-[#f07f97]/20 dark:border-white/10 bg-[#fff5f8] dark:bg-[#2d1c48]/80 flex gap-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-[#f07f97] text-white hover:bg-[#e06d88] transition-colors"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-[#f07f97] text-white hover:bg-[#e06d88] transition-colors"
               >
-                <ArrowLeft size={16} />
+                <ArrowLeft size={14} />
                 Πίσω
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold border border-[#f07f97]/30 dark:border-white/20 text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-white/5 transition-colors"
+                className="hidden sm:inline-flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold border border-[#f07f97]/30 dark:border-white/20 text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-white/5 transition-colors"
               >
                 Κλείσιμο
               </button>
