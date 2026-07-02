@@ -34,6 +34,9 @@ export const SCHOOL_PAGE_NOTICE_ICONS = {
   saek: `${HP}/44.png`,
 } as const;
 
+/** Εικονίδιο «Μελλοντική καριέρα» στη σελίδα Σχολών. */
+export const FUTURE_CAREERS_ICON = `${HP}/45.png`;
+
 /** Pixel icons 22–39 — κατηγορίες στη σελίδα Σχολών. */
 export const SCHOOL_CATEGORY_ICONS = {
   economics: `${HP}/22.png`,

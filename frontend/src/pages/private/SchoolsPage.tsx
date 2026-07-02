@@ -14,6 +14,7 @@ import {
 import {
   MenuIconImg,
   MENU_ICONS,
+  FUTURE_CAREERS_ICON,
   SCHOOL_CATEGORY_ICON_BY_NAME,
   SCHOOL_PAGE_NOTICE_ICONS,
 } from '@/data/menuIcons';
@@ -26,10 +27,24 @@ import {
 } from '@/components/ui/select';
 import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseComparePanel';
 import { SchoolCurriculumModal } from '@/components/schools/SchoolCurriculumModal';
+import { CareersModal } from '@/components/schools/CareersModal';
 import { SCHOOL_CURRICULA, hasSchoolCurriculum } from '@/data/schoolCurricula';
 
 
 import { ALL_SCHOOLS, type School } from '@/data/schools';
+import { IT_CAREERS } from '@/data/itCareers';
+import { ECONOMICS_CAREERS } from '@/data/economicsCareers';
+import { BUSINESS_ADMINISTRATION_CAREERS } from '@/data/businessAdministrationCareers';
+import { INDUSTRY_CAREERS } from '@/data/industryCareers';
+import { ACCOUNTING_FINANCE_CAREERS } from '@/data/accountingFinanceCareers';
+import { MARKETING_CAREERS } from '@/data/marketingCareers';
+import { MARITIME_TOURISM_CAREERS } from '@/data/maritimeTourismCareers';
+import { SPORTS_CAREERS } from '@/data/sportsCareers';
+import { STATISTICS_CAREERS } from '@/data/statisticsCareers';
+import { MANAGEMENT_SCIENCE_CAREERS } from '@/data/managementScienceCareers';
+import { INTERNATIONAL_EUROPEAN_CAREERS } from '@/data/internationalEuropeanCareers';
+import { PEDAGOGY_CAREERS } from '@/data/pedagogyCareers';
+import type { Career } from '@/data/careers';
 import { formatEbeDisplay, formatMoriaDisplay } from '@/utils/schoolBasisMatching';
 
 export type { School };
@@ -69,6 +84,98 @@ const CATEGORIES: Record<string, { iconSrc: string; color: string }> = {
     color: 'bg-gray-100 text-gray-600',
   },
   'Σχέδιο Μόδας': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Σχέδιο Μόδας'], color: 'bg-gray-100 text-gray-600' },
+};
+
+type CareersCategory =
+  | 'Πληροφορική'
+  | 'Οικονομικά'
+  | 'Διοίκηση Επιχειρήσεων'
+  | 'Βιομηχανία'
+  | 'Λογιστική & Χρηματοοικονομικά'
+  | 'Marketing & Επικοινωνία'
+  | 'Ναυτιλιακά & Τουρισμός'
+  | 'Αθλητισμός'
+  | 'Στατιστική'
+  | 'Διοικητικής Επιστήμης'
+  | 'Διεθνών & Ευρωπαϊκών'
+  | 'Παιδαγωγικά';
+
+const CATEGORY_CAREERS: Record<
+  CareersCategory,
+  { careers: Career[]; blurb: string; subtitle: string; columnTitle: string }
+> = {
+  Πληροφορική: {
+    careers: IT_CAREERS,
+    blurb: 'επαγγέλματα πληροφορικής',
+    subtitle: 'Επαγγέλματα πληροφορικής και σύντομες περιγραφές',
+    columnTitle: 'Επάγγελμα',
+  },
+  Οικονομικά: {
+    careers: ECONOMICS_CAREERS,
+    blurb: 'καριέρες οικονομικών',
+    subtitle: 'Καριέρες οικονομικών και σύντομες περιγραφές',
+    columnTitle: 'Καριέρα',
+  },
+  'Διοίκηση Επιχειρήσεων': {
+    careers: BUSINESS_ADMINISTRATION_CAREERS,
+    blurb: 'καριέρες διοίκησης επιχειρήσεων',
+    subtitle: 'Καριέρες διοίκησης επιχειρήσεων και σύντομες περιγραφές',
+    columnTitle: 'Καριέρα',
+  },
+  Βιομηχανία: {
+    careers: INDUSTRY_CAREERS,
+    blurb: 'καριέρες βιομηχανικής διοίκησης',
+    subtitle: 'Καριέρες βιομηχανίας και βιομηχανικής διοίκησης',
+    columnTitle: 'Καριέρα',
+  },
+  'Λογιστική & Χρηματοοικονομικά': {
+    careers: ACCOUNTING_FINANCE_CAREERS,
+    blurb: 'καριέρες λογιστικής και χρηματοοικονομικών',
+    subtitle: 'Καριέρες λογιστικής και χρηματοοικονομικών',
+    columnTitle: 'Καριέρα',
+  },
+  'Marketing & Επικοινωνία': {
+    careers: MARKETING_CAREERS,
+    blurb: 'καριέρες marketing και επικοινωνίας',
+    subtitle: 'Καριέρες marketing και επικοινωνίας',
+    columnTitle: 'Καριέρα',
+  },
+  'Ναυτιλιακά & Τουρισμός': {
+    careers: MARITIME_TOURISM_CAREERS,
+    blurb: 'καριέρες ναυτιλίας και τουρισμού',
+    subtitle: 'Καριέρες ναυτιλίας και τουρισμού',
+    columnTitle: 'Καριέρα',
+  },
+  Αθλητισμός: {
+    careers: SPORTS_CAREERS,
+    blurb: 'καριέρες φυσικής αγωγής και αθλητισμού',
+    subtitle: 'Καριέρες επιστήμης φυσικής αγωγής και αθλητισμού',
+    columnTitle: 'Καριέρα',
+  },
+  Στατιστική: {
+    careers: STATISTICS_CAREERS,
+    blurb: 'καριέρες στατιστικής',
+    subtitle: 'Καριέρες στατιστικής και ανάλυσης δεδομένων',
+    columnTitle: 'Καριέρα',
+  },
+  'Διοικητικής Επιστήμης': {
+    careers: MANAGEMENT_SCIENCE_CAREERS,
+    blurb: 'καριέρες διοικητικής επιστήμης',
+    subtitle: 'Καριέρες διοικητικής επιστήμης και τεχνολογίας',
+    columnTitle: 'Καριέρα',
+  },
+  'Διεθνών & Ευρωπαϊκών': {
+    careers: INTERNATIONAL_EUROPEAN_CAREERS,
+    blurb: 'καριέρες διεθνών και ευρωπαϊκών σπουδών',
+    subtitle: 'Καριέρες διεθνών και ευρωπαϊκών σπουδών',
+    columnTitle: 'Καριέρα',
+  },
+  Παιδαγωγικά: {
+    careers: PEDAGOGY_CAREERS,
+    blurb: 'καριέρες παιδαγωγικών σπουδών',
+    subtitle: 'Καριέρες παιδαγωγικών και εκπαιδευτικών σπουδών',
+    columnTitle: 'Καριέρα',
+  },
 };
 
 type PageNoticeVariant = 'amber' | 'coral' | 'slate';
@@ -169,6 +276,7 @@ const SchoolsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [activeCity, setActiveCity] = useState('Όλες');
   const [curriculumSchoolId, setCurriculumSchoolId] = useState<string | null>(null);
+  const [activeCareersCategory, setActiveCareersCategory] = useState<CareersCategory | null>(null);
 
   const view: SchoolsPageView =
     searchParams.get('view') === 'compare' || searchParams.has('a') || searchParams.has('b')
@@ -345,6 +453,29 @@ const SchoolsPage: React.FC = () => {
               viewport={{ once: true }}
               className="mb-16"
             >
+              {catName in CATEGORY_CAREERS && (
+                <button
+                  type="button"
+                  onClick={() => setActiveCareersCategory(catName as CareersCategory)}
+                  className="mb-6 w-full flex items-center gap-4 rounded-[2rem] border border-[#f07f97]/30 dark:border-white/15 bg-white/95 dark:bg-[#3a2658] px-5 py-4 sm:px-6 sm:py-5 text-left shadow-md hover:border-[#f07f97]/60 hover:shadow-lg transition-all group"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#fff5f8] dark:bg-[#2d1c48] shadow-sm border border-[#f07f97]/25">
+                    <MenuIconImg src={FUTURE_CAREERS_ICON} className="h-10 w-10" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-lg sm:text-xl font-black text-gray-900 dark:text-white group-hover:text-[#f07f97] dark:group-hover:text-[#ff97b2] transition-colors">
+                      Μελλοντική καριέρα
+                    </p>
+                    <p className="mt-0.5 text-sm text-gray-600 dark:text-gray-300">
+                      Δες {CATEGORY_CAREERS[catName as CareersCategory].careers.length}{' '}
+                      {CATEGORY_CAREERS[catName as CareersCategory].blurb} και τι κάνει το καθένα
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-xl bg-[#fff5f8] dark:bg-[#2d1c48] px-3 py-1.5 text-xs font-black text-[#f07f97] dark:text-[#ff97b2] uppercase tracking-wide">
+                    Άνοιγμα
+                  </span>
+                </button>
+              )}
               <div className="flex items-center gap-4 mb-8">
                 <div
                   className={`flex items-center justify-center w-12 h-12 rounded-2xl ${config.color} shadow-sm border border-white/20 shrink-0`}
@@ -389,6 +520,16 @@ const SchoolsPage: React.FC = () => {
           curriculum={activeCurriculum}
         />
       )}
+
+      {activeCareersCategory && (
+        <CareersModal
+          open={activeCareersCategory !== null}
+          onClose={() => setActiveCareersCategory(null)}
+          subtitle={CATEGORY_CAREERS[activeCareersCategory].subtitle}
+          careers={CATEGORY_CAREERS[activeCareersCategory].careers}
+          columnTitle={CATEGORY_CAREERS[activeCareersCategory].columnTitle}
+        />
+      )}
     </div>
   );
 };
@@ -411,9 +552,9 @@ const SchoolCard: React.FC<{
           }
         : undefined
     }
-    className={`bg-white dark:bg-[#3a2658] p-6 rounded-[2.5rem] border border-[#f07f97]/20 dark:border-white/15 shadow-sm overflow-hidden relative ${
+    className={`group bg-white dark:bg-[#3a2658] p-6 rounded-[2.5rem] border border-[#f07f97]/20 dark:border-white/15 shadow-sm overflow-hidden relative transition-all duration-200 hover:bg-[#fff5f8] dark:hover:bg-[#452d6a] hover:border-[#f07f97]/50 hover:shadow-md ${
       onOpenCurriculum
-        ? 'cursor-pointer hover:border-[#f07f97]/50 hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f07f97]'
+        ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f07f97]'
         : ''
     }`}
   >
@@ -425,7 +566,7 @@ const SchoolCard: React.FC<{
         <span className="text-[10px] font-black text-[#f07f97] bg-[#fff5f8] dark:bg-[#f07f97]/15 px-2 py-0.5 rounded-lg uppercase tracking-wider">
           {school.uni}
         </span>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight transition-colors group-hover:text-[#f07f97] dark:group-hover:text-[#ff97b2]">
           {school.name}
         </h3>
       </div>

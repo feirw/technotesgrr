@@ -1,3 +1,5 @@
+import { METATROFES_DOMON_EPANALIPSIS_EXAMPLES } from './metatrofesDomonEpanalipsis';
+
 /** Μεθοδολογίες σε ΓΛΩΣΣΑ — ανά κατηγορία. */
 export const METHODOLOGY_TOPICS = [
   { id: 'oso', menuLabel: 'Όσο', title: 'Όσο … επανάλαβε' },
@@ -7,8 +9,13 @@ export const METHODOLOGY_TOPICS = [
   { id: 'seiriaki_anazitisi', menuLabel: 'Αναζήτηση', title: 'Σειριακή αναζήτηση' },
   {
     id: 'metatrofes_ypoprogrammaton',
-    menuLabel: 'Μετατροπές',
+    menuLabel: 'Μετατροπές υποπρογραμμάτων',
     title: 'Μετατροπές υποπρογραμμάτων',
+  },
+  {
+    id: 'metatrofes_domon_epanalipsis',
+    menuLabel: 'Μετατροπές δομών επανάληψης',
+    title: 'Μετατροπές δομών επανάληψης',
   },
   { id: 'stoiva', menuLabel: 'Στοίβα', title: 'Στοίβα' },
   { id: 'oura', menuLabel: 'Ουρά', title: 'Ουρά' },
@@ -18,7 +25,7 @@ export type MethodologyTopicId = (typeof METHODOLOGY_TOPICS)[number]['id'];
 
 export type OsoExamplePart = {
   subtitle?: string;
-  code: string;
+  code?: string;
 };
 
 export type OsoExample = {
@@ -1974,6 +1981,12 @@ export const METHODOLOGY_BY_TOPIC: Record<MethodologyTopicId, MethodologyTopicCo
       'Μετατροπή συνάρτησης σε διαδικασία και αντίστροφα — τυπικά παραδείγματα με παράμετρο Γ.',
     theoryTitle: 'Μετατροπές υποπρογραμμάτων',
     examples: METATROFES_YPOPROGRAMMATON_EXAMPLES,
+  },
+  metatrofes_domon_epanalipsis: {
+    description:
+      'Μετατροπές μεταξύ ΟΣΟ, ΜΕΧΡΙΣ_ΟΤΟΥ και ΓΙΑ — κανόνες, παραδείγματα και πίνακας αντιστροφής συνθηκών.',
+    theoryTitle: 'Μετατροπές δομών επανάληψης',
+    examples: METATROFES_DOMON_EPANALIPSIS_EXAMPLES as OsoExample[],
   },
   stoiva: {
     description:

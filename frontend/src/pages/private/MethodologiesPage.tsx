@@ -21,7 +21,8 @@ const blockTitleAfterSectionClass =
 const sectionHeadingClass =
   'scroll-mt-8 mt-14 sm:mt-16 first:mt-10 text-xl sm:text-2xl font-black text-[#fea2bb] dark:text-[#fea2bb] border-b border-[#fea2bb]/30 pb-3 mb-2';
 
-const partSubtitleClass = 'mt-4 text-base font-bold text-gray-800 dark:text-gray-100';
+const partSubtitleClass =
+  'mt-4 text-base font-bold text-gray-800 dark:text-gray-100 whitespace-pre-line';
 
 const mainSectionTitleClass =
   'text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white pb-3 mb-1 border-b border-[#fea2bb]/35 dark:border-gray-600/60';
@@ -39,7 +40,7 @@ const ExampleList: React.FC<{ examples: OsoExample[] }> = ({ examples }) => (
         {example.parts?.map((part, partIndex) => (
           <div key={`${part.subtitle ?? partIndex}`}>
             {part.subtitle && <p className={partSubtitleClass}>{part.subtitle}</p>}
-            <pre className={preClass}>{part.code}</pre>
+            {part.code && <pre className={preClass}>{part.code}</pre>}
           </div>
         ))}
         {example.code && <pre className={preClass}>{example.code}</pre>}

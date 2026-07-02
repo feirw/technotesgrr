@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, ExternalLink, Search, X } from 'lucide-react';
+import { Calculator, ExternalLink, Info, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import {
@@ -396,8 +396,24 @@ const MoriaCalculatorPage: React.FC = () => {
               <Link to="/sxoles" className="text-[#f07f97] font-semibold hover:underline">
                 Σχολές
               </Link>
-              .
+              . Η λίστα ταξινομείται κατά βάση 2025.
             </p>
+          </div>
+
+          <div
+            role="note"
+            className="rounded-2xl border-2 border-amber-400/80 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-950/30 px-4 py-3.5 sm:px-5 sm:py-4"
+          >
+            <div className="flex gap-3">
+              <Info
+                className="w-5 h-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5"
+                aria-hidden
+              />
+              <p className="text-sm sm:text-base font-bold text-amber-900 dark:text-amber-100 leading-snug">
+                Οι σχολές με ειδικά μαθήματα εμφανίζονται στο τέλος, ακολουθούμενες από τα{' '}
+                <span className="text-amber-700 dark:text-amber-200">Σώματα Ασφαλείας & Στρατιωτικές</span>.
+              </p>
+            </div>
           </div>
         </div>
       </div>
