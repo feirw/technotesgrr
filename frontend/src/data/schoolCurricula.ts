@@ -7,6 +7,26 @@ import { EKPA_BUSINESS_ADMINISTRATION_CURRICULUM } from './ekpaBusinessAdministr
 import { EKPA_PORT_SHIPPING_MANAGEMENT_CURRICULUM } from './ekpaPortShippingManagementCurriculum.generated';
 import { EKPA_PSACHNA_AGRICULTURAL_DEVELOPMENT_CURRICULUM } from './ekpaPsachnaAgriculturalDevelopmentCurriculum.generated';
 import { EKPA_PRIMARY_EDUCATION_CURRICULUM } from './ekpaPrimaryEducationCurriculum.generated';
+import { UTH_VOLOS_PRIMARY_EDUCATION_CURRICULUM } from './uthVolosPrimaryEducationCurriculum.generated';
+import { UOI_PRIMARY_EDUCATION_CURRICULUM } from './uoiPrimaryEducationCurriculum.generated';
+import { UOC_RETHYMNO_PRIMARY_EDUCATION_CURRICULUM } from './uocRethymnoPrimaryEducationCurriculum.generated';
+import { DPTH_ALEXANDROUPOLI_PRIMARY_EDUCATION_CURRICULUM } from './dpthAlexandroupoliPrimaryEducationCurriculum.generated';
+import { UOWM_FLORINA_PRIMARY_EDUCATION_CURRICULUM } from './uowmFlorinaPrimaryEducationCurriculum.generated';
+import { AEGEAN_RHODES_PRIMARY_EDUCATION_CURRICULUM } from './aegeanRhodesPrimaryEducationCurriculum.generated';
+import { EKPA_PRESCHOOL_EDUCATION_CURRICULUM } from './ekpaPreschoolEducationCurriculum.generated';
+import { AUTH_PRESCHOOL_EDUCATION_CURRICULUM } from './authPreschoolEducationCurriculum.generated';
+import { PADA_EARLY_CHILDHOOD_CARE_CURRICULUM } from './padaEarlyChildhoodCareCurriculum.generated';
+import { UOP_PATRAS_PRESCHOOL_EDUCATION_CURRICULUM } from './uopPatrasPreschoolEducationCurriculum.generated';
+import { UTH_VOLOS_PRESCHOOL_EDUCATION_CURRICULUM } from './uthVolosPreschoolEducationCurriculum.generated';
+import { UOI_KINDERGARTEN_EDUCATION_CURRICULUM } from './uoiKindergartenEducationCurriculum.generated';
+import { UOC_RETHYMNO_PRESCHOOL_EDUCATION_CURRICULUM } from './uocRethymnoPreschoolEducationCurriculum.generated';
+import { DIPAE_THESSALONIKI_EARLY_CHILDHOOD_CARE_CURRICULUM } from './dipaeThessalonikiEarlyChildhoodCareCurriculum.generated';
+import { UOWM_FLORINA_KINDERGARTEN_EDUCATION_CURRICULUM } from './uowmFlorinaKindergartenEducationCurriculum.generated';
+import { UOI_EARLY_CHILDHOOD_CARE_CURRICULUM } from './uoiEarlyChildhoodCareCurriculum.generated';
+import { DPTH_ALEXANDROUPOLI_PRESCHOOL_EDUCATION_CURRICULUM } from './dpthAlexandroupoliPreschoolEducationCurriculum.generated';
+import { AEGEAN_RHODES_PRESCHOOL_EDUCATION_CURRICULUM } from './aegeanRhodesPreschoolEducationCurriculum.generated';
+import { UTH_VOLOS_SPECIAL_EDUCATION_CURRICULUM } from './uthVolosSpecialEducationCurriculum.generated';
+import { UOP_PATRAS_EDUCATION_SOCIAL_WORK_CURRICULUM } from './uopPatrasEducationSocialWorkCurriculum.generated';
 import { EKPA_PHYSICAL_EDUCATION_SPORTS_SCIENCE_CURRICULUM } from './ekpaPhysicalEducationSportsScienceCurriculum.generated';
 import { EKPA_HISTORY_PHILOSOPHY_OF_SCIENCE_CURRICULUM } from './ekpaHistoryPhilosophyOfScienceCurriculum.generated';
 import { EKPA_THEATRE_STUDIES_CURRICULUM } from './ekpaTheatreStudiesCurriculum.generated';
@@ -77,6 +97,7 @@ import { DPTH_KAVALA_MANAGEMENT_SCIENCE_TECHNOLOGY_CURRICULUM } from './dpthKava
 import { DPTH_KOMOTINI_ECONOMIC_SCIENCE_CURRICULUM } from './dpthKomotiniEconomicScienceCurriculum.generated';
 import { DPTH_KOMOTINI_PHYSICAL_EDUCATION_CURRICULUM } from './dpthKomotiniPhysicalEducationCurriculum.generated';
 import { DPTH_KOMOTINI_SOCIAL_POLICY_CURRICULUM } from './dpthKomotiniSocialPolicyCurriculum.generated';
+import { DPTH_KOMOTINI_HUMANITIES_CURRICULUM } from './dpthKomotiniHumanitiesCurriculum.generated';
 import { DPTH_PRODUCTION_MANAGEMENT_CURRICULUM as DPTH_PRODUCTION_MANAGEMENT_CURRICULUM_FULL } from './dpthProductionManagementCurriculum.generated';
 import { DPTH_ORESTIADA_FORESTRY_CURRICULUM } from './dpthOrestiadaForestryCurriculum.generated';
 import { DPTH_ORESTIADA_AGRICULTURAL_DEVELOPMENT_CURRICULUM } from './dpthOrestiadaAgriculturalDevelopmentCurriculum.generated';
@@ -105,6 +126,11 @@ import { ELMEPA_HERAKLION_ACCOUNTING_FINANCE_CURRICULUM } from './elmepaHeraklio
 import { ELMEPA_AGIOS_NIKOLAOS_MANAGEMENT_SCIENCE_TECHNOLOGY_CURRICULUM } from './elmepaAgiosNikolaosManagementScienceTechnologyCurriculum.generated';
 import { ELMEPA_BUSINESS_ADMINISTRATION_TOURISM_CURRICULUM } from './elmepaBusinessAdministrationTourismCurriculum.generated';
 import { ELMEPA_RETHYMNO_MUSIC_TECHNOLOGY_CURRICULUM } from './elmepaRethymnoMusicTechnologyCurriculum.generated';
+import { PAMAK_MUSIC_ARTS_CURRICULUM } from './pamakMusicArtsCurriculum.generated';
+import { EKPA_MUSIC_STUDIES_CURRICULUM } from './ekpaMusicStudiesCurriculum.generated';
+import { AUTH_THESSALONIKI_MUSIC_STUDIES_CURRICULUM } from './authThessalonikiMusicStudiesCurriculum.generated';
+import { IONIO_CORFU_MUSIC_STUDIES_CURRICULUM } from './ionioCorfuMusicStudiesCurriculum.generated';
+import { UOI_ARTA_MUSIC_STUDIES_CURRICULUM } from './uoiArtaMusicStudiesCurriculum.generated';
 import { AEGEAN_SAMOS_ICS_CURRICULUM as AEGEAN_SAMOS_ICS_CURRICULUM_FULL } from './aegeanSamosIcsCurriculum.generated';
 import { AEGEAN_SAMOS_STATISTICS_CURRICULUM } from './aegeanSamosStatisticsCurriculum.generated';
 import { AEGEAN_CHIOS_MEM_CURRICULUM } from './aegeanChiosMemCurriculum.generated';
@@ -145,6 +171,26 @@ import { ASTE_CRETE_CURRICULUM } from './asteCreteCurriculum.generated';
 import { ASTE_RHODES_CURRICULUM } from './asteRhodesCurriculum.generated';
 import { AEN_ENGINEERS_CURRICULUM } from './aenEngineersCurriculum.generated';
 import { AEN_CAPTAINS_CURRICULUM } from './aenCaptainsCurriculum.generated';
+import { POLICE_OFFICERS_CURRICULUM } from './policeOfficersCurriculum.generated';
+import { POLICE_OFFICERS_FOR_POLICE_CURRICULUM } from './policeOfficersForPoliceCurriculum.generated';
+import { POLICE_CONSTABLES_CURRICULUM } from './policeConstablesCurriculum.generated';
+import { FIRE_SERVICE_OFFICERS_CURRICULUM } from './fireServiceOfficersCurriculum.generated';
+import { FIRE_SERVICE_FIREFIGHTERS_CURRICULUM } from './fireServiceFirefightersCurriculum.generated';
+import { FIRE_SERVICE_OFFICERS_FOR_FIREFIGHTERS_CURRICULUM } from './fireServiceOfficersForFirefightersCurriculum.generated';
+import { COAST_GUARD_ENSIGNS_CURRICULUM } from './coastGuardEnsignsCurriculum.generated';
+import { COAST_GUARD_HARBOR_GUARDS_CURRICULUM } from './coastGuardHarborGuardsCurriculum.generated';
+import { COAST_GUARD_STAFF_CURRICULUM } from './coastGuardStaffCurriculum.generated';
+import { HAF_ICARUS_SUPPLY_CURRICULUM } from './hafIcarusSupplyCurriculum.generated';
+import { HAF_ICARUS_ADMINISTRATIVE_CURRICULUM } from './hafIcarusAdministrativeCurriculum.generated';
+import { HAF_NCO_ADMIN_LOGISTICS_CURRICULUM } from './hafNcoAdminLogisticsCurriculum.generated';
+import { HAF_NCO_TECHNOLOGICAL_SUPPORT_CURRICULUM } from './hafNcoTechnologicalSupportCurriculum.generated';
+import { HAF_NCO_OPERATIONAL_SUPPORT_CURRICULUM } from './hafNcoOperationalSupportCurriculum.generated';
+import { HAF_NCO_OPERATIONAL_SUPPORT_RADIONAVIGATORS_CURRICULUM } from './hafNcoOperationalSupportRadionavigatorsCurriculum.generated';
+import { ARMY_EVELPIDON_WEAPONS_CURRICULUM } from './armyEvelpidonWeaponsCurriculum.generated';
+import { ARMY_EVELPIDON_CORPS_CURRICULUM } from './armyEvelpidonCorpsCurriculum.generated';
+import { ARMY_NCO_CORPS_CURRICULUM } from './armyNcoCorpsCurriculum.generated';
+import { ARMY_NCO_WEAPONS_CURRICULUM } from './armyNcoWeaponsCurriculum.generated';
+import { NAVY_NCO_CURRICULUM } from './navyNcoCurriculum.generated';
 import { AUA_AGRICULTURAL_ECONOMICS_CURRICULUM as AUA_AGRICULTURAL_ECONOMICS_CURRICULUM_FULL } from './auaAgriculturalEconomicsCurriculum.generated';
 import { AUA_AMFISSA_REGIONAL_DEVELOPMENT_CURRICULUM } from './auaAmfissaRegionalDevelopmentCurriculum.generated';
 import { AUA_KARPENISI_FORESTRY_CURRICULUM } from './auaKarpenisiForestryCurriculum.generated';
@@ -452,7 +498,6 @@ const EKPA_DI_COURSES_URL = 'https://www.di.uoa.gr/studies/undergraduate/courses
 export const EKPA_IPT_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής και Τηλεπικοινωνιών',
   subtitle: 'ΕΚΠΑ · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: EKPA_DI_COURSES_URL,
   semesters: [],
 };
@@ -463,7 +508,6 @@ const EKPA_DIND_COURSES_URL = 'https://www.dind.uoa.gr/';
 export const EKPA_DIGITAL_INDUSTRY_CURRICULUM: SchoolCurriculum = {
   title: 'Τεχνολογιών Ψηφιακής Βιομηχανίας',
   subtitle: 'ΕΚΠΑ · Ψαχνά',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: EKPA_DIND_COURSES_URL,
   semesters: [],
 };
@@ -475,7 +519,6 @@ const EKPA_ECON_COURSES_URL =
 export const EKPA_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικών Επιστημών',
   subtitle: 'Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: EKPA_ECON_COURSES_URL,
   semesters: [],
 };
@@ -486,7 +529,6 @@ const PAPEI_CS_COURSES_URL = 'https://cs.unipi.gr/programma-spoudwn/';
 export const UNIPI_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής',
   subtitle: 'ΠΑΠΕΙ · Πειραιάς',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PAPEI_CS_COURSES_URL,
   semesters: [],
 };
@@ -497,7 +539,6 @@ const AUTH_CSD_COURSES_URL = 'https://csd.auth.gr/studies/undergraduate/courses/
 export const AUTH_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής',
   subtitle: 'ΑΠΘ · Θεσσαλονίκη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: AUTH_CSD_COURSES_URL,
   semesters: [],
 };
@@ -509,7 +550,6 @@ const AUTH_ECON_COURSES_URL =
 export const AUTH_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικών Επιστημών',
   subtitle: 'Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης · Θεσσαλονίκη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: AUTH_ECON_COURSES_URL,
   semesters: [],
 };
@@ -520,7 +560,6 @@ const OPA_CS_COURSES_URL = 'https://www.dept.aueb.gr/el/cs/courses';
 export const OPA_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής',
   subtitle: 'ΟΠΑ · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: OPA_CS_COURSES_URL,
   semesters: [],
 };
@@ -531,7 +570,6 @@ const OPA_ECON_COURSES_URL = 'https://www.dept.aueb.gr/el/econ_courses';
 export const OPA_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικής Επιστήμης',
   subtitle: 'Οικονομικό Πανεπιστήμιο Αθηνών · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: OPA_ECON_COURSES_URL,
   semesters: [],
 };
@@ -543,7 +581,6 @@ const PANTEION_REGIONAL_DEVELOPMENT_COURSES_URL =
 export const OPA_REGIONAL_DEVELOPMENT_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικής & Περιφερειακής Ανάπτυξης',
   subtitle: 'Πάντειο Πανεπιστήμιο · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PANTEION_REGIONAL_DEVELOPMENT_COURSES_URL,
   semesters: [],
 };
@@ -555,7 +592,6 @@ const PAMAK_ECON_COURSES_URL =
 export const PAMAK_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικών Επιστημών',
   subtitle: 'Πανεπιστήμιο Μακεδονίας · Θεσσαλονίκη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PAMAK_ECON_COURSES_URL,
   semesters: [],
 };
@@ -567,7 +603,6 @@ const UOP_PATRAS_ECON_COURSES_URL =
 export const UOP_PATRAS_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικών Επιστημών',
   subtitle: 'Πανεπιστήμιο Πατρών · Πάτρα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOP_PATRAS_ECON_COURSES_URL,
   semesters: [],
 };
@@ -578,7 +613,6 @@ const AUA_AOA_COURSES_URL = 'https://aoa.aua.gr/el/?page_id=4628';
 export const AUA_AGRICULTURAL_ECONOMICS_CURRICULUM: SchoolCurriculum = {
   title: 'Αγροτικής Οικονομίας και Ανάπτυξης',
   subtitle: 'Γεωπονικό Πανεπιστήμιο Αθηνών · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: AUA_AOA_COURSES_URL,
   semesters: [],
 };
@@ -590,7 +624,6 @@ const HAROKOPIO_DIT_COURSES_URL =
 export const HAROKOPIO_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής και Τηλεματικής',
   subtitle: 'ΧΑΡΟΚΟΠΕΙΟ · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: HAROKOPIO_DIT_COURSES_URL,
   semesters: [],
 };
@@ -602,7 +635,6 @@ const HAROKOPIO_DHEE_COURSES_URL =
 export const HAROKOPIO_SUSTAINABLE_ECONOMY_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομίας και Βιώσιμης Ανάπτυξης',
   subtitle: 'Χαροκόπειο Πανεπιστήμιο · Αθήνα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: HAROKOPIO_DHEE_COURSES_URL,
   semesters: [],
 };
@@ -613,7 +645,6 @@ const PAPEI_DS_COURSES_URL = 'https://www.ds.unipi.gr/courses/';
 export const PAPEI_DIGITAL_SYSTEMS_CURRICULUM: SchoolCurriculum = {
   title: 'Ψηφιακών Συστημάτων',
   subtitle: 'ΠΑΠΕΙ · Πειραιάς',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PAPEI_DS_COURSES_URL,
   semesters: [],
 };
@@ -624,7 +655,6 @@ const PAPEI_TEX_COURSES_URL = 'https://www.tex.unipi.gr/undergraduate/courses/';
 export const PAPEI_INDUSTRIAL_MANAGEMENT_CURRICULUM: SchoolCurriculum = {
   title: 'Βιομηχανικής Διοίκησης & Τεχνολογίας',
   subtitle: 'ΠΑΠΕΙ · Πειραιάς',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PAPEI_TEX_COURSES_URL,
   semesters: [],
 };
@@ -635,7 +665,6 @@ const PAPEI_ECON_COURSES_URL = 'https://economics-unipi.gr/lessons/';
 export const PAPEI_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικής Επιστήμης',
   subtitle: 'Πανεπιστήμιο Πειραιώς · Πειραιάς',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PAPEI_ECON_COURSES_URL,
   semesters: [],
 };
@@ -647,7 +676,6 @@ const UOC_CSD_COURSES_URL =
 export const UOC_CS_CURRICULUM: SchoolCurriculum = {
   title: 'Επιστήμης Υπολογιστών',
   subtitle: 'Πανεπιστήμιο Κρήτης · Ηράκλειο',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOC_CSD_COURSES_URL,
   semesters: [],
 };
@@ -658,7 +686,6 @@ const PADA_ICE_COURSES_URL = 'https://ice.uniwa.gr/education/undergraduate/cours
 export const PADA_CPE_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Πληροφορικής και Υπολογιστών',
   subtitle: 'Πανεπιστήμιο Δυτικής Αττικής · Αιγάλεω',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PADA_ICE_COURSES_URL,
   semesters: [],
 };
@@ -669,7 +696,6 @@ const PADA_IDPE_COURSES_URL = 'https://idpe.uniwa.gr/courses';
 export const PADA_INDUSTRIAL_DESIGN_PRODUCTION_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Βιομηχανικής Σχεδίασης και Παραγωγής',
   subtitle: 'Πανεπιστήμιο Δυτικής Αττικής · Αιγάλεω',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: PADA_IDPE_COURSES_URL,
   semesters: [],
 };
@@ -680,7 +706,6 @@ const DIPAE_IEE_COURSES_URL = 'https://www.iee.ihu.gr/udg_courses/';
 export const DIPAE_CPE_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Πληροφορικής & Ηλεκτρονικών Συστημάτων',
   subtitle: 'ΔΙΠΑΕ · Θεσσαλονίκη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: DIPAE_IEE_COURSES_URL,
   semesters: [],
 };
@@ -691,7 +716,6 @@ const DIPAE_IEM_COURSES_URL = 'https://www.iem.ihu.gr/courses/';
 export const DIPAE_PRODUCTION_MANAGEMENT_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Παραγωγής και Διοίκησης',
   subtitle: 'ΔΙΠΑΕ · Θεσσαλονίκη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: DIPAE_IEM_COURSES_URL,
   semesters: [],
 };
@@ -703,7 +727,6 @@ const TUC_PEM_COURSES_URL =
 export const TUC_PRODUCTION_MANAGEMENT_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Παραγωγής και Διοίκησης',
   subtitle: 'Πολυτεχνείο Κρήτης · Χανιά',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: TUC_PEM_COURSES_URL,
   semesters: [],
 };
@@ -714,7 +737,6 @@ const DIPAE_SERRES_ICT_COURSES_URL = 'https://www.ict.ihu.gr/courses/';
 export const DIPAE_SERRES_CPE_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Πληροφορικής, Υπολογιστών & Τηλεπικοινωνιών',
   subtitle: 'ΔΙΠΑΕ · Σέρρες',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: DIPAE_SERRES_ICT_COURSES_URL,
   semesters: [],
 };
@@ -725,7 +747,6 @@ const DPTH_KAVALA_CS_COURSES_URL = 'https://www.cs.duth.gr/courses.xhtml';
 export const DPTH_KAVALA_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής',
   subtitle: 'ΔΠΘ · Καβάλα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: DPTH_KAVALA_CS_COURSES_URL,
   semesters: [],
 };
@@ -736,7 +757,6 @@ const DPTH_PME_COURSES_URL = 'https://pme.duth.gr/proptixiaka/courses/';
 export const DPTH_PRODUCTION_MANAGEMENT_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Παραγωγής και Διοίκησης',
   subtitle: 'ΔΠΘ · Ξάνθη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: DPTH_PME_COURSES_URL,
   semesters: [],
 };
@@ -747,7 +767,6 @@ const UTH_DIB_COURSES_URL = 'https://dib.uth.gr/?page_id=6030';
 export const UTH_BIOMED_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής με Εφαρμογές στη Βιοϊατρική',
   subtitle: 'Πανεπιστήμιο Θεσσαλίας · Λαμία',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UTH_DIB_COURSES_URL,
   semesters: [],
 };
@@ -758,7 +777,6 @@ const UTH_DIT_COURSES_URL = 'https://dit.uth.gr/?page_id=36374';
 export const UTH_ICT_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής και Τηλεπικοινωνιών',
   subtitle: 'Πανεπιστήμιο Θεσσαλίας · Λαμία',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UTH_DIT_COURSES_URL,
   semesters: [],
 };
@@ -769,7 +787,6 @@ const UTH_DS_COURSES_URL = 'https://ds.uth.gr/undergraduate-studies/';
 export const UTH_DIGITAL_SYSTEMS_CURRICULUM: SchoolCurriculum = {
   title: 'Ψηφιακών Συστημάτων',
   subtitle: 'Πανεπιστήμιο Θεσσαλίας · Λάρισα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UTH_DS_COURSES_URL,
   semesters: [],
 };
@@ -781,7 +798,6 @@ const UTH_ENERGY_COURSES_URL =
 export const UTH_ENERGY_SYSTEMS_CURRICULUM: SchoolCurriculum = {
   title: 'Συστημάτων Ενέργειας',
   subtitle: 'Πανεπιστήμιο Θεσσαλίας · Λάρισα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UTH_ENERGY_COURSES_URL,
   semesters: [],
 };
@@ -793,7 +809,6 @@ const UTH_VOLOS_ECON_COURSES_URL =
 export const UTH_VOLOS_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικών Επιστημών',
   subtitle: 'Πανεπιστήμιο Θεσσαλίας · Βόλος',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UTH_VOLOS_ECON_COURSES_URL,
   semesters: [],
 };
@@ -804,7 +819,6 @@ const UOP_TRIPOLI_DIT_COURSES_URL = 'https://dit.uop.gr/courses';
 export const UOP_TRIPOLI_ICT_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής και Τηλεπικοινωνιών',
   subtitle: 'Πανεπιστήμιο Πελοποννήσου · Τρίπολη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOP_TRIPOLI_DIT_COURSES_URL,
   semesters: [],
 };
@@ -815,7 +829,6 @@ const UOP_SPARTA_DS_COURSES_URL = 'https://ds.uop.gr/courses';
 export const UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM: SchoolCurriculum = {
   title: 'Ψηφιακών Συστημάτων',
   subtitle: 'Πανεπιστήμιο Πελοποννήσου · Σπάρτη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOP_SPARTA_DS_COURSES_URL,
   semesters: [],
 };
@@ -826,7 +839,6 @@ const UOI_ARTA_DIT_COURSES_URL = 'https://www.dit.uoi.gr/lessons/';
 export const UOI_ARTA_ICT_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής και Τηλεπικοινωνιών',
   subtitle: 'Πανεπιστήμιο Ιωαννίνων · Άρτα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOI_ARTA_DIT_COURSES_URL,
   semesters: [],
 };
@@ -838,7 +850,6 @@ const IONIO_CORFU_DI_COURSES_URL =
 export const IONIO_CORFU_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής',
   subtitle: 'Ιόνιο Πανεπιστήμιο · Κέρκυρα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: IONIO_CORFU_DI_COURSES_URL,
   semesters: [],
 };
@@ -849,7 +860,6 @@ const IONIO_CORFU_ILAM_COURSES_URL = 'https://ilam.ionio.gr/';
 export const IONIO_CORFU_INFORMATION_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Επιστήμης της Πληροφορίας',
   subtitle: 'Ιόνιο Πανεπιστήμιο · Κέρκυρα',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: IONIO_CORFU_ILAM_COURSES_URL,
   semesters: [],
 };
@@ -861,7 +871,6 @@ const UOWM_KASTORIA_CS_COURSES_URL =
 export const UOWM_KASTORIA_INFORMATICS_CURRICULUM: SchoolCurriculum = {
   title: 'Πληροφορικής',
   subtitle: 'Πανεπιστήμιο Δυτικής Μακεδονίας · Καστοριά',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOWM_KASTORIA_CS_COURSES_URL,
   semesters: [],
 };
@@ -873,7 +882,6 @@ const UOWM_KOZANI_IDE_COURSES_URL =
 export const UOWM_KOZANI_PRODUCT_DESIGN_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Σχεδίασης Προϊόντων και Συστημάτων',
   subtitle: 'Πανεπιστήμιο Δυτικής Μακεδονίας · Κοζάνη',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: UOWM_KOZANI_IDE_COURSES_URL,
   semesters: [],
 };
@@ -885,7 +893,6 @@ const ELMEPA_EE_COURSES_URL =
 export const ELMEPA_ECE_CURRICULUM: SchoolCurriculum = {
   title: 'Ηλεκτρονικών Μηχανικών',
   subtitle: 'Ελληνικό Μεσογειακό Πανεπιστήμιο · Χανιά',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: ELMEPA_EE_COURSES_URL,
   semesters: [],
 };
@@ -896,7 +903,6 @@ const AEGEAN_SAMOS_ICS_COURSES_URL = 'https://www.icsd.aegean.gr/pps';
 export const AEGEAN_SAMOS_ICS_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Πληροφοριακών & Επικοινωνιακών Συστημάτων',
   subtitle: 'Πανεπιστήμιο Αιγαίου · Σάμος',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: AEGEAN_SAMOS_ICS_COURSES_URL,
   semesters: [],
 };
@@ -908,7 +914,6 @@ const AEGEAN_SYROS_COURSES_URL =
 export const AEGEAN_SYROS_PRODUCT_DESIGN_CURRICULUM: SchoolCurriculum = {
   title: 'Μηχανικών Σχεδίασης Προϊόντων και Συστημάτων',
   subtitle: 'Πανεπιστήμιο Αιγαίου · Σύρος',
-  hoursNote: EXTERNAL_CURRICULUM_NOTE,
   externalCoursesUrl: AEGEAN_SYROS_COURSES_URL,
   semesters: [],
 };
@@ -973,6 +978,26 @@ const RAW_SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '168': AUTH_THESSALONIKI_THEATRE_CURRICULUM,
   '163': AUTH_THESSALONIKI_CINEMA_CURRICULUM,
   '128': EKPA_PRIMARY_EDUCATION_CURRICULUM,
+  '164': UTH_VOLOS_PRIMARY_EDUCATION_CURRICULUM,
+  '130': UOI_PRIMARY_EDUCATION_CURRICULUM,
+  '132': UOC_RETHYMNO_PRIMARY_EDUCATION_CURRICULUM,
+  '142': DPTH_ALEXANDROUPOLI_PRIMARY_EDUCATION_CURRICULUM,
+  '334': UOWM_FLORINA_PRIMARY_EDUCATION_CURRICULUM,
+  '143': AEGEAN_RHODES_PRIMARY_EDUCATION_CURRICULUM,
+  '154': EKPA_PRESCHOOL_EDUCATION_CURRICULUM,
+  '134': AUTH_PRESCHOOL_EDUCATION_CURRICULUM,
+  '673': PADA_EARLY_CHILDHOOD_CARE_CURRICULUM,
+  '136': UOP_PATRAS_PRESCHOOL_EDUCATION_CURRICULUM,
+  '166': UTH_VOLOS_PRESCHOOL_EDUCATION_CURRICULUM,
+  '156': UOI_KINDERGARTEN_EDUCATION_CURRICULUM,
+  '158': UOC_RETHYMNO_PRESCHOOL_EDUCATION_CURRICULUM,
+  '1610': DIPAE_THESSALONIKI_EARLY_CHILDHOOD_CARE_CURRICULUM,
+  '341': UOWM_FLORINA_KINDERGARTEN_EDUCATION_CURRICULUM,
+  '1241': UOI_EARLY_CHILDHOOD_CARE_CURRICULUM,
+  '160': DPTH_ALEXANDROUPOLI_PRESCHOOL_EDUCATION_CURRICULUM,
+  '162': AEGEAN_RHODES_PRESCHOOL_EDUCATION_CURRICULUM,
+  '178': UTH_VOLOS_SPECIAL_EDUCATION_CURRICULUM,
+  '1286': UOP_PATRAS_EDUCATION_SOCIAL_WORK_CURRICULUM,
   '401': EKPA_PHYSICAL_EDUCATION_SPORTS_SCIENCE_CURRICULUM,
   '176': PAMAK_BALKAN_STUDIES_CURRICULUM,
   '161': PAMAK_INTERNATIONAL_EUROPEAN_STUDIES_CURRICULUM,
@@ -1017,6 +1042,7 @@ const RAW_SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '1424': UTH_KARDITSA_FORESTRY_CURRICULUM,
   '1427': UTH_LARISSA_BUSINESS_ADMINISTRATION_CURRICULUM,
   '1302': DPTH_KOMOTINI_SOCIAL_POLICY_CURRICULUM,
+  '1669': DPTH_KOMOTINI_HUMANITIES_CURRICULUM,
   '97': DPTH_KOMOTINI_ECONOMIC_SCIENCE_CURRICULUM,
   '212': DPTH_ORESTIADA_FORESTRY_CURRICULUM,
   '353': DPTH_ORESTIADA_AGRICULTURAL_DEVELOPMENT_CURRICULUM,
@@ -1055,6 +1081,11 @@ const RAW_SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '1662': ELMEPA_ECE_CURRICULUM,
   '1654': ELMEPA_HERAKLION_ACCOUNTING_FINANCE_CURRICULUM,
   '1664': ELMEPA_RETHYMNO_MUSIC_TECHNOLOGY_CURRICULUM,
+  '409': PAMAK_MUSIC_ARTS_CURRICULUM,
+  '408': EKPA_MUSIC_STUDIES_CURRICULUM,
+  '406': AUTH_THESSALONIKI_MUSIC_STUDIES_CURRICULUM,
+  '407': IONIO_CORFU_MUSIC_STUDIES_CURRICULUM,
+  '1248': UOI_ARTA_MUSIC_STUDIES_CURRICULUM,
   '218': AEGEAN_SAMOS_STATISTICS_CURRICULUM,
   '344': AEGEAN_SAMOS_ICS_CURRICULUM,
   '1519': UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM,
@@ -1087,6 +1118,26 @@ const RAW_SCHOOL_CURRICULA: Record<string, SchoolCurriculum> = {
   '613': ASTE_RHODES_CURRICULUM,
   '818': AEN_ENGINEERS_CURRICULUM,
   '817': AEN_CAPTAINS_CURRICULUM,
+  '869': POLICE_OFFICERS_CURRICULUM,
+  '872': POLICE_OFFICERS_FOR_POLICE_CURRICULUM,
+  '870': POLICE_CONSTABLES_CURRICULUM,
+  '877': FIRE_SERVICE_OFFICERS_CURRICULUM,
+  '876': FIRE_SERVICE_FIREFIGHTERS_CURRICULUM,
+  '871': FIRE_SERVICE_OFFICERS_FOR_FIREFIGHTERS_CURRICULUM,
+  '881': COAST_GUARD_ENSIGNS_CURRICULUM,
+  '882': COAST_GUARD_HARBOR_GUARDS_CURRICULUM,
+  '873': COAST_GUARD_STAFF_CURRICULUM,
+  '887': HAF_ICARUS_SUPPLY_CURRICULUM,
+  '886': HAF_ICARUS_ADMINISTRATIVE_CURRICULUM,
+  '880': HAF_NCO_ADMIN_LOGISTICS_CURRICULUM,
+  '878': HAF_NCO_TECHNOLOGICAL_SUPPORT_CURRICULUM,
+  '879': HAF_NCO_OPERATIONAL_SUPPORT_CURRICULUM,
+  '888': HAF_NCO_OPERATIONAL_SUPPORT_RADIONAVIGATORS_CURRICULUM,
+  '801': ARMY_EVELPIDON_WEAPONS_CURRICULUM,
+  '806': ARMY_EVELPIDON_CORPS_CURRICULUM,
+  '863': ARMY_NCO_CORPS_CURRICULUM,
+  '862': ARMY_NCO_WEAPONS_CURRICULUM,
+  '864': NAVY_NCO_CURRICULUM,
   '390': PADA_CPE_CURRICULUM,
   '889': SSAS_INFORMATICS_CURRICULUM,
   '867': SSAS_ECONOMICS_CURRICULUM,

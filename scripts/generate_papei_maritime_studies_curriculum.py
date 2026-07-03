@@ -1,4 +1,4 @@
-"""Generate ΠΑΠΕΙ · Ναυτιλιακών Σπουδών (Πειραιάς)."""
+"""Generate PAPEI_MARITIME_STUDIES_CURRICULUM — link-only stub (course data removed; site has full program)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,286 +6,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend" / "src" / "data" / "papeiMaritimeStudiesCurriculum.generated.ts"
 
-Y = "Υποχρεωτικό"
-E3 = "Επιλογής · 3ο εξ."
-E4 = "Επιλογής · 4ο εξ."
-E5 = "Επιλογής · 5ο εξ."
-E6 = "Επιλογής · 6ο εξ."
-E7 = "Επιλογής · 7ο εξ."
-E8 = "Επιλογής · 8ο εξ."
-PA = "Πρακτική Άσκηση"
-
-# (semester, code, ects, name, kind, lecture?)
-COURSES: list[tuple] = [
-    # 1ο εξάμηνο
-    (1, "NA102B", 6, "Οικονομικά Μαθηματικά", Y, 4),
-    (1, "NA103", 6, "Ωκεανογραφία", Y, 4),
-    (1, "NA207", 6, "Εισαγωγή στη Ναυτιλία", Y, 4),
-    (1, "NA105", 6, "Τεχνολογία Πλοίου", Y, 4),
-    (1, "NA106", 6, "Διεθνές Θεσμικό Πλαίσιο της Ναυτιλίας", Y, 4),
-    (1, "NA998", 6, "Αγγλική Ναυτιλιακή Ορολογία Ι", Y, 4),
-    # 2ο
-    (2, "NA209", 6, "Οικονομική", Y, 4),
-    (2, "NA201", 6, "Οργάνωση και Διοίκηση Επιχειρήσεων", Y, 4),
-    (2, "NA206", 6, "Ναυτικό Δίκαιο", Y, 4),
-    (2, "NA208", 6, "Θαλάσσια Οικολογία", Y, 4),
-    (2, "NA204", 6, "Συστήματα Μεταφορών", Y, 4),
-    (2, "NA999", 6, "Αγγλική Ναυτιλιακή Ορολογία ΙΙ", Y, 4),
-    # 3ο
-    (3, "NA307B", 6, "Στατιστική Ι", Y, 4),
-    (3, "NA315", 6, "Ναυτιλιακή Οικονομική και Πολιτική", Y, 4),
-    (3, "NA407", 6, "Οργάνωση και Διοίκηση Λιμένων", Y, 4),
-    (3, "NA306", 6, "Συστήματα Πλοίου", Y, 4),
-    (3, "NAAGG23", 6, "Leadership (A) · Ηγεσία", E3, 4),
-    (3, "NA403", 6, "Οικονομική των Μεταφορών", E3, 4),
-    (
-        3,
-        "NAAGG41",
-        6,
-        "Ocean Governance and Maritime Industries (A) · Θαλάσσια Διακυβέρνηση και Ναυτιλία",
-        E3,
-        4,
-    ),
-    (3, "NA74", 6, "Ναυπηγική Βιομηχανία", E3, 4),
-    # 4ο
-    (
-        4,
-        "NA402",
-        6,
-        "Οργάνωση και Διοίκηση Ναυτιλιακών Επιχειρήσεων",
-        Y,
-        4,
-    ),
-    (4, "NA401", 6, "Επιχειρησιακή Οικονομική", Y, 4),
-    (4, "NA641", 6, "Περιβαλλοντική Διαχείριση Λιμένων", Y, 4),
-    (
-        4,
-        "NA409",
-        6,
-        "Διαχείριση Λειτουργιών Λιμενικών και Τερματικών Εγκαταστάσεων",
-        Y,
-        4,
-    ),
-    (
-        4,
-        "NAAGG50",
-        6,
-        "European Integration and Shipping (A) · Ναυτιλία και Ευρωπαϊκή Ολοκλήρωση",
-        E4,
-        4,
-    ),
-    (4, "NA104", 6, "Ναυτιλιακή Οικονομική Ιστορία", E4, 4),
-    (
-        4,
-        "NA81",
-        6,
-        "Ποσοτικές Μέθοδοι στη Ναυτιλία και τις Μεταφορές",
-        E4,
-        4,
-    ),
-    (
-        4,
-        "NAAGG84",
-        6,
-        "Zero Carbon Shipping (A) · Ναυτιλία Μηδενικού Άνθρακα",
-        E4,
-        4,
-    ),
-    # 5ο
-    (5, "NA503", 6, "Marketing στη Ναυτιλία και τις Μεταφορές", Y, 4),
-    (5, "NA31", 6, "Χρηματοοικονομική Λογιστική", Y, 4),
-    (5, "NA504", 6, "Διαχείριση Εφοδιαστικής Αλυσίδας", Y, 4),
-    (5, "NA305", 6, "Οικονομική των Λιμένων", Y, 4),
-    (
-        5,
-        "NAAGG30",
-        6,
-        "Commodity Trading (A) · Ανάλυση Εμπορευματικών Αγορών",
-        E5,
-        4,
-    ),
-    (5, "NA51", 6, "Διοίκηση Ανθρώπινου Δυναμικού στη Ναυτιλία", E5, 4),
-    (5, "NA63", 6, "Ναυτική Διαιτησία και Διαμεσολάβηση", E5, 4),
-    (5, "NAAGG44", 6, "Entrepreneurship (A) · Επιχειρηματικότητα", E5, 4),
-    # 6ο
-    (6, "NA511", 6, "Λιμενικός Σχεδιασμός και Οργάνωση", Y, 4),
-    (6, "NA603", 6, "Ναυτιλιακή Λογιστική", Y, 4),
-    (6, "NA607", 6, "Ναυλώσεις", Y, 4),
-    (6, "NA610", 6, "Χρηματοοικονομική Διοίκηση", Y, 4),
-    (6, "TEODE09", 6, "Διοίκηση Έργων", E6, 4),
-    (
-        6,
-        "NA62",
-        6,
-        "Ευρωπαϊκές Πολιτικές για Μεταφορές και Λιμάνια",
-        E6,
-        4,
-    ),
-    (
-        6,
-        "NAAGG42",
-        6,
-        "Blue Growth (A) · Γαλάζια Ανάπτυξη – Ολοκληρωμένη Διαχείριση Παράκτιας Ζώνης",
-        E6,
-        4,
-    ),
-    (
-        6,
-        "TEODE05",
-        6,
-        "Διοίκηση Γνώσης και Οργανωσιακής Αλλαγής",
-        E6,
-        4,
-    ),
-    (6, "NA65", 6, "Τεχνητή Νοημοσύνη στη Ναυτιλία", E6, 4),
-    (
-        6,
-        "NAAGG25",
-        6,
-        "Decision Making in Maritime Operations (A) · Λήψη Αποφάσεων στη Ναυτιλία",
-        E6,
-        4,
-    ),
-    # 7ο
-    (
-        7,
-        "NA701",
-        6,
-        "Λειτουργική Διαχείριση Ναυτιλιακών Επιχειρήσεων",
-        Y,
-        4,
-    ),
-    (7, "NA702", 6, "Ναυτιλιακή Χρηματοδότηση", Y, 4),
-    (7, "NA808", 6, "Πληροφοριακά Συστήματα στη Ναυτιλία", Y, 4),
-    (7, "NAAGG24", 6, "Managerial Accounting (A) · Διοικητική Λογιστική", E7, 4),
-    (
-        7,
-        "NAAGG20",
-        6,
-        "Ports and Intermodal Transport (A) · Λιμάνια και Συνδυασμένες Μεταφορές",
-        E7,
-        4,
-    ),
-    (7, "NA59", 6, "Ναυτιλιακές Αγορές και Λιμενική Βιομηχανία", E7, 4),
-    (7, "NA52", 6, "Στρατηγική Επιχειρήσεων", E7, 4),
-    (7, "NAAGG26", 6, "Systems Dynamics (A) · Δυναμική Συστημάτων", E7, 4),
-    (7, "NAAGG43", 6, "Shipping Pollution (A) · Ναυτιλιακή Ρύπανση", E7, 4),
-    # 8ο
-    (8, "NA406", 6, "Ναυτασφαλίσεις", Y, 4),
-    (8, "NA802", 6, "Διεθνή Οικονομικά", Y, 4),
-    (8, "NA801", 6, "Ποιότητα (στη Ναυτιλία)", Y, 4),
-    (8, "NA804", 6, "Πρακτική Άσκηση", PA, 4),
-    (
-        8,
-        "NAAIG47",
-        6,
-        "Transportation Management and Operations (A) · Διαχείριση Συστημάτων Μεταφορών",
-        E8,
-        4,
-    ),
-    (
-        8,
-        "NAAIG46-1",
-        6,
-        "Maritime Informatics (A) · Ναυτιλιακή Πληροφορική",
-        E8,
-        4,
-    ),
-    (
-        8,
-        "NAAIG48",
-        6,
-        "Ports and Spatial Planning (A) · Λιμάνια και Χωροταξικός Σχεδιασμός",
-        E8,
-        4,
-    ),
-    (8, "NA71", 6, "Λιμάνια και Περιφερειακή Ανάπτυξη", E8, 4),
-    (
-        8,
-        "TEODE05",
-        6,
-        "Διοίκηση Γνώσης και Οργανωσιακής Αλλαγής",
-        E8,
-        4,
-    ),
-    (
-        8,
-        "NAAIG40",
-        6,
-        "Ship Technological Efficiency (A) · Τεχνολογική Απόδοση Πλοίου",
-        E8,
-        4,
-    ),
-    (
-        8,
-        "NAAIG27",
-        6,
-        "International Business (A) · Διεθνείς Επιχειρήσεις",
-        E8,
-        4,
-    ),
-    (
-        8,
-        "NAAIG21",
-        6,
-        "Strategic Management (A) · Στρατηγικό Μάνατζμεντ",
-        E8,
-        4,
-    ),
-    (8, "NA80", 6, "Διαχείριση Χρηματοοικονομικού Κινδύνου", E8, 4),
-    (
-        8,
-        "NAAIG45",
-        6,
-        "Risk Management in Shipping and Transport (A) · Διαχείριση Κινδύνου στη Ναυτιλία και τις Μεταφορές",
-        E8,
-        4,
-    ),
-]
+HEADER = "/** AUTO-GENERATED — ΠΑΠΕΙ Ναυτιλιακών Σπουδών */"
+TITLE = "Ναυτιλιακών Σπουδών"
+SUBTITLE = "Πανεπιστήμιο Πειραιώς · Πειραιάς"
+EXTERNAL_URL = "https://maritime-unipi.gr/spoudes/proptychiakes-spoudes/programma-spoudon/"
 
 
 def esc(s: str) -> str:
     return s.replace("\\", "\\\\").replace('"', '\\"')
 
 
-def fmt(row: tuple) -> str:
-    _, code, ects, name, kind, lecture = row
-    return (
-        f'      {{ code: "{esc(code)}", ects: {ects}, name: "{esc(name)}", '
-        f'kind: "{esc(kind)}", hours: {{ lecture: {lecture} }} }},'
-    )
-
-
 def main() -> None:
-    by_sem: dict[int, list[tuple]] = {}
-    for row in COURSES:
-        by_sem.setdefault(row[0], []).append(row)
-
     lines = [
-        "/** AUTO-GENERATED — ΠΑΠΕΙ Ναυτιλιακών Σπουδών */",
+        HEADER,
         "import type { SchoolCurriculum } from './schoolCurricula';",
         "",
-        "export const PAPEI_MARITIME_STUDIES_CURRICULUM: SchoolCurriculum = {",
-        '  title: "Ναυτιλιακών Σπουδών",',
-        '  subtitle: "Πανεπιστήμιο Πειραιώς · Πειραιάς",',
-        "  hoursNote:",
-        (
-            '    "240 ECTS · 1ο–2ο: υποχρεωτικός κορμός · 3ο–8ο: επιλογής από κατάλογο '
-            "2 ανά εξάμηνο από 7ο · (A)=αγγλόφωνα · NA804: πρακτική άσκηση.\","
-        ),
-        "  semesters: [",
+        f"export const PAPEI_MARITIME_STUDIES_CURRICULUM: SchoolCurriculum = {{",
+        f'  title: "{esc(TITLE)}",',
+        f'  subtitle: "{esc(SUBTITLE)}",',
+        f'  externalCoursesUrl: "{esc(EXTERNAL_URL)}",',
+        "  semesters: [],",
+        "};",
+        "",
     ]
-
-    for sem in sorted(by_sem):
-        lines.append(f"    {{ semester: {sem}, courses: [")
-        for row in by_sem[sem]:
-            lines.append(fmt(row))
-        lines.append("    ] },")
-
-    lines.extend(["  ],", "};", ""])
-
     OUT.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Wrote {OUT} ({len(COURSES)} courses)")
+    print(f"Wrote {OUT} (link-only stub)")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Generate PAMAK Applied Informatics — Computer Science & Technology track curriculum."""
+"""Generate PAMAK_CSC_CURRICULUM — link-only stub (course data removed; site has full program)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,122 +6,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend" / "src" / "data" / "pamakCscCurriculum.generated.ts"
 
-# (semester, code, ects, name, kind)
-# kind: YM_CORE | YM_CSC | PM_COMMON | PM_CSC
-COURSES: list[tuple] = [
-    # Α — 1ο εξάμηνο
-    (1, "AIC101", 5, "Αλγόριθμοι", "YM_CORE"),
-    (1, "AIC102", 5, "Γραμμική Άλγεβρα", "YM_CORE"),
-    (1, "AIC103", 5, "Διαδικαστικός Προγραμματισμός", "YM_CORE"),
-    (1, "AIC104", 5, "Μαθηματική Ανάλυση", "YM_CORE"),
-    (1, "AIC105", 5, "Συστήματα Υπολογιστών", "YM_CORE"),
-    (1, "CSC101", 5, "Εισαγωγή στην Επιστήμη Υπολογιστών", "YM_CSC"),
-    # Β — 2ο
-    (2, "AIC201", 5, "Αρχιτεκτονική Υπολογιστών", "YM_CORE"),
-    (2, "AIC202", 5, "Βάσεις Δεδομένων", "YM_CORE"),
-    (2, "AIC203", 5, "Διακριτά Μαθηματικά", "YM_CORE"),
-    (2, "AIC204", 5, "Διοίκηση και Τεχνολογία", "YM_CORE"),
-    (2, "AIC205", 5, "Δομές Δεδομένων", "YM_CORE"),
-    (2, "CSC201", 5, "Πιθανότητες", "YM_CSC"),
-    # Γ — 3ο
-    (3, "AIC301", 5, "Αντικειμενοστρεφής Προγραμματισμός", "YM_CORE"),
-    (3, "AIC306", 5, "Διαχείριση Έργων Πληροφορικής", "YM_CORE"),
-    (3, "AIC302", 5, "Δίκτυα Υπολογιστών", "YM_CORE"),
-    (3, "AIC303", 5, "Λειτουργικά Συστήματα", "YM_CORE"),
-    (3, "AIC304", 5, "Πληροφοριακά Συστήματα", "YM_CORE"),
-    (3, "CSC301", 5, "Στατιστική", "YM_CSC"),
-    # Δ — 4ο
-    (4, "AIC401", 5, "Αλληλεπίδραση Ανθρώπου–Υπολογιστή", "YM_CORE"),
-    (4, "AIC402", 5, "Ασφάλεια Πληροφοριών και Συστημάτων", "YM_CORE"),
-    (4, "AIC403", 5, "Προγραμματισμός Διαδικτύου", "YM_CORE"),
-    (4, "AIC404", 5, "Ψηφιακή Οικονομική", "YM_CORE"),
-    (4, "CSC401", 5, "Ανάλυση Αλγορίθμων", "YM_CSC"),
-    (4, "CSC402", 5, "Τεχνολογία Λογισμικού", "YM_CSC"),
-    # Ε — 5ο
-    (5, "AIC501", 5, "Δίκαιο Πληροφορικής και Δεοντολογία", "YM_CORE"),
-    (5, "AIC502", 5, "Τεχνητή Νοημοσύνη", "YM_CORE"),
-    (5, "AIC503", 5, "Υπηρεσίες και Συναλλαγές Ιστού", "YM_CORE"),
-    (5, "CSC501", 5, "Ποιότητα Λογισμικού", "YM_CSC"),
-    (5, "CSC502", 5, "Συστήματα Βάσεων Δεδομένων", "YM_CSC"),
-    (5, "CSC503", 5, "Συστήματα Επικοινωνιών", "YM_CSC"),
-    # ΣΤ — 6ο
-    (6, "AIC601", 5, "Ανάπτυξη Εφαρμογών για Κινητές Συσκευές", "YM_CORE"),
-    (6, "AIC602", 5, "Επιχειρησιακή Έρευνα", "YM_CORE"),
-    (6, "AIC603", 5, "Υπολογιστική Νεφούς", "YM_CORE"),
-    (6, "CSC601", 5, "Γλώσσες Προγραμματισμού και Μεταγλωττιστές", "YM_CSC"),
-    (6, "CSC602", 5, "Θεωρία Υπολογισμού", "YM_CSC"),
-    (6, "CSC603", 5, "Παράλληλος και Κατανεμημένος Υπολογισμός", "YM_CSC"),
-    # Ζ — 7ο (επιλογής)
-    (7, "AIE713", 5, "Ακαδημαϊκές Δεξιότητες στην Αγγλική", "PM_COMMON"),
-    (7, "CSE808", 5, "Ασφάλεια Δικτύων και Διαδικτυακών Εφαρμογών", "PM_CSC"),
-    (7, "CSE701", 5, "Big Data — Ανάλυση Δεδομένων Μεγάλου Όγκου", "PM_CSC"),
-    (7, "CSE711", 5, "Εφαρμοσμένη Αριθμητική Ανάλυση", "PM_CSC"),
-    (7, "CSE705", 5, "Κρυπτογραφία", "PM_CSC"),
-    (7, "CSE708", 5, "Μηχανές Αναζήτησης και Ανάλυση Κειμένου", "PM_CSC"),
-    (7, "CSE707", 5, "Μηχανική Μάθηση", "PM_CSC"),
-    (7, "CSE709", 5, "Σχεδίαση και Προγραμματισμός Ψηφιακών Συστημάτων", "PM_CSC"),
-    (7, "CSE710", 5, "Τεχνολογίες Blockchain και Αποκεντρωμένες Εφαρμογές", "PM_CSC"),
-    (7, "CSE706", 5, "Τεχνολογίες Πολυμέσων και Γραφικά", "PM_CSC"),
-    # Η — 8ο (επιλογής)
-    (8, "AIE814", 5, "Διδακτική της Πληροφορικής", "PM_COMMON"),
-    (8, "AIE815", 5, "Επαγγελματικές Δεξιότητες στην Αγγλική", "PM_COMMON"),
-    (8, "CSE809", 5, "Βελτιστοποίηση και Λήψη Αποφάσεων", "PM_CSC"),
-    (8, "CSE810", 5, "Δίκαιο Διαδικτύου", "PM_CSC"),
-    (8, "CSE811", 5, "Ειδικά Θέματα Προγραμματισμού Διαδικτύου", "PM_CSC"),
-    (8, "CSE812", 5, "Ειδικά Θέματα στα Δίκτυα Υπολογιστών και Επικοινωνιών", "PM_CSC"),
-    (8, "CSE813", 5, "Κινητή και Διαχύτη Υπολογιστική", "PM_CSC"),
-    (8, "CSE803", 5, "Λογικός Προγραμματισμός", "PM_CSC"),
-    (8, "CSE807", 5, "Νευρωνικά Δίκτυα", "PM_CSC"),
-    (8, "CSE814", 5, "Συνδυαστική Βελτιστοποίηση", "PM_CSC"),
-    (8, "CSE806", 5, "Ψηφιακή Σχεδίαση και Μοντελοποίηση Ψηφιακών Κυκλωμάτων", "PM_CSC"),
-]
-
-KIND_LABELS = {
-    "YM_CORE": "Υποχρεωτικό κορμού (κοινό)",
-    "YM_CSC": "Υποχρεωτικό (Επιστήμη & Τεχνολογία Υπολογιστών)",
-    "PM_COMMON": "Επιλογής (κοινό)",
-    "PM_CSC": "Επιλογής (Επιστήμη & Τεχνολογία Υπολογιστών)",
-}
+HEADER = "/** AUTO-GENERATED — ΠΑΜΑΚ Εφ. Πληροφορικής · Επιστήμη & Τεχνολογία Υπολογιστών */"
+TITLE = "Εφαρμοσμένης Πληροφορικής"
+SUBTITLE = "ΠΑΜΑΚ · Επιστήμη & Τεχνολογία Υπολογιστών · Θεσσαλονίκη"
+EXTERNAL_URL = "https://www.uom.gr/dai"
 
 
 def esc(s: str) -> str:
     return s.replace("\\", "\\\\").replace('"', '\\"')
 
 
-def fmt_course(sem: int, code: str, ects: int, name: str, kind: str) -> str:
-    return (
-        f'      {{ code: "{esc(code)}", ects: {ects}, name: "{esc(name)}", '
-        f'kind: "{esc(KIND_LABELS[kind])}" }},'
-    )
-
-
 def main() -> None:
-    by_sem: dict[int, list[tuple]] = {}
-    for row in COURSES:
-        by_sem.setdefault(row[0], []).append(row)
-
     lines = [
-        "/** AUTO-GENERATED — ΠΑΜΑΚ Εφ. Πληροφορικής · Επιστήμη & Τεχνολογία Υπολογιστών */",
+        HEADER,
         "import type { SchoolCurriculum } from './schoolCurricula';",
         "",
-        "export const PAMAK_CSC_CURRICULUM: SchoolCurriculum = {",
-        '  title: "Εφαρμοσμένης Πληροφορικής",',
-        '  subtitle: "ΠΑΜΑΚ · Επιστήμη & Τεχνολογία Υπολογιστών · Θεσσαλονίκη",',
-        "  semesters: [",
+        f"export const PAMAK_CSC_CURRICULUM: SchoolCurriculum = {{",
+        f'  title: "{esc(TITLE)}",',
+        f'  subtitle: "{esc(SUBTITLE)}",',
+        f'  externalCoursesUrl: "{esc(EXTERNAL_URL)}",',
+        "  semesters: [],",
+        "};",
+        "",
     ]
-
-    for sem in sorted(by_sem):
-        lines.append(f"    {{ semester: {sem}, courses: [")
-        for row in by_sem[sem]:
-            lines.append(fmt_course(*row))
-        lines.append("    ] },")
-
-    lines.append("  ],")
-    lines.append("};")
-    lines.append("")
-
     OUT.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Wrote {OUT} ({len(COURSES)} courses)")
+    print(f"Wrote {OUT} (link-only stub)")
 
 
 if __name__ == "__main__":

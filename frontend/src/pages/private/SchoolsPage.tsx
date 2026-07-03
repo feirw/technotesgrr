@@ -83,6 +83,7 @@ const CATEGORIES: Record<string, { iconSrc: string; color: string }> = {
     color: 'bg-gray-100 text-gray-600',
   },
   'Σχέδιο Μόδας': { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Σχέδιο Μόδας'], color: 'bg-gray-100 text-gray-600' },
+  Logistics: { iconSrc: SCHOOL_CATEGORY_ICON_BY_NAME['Logistics'], color: 'bg-teal-100 text-teal-600' },
 };
 
 type CareersCategory =

@@ -80,6 +80,7 @@ export const SCHOOL_CATEGORY_ICON_BY_NAME: Record<string, string> = {
   Αθλητισμός: SCHOOL_CATEGORY_ICONS.sports,
   'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)': SCHOOL_CATEGORY_ICONS.geography,
   'Σχέδιο Μόδας': SCHOOL_CATEGORY_ICONS.fashion,
+  Logistics: SCHOOL_CATEGORY_ICONS.industry,
 };
 
 export function getSchoolCategoryIcon(category: string): string {

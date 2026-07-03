@@ -307,7 +307,7 @@ export const ALL_SCHOOLS: School[] = [
     city: 'Κατερίνη',
     points: 9660,
     ebe: '8.40',
-    category: 'Διοίκηση Επιχειρήσεων',
+    category: 'Logistics',
   },
   {
     id: '1607',
