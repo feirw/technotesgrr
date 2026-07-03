@@ -5,5 +5,4 @@ psycopg2_binary
 pydantic
 python-dotenv
 uvicorn
-supabase
 pypdf

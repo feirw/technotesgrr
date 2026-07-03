@@ -77,25 +77,46 @@ export const SCORE_MATRIX: Record<number, number[]> = {
 
 export const QUESTION_IDS = Object.keys(SCORE_MATRIX).map(Number);
 
+/** Σ(weight) ανά κατηγορία — χρησιμοποιείται για neutral baseline και μέγιστη δυνατή απόκλιση. */
+const WEIGHT_SUMS: Record<CategoryKey, number> = CATEGORY_KEYS.reduce(
+  (acc, cat, i) => {
+    acc[cat] = QUESTION_IDS.reduce((sum, id) => sum + (SCORE_MATRIX[id]?.[i] ?? 0), 0);
+    return acc;
+  },
+  {} as Record<CategoryKey, number>
+);
+
 /** Σ(weight × 3) — αναμενόμενο σκορ αν όλες οι απαντήσεις είναι 3 (ουδέτερο). */
-export const NEUTRAL_SCORES: Record<CategoryKey, number> = {
-  INFO: 345,
-  FIN: 234,
-  DIOIK: 309,
-  OIK: 222,
-  SERV: 198,
-  PEDAGOGIKA: 141,
-  SOMATA: 204,
-  TEXNES: 228,
-};
+export const NEUTRAL_SCORES: Record<CategoryKey, number> = CATEGORY_KEYS.reduce(
+  (acc, cat) => {
+    acc[cat] = WEIGHT_SUMS[cat] * 3;
+    return acc;
+  },
+  {} as Record<CategoryKey, number>
+);
+
+/**
+ * Μέγιστη δυνατή απόκλιση από το ουδέτερο ανά κατηγορία: Σ(weight) × 2 (απάντηση 5 σε όλα, ή 1 σε όλα).
+ * Οι κατηγορίες έχουν πολύ διαφορετικό άθροισμα βαρών (π.χ. INFO ≈115 vs PEDAGOGIKA ≈47), οπότε η ακατέργαστη
+ * απόκλιση δεν συγκρίνεται δίκαια μεταξύ κατηγοριών — πρέπει να κανονικοποιείται πριν την κατάταξη.
+ */
+const MAX_DEVIATION: Record<CategoryKey, number> = CATEGORY_KEYS.reduce(
+  (acc, cat) => {
+    acc[cat] = WEIGHT_SUMS[cat] * 2;
+    return acc;
+  },
+  {} as Record<CategoryKey, number>
+);
 
 export interface ScoredCategory {
   category: CategoryKey;
   rawScore: number;
   /** 0–100: σχετική προτίμηση μεταξύ των 8 κατηγοριών για αυτόν τον χρήστη */
   displayPct: number;
-  /** Απόκλιση από το ουδέτερο baseline (χρησιμοποιείται για κατάταξη) */
+  /** Απόκλιση από το ουδέτερο baseline (μόνο για εμφάνιση/debug) */
   deviation: number;
+  /** Απόκλιση κανονικοποιημένη στο [-1, 1] ως προς τη μέγιστη δυνατή απόκλιση της κατηγορίας — χρησιμοποιείται για κατάταξη */
+  normalizedDeviation: number;
 }
 
 export interface CalculationResult {
@@ -168,28 +189,32 @@ export function computeCareerOrientationResults(
   });
 
   const deviation: Record<CategoryKey, number> = {} as Record<CategoryKey, number>;
+  const normalizedDeviation: Record<CategoryKey, number> = {} as Record<CategoryKey, number>;
   CATEGORY_KEYS.forEach((cat) => {
     deviation[cat] = raw[cat] - NEUTRAL_SCORES[cat];
+    normalizedDeviation[cat] = MAX_DEVIATION[cat] > 0 ? deviation[cat] / MAX_DEVIATION[cat] : 0;
   });
 
-  const minDev = Math.min(...CATEGORY_KEYS.map((c) => deviation[c]));
-  const maxDev = Math.max(...CATEGORY_KEYS.map((c) => deviation[c]));
+  const minDev = Math.min(...CATEGORY_KEYS.map((c) => normalizedDeviation[c]));
+  const maxDev = Math.max(...CATEGORY_KEYS.map((c) => normalizedDeviation[c]));
   const span = maxDev - minDev;
 
   const sorted: ScoredCategory[] = CATEGORY_KEYS.map((cat) => ({
     category: cat,
     rawScore: raw[cat],
     deviation: deviation[cat],
+    normalizedDeviation: normalizedDeviation[cat],
     displayPct:
-      span > 0 ? Math.round(((deviation[cat] - minDev) / span) * 100) : 0,
+      span > 0 ? Math.round(((normalizedDeviation[cat] - minDev) / span) * 100) : 0,
   })).sort((a, b) => {
-    if (b.deviation !== a.deviation) return b.deviation - a.deviation;
+    if (b.normalizedDeviation !== a.normalizedDeviation)
+      return b.normalizedDeviation - a.normalizedDeviation;
     return b.rawScore - a.rawScore;
   });
 
-  const topDeviation = sorted[0].deviation;
+  const topDeviation = sorted[0].normalizedDeviation;
   const tied = sorted
-    .filter((x) => x.deviation === topDeviation)
+    .filter((x) => x.normalizedDeviation === topDeviation)
     .map((x) => x.category);
 
   return {

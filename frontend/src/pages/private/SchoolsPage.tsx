@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useSearchParams } from 'react-router-dom';
 import {
   Search,
   MapPin,
@@ -8,8 +7,8 @@ import {
   ChevronDown,
   BookOpen,
   TrendingUp,
-  GitCompare,
-  LayoutGrid,
+  Copy,
+  Check,
 } from 'lucide-react';
 import {
   MenuIconImg,
@@ -25,10 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseComparePanel';
+// import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseComparePanel';
 import { SchoolCurriculumModal } from '@/components/schools/SchoolCurriculumModal';
 import { CareersModal } from '@/components/schools/CareersModal';
-import { SCHOOL_CURRICULA, hasSchoolCurriculum } from '@/data/schoolCurricula';
+import { SCHOOL_CURRICULA, canOpenSchoolCurriculum } from '@/data/schoolCurricula';
 
 
 import { ALL_SCHOOLS, type School } from '@/data/schools';
@@ -261,67 +260,18 @@ function SchoolsPageNotices() {
         Η ιδέα για να εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας και της
         Δέσποινας!
       </PageNotice>
-      <PageNotice iconSrc={SCHOOL_PAGE_NOTICE_ICONS.note} label="Σημείωση" variant="slate">
-        Το πρόγραμμα περιλαμβάνει υποχρεωτικά μαθήματα και μαθήματα επιλογής. Η ακριβής κατανομή
-        και οι επιλογές ορίζονται από το τμήμα.
-      </PageNotice>
     </motion.div>
   );
 }
 
-type SchoolsPageView = 'schools' | 'compare';
+// type SchoolsPageView = 'schools' | 'compare';
+// const COURSE_COMPARE_ENABLED = false;
 
 const SchoolsPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [activeCity, setActiveCity] = useState('Όλες');
   const [curriculumSchoolId, setCurriculumSchoolId] = useState<string | null>(null);
   const [activeCareersCategory, setActiveCareersCategory] = useState<CareersCategory | null>(null);
-
-  const view: SchoolsPageView =
-    searchParams.get('view') === 'compare' || searchParams.has('a') || searchParams.has('b')
-      ? 'compare'
-      : 'schools';
-  const schoolAId = searchParams.get('a') ?? '';
-  const schoolBId = searchParams.get('b') ?? '';
-
-  const setView = (nextView: SchoolsPageView) => {
-    const next = new URLSearchParams(searchParams);
-    if (nextView === 'compare') {
-      next.set('view', 'compare');
-    } else {
-      next.delete('view');
-      next.delete('a');
-      next.delete('b');
-    }
-    setSearchParams(next, { replace: true });
-  };
-
-  const setSchoolAId = (id: string) => {
-    const next = new URLSearchParams(searchParams);
-    next.set('view', 'compare');
-    if (id) next.set('a', id);
-    else next.delete('a');
-    setSearchParams(next, { replace: true });
-  };
-
-  const setSchoolBId = (id: string) => {
-    const next = new URLSearchParams(searchParams);
-    next.set('view', 'compare');
-    if (id) next.set('b', id);
-    else next.delete('b');
-    setSearchParams(next, { replace: true });
-  };
-
-  const swapSchools = () => {
-    const next = new URLSearchParams(searchParams);
-    next.set('view', 'compare');
-    if (schoolAId) next.set('b', schoolAId);
-    else next.delete('b');
-    if (schoolBId) next.set('a', schoolBId);
-    else next.delete('a');
-    setSearchParams(next, { replace: true });
-  };
 
   const activeCurriculum = curriculumSchoolId
     ? SCHOOL_CURRICULA[curriculumSchoolId]
@@ -356,34 +306,6 @@ const SchoolsPage: React.FC = () => {
             </h1>
 
             <div className="flex w-full max-w-3xl gap-3 flex-wrap md:flex-nowrap">
-              <div className="inline-flex shrink-0 rounded-2xl border border-[#f07f97]/30 dark:border-white/15 bg-[#fff5f8] dark:bg-[#2d1c48] p-1">
-                <button
-                  type="button"
-                  onClick={() => setView('schools')}
-                  className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-black transition-colors ${
-                    view === 'schools'
-                      ? 'bg-[#f07f97] text-white shadow-sm'
-                      : 'text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#f07f97]/10'
-                  }`}
-                >
-                  <LayoutGrid size={16} />
-                  Σχολές
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setView('compare')}
-                  className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-black transition-colors ${
-                    view === 'compare'
-                      ? 'bg-[#f07f97] text-white shadow-sm'
-                      : 'text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#f07f97]/10'
-                  }`}
-                >
-                  <GitCompare size={16} />
-                  Σύγκριση
-                </button>
-              </div>
-              {view === 'schools' ? (
-              <>
               <div className="relative flex-1 group">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#f07f97] transition-colors"
@@ -420,8 +342,6 @@ const SchoolsPage: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-              </>
-              ) : null}
             </div>
           </div>
         </div>
@@ -429,16 +349,6 @@ const SchoolsPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 mt-8 sm:mt-10">
-        {view === 'compare' ? (
-          <SchoolCourseComparePanel
-            schoolAId={schoolAId}
-            schoolBId={schoolBId}
-            onSchoolAChange={setSchoolAId}
-            onSchoolBChange={setSchoolBId}
-            onSwapSchools={swapSchools}
-          />
-        ) : (
-          <>
         <SchoolsPageNotices />
 
         {Object.entries(CATEGORIES).map(([catName, config]) => {
@@ -499,7 +409,7 @@ const SchoolsPage: React.FC = () => {
                     key={school.id}
                     school={school}
                     onOpenCurriculum={
-                      hasSchoolCurriculum(school.id)
+                      canOpenSchoolCurriculum(school.id)
                         ? () => setCurriculumSchoolId(school.id)
                         : undefined
                     }
@@ -509,8 +419,6 @@ const SchoolsPage: React.FC = () => {
             </motion.section>
           );
         })}
-          </>
-        )}
       </main>
 
       {activeCurriculum && (
@@ -534,10 +442,32 @@ const SchoolsPage: React.FC = () => {
   );
 };
 
+const MILITARY_SCHOOL_CATEGORY = 'Σώματα Ασφαλείας & Στρατιωτικές';
+
+function isMilitarySchool(school: School): boolean {
+  return school.category === MILITARY_SCHOOL_CATEGORY || school.uni === 'ΣΣΑΣ';
+}
+
 const SchoolCard: React.FC<{
   school: School;
   onOpenCurriculum?: () => void;
-}> = ({ school, onOpenCurriculum }) => (
+}> = ({ school, onOpenCurriculum }) => {
+  const disableHover = isMilitarySchool(school) || !onOpenCurriculum;
+  const [copied, setCopied] = useState(false);
+
+  const copySchoolName = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const text = `${school.name} (${school.uni})`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
+
+  return (
   <motion.div
     role={onOpenCurriculum ? 'button' : undefined}
     tabIndex={onOpenCurriculum ? 0 : undefined}
@@ -552,7 +482,11 @@ const SchoolCard: React.FC<{
           }
         : undefined
     }
-    className={`group bg-white dark:bg-[#3a2658] p-6 rounded-[2.5rem] border border-[#f07f97]/20 dark:border-white/15 shadow-sm overflow-hidden relative transition-all duration-200 hover:bg-[#fff5f8] dark:hover:bg-[#452d6a] hover:border-[#f07f97]/50 hover:shadow-md ${
+    className={`group bg-white dark:bg-[#3a2658] p-6 rounded-[2.5rem] border border-[#f07f97]/20 dark:border-white/15 shadow-sm overflow-hidden relative transition-all duration-200 ${
+      disableHover
+        ? ''
+        : 'hover:bg-[#fff5f8] dark:hover:bg-[#452d6a] hover:border-[#f07f97]/50 hover:shadow-md'
+    } ${
       onOpenCurriculum
         ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f07f97]'
         : ''
@@ -566,9 +500,28 @@ const SchoolCard: React.FC<{
         <span className="text-[10px] font-black text-[#f07f97] bg-[#fff5f8] dark:bg-[#f07f97]/15 px-2 py-0.5 rounded-lg uppercase tracking-wider">
           {school.uni}
         </span>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight transition-colors group-hover:text-[#f07f97] dark:group-hover:text-[#ff97b2]">
-          {school.name}
-        </h3>
+        <div className="flex items-start gap-1.5 min-w-0">
+          <h3
+            className={`text-lg font-bold text-gray-900 dark:text-white leading-tight transition-colors min-w-0 ${
+              disableHover ? '' : 'group-hover:text-[#f07f97] dark:group-hover:text-[#ff97b2]'
+            }`}
+          >
+            {school.name}
+          </h3>
+          <button
+            type="button"
+            onClick={copySchoolName}
+            className={`shrink-0 mt-0.5 p-1 rounded-lg border transition-colors ${
+              copied
+                ? 'border-emerald-300 bg-emerald-50 text-emerald-600 dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-400'
+                : 'border-[#f07f97]/25 bg-[#fff5f8] text-[#f07f97] hover:bg-[#f07f97]/10 dark:border-white/15 dark:bg-[#2d1c48] dark:text-[#ff97b2] dark:hover:bg-white/5'
+            }`}
+            aria-label={copied ? 'Αντιγράφηκε' : 'Αντιγραφή ονόματος σχολής'}
+            title={copied ? 'Αντιγράφηκε!' : 'Αντιγραφή'}
+          >
+            {copied ? <Check size={13} strokeWidth={2.5} /> : <Copy size={13} strokeWidth={2.5} />}
+          </button>
+        </div>
       </div>
       <div className="shrink-0 bg-[#fff5f8] dark:bg-[#2d1c48] p-2 rounded-2xl">
         <TrendingUp className="text-gray-400" size={18} />
@@ -614,6 +567,7 @@ const SchoolCard: React.FC<{
       </div>
     </div>
   </motion.div>
-);
+  );
+};
 
 export default SchoolsPage;

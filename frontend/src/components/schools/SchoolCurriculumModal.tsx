@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BookOpen, ArrowLeft, FileText, Info } from 'lucide-react';
+import { X, BookOpen, ArrowLeft, FileText, ExternalLink } from 'lucide-react';
 import type { SchoolCurriculum } from '@/data/schoolCurricula';
 
 const SEMESTER_LABEL: Record<number, string> = {
@@ -110,44 +110,72 @@ export const SchoolCurriculumModal: React.FC<SchoolCurriculumModalProps> = ({
             </div>
 
             <div className="flex-1 overflow-y-auto overscroll-contain px-3 sm:px-6 py-4 sm:py-5 space-y-5 min-h-0">
-              <div className="flex items-start gap-2.5 rounded-xl border border-[#f07f97]/25 dark:border-white/15 bg-[#fff5f8] dark:bg-[#2d1c48]/60 px-3 py-2.5">
-                <Info size={16} className="mt-0.5 shrink-0 text-[#f07f97] dark:text-[#ff97b2]" />
-                <p className="text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
-                  Κάποια μαθήματα είναι υποχρεωτικά και κάποια επιλογής. Η ακριβής κατανομή και οι
-                  επιλογές ορίζονται από το τμήμα.
-                </p>
-              </div>
-              {curriculum.semesters.map((sem) => (
-                <section key={sem.semester}>
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
-                    <h3 className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#f07f97] dark:text-[#ff97b2]">
-                      Εξάμηνο: {SEMESTER_LABEL[sem.semester] ?? `${sem.semester}ο`}
-                    </h3>
-                    {curriculum.semesterPdfLinks?.[sem.semester]?.map((pdf) => (
-                      <a
-                        key={`${sem.semester}-${pdf.url}`}
-                        href={pdf.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]/60 px-2.5 py-1 text-[11px] sm:text-xs font-bold text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#fff5f8] dark:hover:bg-white/5 transition-colors"
-                      >
-                        <FileText size={13} />
-                        PDF · {pdf.label}
-                      </a>
-                    ))}
-                  </div>
-                  <ul className="space-y-1.5">
-                    {sem.courses.map((course) => (
-                      <li
-                        key={`${sem.semester}-${course.code}-${course.name}`}
-                        className="rounded-xl border border-[#f07f97]/20 dark:border-white/15 bg-white dark:bg-[#2d1c48]/60 px-3 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 leading-snug"
-                      >
-                        {course.name}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
+              {curriculum.semesters.length === 0 &&
+              (curriculum.hoursNote || curriculum.externalCoursesUrl) ? (
+                <div className="flex flex-col items-center justify-center gap-4 px-2 py-6 text-center">
+                  {curriculum.hoursNote ? (
+                    <p className="text-base sm:text-lg font-black text-gray-900 dark:text-white leading-relaxed">
+                      {curriculum.hoursNote}
+                    </p>
+                  ) : null}
+                      {curriculum.externalCoursesUrl ? (
+                    <a
+                      href={curriculum.externalCoursesUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border-2 border-[#f07f97]/40 dark:border-[#ff97b2]/40 bg-[#fff5f8] dark:bg-[#2d1c48]/60 px-4 py-3 text-sm sm:text-base font-bold text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#f07f97]/10 dark:hover:bg-white/5 transition-colors break-all"
+                    >
+                      <ExternalLink size={18} className="shrink-0" />
+                      {curriculum.externalCoursesUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  ) : null}
+                </div>
+              ) : curriculum.semesters.length > 0 ? (
+                <>
+                  {curriculum.externalCoursesUrl ? (
+                    <a
+                      href={curriculum.externalCoursesUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border-2 border-[#f07f97]/40 dark:border-[#ff97b2]/40 bg-[#fff5f8] dark:bg-[#2d1c48]/60 px-4 py-3 text-sm sm:text-base font-bold text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#f07f97]/10 dark:hover:bg-white/5 transition-colors break-all"
+                    >
+                      <ExternalLink size={18} className="shrink-0" />
+                      {curriculum.externalCoursesUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  ) : null}
+                  {curriculum.semesters.map((sem) => (
+                    <section key={sem.semester}>
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
+                        <h3 className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#f07f97] dark:text-[#ff97b2]">
+                          Εξάμηνο: {SEMESTER_LABEL[sem.semester] ?? `${sem.semester}ο`}
+                        </h3>
+                        {curriculum.semesterPdfLinks?.[sem.semester]?.map((pdf) => (
+                          <a
+                            key={`${sem.semester}-${pdf.url}`}
+                            href={pdf.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]/60 px-2.5 py-1 text-[11px] sm:text-xs font-bold text-[#f07f97] dark:text-[#ff97b2] hover:bg-[#fff5f8] dark:hover:bg-white/5 transition-colors"
+                          >
+                            <FileText size={13} />
+                            PDF · {pdf.label}
+                          </a>
+                        ))}
+                      </div>
+                      <ul className="space-y-1.5">
+                        {sem.courses.map((course) => (
+                          <li
+                            key={`${sem.semester}-${course.code}-${course.name}`}
+                            className="rounded-xl border border-[#f07f97]/20 dark:border-white/15 bg-white dark:bg-[#2d1c48]/60 px-3 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 leading-snug"
+                          >
+                            {course.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
+                </>
+              ) : null}
             </div>
 
             <div className="shrink-0 px-3 sm:px-6 py-3 border-t border-[#f07f97]/20 dark:border-white/10 bg-[#fff5f8] dark:bg-[#2d1c48]/80 flex gap-2">

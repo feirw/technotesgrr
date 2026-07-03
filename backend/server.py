@@ -3,6 +3,7 @@ import asyncio
 import json
 import logging
 import queue
+import sys
 import threading
 from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Console output includes emoji (✅/❌/👋); on Windows the default stdout/stderr encoding
+# is the system codepage (e.g. cp1253 for Greek locale), which can't encode them and
+# crashes the print — including inside error-handling paths meant to keep the app alive.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 
 logger = logging.getLogger("technotesgr")
 
