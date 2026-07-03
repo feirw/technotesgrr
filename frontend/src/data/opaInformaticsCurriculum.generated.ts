@@ -10,6 +10,7 @@ export const OPA_INFORMATICS_CURRICULUM: SchoolCurriculum = {
       { code: "OPA-01-02", ects: 6, name: "Εισαγωγή στην Επιστήμη των Υπολογιστών", kind: "Υποχρεωτικό (ΥΜ)" },
       { code: "OPA-01-03", ects: 6, name: "Εισαγωγή στην Οικονομική Επιστήμη", kind: "Υποχρεωτικό (ΥΜ)" },
       { code: "OPA-01-04", ects: 6, name: "Διακριτά Μαθηματικά", kind: "Υποχρεωτικό (ΥΜ)" },
+      { code: "OPA-01-05", ects: 6, name: "Μαθηματικά Ι", kind: "Υποχρεωτικό (ΥΜ)" },
     ] },
     { semester: 2, courses: [
       { code: "OPA-02-01", ects: 6, name: "Σχεδίαση Ψηφιακών Συστημάτων", kind: "Υποχρεωτικό (ΥΜ)" },
