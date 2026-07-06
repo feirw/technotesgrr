@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TechNotesGR</string>
+    <string name="title_activity_main">TechNotesGR</string>
+    <string name="package_name">gr.technotesgr.app</string>
+    <string name="custom_url_scheme">gr.technotesgr.app</string>
+</resources>

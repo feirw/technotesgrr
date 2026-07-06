@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
 import ScrollToTop from '@/components/other/ScrollToTop';
+import NativeAppBridge from '@/components/other/NativeAppBridge';
 import SeoHead from '@/seo/SeoHead';
 import routes, { RouteConfig } from './routes/routes';
 
@@ -16,6 +17,7 @@ const App: React.FC = () => {
     <MainLayout>
       <SeoHead />
       <ScrollToTop />
+      <NativeAppBridge />
       <Routes>
         {routes.map((route: RouteConfig, index: number) => (
           <Route

@@ -16,6 +16,7 @@ import {
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import CookieConsent from '@/components/other/CookieConsent';
+import PwaInstallPrompt from '@/components/other/PwaInstallPrompt';
 import { MENU_ICONS, MenuIconImg, MenuNavIcon } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
@@ -650,6 +651,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </footer>
 
       <CookieConsent />
+      <PwaInstallPrompt />
     </div>
   );
 };

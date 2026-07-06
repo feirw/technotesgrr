@@ -44,3 +44,20 @@ ai.md
 
 # Local ΑΕΠΠ lesson source files for AI corrector KB (run scripts/build_corrector_knowledge.py)
 frontend/ΜΑΘΗΜΑΤΑ/
+
+# ===================
+# Mobile (Capacitor) — generated native build output, not source
+# ===================
+frontend/android/app/build/
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/capacitor-cordova-android-plugins/
+frontend/android/app/src/main/assets/public/
+frontend/android/app/src/main/assets/capacitor.config.json
+frontend/android/app/src/main/assets/capacitor.plugins.json
+frontend/ios/App/Pods/
+frontend/ios/App/output/
+frontend/ios/.xcode.env.local
+frontend/ios/App/App/public/
+frontend/ios/App/App/capacitor.config.json
+frontend/ios/App/App/capacitor.plugins.json
