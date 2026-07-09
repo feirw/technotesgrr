@@ -24,6 +24,7 @@ export const MENU_ICONS = {
   takeABreath: `${HP}/8.png`,
   faq: `${HP}/17.png`,
   saek: `${HP}/44.png`,
+  mixanografiko: `${HP}/47.png`,
 } as const;
 
 /** Εικονίδια σημειώσεων στη σελίδα Σχολών. */

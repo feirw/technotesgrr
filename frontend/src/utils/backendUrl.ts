@@ -1,4 +1,6 @@
-const LOCAL_FALLBACK = 'http://localhost:8001';
+// 127.0.0.1, not localhost — Node/browsers can resolve "localhost" to the IPv6
+// ::1 loopback, which the backend (bound to 0.0.0.0, IPv4-only) refuses.
+const LOCAL_FALLBACK = 'http://127.0.0.1:8001';
 
 function normalizedBackendEnv(): string {
   if (typeof window !== 'undefined') {
@@ -40,13 +42,22 @@ function envBackendUsableHere(normalizedEnv: string): boolean {
 }
 
 export const getBackendUrl = (): string => {
+  // On localhost, always prefer the Vite dev proxy (same origin, relative /api
+  // path) over VITE_BACKEND_URL — even when that env var is set (e.g. to the
+  // production API for phone/LAN testing), local dev should hit the local
+  // backend, not silently call production. This matches the priority already
+  // used by getBackendUrlCandidates() below.
+  if (pageIsOnLoopbackHost()) {
+    return '';
+  }
+
   const normalizedEnv = normalizedBackendEnv();
 
   if (normalizedEnv && envBackendUsableHere(normalizedEnv)) {
     return normalizedEnv;
   }
 
-  if (typeof window !== 'undefined' && !pageIsOnLoopbackHost()) {
+  if (typeof window !== 'undefined') {
     return window.location.origin.replace(/\/+$/, '');
   }
 

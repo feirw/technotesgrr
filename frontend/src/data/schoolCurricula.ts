@@ -514,7 +514,7 @@ export const EKPA_DIGITAL_INDUSTRY_CURRICULUM: SchoolCurriculum = {
 
 /** ΕΚΠΑ Οικονομικών Επιστημών — μαθήματα στο επίσημο site του τμήματος */
 const EKPA_ECON_COURSES_URL =
-  'https://www.econ.uoa.gr/spoydes/proptychiakes-spoydes/';
+  'https://www.econ.uoa.gr/%cf%83%cf%80%ce%bf%cf%85%ce%b4%ce%b5%cf%82/%cf%80%cf%81%ce%bf%cf%80%cf%84%cf%85%cf%87%ce%b9%ce%b1%ce%ba%ce%b5%cf%83-%cf%83%cf%80%ce%bf%cf%85%ce%b4%ce%b5%cf%83/';
 
 export const EKPA_ECONOMIC_SCIENCE_CURRICULUM: SchoolCurriculum = {
   title: 'Οικονομικών Επιστημών',

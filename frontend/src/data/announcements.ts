@@ -18,6 +18,24 @@ export interface Announcement {
 
 export const ANNOUNCEMENTS: Announcement[] = [
   {
+    id: '5',
+    date: '2026-07-09',
+    title: 'Υποβολή Μηχανογραφικού 2026',
+    body:
+      'Άνοιξε η πλατφόρμα του Υπουργείου Παιδείας για την υποβολή του Μηχανογραφικού Δελτίου. Μπες με τους κωδικούς σου και υπέβαλε τις προτιμήσεις σου στις σχολές.',
+    link: 'https://www.minedu.gov.gr/mixanografiko',
+    linkLabel: 'Άνοιγμα στο minedu.gov.gr',
+  },
+  {
+    id: '4',
+    date: '2026-07-08',
+    title: 'Βάσεις 2026: Ανακοινώθηκαν οι φετινές ΕΒΕ',
+    body:
+      'Ανακοινώθηκαν οι Ελάχιστες Βάσεις Εισαγωγής (ΕΒΕ) 2026 για ΓΕΛ και ΕΠΑΛ. Δες σε ποιο πεδίο εκτινάχθηκε η τιμή φέτος — οι νέες τιμές είναι ήδη ενημερωμένες στις Σχολές και στον Υπολογισμό Μορίων.',
+    link: 'https://www.dnews.gr/eidhseis/paideia/598312/vaseis-2026-anakoinothikan-oi-fetines-eve-gia-gel-kai-epal-se-poio-pedio-ektinaxthike-i-timi',
+    linkLabel: 'Διάβασε στο Dnews',
+  },
+  {
     id: '3',
     date: '2026-06-29',
     title: 'Μηχανογραφικό 2026: Προθεσμία κωδικού',

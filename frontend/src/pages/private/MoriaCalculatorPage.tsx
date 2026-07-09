@@ -158,7 +158,7 @@ const SchoolResultCard: React.FC<{ row: SchoolRow; averageGrade: number | null; 
                 <span className="text-gray-400">—</span>
               )}
             </StatCell>
-            <StatCell label="ΕΒΕ 2025">
+            <StatCell label="ΕΒΕ 2026">
               {basis ? (
                 <span>{formatEbeDisplay(basis.ebe)}</span>
               ) : (

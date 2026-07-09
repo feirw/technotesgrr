@@ -43,6 +43,7 @@ const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
 const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
+const MixanografikoPage = lazy(() => import('@/pages/private/MixanografikoPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -171,6 +172,10 @@ const routes: RouteConfig[] = [
   {
     path: '/saek',
     element: <SaekPage />,
+  },
+  {
+    path: '/mixanografiko',
+    element: <MixanografikoPage />,
   },
 
   {

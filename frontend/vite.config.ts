@@ -108,7 +108,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8001',
+        // 127.0.0.1, not localhost — Node can resolve "localhost" to the IPv6 ::1
+        // loopback, which uvicorn (bound to 0.0.0.0, IPv4-only) refuses.
+        target: 'http://127.0.0.1:8001',
         changeOrigin: true,
         secure: false,
         timeout: 120_000,
