@@ -12,30 +12,47 @@ import {
 } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { ALL_SCHOOLS, type School } from '@/data/schools';
-import { normalizeSearch } from '@/utils/schoolCoefficientsUtils';
-import { formatEbeDisplay, parseEbeGrade } from '@/utils/schoolBasisMatching';
+import { SCHOOL_COEFFICIENTS_2026, type SchoolCoefficientsEntry } from '@/data/schoolCoefficients2026';
+import {
+  LANGUAGE_SPECIAL_SUBJECT_KEYS,
+  SPECIAL_EXAM_SUBJECTS,
+  isSpecialCoefficientSubject,
+  normalizeSearch,
+  type SpecialExamSubjectKey,
+} from '@/utils/schoolCoefficientsUtils';
+import { formatEbeDisplay, matchSchoolBasis, parseEbeGrade } from '@/utils/schoolBasisMatching';
+import { parseExamGrade, type GradeInputs } from '@/utils/moriaCalculation';
 
-const STORAGE_KEY = 'technotesgr_mixanografiko_v2';
+const STORAGE_KEY = 'technotesgr_mixanografiko_v3';
 const MINEDU_URL = 'https://www.minedu.gov.gr/mixanografiko';
+
+const EMPTY_SPECIAL_GRADES: GradeInputs = Object.fromEntries(
+  SPECIAL_EXAM_SUBJECTS.map(({ key }) => [key, '']),
+);
 
 type StoredState = {
   meanGrade: string;
+  specialGrades: GradeInputs;
   rankedIds: string[];
 };
 
 function loadState(): StoredState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { meanGrade: '', rankedIds: [] };
+    if (!raw) return { meanGrade: '', specialGrades: { ...EMPTY_SPECIAL_GRADES }, rankedIds: [] };
     const parsed = JSON.parse(raw) as Partial<StoredState>;
     return {
       meanGrade: typeof parsed.meanGrade === 'string' ? parsed.meanGrade : '',
+      specialGrades:
+        parsed.specialGrades && typeof parsed.specialGrades === 'object'
+          ? { ...EMPTY_SPECIAL_GRADES, ...parsed.specialGrades }
+          : { ...EMPTY_SPECIAL_GRADES },
       rankedIds: Array.isArray(parsed.rankedIds)
         ? parsed.rankedIds.filter((x): x is string => typeof x === 'string')
         : [],
     };
   } catch {
-    return { meanGrade: '', rankedIds: [] };
+    return { meanGrade: '', specialGrades: { ...EMPTY_SPECIAL_GRADES }, rankedIds: [] };
   }
 }
 
@@ -46,8 +63,58 @@ function schoolMatchesQuery(school: School, query: string): boolean {
   return q.split(' ').filter(Boolean).every((token) => haystack.includes(token));
 }
 
+/** Ποια ειδικά μαθήματα απαιτεί μια σχολή — null αν δεν απαιτεί κανένα, 'anyLanguage' αν δέχεται
+ * οποιαδήποτε ξένη γλώσσα, αλλιώς η λίστα των συγκεκριμένων ειδικών μαθημάτων που απαιτεί. */
+function getRequiredSpecialKeys(entry: SchoolCoefficientsEntry): SpecialExamSubjectKey[] | 'anyLanguage' | null {
+  const specialCoefs = entry.coefficients.filter((c) => isSpecialCoefficientSubject(c.subject));
+  if (specialCoefs.length === 0) return null;
+  if (specialCoefs.some((c) => c.subject === 'Ειδικό Μάθημα')) return 'anyLanguage';
+  return specialCoefs.map((c) => c.subject as SpecialExamSubjectKey);
+}
+
+type Eligibility = { eligible: boolean; missing: boolean };
+
+function evaluateSchool(
+  school: School,
+  entry: SchoolCoefficientsEntry | undefined,
+  coreMean: number | null,
+  specialGrades: GradeInputs,
+): Eligibility {
+  const ebeThreshold = parseEbeGrade(school.ebe);
+  if (ebeThreshold === null) return { eligible: true, missing: false };
+
+  const requiredKeys = entry ? getRequiredSpecialKeys(entry) : null;
+
+  if (requiredKeys === null) {
+    if (coreMean === null) return { eligible: false, missing: true };
+    return { eligible: coreMean >= ebeThreshold, missing: false };
+  }
+
+  if (requiredKeys === 'anyLanguage') {
+    const entered = LANGUAGE_SPECIAL_SUBJECT_KEYS.map((k) => parseExamGrade(specialGrades[k] ?? '')).filter(
+      (g): g is number => g !== null,
+    );
+    if (entered.length === 0) return { eligible: false, missing: true };
+    return { eligible: Math.max(...entered) >= ebeThreshold, missing: false };
+  }
+
+  const grades = requiredKeys.map((k) => parseExamGrade(specialGrades[k] ?? ''));
+  if (grades.some((g) => g === null)) return { eligible: false, missing: true };
+  const validGrades = grades as number[];
+  return { eligible: Math.min(...validGrades) >= ebeThreshold, missing: false };
+}
+
+function requiredSubjectsLabel(entry: SchoolCoefficientsEntry | undefined): string | null {
+  if (!entry) return null;
+  const requiredKeys = getRequiredSpecialKeys(entry);
+  if (requiredKeys === null) return null;
+  if (requiredKeys === 'anyLanguage') return 'Ξένη γλώσσα (μία από Αγγλικά/Γαλλικά/Γερμανικά/Ιταλικά)';
+  return requiredKeys.join(', ');
+}
+
 const MixanografikoPage: React.FC = () => {
   const [meanGrade, setMeanGrade] = useState('');
+  const [specialGrades, setSpecialGrades] = useState<GradeInputs>(EMPTY_SPECIAL_GRADES);
   const [rankedIds, setRankedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [hydrated, setHydrated] = useState(false);
@@ -56,18 +123,29 @@ const MixanografikoPage: React.FC = () => {
   useEffect(() => {
     const s = loadState();
     setMeanGrade(s.meanGrade);
+    setSpecialGrades(s.specialGrades);
     setRankedIds(s.rankedIds);
     setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ meanGrade, rankedIds }));
-  }, [hydrated, meanGrade, rankedIds]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ meanGrade, specialGrades, rankedIds }));
+  }, [hydrated, meanGrade, specialGrades, rankedIds]);
 
   const schoolsById = useMemo(() => {
     const map = new Map<string, School>();
     for (const s of ALL_SCHOOLS) map.set(s.id, s);
+    return map;
+  }, []);
+
+  /** School.id -> αντίστοιχο SchoolCoefficientsEntry (για να ξέρουμε ποια ειδικά μαθήματα απαιτεί). */
+  const coeffEntryBySchoolId = useMemo(() => {
+    const map = new Map<string, SchoolCoefficientsEntry>();
+    for (const entry of SCHOOL_COEFFICIENTS_2026) {
+      const basis = matchSchoolBasis(entry);
+      if (basis) map.set(basis.id, entry);
+    }
     return map;
   }, []);
 
@@ -78,22 +156,29 @@ const MixanografikoPage: React.FC = () => {
 
   const numericMean = meanGrade.trim() ? Number(meanGrade.trim().replace(',', '.')) : null;
   const validMean = numericMean !== null && Number.isFinite(numericMean) && numericMean >= 0 && numericMean <= 20;
+  const coreMeanForEval = validMean ? (numericMean as number) : null;
 
-  const isEligible = (school: School): boolean => {
-    if (!validMean) return false;
-    const ebeThreshold = parseEbeGrade(school.ebe);
-    if (ebeThreshold === null) return true;
-    return (numericMean as number) >= ebeThreshold;
+  const anySpecialGradeEntered = SPECIAL_EXAM_SUBJECTS.some(
+    ({ key }) => parseExamGrade(specialGrades[key] ?? '') !== null,
+  );
+
+  const setSpecialGrade = (key: string, value: string) => {
+    setSpecialGrades((prev) => ({ ...prev, [key]: value }));
   };
 
+  const evalFor = (school: School): Eligibility =>
+    evaluateSchool(school, coeffEntryBySchoolId.get(school.id), coreMeanForEval, specialGrades);
+
   const availableSchools = useMemo(() => {
-    if (!validMean) return [];
+    if (!validMean && !anySpecialGradeEntered) return [];
     const rankedSet = new Set(rankedIds);
-    return ALL_SCHOOLS.filter(
-      (s) => !rankedSet.has(s.id) && isEligible(s) && schoolMatchesQuery(s, searchQuery),
-    );
+    return ALL_SCHOOLS.filter((s) => {
+      if (rankedSet.has(s.id)) return false;
+      if (!schoolMatchesQuery(s, searchQuery)) return false;
+      return evalFor(s).eligible;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rankedIds, searchQuery, validMean, numericMean]);
+  }, [rankedIds, searchQuery, validMean, anySpecialGradeEntered, numericMean, specialGrades]);
 
   const addSchool = (id: string) => {
     setRankedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -146,17 +231,17 @@ const MixanografikoPage: React.FC = () => {
           <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
             Πρόβα μηχανογραφικού — κατάταξε με σειρά προτίμησης τις σχολές που πληροίς την ΕΒΕ τους
           </p>
-          <p className="text-xs text-white/70 mt-3">💡 Ιδέα της Βαλεντίνας</p>
+          <p className="text-sm sm:text-base text-white/80 mt-3 font-semibold">💡 Η ιδέα είναι της Βαλεντίνας</p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Mean grade input */}
+        {/* Grades */}
         <div className="rounded-2xl border border-[#f07f97]/20 dark:border-white/10 bg-white dark:bg-[#3a2658] p-4 sm:p-5">
-          <h2 className="font-black text-gray-900 dark:text-white mb-3">Ο μέσος όρος σου</h2>
-          <label className="block max-w-xs">
+          <h2 className="font-black text-gray-900 dark:text-white mb-3">Οι βαθμοί σου</h2>
+          <label className="block max-w-xs mb-5">
             <span className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
-              Μέσος όρος βαθμών (0–20) <span className="text-[#f07f97]">*</span>
+              Μέσος όρος 4 βασικών μαθημάτων (0–20)
             </span>
             <input
               type="text"
@@ -170,10 +255,32 @@ const MixanografikoPage: React.FC = () => {
               <span className="text-xs text-red-600 dark:text-red-400 mt-1 block">Πρέπει να είναι 0–20.</span>
             ) : (
               <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
-                Μπορείς να δηλώσεις μια σχολή μόνο αν ο μέσος όρος σου είναι μεγαλύτερος ή ίσος από την ΕΒΕ της.
+                Για σχολές χωρίς ειδικό μάθημα, συγκρίνεται με την ΕΒΕ τους.
               </span>
             )}
           </label>
+
+          <h3 className="text-sm font-black text-gray-900 dark:text-white mb-2">Ειδικά μαθήματα</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+            Συμπλήρωσε μόνο όσα έχεις δώσει. Σχολές που απαιτούν ειδικό μάθημα που δεν έχεις συμπληρώσει δεν θα σου
+            εμφανίζονται.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+            {SPECIAL_EXAM_SUBJECTS.map(({ key, label }) => (
+              <div key={key} className="flex items-center justify-between gap-3 py-1.5 border-t border-[#f07f97]/10 dark:border-white/10">
+                <span className="text-sm text-gray-700 dark:text-gray-200">{label}</span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={specialGrades[key] ?? ''}
+                  onChange={(e) => setSpecialGrade(key, e.target.value)}
+                  placeholder="0–20"
+                  className="w-20 px-2 py-1.5 rounded-lg border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48] text-right tabular-nums outline-none focus:border-[#f07f97]"
+                  aria-label={`Βαθμός ${label}`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Ranked preference list */}
@@ -201,62 +308,67 @@ const MixanografikoPage: React.FC = () => {
             </p>
           ) : (
             <ul className="space-y-2">
-              {rankedSchools.map((school, index) => (
-                <li
-                  key={school.id}
-                  draggable
-                  onDragStart={() => setDraggedIndex(index)}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    reorderTo(index);
-                  }}
-                  onDragEnd={() => setDraggedIndex(null)}
-                  className={`flex items-center gap-2 sm:gap-3 rounded-xl border border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8]/60 dark:bg-[#2d1c48]/50 px-3 py-2.5 cursor-grab active:cursor-grabbing transition-opacity ${
-                    draggedIndex === index ? 'opacity-40' : ''
-                  }`}
-                >
-                  <GripVertical className="w-4 h-4 text-gray-400 shrink-0 hidden sm:block" aria-hidden />
-                  <span className="shrink-0 w-7 h-7 rounded-full bg-[#f07f97] text-white text-sm font-black flex items-center justify-center">
-                    {index + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm sm:text-base text-gray-900 dark:text-white truncate">
-                      {school.name}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {school.uni} · {school.city} · ΕΒΕ {formatEbeDisplay(school.ebe)}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => moveUp(index)}
-                      disabled={index === 0}
-                      aria-label="Μετακίνηση πάνω"
-                      className="p-1.5 rounded-lg text-gray-500 hover:bg-white dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      <ArrowUp className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => moveDown(index)}
-                      disabled={index === rankedSchools.length - 1}
-                      aria-label="Μετακίνηση κάτω"
-                      className="p-1.5 rounded-lg text-gray-500 hover:bg-white dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      <ArrowDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => removeSchool(school.id)}
-                      aria-label="Αφαίρεση"
-                      className="p-1.5 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </li>
-              ))}
+              {rankedSchools.map((school, index) => {
+                const entry = coeffEntryBySchoolId.get(school.id);
+                const requiredLabel = requiredSubjectsLabel(entry);
+                return (
+                  <li
+                    key={school.id}
+                    draggable
+                    onDragStart={() => setDraggedIndex(index)}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      reorderTo(index);
+                    }}
+                    onDragEnd={() => setDraggedIndex(null)}
+                    className={`flex items-center gap-2 sm:gap-3 rounded-xl border border-[#f07f97]/15 dark:border-white/10 bg-[#fff5f8]/60 dark:bg-[#2d1c48]/50 px-3 py-2.5 cursor-grab active:cursor-grabbing transition-opacity ${
+                      draggedIndex === index ? 'opacity-40' : ''
+                    }`}
+                  >
+                    <GripVertical className="w-4 h-4 text-gray-400 shrink-0 hidden sm:block" aria-hidden />
+                    <span className="shrink-0 w-7 h-7 rounded-full bg-[#f07f97] text-white text-sm font-black flex items-center justify-center">
+                      {index + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm sm:text-base text-gray-900 dark:text-white truncate">
+                        {school.name}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {school.uni} · {school.city} · ΕΒΕ {formatEbeDisplay(school.ebe)}
+                        {requiredLabel ? ` · Απαιτεί: ${requiredLabel}` : ''}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => moveUp(index)}
+                        disabled={index === 0}
+                        aria-label="Μετακίνηση πάνω"
+                        className="p-1.5 rounded-lg text-gray-500 hover:bg-white dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        <ArrowUp className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveDown(index)}
+                        disabled={index === rankedSchools.length - 1}
+                        aria-label="Μετακίνηση κάτω"
+                        className="p-1.5 rounded-lg text-gray-500 hover:bg-white dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        <ArrowDown className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeSchool(school.id)}
+                        aria-label="Αφαίρεση"
+                        className="p-1.5 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -265,9 +377,10 @@ const MixanografikoPage: React.FC = () => {
         <div className="rounded-2xl border border-[#f07f97]/20 dark:border-white/10 bg-white dark:bg-[#3a2658] p-4 sm:p-5">
           <h2 className="font-black text-gray-900 dark:text-white mb-3">Δήλωσε σχολές</h2>
 
-          {!validMean ? (
+          {!validMean && !anySpecialGradeEntered ? (
             <p className="text-sm text-gray-500 dark:text-gray-400 py-6 text-center">
-              Συμπλήρωσε τον μέσο όρο σου παραπάνω για να δεις ποιες σχολές μπορείς να δηλώσεις.
+              Συμπλήρωσε τον μέσο όρο σου ή/και κάποιο ειδικό μάθημα παραπάνω για να δεις ποιες σχολές μπορείς να
+              δηλώσεις.
             </p>
           ) : (
             <>
@@ -293,7 +406,7 @@ const MixanografikoPage: React.FC = () => {
               </div>
 
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                {availableSchools.length} σχολές πληρούν την ΕΒΕ τους με μέσο όρο {meanGrade}
+                {availableSchools.length} σχολές πληρούν τις προϋποθέσεις τους με τους βαθμούς που έδωσες
               </p>
 
               <div className="max-h-[28rem] overflow-y-auto space-y-2 pr-1">
@@ -302,30 +415,35 @@ const MixanografikoPage: React.FC = () => {
                     Δεν βρέθηκαν σχολές που να πληροίς{searchQuery ? ` για «${searchQuery}»` : ''}.
                   </p>
                 ) : (
-                  availableSchools.map((school) => (
-                    <div
-                      key={school.id}
-                      className="flex items-center gap-3 rounded-xl border border-[#f07f97]/10 dark:border-white/10 px-3 py-2.5 hover:bg-[#fff5f8]/60 dark:hover:bg-white/5"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
-                          {school.name}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                          {school.uni} · {school.city} · ΕΒΕ {formatEbeDisplay(school.ebe)}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => addSchool(school.id)}
-                        aria-label={`Δήλωση ${school.name}`}
-                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#f07f97]/10 text-[#f07f97] hover:bg-[#f07f97] hover:text-white font-bold text-sm transition-colors"
+                  availableSchools.map((school) => {
+                    const entry = coeffEntryBySchoolId.get(school.id);
+                    const requiredLabel = requiredSubjectsLabel(entry);
+                    return (
+                      <div
+                        key={school.id}
+                        className="flex items-center gap-3 rounded-xl border border-[#f07f97]/10 dark:border-white/10 px-3 py-2.5 hover:bg-[#fff5f8]/60 dark:hover:bg-white/5"
                       >
-                        <Plus className="w-4 h-4" />
-                        Δήλωση
-                      </button>
-                    </div>
-                  ))
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
+                            {school.name}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {school.uni} · {school.city} · ΕΒΕ {formatEbeDisplay(school.ebe)}
+                            {requiredLabel ? ` · Απαιτεί: ${requiredLabel}` : ''}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => addSchool(school.id)}
+                          aria-label={`Δήλωση ${school.name}`}
+                          className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#f07f97]/10 text-[#f07f97] hover:bg-[#f07f97] hover:text-white font-bold text-sm transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Δήλωση
+                        </button>
+                      </div>
+                    );
+                  })
                 )}
               </div>
             </>
