@@ -78,15 +78,7 @@ const SaekPage: React.FC = () => {
               Σχολές ΣΑΕΚ · ΔΥΠΑ
               <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
             </a>
-            <a
-              href={EDUCATION_PUBLIC_IEK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f07f97]/40 dark:border-[#ff97b2]/40 bg-white dark:bg-[#2d1c48]/60 hover:bg-[#fff5f8] dark:hover:bg-white/5 text-[#f07f97] dark:text-[#ff97b2] font-bold text-sm sm:text-base px-5 py-3 transition-colors"
-            >
-              Δημόσια ΙΕΚ / ΣΑΕΚ ανά περιοχή
-              <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
-            </a>
+           
           </div>
         </section>
       </main>

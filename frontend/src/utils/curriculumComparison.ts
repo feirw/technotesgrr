@@ -22,7 +22,24 @@ export type SharedCourseGroup = {
   key: string;
   label: string;
   entries: { schoolId: string; course: FlattenedCourse }[];
+  /** 'exact' = ίδιο κανονικοποιημένο όνομα. 'similar' = παρόμοιο όνομα, όχι ταυτόσημο. */
+  matchType: 'exact' | 'similar';
 };
+
+const SIMILARITY_THRESHOLD = 0.6;
+
+/** Jaccard similarity σε λέξεις-tokens του κανονικοποιημένου ονόματος. 0–1. */
+export function courseNameSimilarity(a: string, b: string): number {
+  const tokensA = new Set(normalizeCourseName(a).split(' ').filter((t) => t.length > 2));
+  const tokensB = new Set(normalizeCourseName(b).split(' ').filter((t) => t.length > 2));
+  if (tokensA.size === 0 || tokensB.size === 0) return 0;
+  let intersection = 0;
+  for (const t of tokensA) {
+    if (tokensB.has(t)) intersection += 1;
+  }
+  const union = tokensA.size + tokensB.size - intersection;
+  return union === 0 ? 0 : intersection / union;
+}
 
 export type CurriculumComparison = {
   schools: ComparedSchool[];
@@ -111,7 +128,50 @@ export function compareCurricula(
       key,
       label: pickDisplayName(entries),
       entries,
+      matchType: 'exact',
     });
+  }
+
+  // Δεύτερο πέρασμα: μαθήματα με παρόμοιο (όχι ταυτόσημο) όνομα ανάμεσα σε δύο σχολές.
+  // Μόνο για σύγκριση ακριβώς δύο σχολών — για περισσότερες, η κατά ζεύγη αντιστοίχιση
+  // γίνεται πολυσήμαντη (ποιο ζευγάρι "ανήκει" μαζί).
+  if (schoolIds.length === 2) {
+    const [idA, idB] = schoolIds;
+    const remainingA = (prepared.find((e) => e.school.id === idA)?.courses ?? []).filter(
+      (c) => !matchedKeys.has(normalizeCourseName(c.name)),
+    );
+    const remainingB = (prepared.find((e) => e.school.id === idB)?.courses ?? []).filter(
+      (c) => !matchedKeys.has(normalizeCourseName(c.name)),
+    );
+    const usedB = new Set<number>();
+
+    for (const courseA of remainingA) {
+      let bestIndex = -1;
+      let bestScore = 0;
+      remainingB.forEach((courseB, index) => {
+        if (usedB.has(index)) return;
+        const score = courseNameSimilarity(courseA.name, courseB.name);
+        if (score > bestScore) {
+          bestScore = score;
+          bestIndex = index;
+        }
+      });
+      if (bestIndex >= 0 && bestScore >= SIMILARITY_THRESHOLD) {
+        const courseB = remainingB[bestIndex];
+        usedB.add(bestIndex);
+        matchedKeys.add(normalizeCourseName(courseA.name));
+        matchedKeys.add(normalizeCourseName(courseB.name));
+        shared.push({
+          key: `similar:${normalizeCourseName(courseA.name)}~${normalizeCourseName(courseB.name)}`,
+          label: pickDisplayName([{ course: courseA }, { course: courseB }]),
+          entries: [
+            { schoolId: idA, course: courseA },
+            { schoolId: idB, course: courseB },
+          ],
+          matchType: 'similar',
+        });
+      }
+    }
   }
 
   shared.sort((a, b) => a.label.localeCompare(b.label, 'el'));
@@ -124,8 +184,11 @@ export function compareCurricula(
   }
 
   const unionKeys = new Set(buckets.keys());
+  const similarCount = shared.filter((g) => g.matchType === 'similar').length;
   const sharedCount = shared.length;
-  const unionCount = unionKeys.size;
+  // Κάθε «similar» ζεύγος συγχωνεύει δύο ξεχωριστά ονόματα σε ένα κοινό μάθημα,
+  // άρα μειώνει το σύνολο των διακριτών μαθημάτων κατά ένα.
+  const unionCount = unionKeys.size - similarCount;
   const overlapPercent =
     unionCount === 0 ? 0 : Math.round((sharedCount / unionCount) * 1000) / 10;
 

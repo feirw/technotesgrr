@@ -231,7 +231,7 @@ const MixanografikoPage: React.FC = () => {
           <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
             Πρόβα μηχανογραφικού — κατάταξε με σειρά προτίμησης τις σχολές που πληροίς την ΕΒΕ τους
           </p>
-          <p className="text-sm sm:text-base text-white/80 mt-3 font-semibold">💡 Η ιδέα είναι της Βαλεντίνας</p>
+          <p className="text-sm sm:text-base text-white/80 mt-3 font-semibold">💡 Η ιδέα για το feature είναι της Βαλεντίνας</p>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-// import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 // Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
@@ -29,13 +29,12 @@ const NotFound = lazy(() => import('@/pages/other/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
 
-// Σύγκριση μαθημάτων — προσωρινά απενεργοποιημένη
-// function SchoolCompareRedirect() {
-//   const location = useLocation();
-//   const params = new URLSearchParams(location.search);
-//   params.set('view', 'compare');
-//   return <Navigate to={`/sxoles?${params.toString()}`} replace />;
-// }
+function SchoolCompareRedirect() {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  params.set('view', 'compare');
+  return <Navigate to={`/sxoles?${params.toString()}`} replace />;
+}
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
@@ -44,6 +43,7 @@ const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoeffici
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
 const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
 const MixanografikoPage = lazy(() => import('@/pages/private/MixanografikoPage'));
+const AntistoixiesSxolonPage = lazy(() => import('@/pages/private/AntistoixiesSxolonPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -141,10 +141,10 @@ const routes: RouteConfig[] = [
     path: '/sxoles',
     element: <SchoolsPage />,
   },
-  // {
-  //   path: '/sygkrisi-mathimaton',
-  //   element: <SchoolCompareRedirect />,
-  // },
+  {
+    path: '/sygkrisi-mathimaton',
+    element: <SchoolCompareRedirect />,
+  },
   {
     path: '/progress-tracker',
     element: <ProgressTrackerPage />,
@@ -176,6 +176,10 @@ const routes: RouteConfig[] = [
   {
     path: '/mixanografiko',
     element: <MixanografikoPage />,
+  },
+  {
+    path: '/antistoixies-sxolon',
+    element: <AntistoixiesSxolonPage />,
   },
 
   {

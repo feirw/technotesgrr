@@ -1159,3 +1159,65 @@ export function canOpenSchoolCurriculum(schoolId: string): boolean {
   if (!curriculum) return false;
   return Boolean(curriculum.externalCoursesUrl);
 }
+
+/**
+ * Πλήρη προγράμματα σπουδών (με πραγματικά μαθήματα) — μόνο για τη σύγκριση μαθημάτων.
+ * Οι αντίστοιχες εγγραφές στο RAW_SCHOOL_CURRICULA/SCHOOL_CURRICULA είναι επίτηδες
+ * link-only stubs (τα μαθήματα είναι προσωρινά κρυμμένα παντού αλλού στο app) — η
+ * σύγκριση είναι η μόνη λειτουργία που τα εμφανίζει ξανά, και μόνο για τις σχολές
+ * που όντως έχουν πλήρες, δομημένο πρόγραμμα σπουδών (όχι απλά εξωτερικό link).
+ */
+const COMPARISON_CURRICULA: Record<string, SchoolCurriculum> = {
+  '344': AEGEAN_SAMOS_ICS_CURRICULUM_FULL,
+  '238': AEGEAN_SYROS_PRODUCT_DESIGN_CURRICULUM_FULL,
+  '326': AUA_AGRICULTURAL_ECONOMICS_CURRICULUM_FULL,
+  '311': AUTH_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+  '338': AUTH_INFORMATICS_CURRICULUM_FULL,
+  '1625': DIPAE_CPE_CURRICULUM_FULL,
+  '1624': DIPAE_PRODUCTION_MANAGEMENT_CURRICULUM_FULL,
+  '1622': DIPAE_SERRES_CPE_CURRICULUM_FULL,
+  '1630': DPTH_KAVALA_INFORMATICS_CURRICULUM_FULL,
+  '224': DPTH_PRODUCTION_MANAGEMENT_CURRICULUM_FULL,
+  '1008': EKPA_DIGITAL_INDUSTRY_CURRICULUM_FULL,
+  '309': EKPA_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+  '330': EKPA_IPT_CURRICULUM_FULL,
+  '1662': ELMEPA_ECE_CURRICULUM_FULL,
+  '412': HAROKOPIO_INFORMATICS_CURRICULUM_FULL,
+  '144': HAROKOPIO_SUSTAINABLE_ECONOMY_CURRICULUM_FULL,
+  '366': IONIO_CORFU_INFORMATICS_CURRICULUM_FULL,
+  '342': IONIO_CORFU_INFORMATION_SCIENCE_CURRICULUM_FULL,
+  '312': OPA_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+  '333': OPA_INFORMATICS_CURRICULUM_FULL,
+  '152': OPA_REGIONAL_DEVELOPMENT_CURRICULUM_FULL,
+  '390': PADA_CPE_CURRICULUM_FULL,
+  '389': PADA_INDUSTRIAL_DESIGN_PRODUCTION_CURRICULUM_FULL,
+  '317': PAMAK_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+  '262': PAPEI_DIGITAL_SYSTEMS_CURRICULUM_FULL,
+  '315': PAPEI_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+  '336': PAPEI_INDUSTRIAL_MANAGEMENT_CURRICULUM_FULL,
+  '230': TUC_PRODUCTION_MANAGEMENT_CURRICULUM_FULL,
+  '339': UNIPI_INFORMATICS_CURRICULUM_FULL,
+  '216': UOC_CS_CURRICULUM_FULL,
+  '1250': UOI_ARTA_ICT_CURRICULUM_FULL,
+  '319': UOP_PATRAS_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+  '1519': UOP_SPARTA_DIGITAL_SYSTEMS_CURRICULUM_FULL,
+  '98': UOP_TRIPOLI_ICT_CURRICULUM_FULL,
+  '1554': UOWM_KASTORIA_INFORMATICS_CURRICULUM_FULL,
+  '1542': UOWM_KOZANI_PRODUCT_DESIGN_CURRICULUM_FULL,
+  '369': UTH_BIOMED_INFORMATICS_CURRICULUM_FULL,
+  '1439': UTH_DIGITAL_SYSTEMS_CURRICULUM_FULL,
+  '1436': UTH_ENERGY_SYSTEMS_CURRICULUM_FULL,
+  '99': UTH_ICT_CURRICULUM_FULL,
+  '350': UTH_VOLOS_ECONOMIC_SCIENCE_CURRICULUM_FULL,
+};
+
+/** True μόνο για σχολές με πραγματική, δομημένη λίστα μαθημάτων (όχι link-only stub). */
+export function hasComparableCurriculum(schoolId: string): boolean {
+  const curriculum = COMPARISON_CURRICULA[schoolId];
+  return Boolean(curriculum) && curriculum.semesters.length > 0;
+}
+
+/** Το πραγματικό πρόγραμμα σπουδών (με μαθήματα) — μόνο για τη σύγκριση μαθημάτων. */
+export function getComparableCurriculum(schoolId: string): SchoolCurriculum | null {
+  return COMPARISON_CURRICULA[schoolId] ?? null;
+}

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Search,
@@ -9,6 +10,7 @@ import {
   TrendingUp,
   Copy,
   Check,
+  GitCompare,
 } from 'lucide-react';
 import {
   MenuIconImg,
@@ -24,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-// import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseComparePanel';
+import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseComparePanel';
 import { SchoolCurriculumModal } from '@/components/schools/SchoolCurriculumModal';
 import { CareersModal } from '@/components/schools/CareersModal';
 import { SCHOOL_CURRICULA, canOpenSchoolCurriculum } from '@/data/schoolCurricula';
@@ -265,14 +267,22 @@ function SchoolsPageNotices() {
   );
 }
 
-// type SchoolsPageView = 'schools' | 'compare';
-// const COURSE_COMPARE_ENABLED = false;
-
 const SchoolsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [activeCity, setActiveCity] = useState('Όλες');
   const [curriculumSchoolId, setCurriculumSchoolId] = useState<string | null>(null);
   const [activeCareersCategory, setActiveCareersCategory] = useState<CareersCategory | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isCompareView = searchParams.get('view') === 'compare';
+  const [compareSchoolAId, setCompareSchoolAId] = useState('');
+  const [compareSchoolBId, setCompareSchoolBId] = useState('');
+
+  const setCompareView = (enabled: boolean) => {
+    const next = new URLSearchParams(searchParams);
+    if (enabled) next.set('view', 'compare');
+    else next.delete('view');
+    setSearchParams(next, { replace: true });
+  };
 
   const activeCurriculum = curriculumSchoolId
     ? SCHOOL_CURRICULA[curriculumSchoolId]
@@ -306,7 +316,20 @@ const SchoolsPage: React.FC = () => {
               </span>
             </h1>
 
-            <div className="flex w-full max-w-3xl gap-3 flex-wrap md:flex-nowrap">
+            <button
+              type="button"
+              onClick={() => setCompareView(!isCompareView)}
+              className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-sm border transition-colors ${
+                isCompareView
+                  ? 'bg-[#f07f97] text-white border-[#f07f97]'
+                  : 'border-[#f07f97]/30 text-[#f07f97] hover:bg-[#fff5f8] dark:hover:bg-white/5'
+              }`}
+            >
+              <GitCompare size={16} />
+              {isCompareView ? 'Πίσω στις σχολές' : 'Σύγκριση μαθημάτων'}
+            </button>
+
+            <div className={`flex w-full max-w-3xl gap-3 flex-wrap md:flex-nowrap ${isCompareView ? 'hidden' : ''}`}>
               <div className="relative flex-1 group">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#f07f97] transition-colors"
@@ -350,6 +373,19 @@ const SchoolsPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 mt-8 sm:mt-10">
+        {isCompareView ? (
+          <SchoolCourseComparePanel
+            schoolAId={compareSchoolAId}
+            schoolBId={compareSchoolBId}
+            onSchoolAChange={setCompareSchoolAId}
+            onSchoolBChange={setCompareSchoolBId}
+            onSwapSchools={() => {
+              setCompareSchoolAId(compareSchoolBId);
+              setCompareSchoolBId(compareSchoolAId);
+            }}
+          />
+        ) : (
+          <>
         <SchoolsPageNotices />
 
         {Object.entries(CATEGORIES).map(([catName, config]) => {
@@ -420,6 +456,8 @@ const SchoolsPage: React.FC = () => {
             </motion.section>
           );
         })}
+          </>
+        )}
       </main>
 
       {activeCurriculum && (

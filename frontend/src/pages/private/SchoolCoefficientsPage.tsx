@@ -100,6 +100,19 @@ const SchoolCoefficientsPage: React.FC = () => {
           <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
             {FIELD_4_TITLE} — Πανελλήνιες {COEFFICIENTS_YEAR}
           </p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 text-center pt-6 leading-relaxed">
+          Πηγή δεδομένων:{' '}
+          <a
+            href="https://aeitei.gr/sintelestes-barititas.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-[#11111] hover:underline font-semibold"
+          >
+            AeiTei.gr
+            <ExternalLink className="w-3 h-3" aria-hidden />
+          </a>
+          . Οι συντελεστές αφορούν το 4ο επιστημονικό πεδίο ({COEFFICIENTS_YEAR}).
+        </p>
         </div>
       </div>
 
@@ -149,19 +162,7 @@ const SchoolCoefficientsPage: React.FC = () => {
           ))
         )}
 
-        <p className="text-xs text-gray-600 dark:text-gray-400 text-center pt-6 leading-relaxed">
-          Πηγή δεδομένων:{' '}
-          <a
-            href="https://aeitei.gr/sintelestes-barititas.php"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#f07f97] hover:underline font-semibold"
-          >
-            AeiTei.gr
-            <ExternalLink className="w-3 h-3" aria-hidden />
-          </a>
-          . Οι συντελεστές αφορούν το 4ο επιστημονικό πεδίο ({COEFFICIENTS_YEAR}).
-        </p>
+        
       </main>
     </motion.div>
   );

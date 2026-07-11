@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { ArrowLeftRight, GitCompare, Search, X } from 'lucide-react';
 import { SchoolCourseCompareView } from '@/components/schools/SchoolCourseCompareView';
 import { ALL_SCHOOLS } from '@/data/schools';
-import { SCHOOL_CURRICULA, hasSchoolCurriculum } from '@/data/schoolCurricula';
+import { getComparableCurriculum, hasComparableCurriculum } from '@/data/schoolCurricula';
 import { compareCurricula, type ComparedSchool } from '@/utils/curriculumComparison';
 
-const CURRICULUM_SCHOOLS = ALL_SCHOOLS.filter((school) => hasSchoolCurriculum(school.id)).sort(
+const CURRICULUM_SCHOOLS = ALL_SCHOOLS.filter((school) => hasComparableCurriculum(school.id)).sort(
   (a, b) => b.points - a.points,
 );
 
@@ -136,8 +136,8 @@ export const SchoolCourseComparePanel: React.FC<SchoolCourseComparePanelProps> =
     if (!schoolAId || !schoolBId || schoolAId === schoolBId) return null;
     const schoolA = CURRICULUM_SCHOOLS.find((school) => school.id === schoolAId);
     const schoolB = CURRICULUM_SCHOOLS.find((school) => school.id === schoolBId);
-    const curriculumA = SCHOOL_CURRICULA[schoolAId];
-    const curriculumB = SCHOOL_CURRICULA[schoolBId];
+    const curriculumA = getComparableCurriculum(schoolAId);
+    const curriculumB = getComparableCurriculum(schoolBId);
     if (!schoolA || !schoolB || !curriculumA || !curriculumB) return null;
     return [
       { school: schoolA, curriculum: curriculumA, courses: [], totalEcts: 0 },

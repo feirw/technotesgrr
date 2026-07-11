@@ -76,8 +76,8 @@ export const SchoolCourseCompareView: React.FC<SchoolCourseCompareViewProps> = (
           hint="ίδιος ή πολύ κοντινός τίτλος"
         />
         <StatCard label="Επικάλυψη" value={`${comparison.overlapPercent}%`} hint="ποσοστό κοινών μαθημάτων" />
-        <StatCard label={`Μόνο ${a.school.uni}`} value={comparison.uniqueBySchool[a.school.id]?.length ?? 0} />
-        <StatCard label={`Μόνο ${b.school.uni}`} value={comparison.uniqueBySchool[b.school.id]?.length ?? 0} />
+        <StatCard label={`Μαθήματα μόνο ${a.school.uni}`} value={comparison.uniqueBySchool[a.school.id]?.length ?? 0} />
+        <StatCard label={`Μαθήματα μόνο ${b.school.uni}`} value={comparison.uniqueBySchool[b.school.id]?.length ?? 0} />
       </div>
 
       <section className="rounded-3xl border border-[#f07f97]/20 dark:border-white/10 bg-white/95 dark:bg-[#3a2658]/85 overflow-hidden">
@@ -103,7 +103,17 @@ export const SchoolCourseCompareView: React.FC<SchoolCourseCompareViewProps> = (
                 key={group.key}
                 className="rounded-2xl border border-emerald-200/80 dark:border-emerald-900/40 bg-emerald-50/70 dark:bg-emerald-950/20 px-3 py-3"
               >
-                <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{group.label}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{group.label}</p>
+                  {group.matchType === 'similar' ? (
+                    <span
+                      className="shrink-0 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wide text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/40 px-1.5 py-0.5 rounded-md"
+                      title="Παρόμοιοι τίτλοι, όχι ταυτόσημοι"
+                    >
+                      ≈ Παρόμοιο
+                    </span>
+                  ) : null}
+                </div>
                 <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
                   {group.entries.map(({ schoolId, course }) => {
                     const school = comparison.schools.find((entry) => entry.school.id === schoolId);
@@ -173,7 +183,8 @@ export const SchoolCourseCompareView: React.FC<SchoolCourseCompareViewProps> = (
         <p>
           Η σύγκριση γίνεται στον κατάλογο μαθημάτων, όχι στο ακριβές πρόγραμμα που θα
           ακολουθήσεις (επιλογές, κατευθύνσεις, πρακτική). Τα κοινά μαθήματα ταυτοποιούνται από
-          τον τίτλο — μικρές διαφορές στη διατύπωση μπορεί να μην εμφανίζονται ως κοινά.
+          τον τίτλο — μαθήματα με πολύ κοντινό (όχι ταυτόσημο) τίτλο εμφανίζονται επίσης ως κοινά,
+          με την ένδειξη «≈ Παρόμοιο».
         </p>
       </div>
     </div>

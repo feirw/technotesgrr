@@ -266,6 +266,19 @@ const MoriaCalculatorPage: React.FC = () => {
           <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
             {FIELD_4_TITLE} — Πανελλήνιες {COEFFICIENTS_YEAR}
           </p>
+          <p className="text-sm text-white/80 mt-3">
+            Πηγή συντελεστών:{' '}
+            <a
+              href="https://aeitei.gr/sintelestes-barititas.php"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold underline decoration-2 underline-offset-2"
+            >
+              AeiTei.gr
+              <ExternalLink className="w-3.5 h-3.5" aria-hidden />
+            </a>
+            . Βάσεις εισαγωγής {COEFFICIENTS_YEAR}. Ο υπολογισμός είναι ενδεικτικός.
+          </p>
         </div>
       </div>
 
@@ -449,19 +462,6 @@ const MoriaCalculatorPage: React.FC = () => {
           })
         )}
 
-        <p className="text-xs text-gray-600 dark:text-gray-400 text-center pt-6 leading-relaxed">
-          Πηγή συντελεστών:{' '}
-          <a
-            href="https://aeitei.gr/sintelestes-barititas.php"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#f07f97] hover:underline font-semibold"
-          >
-            AeiTei.gr
-            <ExternalLink className="w-3 h-3" aria-hidden />
-          </a>
-          . Βάσεις εισαγωγής 2025. Ο υπολογισμός είναι ενδεικτικός.
-        </p>
       </main>
     </motion.div>
   );
