@@ -84,6 +84,7 @@ const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/ypologismos-morion', label: 'Υπολογισμός Μορίων', iconSrc: MENU_ICONS.ypologismosMorion },
   { to: '/mixanografiko', label: 'Μηχανογραφικό (Πρόβα)', iconSrc: MENU_ICONS.mixanografiko },
   { to: '/antistoixies-sxolon', label: 'Αντιστοιχίες Σχολών', iconSrc: MENU_ICONS.antistixia },
+  { to: '/meteggrafes', label: 'Μετεγγραφές', iconSrc: MENU_ICONS.meteggrafes },
   { to: '/saek', label: 'ΣΑΕΚ', iconSrc: MENU_ICONS.saek },
 ];
 

@@ -45,6 +45,7 @@ import { STATISTICS_CAREERS } from '@/data/statisticsCareers';
 import { MANAGEMENT_SCIENCE_CAREERS } from '@/data/managementScienceCareers';
 import { INTERNATIONAL_EUROPEAN_CAREERS } from '@/data/internationalEuropeanCareers';
 import { PEDAGOGY_CAREERS } from '@/data/pedagogyCareers';
+import { ARTS_CAREERS } from '@/data/artsCareers';
 import type { Career } from '@/data/careers';
 import { formatEbeDisplay, formatMoriaDisplay } from '@/utils/schoolBasisMatching';
 
@@ -100,7 +101,8 @@ type CareersCategory =
   | 'Στατιστική'
   | 'Διοικητικής Επιστήμης'
   | 'Διεθνών & Ευρωπαϊκών'
-  | 'Παιδαγωγικά';
+  | 'Παιδαγωγικά'
+  | 'Τέχνες';
 
 const CATEGORY_CAREERS: Record<
   CareersCategory,
@@ -176,6 +178,12 @@ const CATEGORY_CAREERS: Record<
     careers: PEDAGOGY_CAREERS,
     blurb: 'καριέρες παιδαγωγικών σπουδών',
     subtitle: 'Καριέρες παιδαγωγικών και εκπαιδευτικών σπουδών',
+    columnTitle: 'Καριέρα',
+  },
+  Τέχνες: {
+    careers: ARTS_CAREERS,
+    blurb: 'καριέρες σχεδιασμού και τεχνών',
+    subtitle: 'Εσωτερική Αρχιτεκτονική, Γραφιστική & Οπτική Επικοινωνία και σύντομες περιγραφές',
     columnTitle: 'Καριέρα',
   },
 };

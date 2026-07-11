@@ -44,6 +44,7 @@ const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPa
 const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
 const MixanografikoPage = lazy(() => import('@/pages/private/MixanografikoPage'));
 const AntistoixiesSxolonPage = lazy(() => import('@/pages/private/AntistoixiesSxolonPage'));
+const MeteggrafesPage = lazy(() => import('@/pages/private/MeteggrafesPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -180,6 +181,10 @@ const routes: RouteConfig[] = [
   {
     path: '/antistoixies-sxolon',
     element: <AntistoixiesSxolonPage />,
+  },
+  {
+    path: '/meteggrafes',
+    element: <MeteggrafesPage />,
   },
 
   {

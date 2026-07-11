@@ -26,6 +26,7 @@ export const MENU_ICONS = {
   saek: `${HP}/44.png`,
   mixanografiko: `${HP}/47.png`,
   antistixia: `${HP}/48.png`,
+  meteggrafes: `${HP}/49.png`,
 } as const;
 
 /** Εικονίδια σημειώσεων στη σελίδα Σχολών. */
