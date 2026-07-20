@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { apiFetch } from '@/utils/apiClient';
 import { getBackendUrl } from '@/utils/backendUrl';
+import ShareResultButton from '@/components/other/ShareResultButton';
 
 // --- Types ---
 
@@ -381,6 +382,29 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                 </motion.button>
               </div>
             </div>
+
+            {/* Completion celebration + share */}
+            <AnimatePresence>
+              {allAnswered && isLastQuestion && selected !== null && (
+                <motion.div
+                  className="mb-6 p-5 md:p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/20 border-2 border-green-300 dark:border-green-700 text-center"
+                  initial={{ opacity: 0, y: -10, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <p className="font-black text-lg md:text-xl text-green-800 dark:text-green-300 mb-1">
+                    🎉 Ολοκλήρωσες το «{quiz.title}»!
+                  </p>
+                  <p className="text-sm md:text-base text-green-700 dark:text-green-400 mb-4">
+                    Τελικό σκορ: {score.correct}/{score.total} ({scorePercentage}%)
+                  </p>
+                  <ShareResultButton
+                    data={{ kind: 'quiz', quizTitle: quiz.title, correct: score.correct, total: score.total }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Question */}
             <motion.div

@@ -431,15 +431,14 @@ const QuizPage: React.FC = () => {
       {/* Main Content Area */}
       <div className="relative z-20 flex flex-col min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 z-30 bg-coral-accent text-white p-6 shadow-xl shadow-coral-strong/25 dark:shadow-coral-accent/20">
+        <div className="sticky top-0 z-30 border-b border-[#f07f97]/30 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-xl text-gray-900 dark:text-gray-100 p-6 shadow-sm">
           <div className="max-w-7xl mx-auto">
-            <h1 className="sr-only">Quiz Πληροφορικής Πανελληνίων</h1>
             <div className="flex items-center justify-between gap-4 mb-4">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3">
                 <MenuIconImg src={MENU_ICONS.quiz} className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" alt="Εικονίδιο quiz Πληροφορικής" />
                 <div>
-                <h2 className="text-2xl md:text-3xl font-black mb-1">Επιλογή Κεφαλαίου</h2>
-                <p className="text-white/90 text-sm">
+                <h1 className="text-2xl md:text-3xl font-black mb-1 text-gray-900 dark:text-[#faf5ef] tracking-tight">Επιλογή Κεφαλαίου</h1>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
                   {quizzes.length} διαθέσιμα κεφάλαια • {stats.answeredQuestions} συνολικές
                   απαντήσεις
                 </p>
@@ -451,8 +450,8 @@ const QuizPage: React.FC = () => {
                   onClick={restartAllQuizzes}
                   className={`shrink-0 px-3 sm:px-4 py-2.5 rounded-xl backdrop-blur-sm font-semibold flex items-center gap-2 transition-colors border ${
                     stats.answeredQuestions > 0
-                      ? 'bg-white/20 hover:bg-white/30 text-white border-white/30'
-                      : 'bg-white/10 text-white/70 border-white/20'
+                      ? 'bg-[#f07f97]/10 hover:bg-[#f07f97]/20 dark:bg-white/10 dark:hover:bg-white/15 text-[#f07f97] dark:text-[#ff97b2] border-[#f07f97]/30 dark:border-white/15'
+                      : 'bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-white/10'
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -482,12 +481,12 @@ const QuizPage: React.FC = () => {
                 ].map((item, idx) => {
                   const Icon = item.icon;
                   return (
-                    <div key={idx} className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
-                      <div className="flex items-center justify-center gap-2 mb-1">
+                    <div key={idx} className="bg-[#f07f97]/10 dark:bg-white/10 rounded-xl p-3">
+                      <div className="flex items-center justify-center gap-2 mb-1 text-gray-700 dark:text-gray-200">
                         <Icon className="w-4 h-4" />
-                        <span className="text-xs font-medium opacity-90">{item.label}</span>
+                        <span className="text-xs font-medium">{item.label}</span>
                       </div>
-                      <div className="text-xl font-black">{item.value}</div>
+                      <div className="text-xl font-black text-gray-900 dark:text-white">{item.value}</div>
                     </div>
                   );
                 })}
@@ -502,7 +501,7 @@ const QuizPage: React.FC = () => {
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Αναζήτηση... (πάτα / για εστίαση)"
-                  className="w-full rounded-xl px-4 py-3 pl-11 pr-10 text-gray-800 outline-none focus:ring-2 focus:ring-white/50 transition-all"
+                  className="w-full rounded-xl px-4 py-3 pl-11 pr-10 bg-white dark:bg-[#2d1c48] border border-[#f07f97]/25 dark:border-white/15 text-gray-800 dark:text-white outline-none focus:ring-2 focus:ring-[#f07f97]/40 focus:border-[#f07f97] shadow-inner transition-all"
                   aria-label="Αναζήτηση κεφαλαίων"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -527,7 +526,7 @@ const QuizPage: React.FC = () => {
                     setShowSortMenu(!showSortMenu);
                     setShowFilterMenu(false);
                   }}
-                  className="px-4 py-3 rounded-xl bg-white/90 hover:bg-white text-gray-800 font-semibold flex items-center gap-2 transition-colors"
+                  className="px-4 py-3 rounded-xl bg-[#fff5f8] dark:bg-white/10 hover:bg-[#f07f97]/10 dark:hover:bg-white/15 border border-[#f07f97]/25 dark:border-white/15 text-gray-800 dark:text-gray-100 font-semibold flex items-center gap-2 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Ταξινόμηση"
@@ -577,7 +576,7 @@ const QuizPage: React.FC = () => {
                     setShowFilterMenu(!showFilterMenu);
                     setShowSortMenu(false);
                   }}
-                  className="px-4 py-3 rounded-xl bg-white/90 hover:bg-white text-gray-800 font-semibold flex items-center gap-2 transition-colors"
+                  className="px-4 py-3 rounded-xl bg-[#fff5f8] dark:bg-white/10 hover:bg-[#f07f97]/10 dark:hover:bg-white/15 border border-[#f07f97]/25 dark:border-white/15 text-gray-800 dark:text-gray-100 font-semibold flex items-center gap-2 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Φίλτρα"

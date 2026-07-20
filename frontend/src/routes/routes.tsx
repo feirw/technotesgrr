@@ -10,6 +10,10 @@ const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'
 const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
+const LoginPage = lazy(() => import('@/pages/public/LoginPage'));
+const RegisterPage = lazy(() => import('@/pages/public/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('@/pages/public/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/public/ResetPasswordPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -105,6 +109,22 @@ const routes: RouteConfig[] = [
   {
     path: '/faq',
     element: <FaqPage />,
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/register',
+    element: <RegisterPage />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
   },
   {
     path: '/quiz',

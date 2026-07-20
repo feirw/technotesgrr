@@ -302,10 +302,10 @@ const AiCorrectorPage: React.FC = () => {
     >
       <div className="mx-auto max-w-3xl">
         <header className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <MenuIconImg src={MENU_ICONS.aiCorrector} className="w-14 h-14" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={MENU_ICONS.aiCorrector} className="w-9 h-9" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-[#f07f97] dark:text-[#ff97b2] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             AI Corrector Πληροφορικής
           </h1>
           <p className="mt-3 text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto">

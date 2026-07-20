@@ -634,22 +634,22 @@ const Prosanatolismospage: React.FC = () => {
       transition={{ duration: 0.3 }}
     >
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white py-10 sm:py-14 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center">
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
           <PageMenuIcon
             icon="prosanatolismos"
-            wrapperClassName="inline-flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-2xl bg-white/20 mb-4"
-            className="w-14 h-14"
+            wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
+            className="w-9 h-9"
           />
-          <h1 className="text-3xl sm:text-4xl font-black mb-2 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Επαγγελματικός Προσανατολισμός
           </h1>
-          <p className="text-sm sm:text-base text-white/90 max-w-xl mx-auto leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
             50 ερωτήσεις προσωπικότητας · 8 κατηγορίες σπουδών
           </p>
 
           <div className="max-w-md mx-auto mt-6">
-            <div className="flex justify-between text-xs text-white/80 mb-2 font-semibold">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold">
               <span>
                 {totalAnswered}/{totalQuestions} απαντήσεις
               </span>
@@ -660,23 +660,23 @@ const Prosanatolismospage: React.FC = () => {
                     type="button"
                     onClick={handleReset}
                     title="Επαναφορά"
-                    className="p-1 rounded-lg bg-white/15 hover:bg-white/25 transition-colors"
+                    className="p-1 rounded-lg bg-[#f07f97]/10 hover:bg-[#f07f97]/20 dark:bg-white/10 dark:hover:bg-white/15 text-[#f07f97] dark:text-[#ff97b2] transition-colors"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
             </div>
-            <div className="w-full bg-white/25 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-[#f07f97]/15 dark:bg-white/10 rounded-full h-2 overflow-hidden">
               <motion.div
-                className="h-full bg-white rounded-full"
+                className="h-full bg-[#f07f97] rounded-full"
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.35, ease: 'easeOut' }}
               />
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {isHydrating && (
         <div className="max-w-3xl mx-auto px-4 pt-4">

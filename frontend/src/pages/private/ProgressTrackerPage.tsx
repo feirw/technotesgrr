@@ -85,22 +85,21 @@ const ProgressTrackerPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4 sm:p-6">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white/90 dark:bg-gray-800/90 rounded-3xl border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl p-5 sm:p-7 mb-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-start gap-4">
-              <PageMenuIcon
-                icon="progressTracker"
-                wrapperClassName="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-coral-wash dark:bg-coral-accent/10 shrink-0 mb-0"
-                className="w-9 h-9 sm:w-10 sm:h-10"
-              />
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-black text-coral-accent dark:text-coral-light mb-1">
-                  Διαδραστικός Χάρτης Ύλης
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Παρακολούθησε την πρόοδο σου σε όλη την ύλη από Μάθημα 1 έως 35.
-                </p>
-              </div>
-            </div>
+          <div className="flex flex-col items-center text-center">
+            <PageMenuIcon
+              icon="progressTracker"
+              wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
+              className="w-9 h-9"
+            />
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
+              Διαδραστικός Χάρτης Ύλης
+            </h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">
+              Παρακολούθησε την πρόοδο σου σε όλη την ύλη από Μάθημα 1 έως 35.
+            </p>
+          </div>
+
+          <div className="flex justify-end mt-4">
             <button
               onClick={resetAll}
               className="px-4 py-2 rounded-xl bg-white dark:bg-gray-700 border border-coral-accent/30 dark:border-gray-600 text-coral-strong dark:text-coral-light font-semibold inline-flex items-center gap-2 hover:border-coral-accent transition-colors"

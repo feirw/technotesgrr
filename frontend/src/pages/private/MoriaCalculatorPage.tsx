@@ -255,32 +255,19 @@ const MoriaCalculatorPage: React.FC = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white py-10 sm:py-14 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-2xl bg-white/20 mb-4">
-            <MenuIconImg src={MENU_ICONS.ypologismosMorion} className="w-14 h-14" />
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={MENU_ICONS.ypologismosMorion} className="w-9 h-9" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Υπολογισμός Μορίων
           </h1>
-          <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
             {FIELD_4_TITLE} — Πανελλήνιες {COEFFICIENTS_YEAR}
           </p>
-          <p className="text-sm text-white/80 mt-3">
-            Πηγή συντελεστών:{' '}
-            <a
-              href="https://aeitei.gr/sintelestes-barititas.php"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-semibold underline decoration-2 underline-offset-2"
-            >
-              AeiTei.gr
-              <ExternalLink className="w-3.5 h-3.5" aria-hidden />
-            </a>
-            . Βάσεις εισαγωγής {COEFFICIENTS_YEAR}. Ο υπολογισμός είναι ενδεικτικός.
-          </p>
         </div>
-      </div>
+      </header>
 
       <div className="sticky top-20 z-20 bg-white/95 dark:bg-[#3a2658]/95 backdrop-blur-lg border-b border-[#f07f97]/20 dark:border-white/10 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5 space-y-5">
@@ -415,16 +402,16 @@ const MoriaCalculatorPage: React.FC = () => {
 
           <div
             role="note"
-            className="rounded-2xl border-2 border-amber-400/80 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-950/30 px-4 py-3.5 sm:px-5 sm:py-4"
+            className="rounded-2xl border-2 border-[#f07f97]/50 dark:border-[#f07f97]/30 bg-[#fff5f8] dark:bg-[#3a2658]/60 px-4 py-3.5 sm:px-5 sm:py-4"
           >
             <div className="flex gap-3">
               <Info
-                className="w-5 h-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5"
+                className="w-5 h-5 shrink-0 text-[#f07f97] dark:text-[#ff97b2] mt-0.5"
                 aria-hidden
               />
-              <p className="text-sm sm:text-base font-bold text-amber-900 dark:text-amber-100 leading-snug">
+              <p className="text-sm sm:text-base font-bold text-[#e06d88] dark:text-[#ffc4d6] leading-snug">
                 Οι σχολές με ειδικά μαθήματα εμφανίζονται στο τέλος, ακολουθούμενες από τα{' '}
-                <span className="text-amber-700 dark:text-amber-200">Σώματα Ασφαλείας & Στρατιωτικές</span>.
+                <span className="text-[#f07f97] dark:text-[#ff97b2]">Σώματα Ασφαλείας & Στρατιωτικές</span>.
               </p>
             </div>
           </div>

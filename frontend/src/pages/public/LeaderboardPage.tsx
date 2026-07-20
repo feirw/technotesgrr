@@ -55,7 +55,7 @@ const LeaderboardPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-pink-50 dark:bg-gray-950 py-8">
       <div className="container mx-auto px-6 max-w-4xl">
-        <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-center text-gray-900 dark:text-[#faf5ef] mb-8">
           Leaderboard 🏆
         </h1>
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 sm:p-8 border border-pink-100 dark:border-gray-700">

@@ -5,7 +5,7 @@ import logging
 import queue
 import sys
 import threading
-from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
@@ -15,10 +15,16 @@ import os
 import time
 import smtplib
 from email.message import EmailMessage
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
+IS_DEV = os.getenv("ENV", "").lower() in {"dev", "development", "local"}
+
+# Repo layout: backend/server.py and frontend/public/images/logo.png are siblings.
+LOGO_PATH = Path(__file__).resolve().parent.parent / "frontend" / "public" / "images" / "logo.png"
 
 # Console output includes emoji (✅/❌/👋); on Windows the default stdout/stderr encoding
 # is the system codepage (e.g. cp1253 for Greek locale), which can't encode them and
@@ -74,6 +80,22 @@ from database import (
     save_contact_submission,
     get_category_lists,
     db_ping,
+    create_user,
+    get_user_by_email,
+    get_user_by_id,
+    update_user_password,
+    create_password_reset,
+    get_valid_password_reset,
+    mark_password_reset_used,
+)
+
+# ── Auth ──────────────────────────────────────────────────────────────────────
+from auth_utils import (
+    create_access_token,
+    decode_access_token,
+    generate_reset_token,
+    hash_password,
+    verify_password,
 )
 
 # ── FIX #1: Replace deprecated @app.on_event with lifespan ───────────────────
@@ -138,6 +160,26 @@ class QuizSubmission(BaseModel):
     nickname: str = Field(min_length=1, max_length=60)
     question_id: str = Field(min_length=1, max_length=128)
     selected_answer: int = Field(ge=0, le=20)
+
+class RegisterRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=1, max_length=128)
+    rememberMe: bool = False
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str = Field(min_length=1, max_length=256)
+    newPassword: str = Field(min_length=8, max_length=128)
+
 
 class ContactForm(BaseModel):
     firstName: str = Field(min_length=1, max_length=80)
@@ -209,6 +251,96 @@ Email: {email}
         server.login(smtp_user, smtp_pass)
         server.send_message(msg)
     return True
+
+
+def _try_send_password_reset_email(email: str, reset_link: str) -> bool:
+    """Best-effort reset email; no-ops (safely) when SMTP env vars aren't configured."""
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = os.getenv("SMTP_PORT")
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASS")
+    smtp_sender = os.getenv("SMTP_SENDER_EMAIL") or smtp_user
+
+    if not all([smtp_host, smtp_port, smtp_user, smtp_pass, smtp_sender]):
+        # Only way to retrieve the link when SMTP isn't configured — log it server-side
+        # rather than fail silently, in any environment.
+        print(f"[Auth] SMTP not configured — reset link for {email}: {reset_link}")
+        return False
+
+    msg = EmailMessage()
+    msg["Subject"] = "Επαναφορά κωδικού - TechNotesGR"
+    msg["From"] = smtp_sender
+    msg["To"] = email
+    msg.set_content(
+        f"""
+Ζήτησες επαναφορά κωδικού για τον λογαριασμό σου στο TechNotesGR.
+
+Πάτησε τον παρακάτω σύνδεσμο για να ορίσεις νέο κωδικό (ισχύει για 1 ώρα):
+{reset_link}
+        """.strip()
+    )
+
+    logo_cid = "technotesgr_logo"
+    msg.add_alternative(
+        f"""\
+<html>
+  <body style="margin:0;padding:24px;background:#fff5f8;font-family:Arial,Helvetica,sans-serif;">
+    <div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px;text-align:center;">
+      <img src="cid:{logo_cid}" alt="TechNotesGR" width="64" height="64" style="border-radius:12px;margin-bottom:16px;" />
+      <h2 style="color:#111827;margin:0 0 16px;">Επαναφορά κωδικού</h2>
+      <p style="color:#374151;font-size:15px;line-height:1.5;margin:0 0 24px;">
+        Ζήτησες επαναφορά κωδικού για τον λογαριασμό σου στο TechNotesGR.
+      </p>
+      <a href="{reset_link}" style="display:inline-block;background:#f07f97;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 28px;border-radius:12px;">
+        Ορισμός νέου κωδικού
+      </a>
+      <p style="color:#9ca3af;font-size:13px;margin:24px 0 0;">
+        Ο σύνδεσμος ισχύει για 1 ώρα.
+      </p>
+    </div>
+  </body>
+</html>
+""",
+        subtype="html",
+    )
+    if LOGO_PATH.exists():
+        html_part = msg.get_payload()[-1]
+        html_part.add_related(LOGO_PATH.read_bytes(), maintype="image", subtype="png", cid=f"<{logo_cid}>")
+
+    with smtplib.SMTP(smtp_host, int(smtp_port)) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+    return True
+
+
+def _extract_bearer_token(authorization: Optional[str]) -> Optional[str]:
+    if not authorization:
+        return None
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not token:
+        return None
+    return token
+
+
+def get_current_user(authorization: Optional[str] = Header(default=None)) -> dict:
+    """
+    Reads the session from the `Authorization: Bearer <token>` header instead of a
+    cookie. The frontend (Netlify/Vercel) and this API (Render) live on different
+    domains in production, and browsers — Safari in particular — block third-party/
+    cross-site cookies by default regardless of SameSite/Secure config, so a cookie-
+    based session silently fails to persist. A Bearer token has no such restriction.
+    """
+    token = _extract_bearer_token(authorization)
+    if not token:
+        raise HTTPException(status_code=401, detail="Δεν έχεις συνδεθεί.")
+    payload = decode_access_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Η σύνδεσή σου έληξε. Συνδέσου ξανά.")
+    user = get_user_by_id(int(payload["sub"]))
+    if not user:
+        raise HTTPException(status_code=401, detail="Ο χρήστης δεν βρέθηκε.")
+    return user
 
 
 # ── Health ────────────────────────────────────────────────────────────────────
@@ -517,6 +649,100 @@ def get_leaderboard(response: Response, month: Optional[str] = None):
         return {"leaderboard": leaderboard, "month": current_month}
     except Exception:
         logger.exception("get_leaderboard failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
+
+
+# ── Auth ──────────────────────────────────────────────────────────────────────
+
+@app.post("/api/auth/register")
+def register(data: RegisterRequest):
+    try:
+        user = create_user(email=data.email, password_hash=hash_password(data.password))
+    except Exception:
+        logger.exception("register failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
+
+    if not user:
+        raise HTTPException(status_code=409, detail="Υπάρχει ήδη λογαριασμός με αυτό το email.")
+
+    token = create_access_token(user_id=user["id"], email=user["email"])
+    return {"user": {"id": user["id"], "email": user["email"]}, "token": token}
+
+
+@app.post("/api/auth/login")
+def login(data: LoginRequest):
+    try:
+        user = get_user_by_email(data.email)
+    except Exception:
+        logger.exception("login lookup failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
+
+    if not user or not verify_password(data.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Λάθος email ή κωδικός.")
+
+    token = create_access_token(user_id=user["id"], email=user["email"], remember_me=data.rememberMe)
+    return {"user": {"id": user["id"], "email": user["email"]}, "token": token}
+
+
+@app.post("/api/auth/logout")
+def logout():
+    # Stateless JWT — nothing to invalidate server-side. The frontend drops the
+    # token from local/session storage; this endpoint exists for API symmetry
+    # and as a place to add server-side revocation later if ever needed.
+    return {"message": "Αποσυνδέθηκες επιτυχώς."}
+
+
+@app.get("/api/auth/me")
+def read_current_user(user: dict = Depends(get_current_user)):
+    return {"user": {"id": user["id"], "email": user["email"]}}
+
+
+@app.post("/api/auth/forgot-password")
+def forgot_password(data: ForgotPasswordRequest):
+    # Always return the same generic response whether or not the email exists,
+    # so this endpoint can't be used to check which emails have an account.
+    generic_response = {
+        "message": "Αν υπάρχει λογαριασμός με αυτό το email, θα λάβεις οδηγίες επαναφοράς."
+    }
+    try:
+        user = get_user_by_email(data.email)
+        if not user:
+            return generic_response
+
+        token = generate_reset_token()
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+        create_password_reset(user_id=user["id"], token=token, expires_at=expires_at)
+
+        default_frontend_origin = "http://localhost:5173" if IS_DEV else "https://technotesgr.com"
+        frontend_origin = os.getenv("FRONTEND_URL", default_frontend_origin)
+        reset_link = f"{frontend_origin.rstrip('/')}/reset-password?token={token}"
+        try:
+            _try_send_password_reset_email(data.email, reset_link)
+        except Exception as email_err:
+            print(f"[Auth] Password reset email failed: {email_err}")
+
+        return generic_response
+    except Exception:
+        logger.exception("forgot_password failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
+
+
+@app.post("/api/auth/reset-password")
+def reset_password(data: ResetPasswordRequest):
+    try:
+        reset = get_valid_password_reset(data.token)
+        if not reset:
+            raise HTTPException(
+                status_code=400,
+                detail="Ο σύνδεσμος επαναφοράς έχει λήξει ή έχει ήδη χρησιμοποιηθεί.",
+            )
+        update_user_password(reset["user_id"], hash_password(data.newPassword))
+        mark_password_reset_used(data.token)
+        return {"message": "Ο κωδικός σου άλλαξε επιτυχώς. Συνδέσου με τον νέο κωδικό."}
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("reset_password failed")
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 

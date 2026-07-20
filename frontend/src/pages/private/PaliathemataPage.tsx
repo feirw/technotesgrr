@@ -61,10 +61,10 @@ const EPANALIPTIKES_YEARS: number[] = [
 
 const OEFE_YEARS2: number[] = [
   2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021,
-  2022, 2023, 2024, 2025,
+  2022, 2023, 2024, 2025,2026
 ];
 
-const OEFE_YEARS1: number[] = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+const OEFE_YEARS1: number[] = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,2026];
 
 const EIMASTE_MESA_MONTHS: Record<string, string> = {
   oct: 'Οκτώβριος',
@@ -296,47 +296,22 @@ const PaliathemataPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header Section */}
-      <div className="relative overflow-hidden bg-coral-accent text-white py-8 sm:py-14 md:py-16 px-4 sm:px-6">
-        <div className="absolute inset-0 overflow-hidden opacity-20">
-          <motion.div
-            className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          />
-          <motion.div
-            className="absolute -bottom-24 -right-24 w-96 h-96 bg-white rounded-full"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto text-center">
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md py-10 sm:py-12 px-4 sm:px-6">
+        <div className="relative max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-2 sm:mb-4 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <MenuIconImg src={MENU_ICONS.paliathemata} className="w-10 h-10 sm:w-14 sm:h-14 shrink-0" />
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+              <MenuIconImg src={MENU_ICONS.paliathemata} className="w-9 h-9" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
               Παλιά Θέματα
             </h1>
           </motion.div>
         </div>
-      </div>
+      </header>
 
       {/* Tabs & Search Section */}
       <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-coral-accent/20 dark:border-gray-700 [overflow-anchor:none]">

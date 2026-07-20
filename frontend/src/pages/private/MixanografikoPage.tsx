@@ -222,18 +222,18 @@ const MixanografikoPage: React.FC = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white py-10 sm:py-14 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-2xl bg-white/20 mb-4">
-            <MenuIconImg src={MENU_ICONS.mixanografiko} className="w-14 h-14" />
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={MENU_ICONS.mixanografiko} className="w-9 h-9" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight">Μηχανογραφικό</h1>
-          <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">Μηχανογραφικό</h1>
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
             Πρόβα μηχανογραφικού — κατάταξε με σειρά προτίμησης τις σχολές που πληροίς την ΕΒΕ τους
           </p>
-          <p className="text-sm sm:text-base text-white/80 mt-3 font-semibold">💡 Η ιδέα για το feature είναι της Βαλεντίνας</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-semibold">💡 Η ιδέα είναι της Βαλεντίνας</p>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Grades */}
@@ -460,7 +460,7 @@ const MixanografikoPage: React.FC = () => {
             href={MINEDU_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#f07f97] font-semibold hover:underline"
+            className="inline-flex items-center gap-1 text-[#00000] font-semibold hover:underline"
           >
             minedu.gov.gr/mixanografiko
             <ExternalLink className="w-3 h-3" aria-hidden />

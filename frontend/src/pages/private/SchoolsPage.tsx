@@ -18,6 +18,7 @@ import {
   FUTURE_CAREERS_ICON,
   SCHOOL_CATEGORY_ICON_BY_NAME,
   SCHOOL_PAGE_NOTICE_ICONS,
+  PageMenuIcon,
 } from '@/data/menuIcons';
 import {
   Select,
@@ -255,24 +256,8 @@ function PageNotice({
 }
 
 function SchoolsPageNotices() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      className="mb-8 overflow-hidden rounded-3xl border border-white/60 dark:border-white/10 bg-white/95 dark:bg-[#3a2658]/85 shadow-lg shadow-[#f07f97]/10 dark:shadow-black/20 backdrop-blur-sm divide-y divide-[#f07f97]/10 dark:divide-white/10"
-    >
-      <PageNotice iconSrc={SCHOOL_PAGE_NOTICE_ICONS.panellinies} label="Πανελλήνιες 2026" variant="amber">
-        Οι βάσεις 2025 προέρχονται από τα επίσημα αποτελέσματα. Ορισμένα τμήματα προστέθηκαν ή
-        ενημερώθηκαν στη λίστα φέτος (2026), με τους επίσημους κωδικούς τους από το Υπουργείο
-        Παιδείας.
-      </PageNotice>
-      <PageNotice iconSrc={SCHOOL_PAGE_NOTICE_ICONS.credits} label="Credits" variant="coral">
-        Η ιδέα για να εμφανίζονται και τα μαθήματα των σχολών είναι της Βαλεντίνας και της
-        Δέσποινας!
-      </PageNotice>
-    </motion.div>
-  );
+  
+
 }
 
 const SchoolsPage: React.FC = () => {
@@ -313,17 +298,26 @@ const SchoolsPage: React.FC = () => {
 
   return (
     <div className="-mt-20 pt-24 min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500 pb-24">
-      {/* Navbar / Filters */}
-      <nav className="sticky top-0 z-50 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-xl border-b border-[#f07f97]/30 dark:border-white/10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 min-h-28 py-3 sm:py-4 flex flex-col justify-center">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <h1 className="text-xl font-black text-gray-900 dark:text-[#faf5ef] shrink-0 flex items-center gap-2.5">
-              <MenuIconImg src={MENU_ICONS.schools} className="w-8 h-8 shrink-0" />
-              <span>
-                Σχολές <span className="text-[#f07f97] dark:text-[#ff97b2]">4ο Επιστημονικό πεδίο</span>
-              </span>
-            </h1>
+      {/* Header */}
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={MENU_ICONS.schools} className="w-9 h-9" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
+            Σχολές
+          </h1>
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
+            <span className="text-[#f07f97] dark:text-[#ff97b2] font-semibold">4ο Επιστημονικό Πεδίο</span> —
+            αναζήτησε σχολές, δες μόρια/ΕΒΕ και σύγκρινε μαθήματα
+          </p>
+        </div>
+      </header>
 
+      {/* Filters */}
+      <nav className="sticky top-0 z-50 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-xl border-b border-[#f07f97]/30 dark:border-white/10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-3">
             <button
               type="button"
               onClick={() => setCompareView(!isCompareView)}
@@ -394,7 +388,8 @@ const SchoolsPage: React.FC = () => {
           />
         ) : (
           <>
-        <SchoolsPageNotices />
+        
+        
 
         {Object.entries(CATEGORIES).map(([catName, config]) => {
           const schools = filteredSchools.filter((s) => s.category === catName);

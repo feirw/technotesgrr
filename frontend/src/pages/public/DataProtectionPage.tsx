@@ -4,7 +4,7 @@ import { DATA_PROTECTION_LAST_UPDATED } from '@/data/legalDates';
 const DataProtectionPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Πολιτική Προστασίας Προσωπικών Δεδομένων</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Πολιτική Προστασίας Προσωπικών Δεδομένων</h1>
       <p>
         <strong>Ιστοσελίδα:</strong> technotesgr
       </p>

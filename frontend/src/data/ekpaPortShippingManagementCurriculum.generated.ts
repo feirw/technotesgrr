@@ -4,8 +4,8 @@ import type { SchoolCurriculum } from './schoolCurricula';
 export const EKPA_PORT_SHIPPING_MANAGEMENT_CURRICULUM: SchoolCurriculum = {
   title: "Διαχείρισης Λιμένων και Ναυτιλίας",
   subtitle: "ΕΚΠΑ · Ψαχνά (Εύβοια)",
-  hoursNote:
-    "240 ECTS · 40 μαθήματα (28 υποχρεωτικά + 12 επιλογής). 5ο εξ.: 1 επιλογής · 6ο: 3 · 7ο: 3 · 8ο: 5. Προαπαιτούμενα: Αγγλικά Ι & ΙΙ. Πρακτική άσκηση (6 ECTS) προαιρετική.",
+  externalCoursesUrl: "https://www.pms.uoa.gr/programma-spoudon/",
+  
   semesters: [
     { semester: 1, courses: [
       { code: "ΔΛΝ-Υ01", ects: 6, name: "Οργάνωση και Διοίκηση Επιχειρήσεων", kind: "Υποχρεωτικό" },

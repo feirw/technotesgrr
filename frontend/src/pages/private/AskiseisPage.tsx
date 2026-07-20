@@ -216,22 +216,22 @@ const AskiseisPage: React.FC = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="relative overflow-hidden bg-gradient-to-r from-coral-accent via-coral-strong to-coral-accent text-white py-10 sm:py-14 px-4 sm:px-6">
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
         <motion.div
-          className="max-w-4xl mx-auto text-center"
+          className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4">
-            <MenuIconImg src={MENU_ICONS.askiseis} className="w-12 h-12" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={MENU_ICONS.askiseis} className="w-9 h-9" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight">Ασκήσεις</h1>
-          <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">Ασκήσεις</h1>
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
             Προτεινόμενες ασκήσεις σε ΓΛΩΣΣΑ — επίλεξε θέμα και άσκηση για την εκφώνηση.
           </p>
         </motion.div>
-      </div>
+      </header>
 
       <motion.div
         className="sticky top-0 z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-coral-accent/15 dark:border-gray-800 shadow-sm"

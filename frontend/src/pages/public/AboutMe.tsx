@@ -116,21 +116,38 @@ const personalCardImages = ['/images/c2.png', '/images/c3.png'];
 const cardClass =
   'bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md rounded-3xl shadow-xl p-6 md:p-8 border border-[#f07f97]/25 dark:border-white/10';
 
+const ABOUT_BACKGROUND_LIGHT = '/images/α1.jpg';
+const ABOUT_BACKGROUND_DARK = '/images/α2.jpg';
+
 const AboutPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+    <div className="relative min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
+        <img
+          src={ABOUT_BACKGROUND_LIGHT}
+          alt=""
+          className="w-full h-full object-cover dark:hidden"
+        />
+        <img
+          src={ABOUT_BACKGROUND_DARK}
+          alt=""
+          className="hidden w-full h-full object-cover dark:block"
+        />
+      </div>
+
+      <div className="relative z-10">
       <section className="pt-10 sm:pt-12 pb-4 sm:pb-6">
         <div className="container mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 tracking-tight text-white drop-shadow-sm">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-4 tracking-tight text-white drop-shadow-sm">
             Γεια σου! Είμαι η Ελένη
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-white/95 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed">
             δημιουργός του <span className="font-bold">technotesgr</span>
           </p>
         </div>
       </section>
 
-      <section className="pt-2 pb-16 md:pt-4 md:pb-20">
+      <section className="pt-8 pb-16 sm:pt-10 md:pt-14 md:pb-20">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-5xl mx-auto space-y-8 sm:space-y-10">
             <div className={cardClass}>
@@ -296,6 +313,7 @@ const AboutPage: React.FC = () => {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 };

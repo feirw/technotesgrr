@@ -17,6 +17,16 @@ export interface Announcement {
 }
 
 export const ANNOUNCEMENTS: Announcement[] = [
+
+  {
+    id: '6',
+    date: '2026-07-19',
+    title: 'Βάσεις 2026: Στις 23 ή 24 Ιουλίου τα ονόματα των επιτυχόντων',
+    body:
+      'Την Πέμπτη 23 ή την Παρασκευή 24 Ιουλίου αναμένεται να ανακοινωθούν οι βάσεις εισαγωγής και τα ονόματα των επιτυχόντων στις Πανελλαδικές 2026. Οι υποψήφιοι θα μπορούν να ενημερωθούν μέσω του results.it.minedu.gov.gr με τον οκταψήφιο κωδικό τους, ενώ όσοι είναι εγγεγραμμένοι στην εφαρμογή του Υπουργείου θα λάβουν και SMS.',
+    link: 'https://www.esos.gr/arthra/100215/stis-23-i-24-ioylioy-oi-baseis-kai-ta-onomata-ton-epityhonton',
+    linkLabel: 'Διάβασε στο esos.gr',
+  },
   {
     id: '5',
     date: '2026-07-09',
@@ -61,4 +71,5 @@ export const ANNOUNCEMENTS: Announcement[] = [
     link: 'https://www.minedu.gov.gr/news/62639-11-09-25-programma-panelladikon-eksetaseon-2026',
     linkLabel: 'Άνοιγμα στο minedu.gov.gr',
   },
+
 ];

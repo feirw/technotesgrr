@@ -6,6 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend" / "src" / "data" / "ekpaPortShippingManagementCurriculum.generated.ts"
 
+EXTERNAL_URL = "https://www.pms.uoa.gr/programma-spoudon/"
+
 Y = "Υποχρεωτικό"
 E = "Επιλογής"
 EU = "Επιλογής · ανεξάρτητο εξάμηνου"
@@ -233,6 +235,7 @@ def main() -> None:
         "export const EKPA_PORT_SHIPPING_MANAGEMENT_CURRICULUM: SchoolCurriculum = {",
         '  title: "Διαχείρισης Λιμένων και Ναυτιλίας",',
         '  subtitle: "ΕΚΠΑ · Ψαχνά (Εύβοια)",',
+        f'  externalCoursesUrl: "{esc(EXTERNAL_URL)}",',
         "  hoursNote:",
         (
             '    "240 ECTS · 40 μαθήματα (28 υποχρεωτικά + 12 επιλογής). '

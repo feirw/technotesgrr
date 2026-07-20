@@ -5,6 +5,7 @@ import App from './App';
 import './index.css';
 import { initWebVitalsTracking } from '@/utils/webVitals';
 import { initTheme } from '@/utils/theme';
+import { AuthProvider } from '@/context/AuthContext';
 
 const rootElement = document.getElementById('root');
 
@@ -18,7 +19,9 @@ initTheme();
 createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );

@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, RotateCcw, Target, Clock3, Trophy } from 'lucide-react';
+import { Play, Pause, RotateCcw, Target, Clock3, Trophy, Flame } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
+import ShareResultButton from '@/components/other/ShareResultButton';
 
 const STORAGE_KEY = 'studyTimer:v1';
 
@@ -11,9 +12,19 @@ type TimerState = {
   dailyGoalMin: number;
   sessionsToday: number;
   lastDayKey: string;
+  streakDays: number;
+  /** Day key (YYYY-MM-DD) της τελευταίας ημέρας που έφτασε τον ημερήσιο στόχο. */
+  lastCompletedDate: string | null;
 };
 
 const getDayKey = () => new Date().toISOString().slice(0, 10);
+
+/** Αριθμός ημερολογιακών ημερών μεταξύ δύο day keys (YYYY-MM-DD). */
+const daysBetween = (fromDayKey: string, toDayKey: string) => {
+  const from = new Date(`${fromDayKey}T00:00:00`);
+  const to = new Date(`${toDayKey}T00:00:00`);
+  return Math.round((to.getTime() - from.getTime()) / 86400000);
+};
 
 const formatTime = (ms: number) => {
   const totalSeconds = Math.floor(ms / 1000);
@@ -25,36 +36,37 @@ const formatTime = (ms: number) => {
 
 const StudyTimerPage: React.FC = () => {
   const [timer, setTimer] = useState<TimerState>(() => {
+    const fresh = (): TimerState => ({
+      elapsedMs: 0,
+      isRunning: false,
+      dailyGoalMin: 120,
+      sessionsToday: 0,
+      lastDayKey: getDayKey(),
+      streakDays: 0,
+      lastCompletedDate: null,
+    });
+
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return {
-          elapsedMs: 0,
-          isRunning: false,
-          dailyGoalMin: 120,
-          sessionsToday: 0,
-          lastDayKey: getDayKey(),
-        };
-      }
-      const parsed = JSON.parse(raw) as TimerState;
-      if (parsed.lastDayKey !== getDayKey()) {
+      if (!raw) return fresh();
+
+      const parsed = { ...fresh(), ...(JSON.parse(raw) as Partial<TimerState>) };
+      const today = getDayKey();
+      if (parsed.lastDayKey !== today) {
+        // Αν πέρασε πάνω από 1 ημέρα από την τελευταία επίτευξη στόχου, σπάει το σερί.
+        const gap = parsed.lastCompletedDate ? daysBetween(parsed.lastCompletedDate, today) : Infinity;
         return {
           ...parsed,
           elapsedMs: 0,
           sessionsToday: 0,
           isRunning: false,
-          lastDayKey: getDayKey(),
+          lastDayKey: today,
+          streakDays: gap > 1 ? 0 : parsed.streakDays,
         };
       }
       return parsed;
     } catch {
-      return {
-        elapsedMs: 0,
-        isRunning: false,
-        dailyGoalMin: 120,
-        sessionsToday: 0,
-        lastDayKey: getDayKey(),
-      };
+      return fresh();
     }
   });
 
@@ -85,6 +97,18 @@ const StudyTimerPage: React.FC = () => {
   );
   const goalReached = progress >= 100;
 
+  // Ενημέρωση σερί όταν επιτευχθεί ο ημερήσιος στόχος (μία φορά ανά ημέρα).
+  useEffect(() => {
+    if (!goalReached) return;
+    const today = getDayKey();
+    setTimer((prev) => {
+      if (prev.lastCompletedDate === today) return prev;
+      const gap = prev.lastCompletedDate ? daysBetween(prev.lastCompletedDate, today) : Infinity;
+      const nextStreak = gap <= 1 ? prev.streakDays + 1 : 1;
+      return { ...prev, streakDays: nextStreak, lastCompletedDate: today };
+    });
+  }, [goalReached]);
+
   const onStartPause = () => {
     setTimer((prev) => {
       const nextRunning = !prev.isRunning;
@@ -112,9 +136,10 @@ const StudyTimerPage: React.FC = () => {
           <div className="flex flex-col items-center mb-2">
             <PageMenuIcon
               icon="studyTimer"
-              wrapperClassName="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-coral-wash dark:bg-coral-accent/10 mb-2"
+              wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
+              className="w-9 h-9"
             />
-            <h1 className="text-3xl sm:text-4xl font-black text-coral-accent dark:text-coral-light text-center">
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] text-center tracking-tight">
               Study Timer
             </h1>
           </div>
@@ -149,7 +174,16 @@ const StudyTimerPage: React.FC = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
+              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-1">
+                <Flame className="w-4 h-4 text-orange-500" />
+                Σερί
+              </div>
+              <div className="text-2xl font-black text-coral-accent dark:text-coral-light">
+                {timer.streakDays} {timer.streakDays === 1 ? 'μέρα' : 'μέρες'}
+              </div>
+            </div>
             <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Sessions σήμερα</div>
               <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{timer.sessionsToday}</div>
@@ -197,10 +231,15 @@ const StudyTimerPage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-5 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 font-semibold flex items-center gap-2"
+              className="mt-5 p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 text-center"
             >
-              <Trophy className="w-5 h-5" />
-              Μπράβο! Ο σημερινός στόχος μελέτης ολοκληρώθηκε.
+              <p className="text-green-700 dark:text-green-400 font-semibold flex items-center justify-center gap-2 mb-4">
+                <Trophy className="w-5 h-5" />
+                Μπράβο! Ο σημερινός στόχος μελέτης ολοκληρώθηκε.
+              </p>
+              <ShareResultButton
+                data={{ kind: 'streak', days: Math.max(timer.streakDays, 1), minutesToday: studiedMin }}
+              />
             </motion.div>
           )}
         </motion.div>

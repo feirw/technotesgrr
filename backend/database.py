@@ -89,8 +89,118 @@ def init_database():
                 ON flashcards (chapter, id);
                 """
             )
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    email TEXT UNIQUE NOT NULL,
+                    password_hash TEXT NOT NULL,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS password_resets (
+                    token TEXT PRIMARY KEY,
+                    user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+                    expires_at TIMESTAMPTZ NOT NULL,
+                    used_at TIMESTAMPTZ
+                );
+                """
+            )
         conn.commit()
     print("Connected to Supabase PostgreSQL (runtime tables ensured)")
+
+
+def create_user(email: str, password_hash: str) -> Optional[Dict]:
+    """Δημιουργεί χρήστη. Επιστρέφει None αν το email υπάρχει ήδη."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO users (email, password_hash)
+                    VALUES (%s, %s)
+                    RETURNING id, email, created_at
+                    """,
+                    (email.lower(), password_hash),
+                )
+                user = cursor.fetchone()
+            except psycopg2.errors.UniqueViolation:
+                conn.rollback()
+                return None
+        conn.commit()
+        return dict(user)
+
+
+def get_user_by_email(email: str) -> Optional[Dict]:
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, email, password_hash, created_at FROM users WHERE email = %s",
+                (email.lower(),),
+            )
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+
+def get_user_by_id(user_id: int) -> Optional[Dict]:
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                "SELECT id, email, created_at FROM users WHERE id = %s", (user_id,)
+            )
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+
+def update_user_password(user_id: int, password_hash: str) -> None:
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE users SET password_hash = %s WHERE id = %s",
+                (password_hash, user_id),
+            )
+        conn.commit()
+
+
+def create_password_reset(user_id: int, token: str, expires_at: datetime) -> None:
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO password_resets (token, user_id, expires_at)
+                VALUES (%s, %s, %s)
+                """,
+                (token, user_id, expires_at),
+            )
+        conn.commit()
+
+
+def get_valid_password_reset(token: str) -> Optional[Dict]:
+    """Επιστρέφει το reset row μόνο αν υπάρχει, δεν έχει χρησιμοποιηθεί και δεν έχει λήξει."""
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                """
+                SELECT token, user_id, expires_at, used_at
+                FROM password_resets
+                WHERE token = %s AND used_at IS NULL AND expires_at > NOW()
+                """,
+                (token,),
+            )
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+
+def mark_password_reset_used(token: str) -> None:
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE password_resets SET used_at = NOW() WHERE token = %s", (token,)
+            )
+        conn.commit()
 
 def update_leaderboard(nickname: str, points_earned: int):
     """Update or create leaderboard entry for a user"""

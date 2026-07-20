@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
+import { Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
@@ -22,13 +23,16 @@ interface Review {
   description: string;
 }
 
-interface Feature {
+interface FeatureCategoryItem {
+  label: string;
+  path: string;
+  iconSrc: string;
+}
+
+interface FeatureCategory {
   title: string;
   desc: string;
-  badge: string;
-  iconSrc: string;
-  iconClassName?: string;
-  path?: string;
+  items: FeatureCategoryItem[];
 }
 
 // interface ContactResponse {
@@ -46,6 +50,12 @@ interface FaqItem {
 
 const HERO_BACKGROUND_LIGHT = '/images/home%20page/bc11.jpg';
 const HERO_BACKGROUND_DARK = '/images/home%20page/night.jpg';
+
+const SHOWCASE_VIDEOS = [
+  '/videos/v24044gl0000d8dc50vog65ursbvt0u0.MP4',
+  '/videos/v24044gl0000d8ptjgnog65tm9lv8qug.MP4',
+  '/videos/v24044gl0000d93vpsfog65oopq68cbg.MP4',
+];
 
 const reviewsData: Review[] = [
   {
@@ -79,70 +89,34 @@ const reviewsData: Review[] = [
   },
 ];
 
-const featuresData: Feature[] = [
+const featureCategoriesData: FeatureCategory[] = [
   {
-    title: 'Μεθοδολογίες',
-    desc: 'Τυπικοί αλγόριθμοι σε ΓΛΩΣΣΑ — Όσο, πίνακες, στοίβα, ουρά και άλλες κατηγορίες της ύλης.',
-    badge: '01',
-    iconSrc: MENU_ICONS.methodologies,
-    path: '/methodologies',
+    title: 'Για πριν τις πανελλήνιες',
+    desc: 'Όλα τα εργαλεία μελέτης και εξάσκησης για να φτάσεις προετοιμασμένος/η στις εξετάσεις.',
+    items: [
+      { label: 'Flashcards', path: '/flashcards', iconSrc: MENU_ICONS.flashcards },
+      { label: 'Quiz', path: '/quiz', iconSrc: MENU_ICONS.quiz },
+      { label: 'Παλιά Θέματα', path: '/paliathemata', iconSrc: MENU_ICONS.paliathemata },
+      { label: 'Μεθοδολογίες', path: '/methodologies', iconSrc: MENU_ICONS.methodologies },
+      { label: 'Ασκήσεις', path: '/askiseis', iconSrc: MENU_ICONS.askiseis },
+      { label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa', iconSrc: MENU_ICONS.gloglossa },
+      { label: 'Study Timer', path: '/study-timer', iconSrc: MENU_ICONS.studyTimer },
+      { label: 'Tracker Ύλης', path: '/progress-tracker', iconSrc: MENU_ICONS.progressTracker },
+    ],
   },
   {
-    title: 'Ασκήσεις',
-    desc: 'Προτεινόμενες ασκήσεις Θέμα Γ και Θέμα Δ με πλήρεις εκφωνήσεις για εξάσκηση.',
-    badge: '02',
-    iconSrc: MENU_ICONS.askiseis,
-    iconClassName: 'w-24 h-24',
-    path: '/askiseis',
-  },
-  {
-    title: 'Quiz',
-    desc: 'Δοκίμασε γνώσεις με έξυπνα, στοχευμένα ερωτήματα τα οποία έχουν εξεταστεί σε προηγούμενες Πανελλήνιες εξετάσεις.',
-    badge: '03',
-    iconSrc: MENU_ICONS.quiz,
-    path: '/quiz',
-  },
-  {
-    title: 'Flashcards',
-    desc: 'Γρήγορη επανάληψη σε όλες τις έννοιες του σχολικού βιβλίου.',
-    badge: '04',
-    iconSrc: MENU_ICONS.flashcards,
-    path: '/flashcards',
-  },
-  {
-    title: 'Study Timer',
-    desc: 'Οργάνωσε τον χρόνο μελέτης σου και παρακολούθησε την καθημερινή πρόοδό σου.',
-    badge: '05',
-    iconSrc: MENU_ICONS.studyTimer,
-    path: '/study-timer',
-  },
-  {
-    title: 'Σχολές και Καριέρα',
-    desc: 'Εξερεύνησε επιλογές σχολών και οργάνωσε πιο σωστά τα επόμενα βήματά σου.',
-    badge: '06',
-    iconSrc: MENU_ICONS.schools,
-    path: '/sxoles',
-  },
-  {
-    title: 'Παλιά Θέματα και Αλγόριθμοι',
-    desc: 'Μελέτησε παλαιά θέματα και δες οπτικοποιήσεις αλγορίθμων για βαθύτερη κατανόηση.',
-    badge: '07',
-    iconSrc: MENU_ICONS.paliathemata,
-    path: '/paliathemata',
-  },
-  {
-    title: 'Online Διερμηνευτής της Γλώσσας',
-    desc: 'Γράψε και δοκίμασε κώδικα στη ΓΛΩΣΣΑ άμεσα, με γρήγορη εκτέλεση και καλύτερη εξάσκηση.',
-    badge: '08',
-    iconSrc: MENU_ICONS.gloglossa,
-    path: '/gloglossa',
-  },
-  {
-    title: 'Tracker της ύλης',
-    desc: 'Παρακολούθησε κεφάλαια και ενότητες: δες τι έχεις καλύψει και τι απομένει πριν τις εξετάσεις.',
-    badge: '09',
-    iconSrc: MENU_ICONS.progressTracker,
-    path: '/progress-tracker',
+    title: 'Για μετά τις πανελλήνιες',
+    desc: 'Οδηγός για σχολές, μόρια και τα επόμενα βήματα μετά τις εξετάσεις.',
+    items: [
+      { label: 'Σχολές', path: '/sxoles', iconSrc: MENU_ICONS.schools },
+      { label: 'Βάσεις Σχολών', path: '/ypologismos-morion', iconSrc: MENU_ICONS.ypologismosMorion },
+      { label: 'Συντελεστές', path: '/syntelestes-sxolon', iconSrc: MENU_ICONS.syntelestesSxolon },
+      { label: 'Αντιστοιχίες Σχολών', path: '/antistoixies-sxolon', iconSrc: MENU_ICONS.antistixia },
+      { label: 'Μετεγγραφές', path: '/meteggrafes', iconSrc: MENU_ICONS.meteggrafes },
+      { label: 'Μελλοντικές Καριέρες & Προσανατολισμός', path: '/prosanatolismos', iconSrc: MENU_ICONS.prosanatolismos },
+      { label: 'ΣΑΕΚ', path: '/saek', iconSrc: MENU_ICONS.saek },
+      {label : 'Πρόβα Μηχανογραφικού', path: '/prova-mixanografiko', iconSrc: MENU_ICONS.mixanografiko},
+    ],
   },
 ];
 
@@ -245,57 +219,108 @@ const Section: React.FC<SectionProps> = ({
   </section>
 );
 
-interface FeatureCardProps extends Feature {
-  onClick?: () => void;
+interface CategoryCardProps extends FeatureCategory {
+  onNavigate: (path: string) => void;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({
-  title,
-  desc,
-  iconSrc,
-  iconClassName = 'w-20 h-20',
-  onClick,
-}) => (
-  <motion.button
-    type="button"
-    className="group relative bg-white rounded-2xl shadow-xl p-8 text-center transition-all duration-500 border border-[#f07f97]/35 overflow-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-[#f07f97] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#2d1c48]"
-    aria-label={title}
-    onClick={onClick}
-    animate={{ opacity: 1, y: 0, rotateX: 0 }}
-    transition={{ duration: 0 }}
+const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavigate }) => (
+  <motion.div
+    className="group relative bg-white dark:bg-[#3a2658] rounded-3xl shadow-xl p-8 sm:p-10 border border-[#f07f97]/35 dark:border-[#f07f97]/25 overflow-hidden"
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, amount: 0.2 }}
+    transition={{ duration: 0.6 }}
     whileHover={{
-      y: -10,
-      scale: 1.02,
+      y: -6,
       boxShadow: '0 25px 50px -12px rgba(232, 86, 100, 0.26)',
       transition: { duration: 0.3 },
     }}
   >
-    <motion.div className="absolute inset-0 bg-[#f07f97] opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-
-    <div className="absolute -inset-0.5 bg-[#f07f97] rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-500" />
+    <div className="absolute -inset-0.5 bg-[#f07f97] rounded-3xl blur opacity-0 group-hover:opacity-15 transition duration-500 pointer-events-none" />
 
     <div className="relative z-10">
-      <motion.div
-        className="mb-6 mx-auto flex items-center justify-center"
-        whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
-      >
-        <MenuIconImg src={iconSrc} className={iconClassName} />
-      </motion.div>
+      <h3 className="text-2xl sm:text-3xl font-black mb-3 text-[#f07f97]">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">{desc}</p>
 
-      <motion.h3
-        className="text-2xl font-bold mb-3 text-gray-900"
-        whileHover={{
-          scale: 1.05,
-          transition: { duration: 0.2 },
-        }}
-      >
-        {title}
-      </motion.h3>
-
-      <p className="text-gray-600 leading-relaxed">{desc}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {items.map((item) => (
+          <button
+            key={item.label}
+            type="button"
+            onClick={() => onNavigate(item.path)}
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 dark:border-white/10 bg-coral-wash/60 dark:bg-white/5 hover:bg-[#f07f97]/15 dark:hover:bg-[#f07f97]/15 hover:border-[#f07f97] px-3 py-4 text-center transition-colors"
+          >
+            <MenuIconImg src={item.iconSrc} className="w-10 h-10 sm:w-12 sm:h-12" />
+            <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight">
+              {item.label}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
-  </motion.button>
+  </motion.div>
 );
+
+interface VideoShowcaseCardProps {
+  src: string;
+  index: number;
+}
+
+const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setMuted(video.muted);
+  };
+
+  return (
+    <motion.div
+      className="relative group mx-auto w-full max-w-[300px]"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.6, delay: index * 0.12 }}
+    >
+      {/* Pink frame */}
+      <div className="relative rounded-[1.75rem] border-[6px] border-[#f07f97] bg-black overflow-hidden shadow-2xl shadow-[#f07f97]/40 aspect-[9/16] transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.03]">
+        <video
+          ref={videoRef}
+          src={src}
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+
+        {/* Top sheen for legibility */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 to-transparent" />
+
+        {/* Sound toggle */}
+        <button
+          type="button"
+          onClick={toggleSound}
+          aria-label={muted ? 'Ενεργοποίηση ήχου' : 'Σίγαση'}
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 hover:bg-white text-[#e06d88] flex items-center justify-center shadow-md backdrop-blur-sm transition-colors z-10"
+        >
+          {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+        </button>
+
+        {/* Brand badge */}
+        <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex justify-center">
+          <span className="px-3 py-1 rounded-full bg-[#f07f97] text-white text-xs font-black shadow-lg tracking-wide">
+            technotesgr
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const REVIEW_STARS_IMG = '/images/home%20page/stars-removebg-preview.png';
 
@@ -547,7 +572,7 @@ const HomePage: React.FC = () => {
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
             >
               Η <span className="font-bold text-[#f07f97]">ιδανική πλατφόρμα</span> προετοιμασίας
-              για τις Πανελλήνιες.
+              για τις πανελλήνιες,εντελώς <span className="font-bold text-[#00000]"> ΔΩΡΕΑΝ!</span>
             </p>
 
             <motion.button
@@ -565,28 +590,36 @@ const HomePage: React.FC = () => {
                 aria-hidden="true"
               />
             </motion.button>
+
+            
           </div>
         </section>
 
         {/* Take a breath relocated to navbar (MainLayout) */}
 
+        {/* Video Showcase Section */}
+        <Section id="videos">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8 place-items-center">
+            {SHOWCASE_VIDEOS.map((src, idx) => (
+              <VideoShowcaseCard key={src} src={src} index={idx} />
+            ))}
+          </div>
+        </Section>
+
         {/* Features Section */}
         <Section
           id="features"
-          title="Τι προσφέρουμε;"
-          subtitle="Όλα όσα χρειάζεσαι για να πετύχεις στις Πανελλήνιες"
+          title="Τι προσφέρουμε:"
+          
         >
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-12"
-          >
-            {featuresData.map((feat) => (
-              <FeatureCard
-                key={feat.title}
-                {...feat}
-                onClick={() => {
-                  if (!feat.path) return;
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
+            {featureCategoriesData.map((category) => (
+              <CategoryCard
+                key={category.title}
+                {...category}
+                onNavigate={(path) => {
                   window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-                  navigate(feat.path);
+                  navigate(path);
                 }}
               />
             ))}

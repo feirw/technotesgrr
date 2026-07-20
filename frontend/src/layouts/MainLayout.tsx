@@ -12,8 +12,11 @@ import {
   Linkedin,
   Youtube,
   Music2,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
+import { useAuth } from '@/context/AuthContext';
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import CookieConsent from '@/components/other/CookieConsent';
 import PwaInstallPrompt from '@/components/other/PwaInstallPrompt';
@@ -224,6 +227,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
+  const { user, logout } = useAuth();
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
@@ -360,10 +364,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements}>Ανακοινώσεις</NavButton>
               <NavButton to="/faq" iconSrc={MENU_ICONS.faq}>FAQ</NavButton>
 
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
+              {user && (
+                <>
+                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
 
-              <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
-              <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
+                  <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
+                  <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
+                </>
+              )}
 
               <button
                 type="button"
@@ -382,6 +390,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
                 )}
               </button>
+
+              {user ? (
+                <button
+                  type="button"
+                  onClick={() => void logout()}
+                  className="ml-2 flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-coral-accent/35 text-coral-strong dark:text-coral-light hover:bg-coral-wash dark:hover:bg-coral-accent/10 transition-colors touch-manipulation"
+                  title="Αποσύνδεση"
+                >
+                  <LogOut className="w-4.5 h-4.5" aria-hidden />
+                  <span className="max-w-[8rem] truncate text-sm font-semibold">{user.email}</span>
+                </button>
+              ) : (
+                <NavLink
+                  to="/login"
+                  className="ml-2 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-bold shadow touch-manipulation transition-colors"
+                >
+                  <LogIn className="w-4.5 h-4.5" aria-hidden />
+                  Σύνδεση
+                </NavLink>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -505,6 +533,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     FAQ
                   </MobileNavButton>
 
+                  {user && (
+                  <>
                   <MobileMenuSectionTitle>Προετοιμασία</MobileMenuSectionTitle>
                   {PREP_MENU_ITEMS.map((item) => (
                     <MobileNavButton
@@ -531,6 +561,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
+                  </>
+                  )}
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">
@@ -552,6 +584,27 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       )}
                     </button>
                   </div>
+
+                  {user ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void logout();
+                        closeMenu();
+                      }}
+                      className="w-full flex min-h-11 items-center gap-3 py-3.5 px-4 rounded-xl text-coral-strong dark:text-coral-light border border-coral-accent/30 dark:border-coral-accent/35 font-bold touch-manipulation"
+                    >
+                      <LogOut className="w-5 h-5 shrink-0" aria-hidden />
+                      <span className="truncate">{user.email}</span>
+                    </button>
+                  ) : (
+                    <MobileNavButton to="/login" onClick={closeMenu}>
+                      <span className="inline-flex items-center gap-3">
+                        <LogIn className="w-5 h-5 shrink-0" aria-hidden />
+                        Σύνδεση
+                      </span>
+                    </MobileNavButton>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -626,6 +679,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 <Youtube className="w-4 h-4" /> <span>YouTube</span>
               </a>
+              
             </div>
           </motion.div>
 

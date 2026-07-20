@@ -27,9 +27,7 @@ const SchoolCard: React.FC<{ school: SchoolCoefficientsEntry; index: number }> =
         <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-white leading-snug">
           {school.name}
         </h2>
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Σύνολο βαρύτητας: <span className="font-bold text-[#f07f97]">{total}%</span>
-        </p>
+        
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -89,24 +87,24 @@ const SchoolCoefficientsPage: React.FC = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#f07f97] via-[#f07f97] to-[#e06d88] text-white py-10 sm:py-14 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-2xl bg-white/20 mb-4">
-            <MenuIconImg src={MENU_ICONS.syntelestesSxolon} className="w-14 h-14" />
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={MENU_ICONS.syntelestesSxolon} className="w-9 h-9" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Συντελεστές Σχολών
           </h1>
-          <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
             {FIELD_4_TITLE} — Πανελλήνιες {COEFFICIENTS_YEAR}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 text-center pt-6 leading-relaxed">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center pt-4 leading-relaxed">
           Πηγή δεδομένων:{' '}
           <a
             href="https://aeitei.gr/sintelestes-barititas.php"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#11111] hover:underline font-semibold"
+            className="inline-flex items-center gap-1 text-[#f07f97] dark:text-[#ff97b2] hover:underline font-semibold"
           >
             AeiTei.gr
             <ExternalLink className="w-3 h-3" aria-hidden />
@@ -114,7 +112,7 @@ const SchoolCoefficientsPage: React.FC = () => {
           . Οι συντελεστές αφορούν το 4ο επιστημονικό πεδίο ({COEFFICIENTS_YEAR}).
         </p>
         </div>
-      </div>
+      </header>
 
       <div className="sticky top-20 z-20 bg-white/95 dark:bg-[#3a2658]/95 backdrop-blur-lg border-b border-[#f07f97]/20 dark:border-white/10 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 space-y-3">

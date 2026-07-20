@@ -5,13 +5,13 @@ const AlgorithmsPage: React.FC = () => {
   return (
     <div className="min-h-[100dvh] bg-[#fff2f2] dark:bg-gray-950 px-3 py-4 sm:px-6 sm:py-6 md:p-10 box-border">
       <div className="mx-auto w-full max-w-[1450px]">
-        <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
+        <div className="flex flex-col items-center mb-3 sm:mb-4">
           <PageMenuIcon
             icon="algorithms"
-            wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/80 dark:bg-gray-900/90 mb-0"
+            wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
             className="w-9 h-9"
           />
-          <h1 className="text-2xl sm:text-3xl font-black text-[#f07f97] dark:text-[#ff97b2]">
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Αλγόριθμοι
           </h1>
         </div>

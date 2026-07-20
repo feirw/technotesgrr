@@ -4,7 +4,7 @@ import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Όροι Χρήσης & Πολιτική Απορρήτου</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Όροι Χρήσης & Πολιτική Απορρήτου</h1>
       <p>
         <strong>Ιστοσελίδα:</strong> technotesgr
       </p>

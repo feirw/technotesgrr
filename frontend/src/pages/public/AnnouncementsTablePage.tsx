@@ -52,7 +52,7 @@ const AnnouncementsTablePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
       <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
           <PageMenuIcon
             icon="announcements"
             wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
@@ -61,9 +61,6 @@ const AnnouncementsTablePage: React.FC = () => {
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Ανακοινώσεις
           </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 max-w-xl leading-relaxed">
-            Πίνακας ενημερώσεων. Οι γραμμές ταξινομούνται αυτόματα από την πιο πρόσφατη ημερομηνία.
-          </p>
         </div>
       </header>
 

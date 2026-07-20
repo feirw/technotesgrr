@@ -28,14 +28,15 @@ const SaekPage: React.FC = () => {
     <div className="min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500 pb-16">
       <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center">
-          <div className="flex justify-center mb-3">
-            <MenuIconImg src={SCHOOL_PAGE_NOTICE_ICONS.saek} className="h-16 w-16 sm:h-20 sm:w-20" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3">
+            <MenuIconImg src={SCHOOL_PAGE_NOTICE_ICONS.saek} className="w-9 h-9" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-[#f07f97] dark:text-[#ff97b2] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             ΣΑΕΚ
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            Σχολές Ανώτερης Επαγγελματικής Κατάρτισης (ΔΥΠΑ) — δωρεάν σπουδές με ειδικότητες αιχμής.
+            Σχολές Ανώτερης Επαγγελματικής Κατάρτισης — δωρεάν σπουδές με ειδικότητες αιχμής, σε ΣΑΕΚ
+            ΔΥΠΑ και Υπουργείου Παιδείας.
           </p>
         </div>
       </header>
@@ -43,11 +44,32 @@ const SaekPage: React.FC = () => {
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6">
         <section className={`${cardClass} px-5 sm:px-6 py-5 sm:py-6`}>
           <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed">
-            Οι <strong>ΣΑΕΚ</strong> (Σχολές Ανώτερης Επαγγελματικής Κατάρτισης) λειτουργούν υπό τη
-            ΔΥΠΑ και προσφέρουν δωρεάν επαγγελματική κατάρτιση σε ένα ευρύ φάσμα ειδικοτήτων. Αποτελούν
-            μια εναλλακτική ή συμπληρωματική επιλογή σπουδών, με έμφαση στην πρακτική εξάσκηση και τη
-            σύνδεση με την αγορά εργασίας.
+            Οι <strong>ΣΑΕΚ</strong> (Σχολές Ανώτερης Επαγγελματικής Κατάρτισης) προσφέρουν δωρεάν
+            επαγγελματική κατάρτιση σε ένα ευρύ φάσμα ειδικοτήτων και χωρίζονται σε{' '}
+            <strong>δύο κατηγορίες</strong>, ανάλογα με τον φορέα εποπτείας τους: τις ΣΑΕΚ της{' '}
+            <strong>ΔΥΠΑ</strong> και τις ΣΑΕΚ του <strong>Υπουργείου Παιδείας</strong>. Και οι δύο
+            αποτελούν εναλλακτική ή συμπληρωματική επιλογή σπουδών, με έμφαση στην πρακτική εξάσκηση
+            και τη σύνδεση με την αγορά εργασίας.
           </p>
+        </section>
+
+        <section className="grid gap-3 sm:grid-cols-2">
+          <div className={`${cardClass} px-4 py-4`}>
+            <p className="text-[13px] sm:text-sm font-black text-[#f07f97] dark:text-[#ff97b2] mb-1">
+              ΣΑΕΚ ΔΥΠΑ
+            </p>
+            <p className="text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+              Λειτουργούν υπό τη ΔΥΠΑ (πρώην ΟΑΕΔ) και προσφέρουν εντελώς δωρεάν φοίτηση.
+            </p>
+          </div>
+          <div className={`${cardClass} px-4 py-4`}>
+            <p className="text-[13px] sm:text-sm font-black text-[#f07f97] dark:text-[#ff97b2] mb-1">
+              ΣΑΕΚ Υπουργείου Παιδείας
+            </p>
+            <p className="text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+              Λειτουργούν υπό την εποπτεία του Υπουργείου Παιδείας, ως δημόσιες ΣΑΕΚ/ΙΕΚ.
+            </p>
+          </div>
         </section>
 
         <section className="grid gap-3 sm:grid-cols-3">
@@ -66,7 +88,7 @@ const SaekPage: React.FC = () => {
         <section className={`${cardClass} px-5 sm:px-6 py-6 text-center`}>
           <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed mb-4">
             Δες όλες τις σχολές και τις ειδικότητες ΣΑΕΚ στην επίσημη σελίδα της ΔΥΠΑ ή τη λίστα
-            δημόσιων ΙΕΚ / ΣΑΕΚ ανά περιοχή στο Education.gr.
+            δημόσιων ΣΑΕΚ / ΙΕΚ του Υπουργείου Παιδείας ανά περιοχή στο Education.gr.
           </p>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
             <a
@@ -78,7 +100,7 @@ const SaekPage: React.FC = () => {
               Σχολές ΣΑΕΚ · ΔΥΠΑ
               <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
             </a>
-           
+            
           </div>
         </section>
       </main>

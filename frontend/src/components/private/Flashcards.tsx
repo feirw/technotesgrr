@@ -417,19 +417,19 @@ const Flashcards: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-coral-wash dark:bg-black p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-coral-wash dark:bg-black">
+      <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
         <motion.div
-          className="text-center mb-8"
+          className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <PageMenuIcon
             icon="flashcards"
-            wrapperClassName="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/80 dark:bg-gray-900/90 mx-auto mb-3"
+            wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mx-auto mb-3"
+            className="w-9 h-9"
           />
-          <h1 className="text-4xl sm:text-5xl font-black mb-4 text-coral-accent dark:text-coral-light">
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Flashcards Πληροφορικής Πανελληνίων
           </h1>
           {selectedSetIndex === null && (
@@ -461,7 +461,9 @@ const Flashcards: React.FC = () => {
             </div>
           )}
         </motion.div>
+      </header>
 
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {!loading && error && (
           <motion.div
             className="mb-8 bg-red-50 dark:bg-red-950/30 border-2 border-red-300 dark:border-red-800 rounded-2xl p-6 text-center"
