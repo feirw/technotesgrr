@@ -12,11 +12,11 @@ import {
   Linkedin,
   Youtube,
   Music2,
-  LogIn,
-  LogOut,
+  // LogIn,
+  // LogOut,
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
-import { useAuth } from '@/context/AuthContext';
+// import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import CookieConsent from '@/components/other/CookieConsent';
 import PwaInstallPrompt from '@/components/other/PwaInstallPrompt';
@@ -227,7 +227,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  // const { user, logout } = useAuth(); // Σύνδεση — προσωρινά απενεργοποιημένη
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
@@ -364,14 +364,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements}>Ανακοινώσεις</NavButton>
               <NavButton to="/faq" iconSrc={MENU_ICONS.faq}>FAQ</NavButton>
 
-              {user && (
-                <>
-                  <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
+              <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
 
-                  <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
-                  <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
-                </>
-              )}
+              <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
+              <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
 
               <button
                 type="button"
@@ -391,6 +387,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 )}
               </button>
 
+              {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
               {user ? (
                 <button
                   type="button"
@@ -410,6 +407,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   Σύνδεση
                 </NavLink>
               )}
+              */}
             </div>
 
             {/* Mobile Menu Button */}
@@ -533,8 +531,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     FAQ
                   </MobileNavButton>
 
-                  {user && (
-                  <>
                   <MobileMenuSectionTitle>Προετοιμασία</MobileMenuSectionTitle>
                   {PREP_MENU_ITEMS.map((item) => (
                     <MobileNavButton
@@ -561,8 +557,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
-                  </>
-                  )}
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">
@@ -585,6 +579,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     </button>
                   </div>
 
+                  {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
                   {user ? (
                     <button
                       type="button"
@@ -605,6 +600,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       </span>
                     </MobileNavButton>
                   )}
+                  */}
                 </div>
               </div>
             </motion.div>

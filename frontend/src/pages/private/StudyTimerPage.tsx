@@ -3,8 +3,13 @@ import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Target, Clock3, Trophy, Flame } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
 import ShareResultButton from '@/components/other/ShareResultButton';
+import { useAuth } from '@/context/AuthContext';
+import { getAuthToken } from '@/context/AuthContext';
+import { apiFetch } from '@/utils/apiClient';
+import { getBackendUrl } from '@/utils/backendUrl';
 
 const STORAGE_KEY = 'studyTimer:v1';
+const BACKEND_URL = getBackendUrl();
 
 type TimerState = {
   elapsedMs: number;
@@ -26,6 +31,34 @@ const daysBetween = (fromDayKey: string, toDayKey: string) => {
   return Math.round((to.getTime() - from.getTime()) / 86400000);
 };
 
+const createFreshTimerState = (): TimerState => ({
+  elapsedMs: 0,
+  isRunning: false,
+  dailyGoalMin: 120,
+  sessionsToday: 0,
+  lastDayKey: getDayKey(),
+  streakDays: 0,
+  lastCompletedDate: null,
+});
+
+/** Εφαρμόζει το day-rollover (μηδενισμός ημέρας, σπάσιμο σερί αν χρειάζεται) σε οποιαδήποτε
+ * αποθηκευμένη τιμή — τοπική ή από τον server — ώστε να συμπεριφέρονται πανομοιότυπα. */
+const applyDayRollover = (parsedInput: Partial<TimerState>): TimerState => {
+  const parsed = { ...createFreshTimerState(), ...parsedInput };
+  const today = getDayKey();
+  if (parsed.lastDayKey === today) return parsed;
+
+  const gap = parsed.lastCompletedDate ? daysBetween(parsed.lastCompletedDate, today) : Infinity;
+  return {
+    ...parsed,
+    elapsedMs: 0,
+    sessionsToday: 0,
+    isRunning: false,
+    lastDayKey: today,
+    streakDays: gap > 1 ? 0 : parsed.streakDays,
+  };
+};
+
 const formatTime = (ms: number) => {
   const totalSeconds = Math.floor(ms / 1000);
   const hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
@@ -35,46 +68,68 @@ const formatTime = (ms: number) => {
 };
 
 const StudyTimerPage: React.FC = () => {
-  const [timer, setTimer] = useState<TimerState>(() => {
-    const fresh = (): TimerState => ({
-      elapsedMs: 0,
-      isRunning: false,
-      dailyGoalMin: 120,
-      sessionsToday: 0,
-      lastDayKey: getDayKey(),
-      streakDays: 0,
-      lastCompletedDate: null,
-    });
+  const { user } = useAuth();
+  const hydratedForUserRef = useRef<number | null>(null);
+  const skipNextPushRef = useRef(false);
 
+  const [timer, setTimer] = useState<TimerState>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return fresh();
-
-      const parsed = { ...fresh(), ...(JSON.parse(raw) as Partial<TimerState>) };
-      const today = getDayKey();
-      if (parsed.lastDayKey !== today) {
-        // Αν πέρασε πάνω από 1 ημέρα από την τελευταία επίτευξη στόχου, σπάει το σερί.
-        const gap = parsed.lastCompletedDate ? daysBetween(parsed.lastCompletedDate, today) : Infinity;
-        return {
-          ...parsed,
-          elapsedMs: 0,
-          sessionsToday: 0,
-          isRunning: false,
-          lastDayKey: today,
-          streakDays: gap > 1 ? 0 : parsed.streakDays,
-        };
-      }
-      return parsed;
+      if (!raw) return createFreshTimerState();
+      return applyDayRollover(JSON.parse(raw) as Partial<TimerState>);
     } catch {
-      return fresh();
+      return createFreshTimerState();
     }
   });
 
   const lastTickRef = useRef<number>(Date.now());
 
+  // Στο login, φέρε το αντίγραφο του server μία φορά (περνώντας το από το ίδιο day-rollover
+  // ώστε να συμπεριφέρεται όπως η τοπική τιμή) και συγχώνευσέ το.
+  useEffect(() => {
+    if (!user || hydratedForUserRef.current === user.id) return;
+    hydratedForUserRef.current = user.id;
+
+    const token = getAuthToken();
+    if (!token) return;
+
+    apiFetch<{ data: Partial<TimerState> | null }>(`${BACKEND_URL}/api/progress/${STORAGE_KEY}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      retries: 0,
+    })
+      .then((res) => {
+        if (res.data) {
+          skipNextPushRef.current = true;
+          setTimer(applyDayRollover(res.data));
+        }
+      })
+      .catch(() => {
+        // offline-first: αν αποτύχει, μένουμε στην τοπική τιμή.
+      });
+  }, [user]);
+
+  // Πάντα τοπικά· αν είναι συνδεδεμένος, σπρώχνουμε (debounced) και στον server.
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(timer));
-  }, [timer]);
+
+    if (skipNextPushRef.current) {
+      skipNextPushRef.current = false;
+      return;
+    }
+    if (!user) return;
+    const token = getAuthToken();
+    if (!token) return;
+
+    const syncTimer = window.setTimeout(() => {
+      void apiFetch(`${BACKEND_URL}/api/progress/${STORAGE_KEY}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ data: timer }),
+        retries: 1,
+      }).catch(() => {});
+    }, 800);
+    return () => window.clearTimeout(syncTimer);
+  }, [timer, user]);
 
   useEffect(() => {
     if (!timer.isRunning) return;

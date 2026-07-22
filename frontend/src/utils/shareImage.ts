@@ -201,7 +201,11 @@ export function buildShareCaption(data: ShareCardData): string {
   return `${data.days} ${label} σερί διαβάσματος στο technotesgr 🔥 ${url}`;
 }
 
-export type ShareOutcome = 'shared' | 'downloaded' | 'cancelled';
+export type ShareOutcome = 'story' | 'shared' | 'downloaded' | 'cancelled';
+
+function isIOS(): boolean {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
+}
 
 /**
  * Μοιράζεται την εικόνα μέσω Web Share API (ανοίγει native share sheet, π.χ. Instagram Stories)
@@ -237,4 +241,48 @@ export async function shareOrDownloadImage(
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
   return 'downloaded';
+}
+
+/**
+ * Στέλνει την εικόνα κατευθείαν στο Instagram Stories composer (όχι σε post/feed).
+ * Σε iOS αντιγράφει την εικόνα στο system pasteboard και ανοίγει το τεκμηριωμένο
+ * `instagram-stories://share` URL scheme (λειτουργεί χωρίς registered app id για
+ * απλό background image — βλ. developers.facebook.com/docs/instagram/sharing-to-stories).
+ * Αν αποτύχει ή δεν τρέχει σε iOS (π.χ. Android/desktop, όπου δεν υπάρχει αντίστοιχο
+ * web deep-link), πέφτει στο γενικό Web Share API / download· εκεί μέσα στο Instagram
+ * ο χρήστης διαλέγει ο ίδιος «Story» από το δικό του share sheet.
+ */
+export async function shareToInstagramStory(
+  blob: Blob,
+  filename: string,
+  caption: string
+): Promise<ShareOutcome> {
+  if (isIOS() && typeof ClipboardItem !== 'undefined') {
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      window.location.href = 'instagram-stories://share?source_application=technotesgr';
+
+      const openedInstagram = await new Promise<boolean>((resolve) => {
+        let settled = false;
+        const finish = (result: boolean) => {
+          if (settled) return;
+          settled = true;
+          document.removeEventListener('visibilitychange', onVisibilityChange);
+          window.clearTimeout(timer);
+          resolve(result);
+        };
+        const onVisibilityChange = () => {
+          if (document.hidden) finish(true);
+        };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        const timer = window.setTimeout(() => finish(false), 1500);
+      });
+
+      if (openedInstagram) return 'story';
+    } catch {
+      // Clipboard write ή deep link απέτυχαν — πέφτουμε στο γενικό share flow.
+    }
+  }
+
+  return shareOrDownloadImage(blob, filename, caption);
 }

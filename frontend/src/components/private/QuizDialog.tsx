@@ -258,7 +258,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 flex items-center justify-center p-4 z-50 overflow-hidden overscroll-none">
+      <div className="fixed inset-0 flex items-center justify-center p-3 sm:p-6 z-50 overflow-hidden overscroll-none">
         {/* Backdrop */}
         <motion.div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm touch-none"
@@ -301,8 +301,8 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
         {/* Dialog */}
         <motion.div
-          className="relative w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden bg-white dark:bg-[#2d1c48] border-4 border-[#f07f97]"
-          style={{ maxHeight: '90vh' }}
+          className="relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden bg-white dark:bg-[#2d1c48] border-4 border-[#f07f97]"
+          style={{ maxHeight: '82dvh' }}
           initial={{ scale: 0.9, opacity: 0, y: 50 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 50 }}
@@ -323,12 +323,12 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             </div>
           </div>
 
-          <div className="overflow-y-auto p-6 md:p-8" style={{ maxHeight: 'calc(90vh - 12px)' }}>
+          <div className="overflow-y-auto p-4 sm:p-6 md:p-8" style={{ maxHeight: 'calc(82dvh - 12px)' }}>
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-3 sm:mb-6">
               <div className="flex-1">
                 <motion.h3
-                  className="text-xl md:text-2xl font-black text-[#f07f97]"
+                  className="text-lg sm:text-xl md:text-2xl font-black text-[#f07f97]"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                 >
@@ -387,7 +387,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             <AnimatePresence>
               {allAnswered && isLastQuestion && selected !== null && (
                 <motion.div
-                  className="mb-6 p-5 md:p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/20 border-2 border-green-300 dark:border-green-700 text-center"
+                  className="mb-3 sm:mb-6 p-4 sm:p-5 md:p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/20 border-2 border-green-300 dark:border-green-700 text-center"
                   initial={{ opacity: 0, y: -10, height: 0 }}
                   animate={{ opacity: 1, y: 0, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
@@ -408,13 +408,13 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
 
             {/* Question */}
             <motion.div
-              className="mb-6 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-pink-50 to-rose-50 dark:from-[#3a2658] dark:to-[#342052] border-2 border-[#f07f97]"
+              className="mb-3 sm:mb-6 p-4 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-pink-50 to-rose-50 dark:from-[#3a2658] dark:to-[#342052] border-2 border-[#f07f97]"
               key={`question-${current}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-100 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-100 leading-relaxed">
                 {question?.question}
               </p>
             </motion.div>
@@ -442,7 +442,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
               )}
             </AnimatePresence>
             {/* Answers */}
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-8">
               {question?.answers?.map((ans, idx) => {
                 const isSelected = selected === idx;
                 const isRevealed = selected !== null;
@@ -454,7 +454,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     onClick={() => handleSelect(idx)}
                     disabled={isRevealed}
                     className={`
-                        relative flex items-center gap-4 w-full px-5 py-4 md:px-6 md:py-5 rounded-xl
+                        relative flex items-center gap-3 sm:gap-4 w-full px-4 py-3 sm:px-5 sm:py-4 md:px-6 md:py-5 rounded-xl
                         border-2 font-semibold text-left transition-all
                         ${!isRevealed ? 'bg-white dark:bg-[#3a2658] border-pink-200 dark:border-white/15 hover:border-pink-400 dark:hover:border-[#f07f97] hover:shadow-xl cursor-pointer' : 'cursor-default'}
                         ${isRevealed && isCorrect ? 'bg-green-50 dark:bg-green-950/40 border-green-500 dark:border-green-600 shadow-lg' : ''}
@@ -477,7 +477,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     {/* Answer Letter */}
                     <div
                       className={`
-                          flex items-center justify-center w-10 h-10 rounded-full font-bold text-base flex-shrink-0
+                          flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full font-bold text-sm sm:text-base flex-shrink-0
                           transition-all duration-300
                           ${!isRevealed ? 'bg-pink-100 text-pink-600 dark:bg-[#f07f97]/20 dark:text-[#f07f97]' : ''}
                           ${isRevealed && isCorrect ? 'bg-green-500 text-white' : ''}
@@ -490,7 +490,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                     {/* Answer Text */}
                     <span
                       className={`
-                          flex-1 text-base md:text-lg
+                          flex-1 text-sm sm:text-base md:text-lg
                           ${isRevealed && isCorrect ? 'text-green-800 dark:text-green-300 font-bold' : ''}
                           ${isRevealed && !isCorrect && isSelected ? 'text-red-800 dark:text-red-300' : ''}
                           ${!isRevealed ? 'text-gray-800 dark:text-gray-100' : ''}
@@ -536,7 +536,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             <AnimatePresence>
               {selected !== null && question?.explanation && showExplanation && (
                 <motion.div
-                  className="mb-6 p-5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-200 dark:border-blue-800"
+                  className="mb-4 sm:mb-6 p-3 sm:p-5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-200 dark:border-blue-800"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
@@ -560,12 +560,12 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
             </AnimatePresence>
 
             {/* Navigation */}
-            <div className="flex justify-between items-center pt-6 border-t-2 border-pink-100 dark:border-white/10">
+            <div className="flex justify-between items-center pt-3 sm:pt-6 border-t-2 border-pink-100 dark:border-white/10">
               <motion.button
                 onClick={handlePrevious}
                 disabled={current === 0}
                 className={`
-                  flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all
+                  flex items-center gap-1.5 sm:gap-2 px-3 py-2.5 sm:px-5 sm:py-3 rounded-xl text-sm sm:text-base font-semibold transition-all
                   ${
                     current === 0
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-[#1a1028] dark:text-gray-600'
@@ -616,7 +616,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
                 onClick={handleNext}
                 disabled={false}
                 className={`
-                  flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-white shadow-lg
+                  flex items-center gap-1.5 sm:gap-2 px-3 py-2.5 sm:px-5 sm:py-3 rounded-xl text-sm sm:text-base font-bold text-white shadow-lg
                   ${isLastQuestion ? 'bg-gradient-to-r from-green-500 to-emerald-500' : ''}
                 `}
                 style={{

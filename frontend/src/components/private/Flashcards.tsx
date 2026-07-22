@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { fetchFlashcardsFromBackend } from '@/utils/flashcardsFetch';
 import { PageMenuIcon } from '@/data/menuIcons';
+import { useSyncedStorage } from '@/utils/useSyncedStorage';
 
 // --- Types & Interfaces ---
 
@@ -78,24 +79,8 @@ const Flashcards: React.FC = () => {
   const cardBodyRef = useRef<HTMLButtonElement | null>(null);
   const studySessionRef = useRef<{ cardsStudied: Set<string> }>({ cardsStudied: new Set() });
 
-  // Load progress from localStorage
-  const [progress, setProgress] = useState<FlashcardProgress>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  // Save progress to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    } catch (err) {
-      console.warn('Failed to save progress:', err);
-    }
-  }, [progress]);
+  // Πρόοδος: localStorage πάντα, plus συγχρονισμός με τον λογαριασμό όταν ο χρήστης είναι συνδεδεμένος.
+  const [progress, setProgress] = useSyncedStorage<FlashcardProgress>(STORAGE_KEY, {});
 
   const fetchFlashcardData = useCallback(async () => {
     if (!isMountedRef.current) return;

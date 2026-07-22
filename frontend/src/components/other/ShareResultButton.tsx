@@ -4,11 +4,11 @@ import { Instagram, Loader2, Check, AlertCircle } from 'lucide-react';
 import {
   buildShareCaption,
   generateShareImageBlob,
-  shareOrDownloadImage,
+  shareToInstagramStory,
   type ShareCardData,
 } from '@/utils/shareImage';
 
-type Status = 'idle' | 'generating' | 'shared' | 'downloaded' | 'error';
+type Status = 'idle' | 'generating' | 'story' | 'shared' | 'downloaded' | 'error';
 
 interface ShareResultButtonProps {
   data: ShareCardData;
@@ -19,7 +19,8 @@ interface ShareResultButtonProps {
 const STATUS_LABEL: Record<Status, string | null> = {
   idle: null,
   generating: 'Δημιουργία εικόνας...',
-  shared: 'Έτοιμο για μοίρασμα!',
+  story: 'Άνοιξε το Instagram Story!',
+  shared: 'Επίλεξε Story μέσα στο Instagram!',
   downloaded: 'Η εικόνα κατέβηκε — ανέβασέ τη ως Story!',
   error: 'Κάτι πήγε στραβά, δοκίμασε ξανά.',
 };
@@ -27,7 +28,7 @@ const STATUS_LABEL: Record<Status, string | null> = {
 const ShareResultButton: React.FC<ShareResultButtonProps> = ({
   data,
   className = '',
-  label = 'Μοιράσου το στο Instagram',
+  label = 'Μοιράσου το σε Instagram Story',
 }) => {
   const [status, setStatus] = useState<Status>('idle');
 
@@ -37,7 +38,7 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
     try {
       const blob = await generateShareImageBlob(data);
       const filename = data.kind === 'quiz' ? 'technotesgr-quiz-score.png' : 'technotesgr-streak.png';
-      const outcome = await shareOrDownloadImage(blob, filename, buildShareCaption(data));
+      const outcome = await shareToInstagramStory(blob, filename, buildShareCaption(data));
       if (outcome === 'cancelled') {
         setStatus('idle');
         return;
@@ -65,7 +66,7 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
       >
         {status === 'generating' ? (
           <Loader2 className="w-5 h-5 animate-spin" />
-        ) : status === 'shared' || status === 'downloaded' ? (
+        ) : status === 'story' || status === 'shared' || status === 'downloaded' ? (
           <Check className="w-5 h-5" />
         ) : status === 'error' ? (
           <AlertCircle className="w-5 h-5" />

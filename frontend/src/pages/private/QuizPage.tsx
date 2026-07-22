@@ -19,6 +19,7 @@ import {
 import QuizDialog from '@/components/private/QuizDialog';
 import { fetchAllQuizzes } from '@/utils/quizUtils';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
+import { useSyncedStorage } from '@/utils/useSyncedStorage';
 
 // --- Types & Interfaces ---
 
@@ -78,7 +79,7 @@ const QuizPage: React.FC = () => {
   // --- QuizPage State ---
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState<boolean>(false);
   const [selectedQuiz, setSelectedQuiz] = useState<ProcessedQuiz | null>(null);
-  const [categoryAnswers, setCategoryAnswers] = useState<QuizProgress>({});
+  const [categoryAnswers, setCategoryAnswers] = useSyncedStorage<QuizProgress>('quizProgress', {});
 
   // --- QuizMenu State ---
   const [quizzes, setQuizzes] = useState<ProcessedQuiz[]>([]);
@@ -106,22 +107,11 @@ const QuizPage: React.FC = () => {
     try {
       const data = (await fetchAllQuizzes()) as QuizData[];
 
-      // Load progress from localStorage
-      const storedProgress = localStorage.getItem('quizProgress');
-      let initialAnswers: QuizProgress = {};
-      if (storedProgress) {
-        try {
-          const parsed = JSON.parse(storedProgress) as unknown;
-          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-            initialAnswers = parsed as QuizProgress;
-          }
-        } catch {
-          initialAnswers = {};
-        }
-      }
+      // categoryAnswers is already hydrated (localStorage synchronously, server async
+      // when logged in) by the useSyncedStorage hook — no need to read localStorage here.
+      const initialAnswers = categoryAnswers;
 
       if (!isMountedRef.current) return;
-      setCategoryAnswers(initialAnswers);
 
       const withProgress: ProcessedQuiz[] = (Array.isArray(data) ? data : []).map((quiz) => {
         const quizAnswers = initialAnswers[quiz.id] || {};
@@ -182,11 +172,7 @@ const QuizPage: React.FC = () => {
     setCategoryAnswers((prev) => {
       const prevQuiz = prev[quizId] ? { ...prev[quizId] } : {};
       prevQuiz[questionIdx] = selectedIdx;
-
-      const newAnswers = { ...prev, [quizId]: prevQuiz };
-      localStorage.setItem('quizProgress', JSON.stringify(newAnswers));
-
-      return newAnswers;
+      return { ...prev, [quizId]: prevQuiz };
     });
 
     // Update the specific quiz stats in the local state to reflect changes immediately
@@ -221,25 +207,15 @@ const QuizPage: React.FC = () => {
 
   const handleQuizDialogClose = () => {
     setIsQuizDialogOpen(false);
-    // Re-trigger a soft reload of quiz stats based on new local storage if needed
-    // For now, relying on handleQuestionAnswered updates or a page refresh.
-    // To properly refresh computed stats:
-    const storedProgress = localStorage.getItem('quizProgress');
-    let currentAnswers: QuizProgress = {};
-    if (storedProgress) {
-      try {
-        const parsed = JSON.parse(storedProgress) as unknown;
-        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-          currentAnswers = parsed as QuizProgress;
-        }
-      } catch {
-        currentAnswers = {};
-      }
-    }
+  };
 
+  // Keeps per-quiz stats (answered/percent/correctAnswers) in sync with categoryAnswers —
+  // covers both local answer updates and the async server-hydration from useSyncedStorage.
+  useEffect(() => {
+    if (quizzes.length === 0) return;
     setQuizzes((prev) =>
       prev.map((quiz) => {
-        const quizAnswers = currentAnswers[quiz.id] || {};
+        const quizAnswers = categoryAnswers[quiz.id] || {};
         const answered = Object.keys(quizAnswers).length;
         const total = quiz.questions.length;
         const percent = total ? Math.round((answered / total) * 100) : 0;
@@ -250,7 +226,8 @@ const QuizPage: React.FC = () => {
         return { ...quiz, answered, total, percent, correctAnswers: correctAnswersCount };
       })
     );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryAnswers]);
 
   // Filter and sort quizzes
   const processedQuizzes = useMemo(() => {
@@ -345,7 +322,6 @@ const QuizPage: React.FC = () => {
       setCategoryAnswers((prev) => {
         const newAnswers = { ...prev };
         delete newAnswers[quiz.id];
-        localStorage.setItem('quizProgress', JSON.stringify(newAnswers));
         return newAnswers;
       });
       setQuizzes((prev) =>
@@ -369,7 +345,6 @@ const QuizPage: React.FC = () => {
       return;
     }
 
-    localStorage.removeItem('quizProgress');
     setCategoryAnswers({});
     setIsQuizDialogOpen(false);
     setSelectedQuiz(null);

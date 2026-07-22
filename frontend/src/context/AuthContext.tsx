@@ -33,6 +33,11 @@ function getStoredToken(): string | null {
   return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
 }
 
+/** Read-only access to the current session token, for code outside the auth context (e.g. progress sync). */
+export function getAuthToken(): string | null {
+  return getStoredToken();
+}
+
 function storeToken(token: string, remember: boolean): void {
   if (remember) {
     localStorage.setItem(TOKEN_KEY, token);

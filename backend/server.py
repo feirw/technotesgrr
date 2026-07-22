@@ -15,6 +15,7 @@ import os
 import time
 import smtplib
 from email.message import EmailMessage
+from email.utils import formataddr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from dotenv import load_dotenv
@@ -87,6 +88,8 @@ from database import (
     create_password_reset,
     get_valid_password_reset,
     mark_password_reset_used,
+    get_user_progress,
+    upsert_user_progress,
 )
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
@@ -181,6 +184,15 @@ class ResetPasswordRequest(BaseModel):
     newPassword: str = Field(min_length=8, max_length=128)
 
 
+# Only these keys can be synced — keeps the feature scoped to known app data
+# instead of letting any authenticated client stash arbitrary blobs.
+ALLOWED_PROGRESS_KEYS = {"quizProgress", "flashcardProgress", "studyTimer:v1"}
+
+
+class ProgressUpsertRequest(BaseModel):
+    data: Any
+
+
 class ContactForm(BaseModel):
     firstName: str = Field(min_length=1, max_length=80)
     lastName: str = Field(default="", max_length=80)
@@ -232,7 +244,7 @@ def _try_send_contact_email(first_name: str, last_name: str, email: str, message
 
     msg = EmailMessage()
     msg["Subject"] = "Νέο μήνυμα από Contact Form - TechNotesGR"
-    msg["From"] = smtp_sender
+    msg["From"] = formataddr(("technotesgr", smtp_sender))
     msg["To"] = contact_receiver
     msg.set_content(
         f"""
@@ -262,14 +274,28 @@ def _try_send_password_reset_email(email: str, reset_link: str) -> bool:
     smtp_sender = os.getenv("SMTP_SENDER_EMAIL") or smtp_user
 
     if not all([smtp_host, smtp_port, smtp_user, smtp_pass, smtp_sender]):
+        missing = [
+            name
+            for name, value in [
+                ("SMTP_HOST", smtp_host),
+                ("SMTP_PORT", smtp_port),
+                ("SMTP_USER", smtp_user),
+                ("SMTP_PASS", smtp_pass),
+                ("SMTP_SENDER_EMAIL/SMTP_USER", smtp_sender),
+            ]
+            if not value
+        ]
         # Only way to retrieve the link when SMTP isn't configured — log it server-side
         # rather than fail silently, in any environment.
-        print(f"[Auth] SMTP not configured — reset link for {email}: {reset_link}")
+        print(
+            f"[Auth] SMTP not configured (missing: {', '.join(missing)}) — "
+            f"reset link for {email}: {reset_link}"
+        )
         return False
 
     msg = EmailMessage()
     msg["Subject"] = "Επαναφορά κωδικού - TechNotesGR"
-    msg["From"] = smtp_sender
+    msg["From"] = formataddr(("technotesgr", smtp_sender))
     msg["To"] = email
     msg.set_content(
         f"""
@@ -743,6 +769,32 @@ def reset_password(data: ResetPasswordRequest):
         raise
     except Exception:
         logger.exception("reset_password failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
+
+
+# ── Progress sync (quiz / flashcards / study timer) ───────────────────────────
+
+@app.get("/api/progress/{key}")
+def read_progress(key: str, user: dict = Depends(get_current_user)):
+    if key not in ALLOWED_PROGRESS_KEYS:
+        raise HTTPException(status_code=404, detail="Άγνωστο κλειδί προόδου.")
+    try:
+        row = get_user_progress(user["id"], key)
+        return {"data": row["data"] if row else None}
+    except Exception:
+        logger.exception("read_progress failed")
+        raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
+
+
+@app.put("/api/progress/{key}")
+def write_progress(key: str, body: ProgressUpsertRequest, user: dict = Depends(get_current_user)):
+    if key not in ALLOWED_PROGRESS_KEYS:
+        raise HTTPException(status_code=404, detail="Άγνωστο κλειδί προόδου.")
+    try:
+        upsert_user_progress(user["id"], key, body.data)
+        return {"message": "ok"}
+    except Exception:
+        logger.exception("write_progress failed")
         raise HTTPException(status_code=500, detail=INTERNAL_ERROR_DETAIL)
 
 

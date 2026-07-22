@@ -1,10 +1,10 @@
 import os
 import psycopg2
 from psycopg2 import pool as pg_pool
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor, Json
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -109,6 +109,17 @@ def init_database():
                 );
                 """
             )
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS user_progress (
+                    user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+                    key TEXT NOT NULL,
+                    data JSONB NOT NULL,
+                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    PRIMARY KEY (user_id, key)
+                );
+                """
+            )
         conn.commit()
     print("Connected to Supabase PostgreSQL (runtime tables ensured)")
 
@@ -199,6 +210,32 @@ def mark_password_reset_used(token: str) -> None:
         with conn.cursor() as cursor:
             cursor.execute(
                 "UPDATE password_resets SET used_at = NOW() WHERE token = %s", (token,)
+            )
+        conn.commit()
+
+
+def get_user_progress(user_id: int, key: str) -> Optional[Dict]:
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(
+                "SELECT data, updated_at FROM user_progress WHERE user_id = %s AND key = %s",
+                (user_id, key),
+            )
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+
+def upsert_user_progress(user_id: int, key: str, data: Any) -> None:
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO user_progress (user_id, key, data, updated_at)
+                VALUES (%s, %s, %s, NOW())
+                ON CONFLICT (user_id, key)
+                DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
+                """,
+                (user_id, key, Json(data)),
             )
         conn.commit()
 
