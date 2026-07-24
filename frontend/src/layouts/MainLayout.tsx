@@ -18,9 +18,10 @@ import {
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
+import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
 import PwaInstallPrompt from '@/components/other/PwaInstallPrompt';
-import { MENU_ICONS, MenuIconImg, MenuNavIcon } from '@/data/menuIcons';
+import { MENU_ICONS, MenuNavIcon } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 // const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
@@ -231,6 +232,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
+  const isQuizPage = location.pathname === '/quiz';
   // const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
@@ -252,6 +254,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     setPanicMsg(pick);
     setShowPanic(true);
   };
+
+  // Ping the API the instant the app boots — on a Render free-tier backend a cold
+  // dyno can take 30-60s to wake up, so this warm-up (fired well before the idle
+  // prefetch below, and before the user has a chance to click into Quiz) absorbs
+  // that wake-up time in the background instead of the user hitting it later.
+  useEffect(() => {
+    for (const base of getBackendUrlCandidates()) {
+      fetch(`${base}/api/health`).catch(() => {});
+    }
+  }, []);
 
   // Prefetch heavy routes after idle.
   useEffect(() => {
@@ -612,6 +624,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)] pt-20">{children}</main>
 
       {/* Footer */}
+      {!isQuizPage && (
       <footer className="relative -mt-px overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:from-transparent dark:via-[#3d2858] dark:to-white"
@@ -702,6 +715,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
+      )}
 
       <CookieConsent />
       <PwaInstallPrompt />

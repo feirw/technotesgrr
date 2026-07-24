@@ -14,6 +14,7 @@ import {
   BookOpen,
   Code,
   Terminal,
+  Info,
   LucideIcon,
 } from 'lucide-react';
 import QuizDialog from '@/components/private/QuizDialog';
@@ -606,6 +607,30 @@ const QuizPage: React.FC = () => {
 
         {/* Content (Quiz Grid) */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl mx-auto w-full">
+          <motion.div
+            className="mb-6 flex items-start gap-3 rounded-xl border border-[#f07f97]/30 bg-white/85 p-4 text-sm text-gray-700 shadow-sm backdrop-blur dark:border-[#f07f97]/30 dark:bg-[#3a2658]/85 dark:text-gray-200"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#f07f97]" />
+            <p>
+              <span className="font-bold text-gray-900 dark:text-white">Note:</span> Οι ερωτήσεις
+              ΣΩΣΤΟ/ΛΑΘΟΣ προέρχονται από τις Πανελλήνιες 2000-2026, Κανονικές και
+              Επαναληπτικές, των Ημερήσιων Γενικών Λυκείων, καθώς και από τον καθηγητή Θάνο
+              Κιούση από τη γνωστή σελίδα{' '}
+              <a
+                href="https://kathigitis-aepp.gr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#d94f6b] underline underline-offset-2 transition-colors hover:text-[#b83f58] dark:text-[#ff97b2] dark:hover:text-[#ffb7c8]"
+              >
+                Καθηγητής ΑΕΠΠ
+              </a>
+              . Τον ευχαριστούμε που μας παρέχει το υλικό του.
+            </p>
+          </motion.div>
+
           {error && (
             <motion.div
               className="bg-red-50 border-2 border-red-300 rounded-2xl p-6 text-center"

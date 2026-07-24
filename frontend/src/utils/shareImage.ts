@@ -251,15 +251,22 @@ export async function shareOrDownloadImage(
  * Αν αποτύχει ή δεν τρέχει σε iOS (π.χ. Android/desktop, όπου δεν υπάρχει αντίστοιχο
  * web deep-link), πέφτει στο γενικό Web Share API / download· εκεί μέσα στο Instagram
  * ο χρήστης διαλέγει ο ίδιος «Story» από το δικό του share sheet.
+ *
+ * Σημαντικό: το `navigator.clipboard.write` πρέπει να κληθεί όσο το δυνατόν πιο κοντά
+ * στο user gesture (το click) — στη Safari/iOS, οποιοδήποτε `await` πριν από αυτό
+ * (π.χ. να περιμένουμε να «ψηθεί» πρώτα η εικόνα) καταναλώνει το transient user
+ * activation και το write αποτυγχάνει σιωπηλά με NotAllowedError. Γι' αυτό περνάμε
+ * το promise της εικόνας ΑΠΕΥΘΕΙΑΣ μέσα στο ClipboardItem αντί να κάνουμε πρώτα await.
  */
 export async function shareToInstagramStory(
-  blob: Blob,
+  data: ShareCardData,
   filename: string,
   caption: string
 ): Promise<ShareOutcome> {
   if (isIOS() && typeof ClipboardItem !== 'undefined') {
+    const blobPromise = generateShareImageBlob(data);
     try {
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
       window.location.href = 'instagram-stories://share?source_application=technotesgr';
 
       const openedInstagram = await new Promise<boolean>((resolve) => {
@@ -279,10 +286,12 @@ export async function shareToInstagramStory(
       });
 
       if (openedInstagram) return 'story';
+      return shareOrDownloadImage(await blobPromise, filename, caption);
     } catch {
       // Clipboard write ή deep link απέτυχαν — πέφτουμε στο γενικό share flow.
+      return shareOrDownloadImage(await blobPromise, filename, caption);
     }
   }
 
-  return shareOrDownloadImage(blob, filename, caption);
+  return shareOrDownloadImage(await generateShareImageBlob(data), filename, caption);
 }

@@ -95,12 +95,43 @@ export default defineConfig({
     modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
-        manualChunks: {
-          react_vendor: ['react', 'react-dom', 'react-router-dom'],
-          motion_vendor: ['framer-motion'],
-          md_vendor: ['react-markdown'],
-          lucide_vendor: ['lucide-react'],
-          pdf_vendor: ['react-pdf', 'pdfjs-dist'],
+        manualChunks(id) {
+          const normalized = id.split(path.sep).join('/');
+          if (id.includes('node_modules')) {
+            if (/\/node_modules\/(react|react-dom|react-router-dom)\//.test(normalized)) {
+              return 'react_vendor';
+            }
+            if (normalized.includes('/node_modules/framer-motion/')) {
+              return 'motion_vendor';
+            }
+            if (normalized.includes('/node_modules/react-markdown/')) {
+              return 'md_vendor';
+            }
+            if (normalized.includes('/node_modules/lucide-react/')) {
+              return 'lucide_vendor';
+            }
+            if (
+              normalized.includes('/node_modules/react-pdf/') ||
+              normalized.includes('/node_modules/pdfjs-dist/')
+            ) {
+              return 'pdf_vendor';
+            }
+          }
+
+          if (
+            normalized.includes('/src/data/schools.ts') ||
+            normalized.includes('/src/data/schoolCoefficients2026.ts')
+          ) {
+            return 'school_core_data';
+          }
+          if (normalized.includes('/src/data/schoolCurricula')) {
+            return 'school_curricula_data';
+          }
+          if (
+            (normalized.includes('/src/data/') && normalized.endsWith('Careers.ts'))
+          ) {
+            return 'school_careers_data';
+          }
         },
       },
     },

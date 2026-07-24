@@ -1,19 +1,16 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ShoppingBag,
   Calendar,
   CheckCircle2,
   Sparkles,
-  Target,
   Clock,
   BookOpen,
-  Instagram,
 } from 'lucide-react';
 
 const MerchPage: React.FC = () => {
-  // Αντικατάστησε το link με το δικό σου Vinted προφίλ
-  const vintedLink = 'https://www.vinted.gr/member/226166662';
+  const instagramLink = 'https://instagram.com/technotesgr';
 
   return (
     <div className="min-h-screen bg-coral-wash dark:bg-gray-900 overflow-x-hidden text-gray-800 dark:text-gray-100">
@@ -43,6 +40,7 @@ const MerchPage: React.FC = () => {
             </motion.div>
 
             <motion.a
+              href={instagramLink}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}

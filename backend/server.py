@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
 import asyncio
+from collections import defaultdict, deque
 import json
 import logging
 import queue
 import sys
 import threading
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, Response
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
@@ -187,6 +188,8 @@ class ResetPasswordRequest(BaseModel):
 # Only these keys can be synced — keeps the feature scoped to known app data
 # instead of letting any authenticated client stash arbitrary blobs.
 ALLOWED_PROGRESS_KEYS = {"quizProgress", "flashcardProgress", "studyTimer:v1"}
+MAX_PROGRESS_JSON_BYTES = 250_000
+_rate_limit_buckets: dict[str, deque[float]] = defaultdict(deque)
 
 
 class ProgressUpsertRequest(BaseModel):
@@ -226,6 +229,55 @@ class WebVitalEvent(BaseModel):
 
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    if request.url.scheme == "https":
+        response.headers.setdefault(
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains; preload",
+        )
+    return response
+
+
+def _client_rate_key(request: Request, scope: str) -> str:
+    forwarded_for = request.headers.get("x-forwarded-for", "")
+    ip = forwarded_for.split(",", 1)[0].strip()
+    if not ip and request.client:
+        ip = request.client.host
+    return f"{scope}:{ip or 'unknown'}"
+
+
+def enforce_rate_limit(
+    request: Request,
+    *,
+    scope: str,
+    max_requests: int,
+    window_seconds: int,
+) -> None:
+    now = time.monotonic()
+    bucket = _rate_limit_buckets[_client_rate_key(request, scope)]
+    while bucket and now - bucket[0] > window_seconds:
+        bucket.popleft()
+    if len(bucket) >= max_requests:
+        raise HTTPException(
+            status_code=429,
+            detail="Πάρα πολλά αιτήματα. Δοκίμασε ξανά σε λίγο.",
+        )
+    bucket.append(now)
+
+
+def _json_size_bytes(value: Any) -> int:
+    try:
+        return len(json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=422, detail="Μη έγκυρα δεδομένα προόδου.")
+
 
 def _try_send_contact_email(first_name: str, last_name: str, email: str, message: str) -> bool:
     """
@@ -363,7 +415,11 @@ def get_current_user(authorization: Optional[str] = Header(default=None)) -> dic
     payload = decode_access_token(token)
     if not payload:
         raise HTTPException(status_code=401, detail="Η σύνδεσή σου έληξε. Συνδέσου ξανά.")
-    user = get_user_by_id(int(payload["sub"]))
+    try:
+        user_id = int(payload["sub"])
+    except (KeyError, TypeError, ValueError):
+        raise HTTPException(status_code=401, detail="Invalid session.")
+    user = get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=401, detail="Ο χρήστης δεν βρέθηκε.")
     return user
@@ -400,7 +456,8 @@ async def corrector_knowledge_status():
 
 
 @app.post("/api/correct")
-async def correct_student_exercise(body: CorrectRequest):
+async def correct_student_exercise(request: Request, body: CorrectRequest):
+    enforce_rate_limit(request, scope="correct", max_requests=20, window_seconds=600)
     exercise = (body.exercise or "").strip()
     student_answer = (body.studentAnswer or "").strip()
     exercise_images = [img.strip() for img in (body.exerciseImages or []) if img and img.strip()]
@@ -444,7 +501,8 @@ async def correct_student_exercise(body: CorrectRequest):
 # ── Chat ──────────────────────────────────────────────────────────────────────
 
 @app.post("/api/chat")
-async def chat_with_bot(chat_data: ChatMessage):
+async def chat_with_bot(request: Request, chat_data: ChatMessage):
+    enforce_rate_limit(request, scope="chat", max_requests=30, window_seconds=300)
     if not chat_data.message or not chat_data.message.strip():
         raise HTTPException(status_code=422, detail="Το μήνυμα δεν μπορεί να είναι κενό.")
     if len(chat_data.message.strip()) > 2000:
@@ -466,7 +524,8 @@ async def chat_with_bot(chat_data: ChatMessage):
 
 
 @app.post("/api/chat/stream")
-async def chat_with_bot_stream(chat_data: ChatMessage):
+async def chat_with_bot_stream(request: Request, chat_data: ChatMessage):
+    enforce_rate_limit(request, scope="chat_stream", max_requests=20, window_seconds=300)
     """SSE: data: {"delta":"..."} | {"done":true} | {"error":"..."}"""
     if not chat_data.message or not chat_data.message.strip():
         raise HTTPException(status_code=422, detail="Το μήνυμα δεν μπορεί να είναι κενό.")
@@ -565,7 +624,8 @@ def get_quiz_questions_by_chapter(chapter: str, response: Response):
 
 
 @app.post("/api/quiz/submit")
-def submit_quiz_answer(submission: QuizSubmission):
+def submit_quiz_answer(request: Request, submission: QuizSubmission):
+    enforce_rate_limit(request, scope="quiz_submit", max_requests=120, window_seconds=60)
     try:
         question = get_quiz_by_id(submission.question_id)
         if not question:
@@ -681,7 +741,8 @@ def get_leaderboard(response: Response, month: Optional[str] = None):
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
 @app.post("/api/auth/register")
-def register(data: RegisterRequest):
+def register(request: Request, data: RegisterRequest):
+    enforce_rate_limit(request, scope="auth_register", max_requests=5, window_seconds=600)
     try:
         user = create_user(email=data.email, password_hash=hash_password(data.password))
     except Exception:
@@ -696,7 +757,8 @@ def register(data: RegisterRequest):
 
 
 @app.post("/api/auth/login")
-def login(data: LoginRequest):
+def login(request: Request, data: LoginRequest):
+    enforce_rate_limit(request, scope="auth_login", max_requests=10, window_seconds=300)
     try:
         user = get_user_by_email(data.email)
     except Exception:
@@ -724,7 +786,8 @@ def read_current_user(user: dict = Depends(get_current_user)):
 
 
 @app.post("/api/auth/forgot-password")
-def forgot_password(data: ForgotPasswordRequest):
+def forgot_password(request: Request, data: ForgotPasswordRequest):
+    enforce_rate_limit(request, scope="auth_forgot_password", max_requests=5, window_seconds=600)
     # Always return the same generic response whether or not the email exists,
     # so this endpoint can't be used to check which emails have an account.
     generic_response = {
@@ -754,7 +817,8 @@ def forgot_password(data: ForgotPasswordRequest):
 
 
 @app.post("/api/auth/reset-password")
-def reset_password(data: ResetPasswordRequest):
+def reset_password(request: Request, data: ResetPasswordRequest):
+    enforce_rate_limit(request, scope="auth_reset_password", max_requests=10, window_seconds=600)
     try:
         reset = get_valid_password_reset(data.token)
         if not reset:
@@ -790,6 +854,8 @@ def read_progress(key: str, user: dict = Depends(get_current_user)):
 def write_progress(key: str, body: ProgressUpsertRequest, user: dict = Depends(get_current_user)):
     if key not in ALLOWED_PROGRESS_KEYS:
         raise HTTPException(status_code=404, detail="Άγνωστο κλειδί προόδου.")
+    if _json_size_bytes(body.data) > MAX_PROGRESS_JSON_BYTES:
+        raise HTTPException(status_code=413, detail="Τα δεδομένα προόδου είναι πολύ μεγάλα.")
     try:
         upsert_user_progress(user["id"], key, body.data)
         return {"message": "ok"}
@@ -801,7 +867,8 @@ def write_progress(key: str, body: ProgressUpsertRequest, user: dict = Depends(g
 # ── Contact ───────────────────────────────────────────────────────────────────
 
 @app.post("/api/contact")
-def contact_form(contact_data: ContactForm):
+def contact_form(request: Request, contact_data: ContactForm):
+    enforce_rate_limit(request, scope="contact", max_requests=5, window_seconds=600)
     if not contact_data.firstName.strip() or not contact_data.email.strip() or not contact_data.message.strip():
         raise HTTPException(status_code=400, detail="Name, email και message είναι υποχρεωτικά.")
     try:
@@ -869,7 +936,8 @@ def get_career_orientation_result_endpoint():
 
 
 @app.post("/api/metrics/web-vitals")
-def ingest_web_vitals(metric: WebVitalEvent):
+def ingest_web_vitals(request: Request, metric: WebVitalEvent):
+    enforce_rate_limit(request, scope="web_vitals", max_requests=120, window_seconds=60)
     """
     Lightweight endpoint for frontend performance telemetry.
     Currently logs slow-path metrics; can later be wired to a metrics store.

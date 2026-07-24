@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Circle, Search, RotateCcw, BookOpen } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
@@ -81,8 +81,51 @@ const ProgressTrackerPage: React.FC = () => {
   const doneCount = useMemo(() => LESSONS.filter((l) => completed[l.id]).length, [completed]);
   const progressPercent = Math.round((doneCount / LESSONS.length) * 100);
 
+  const isAllComplete = LESSONS.length > 0 && doneCount === LESSONS.length;
+  const [showConfetti, setShowConfetti] = useState(false);
+  const wasAllCompleteRef = useRef(isAllComplete);
+
+  useEffect(() => {
+    const wasComplete = wasAllCompleteRef.current;
+    wasAllCompleteRef.current = isAllComplete;
+    if (isAllComplete && !wasComplete) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isAllComplete]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4 sm:p-6">
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+          {Array.from({ length: 80 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-3 h-3 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: '-10%',
+                backgroundColor: ['#fda8a9', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'][
+                  Math.floor(Math.random() * 5)
+                ],
+              }}
+              initial={{ y: 0, opacity: 1, rotate: 0 }}
+              animate={{
+                y: window.innerHeight + 100,
+                opacity: 0,
+                rotate: 360 * (Math.random() > 0.5 ? 1 : -1),
+                x: (Math.random() - 0.5) * 200,
+              }}
+              transition={{
+                duration: 2 + Math.random() * 2,
+                delay: Math.random() * 0.5,
+                ease: 'easeOut',
+              }}
+            />
+          ))}
+        </div>
+      )}
       <div className="max-w-5xl mx-auto">
         <div className="bg-white/90 dark:bg-gray-800/90 rounded-3xl border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl p-5 sm:p-7 mb-5">
           <div className="flex flex-col items-center text-center">

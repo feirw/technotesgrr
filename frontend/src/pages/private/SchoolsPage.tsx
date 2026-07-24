@@ -17,8 +17,6 @@ import {
   MENU_ICONS,
   FUTURE_CAREERS_ICON,
   SCHOOL_CATEGORY_ICON_BY_NAME,
-  SCHOOL_PAGE_NOTICE_ICONS,
-  PageMenuIcon,
 } from '@/data/menuIcons';
 import {
   Select,
@@ -188,77 +186,6 @@ const CATEGORY_CAREERS: Record<
     columnTitle: 'Καριέρα',
   },
 };
-
-type PageNoticeVariant = 'amber' | 'coral' | 'slate';
-
-const PAGE_NOTICE_STYLES: Record<PageNoticeVariant, { row: string; label: string }> = {
-  amber: {
-    row: 'bg-amber-50/80 dark:bg-amber-950/20',
-    label: 'text-amber-800 dark:text-amber-200',
-  },
-  coral: {
-    row: 'bg-[#fff5f8]/90 dark:bg-[#3a2658]/50',
-    label: 'text-[#f07f97] dark:text-[#ff97b2]',
-  },
-  slate: {
-    row: 'bg-white/70 dark:bg-[#2d1c48]/40',
-    label: 'text-gray-700 dark:text-gray-200',
-  },
-};
-
-function PageNotice({
-  iconSrc,
-  label,
-  children,
-  variant,
-  href,
-}: {
-  iconSrc: string;
-  label: string;
-  children: React.ReactNode;
-  variant: PageNoticeVariant;
-  href?: string;
-}) {
-  const styles = PAGE_NOTICE_STYLES[variant];
-
-  const inner = (
-    <>
-      <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center">
-        <MenuIconImg src={iconSrc} className="h-10 w-10 sm:h-11 sm:w-11" />
-      </div>
-      <div className="min-w-0 pt-0.5">
-        <p className={`text-[11px] sm:text-xs font-black uppercase tracking-[0.14em] ${styles.label}`}>
-          {label}
-        </p>
-        <p className="mt-1 text-sm sm:text-[15px] text-gray-700 dark:text-gray-200 leading-relaxed">
-          {children}
-        </p>
-      </div>
-    </>
-  );
-
-  const rowClass = `flex gap-3.5 sm:gap-4 px-4 py-3.5 sm:px-5 sm:py-4 ${styles.row}`;
-
-  if (href) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${rowClass} transition-colors hover:brightness-[0.97] dark:hover:brightness-110`}
-      >
-        {inner}
-      </a>
-    );
-  }
-
-  return <div className={rowClass}>{inner}</div>;
-}
-
-function SchoolsPageNotices() {
-  
-
-}
 
 const SchoolsPage: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -601,7 +528,7 @@ const SchoolCard: React.FC<{
 
       <div className="text-right">
         <span className="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">
-          Βάση 2025
+          Βάση 2026
         </span>
         <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
           {formatMoriaDisplay(school.points)}

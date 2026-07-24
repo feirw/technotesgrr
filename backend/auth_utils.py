@@ -9,7 +9,13 @@ import jwt
 # Falls back to a random per-process secret if not configured, so local dev still
 # works — but this means sessions won't survive a restart. Set JWT_SECRET_KEY in
 # production so tokens stay valid across deploys/restarts.
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY") or secrets.token_hex(32)
+_CONFIGURED_JWT_SECRET = os.getenv("JWT_SECRET_KEY")
+_IS_PRODUCTION = os.getenv("ENV", "").strip().lower() in {"prod", "production"}
+
+if _IS_PRODUCTION and not _CONFIGURED_JWT_SECRET:
+    raise RuntimeError("JWT_SECRET_KEY must be configured when ENV=production.")
+
+JWT_SECRET_KEY = _CONFIGURED_JWT_SECRET or secrets.token_hex(32)
 JWT_ALGORITHM = "HS256"
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1 day — default session

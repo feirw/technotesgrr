@@ -14,8 +14,6 @@ const SchoolCard: React.FC<{ school: SchoolCoefficientsEntry; index: number }> =
   school,
   index,
 }) => {
-  const total = school.coefficients.reduce((sum, c) => sum + c.weight, 0);
-
   return (
     <motion.article
       className="rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#3a2658] shadow-md overflow-hidden"

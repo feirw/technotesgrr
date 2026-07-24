@@ -3,7 +3,6 @@ import { ExternalLink } from 'lucide-react';
 import { MenuIconImg, SCHOOL_PAGE_NOTICE_ICONS } from '@/data/menuIcons';
 
 const DYPA_SAEK_URL = 'https://schools.dypa.gov.gr/schools-cat/saek/page/2/#sxoles-feed';
-const EDUCATION_PUBLIC_IEK_URL = 'https://education.gr/lista-dimosia-iek/';
 
 const cardClass =
   'bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md rounded-2xl border border-[#f07f97]/25 dark:border-white/10';

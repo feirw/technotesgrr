@@ -641,7 +641,7 @@ const HomePage: React.FC = () => {
                 className="pointer-events-none absolute left-3 right-3 top-5 bottom-0 rounded-3xl bg-white/70 dark:bg-gray-800/55 border border-[#f07f97]/20 dark:border-gray-600/50 shadow-lg scale-[0.97] -z-10"
                 aria-hidden
               />
-              <div className="relative min-h-[280px] sm:min-h-[260px] md:min-h-[230px]">
+              <div className="relative min-h-[320px] sm:min-h-[290px] md:min-h-[250px]">
                 <AnimatePresence initial={false} custom={reviewDirection} mode="wait">
                   <motion.div
                     key={reviewIndex}
@@ -658,10 +658,10 @@ const HomePage: React.FC = () => {
                       aria-hidden
                     />
                     <StarRating value={reviewsData[reviewIndex].rating} />
-                    <p className="text-gray-700 dark:text-gray-200 mt-5 text-base sm:text-lg leading-relaxed italic">
+                    <p className="text-gray-700 dark:text-gray-200 mt-4 text-base sm:text-lg leading-relaxed italic">
                       "{reviewsData[reviewIndex].description}"
                     </p>
-                    <p className="text-[#f07f97] font-bold mt-5 text-right">
+                    <p className="text-[#f07f97] font-bold mt-4 mb-1 text-right">
                       — {reviewsData[reviewIndex].name}
                     </p>
                   </motion.div>

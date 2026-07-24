@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, ExternalLink, Info, Search, X } from 'lucide-react';
+import { Calculator, Info, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import {
@@ -43,9 +43,21 @@ type SchoolRow = {
   result: SchoolMoriaResult | null;
 };
 
+const GRADE_FIELDS = [
+  ...CORE_EXAM_SUBJECTS.map((key) => ({ key, label: shortSubjectLabel(key) })),
+  ...SPECIAL_EXAM_SUBJECTS,
+];
+
 function shortSubjectLabel(subject: string): string {
   if (subject === 'Νεοελληνική Γλώσσα και Λογοτεχνία') return 'Νεοελληνική';
   return subject;
+}
+
+function gradeAboveMax(raw: string): boolean {
+  const trimmed = raw.trim().replace(',', '.');
+  if (!trimmed) return false;
+  const value = Number(trimmed);
+  return Number.isFinite(value) && value > 20;
 }
 
 function extractUniLabel(name: string): string {
@@ -141,7 +153,7 @@ const SchoolResultCard: React.FC<{ row: SchoolRow; averageGrade: number | null; 
                 <span className="text-gray-400">—</span>
               )}
             </StatCell>
-            <StatCell label="Βάση 2025">
+            <StatCell label="Βάση 2026">
               {basis ? (
                 <span>{formatMoriaDisplay(basis.points)}</span>
               ) : (
@@ -191,26 +203,38 @@ const SchoolResultCard: React.FC<{ row: SchoolRow; averageGrade: number | null; 
 const MoriaCalculatorPage: React.FC = () => {
   const [grades, setGrades] = useState<GradeInputs>(EMPTY_GRADES);
   const [searchQuery, setSearchQuery] = useState('');
+  const invalidGradeLabels = useMemo(
+    () =>
+      GRADE_FIELDS.filter(({ key }) => gradeAboveMax(grades[key] ?? '')).map(({ label }) => label),
+    [grades],
+  );
+  const hasInvalidGrades = invalidGradeLabels.length > 0;
 
   const parsedCoreGrades = useMemo(
     () =>
+      hasInvalidGrades
+        ? []
+        :
       CORE_EXAM_SUBJECTS.map((s) => parseExamGrade(grades[s] ?? '')).filter(
         (g): g is number => g !== null,
       ),
-    [grades],
+    [grades, hasInvalidGrades],
   );
 
-  const averageGrade = useMemo(() => averageCoreGrade(parsedCoreGrades), [parsedCoreGrades]);
-  const coreComplete = coreGradesComplete(grades);
+  const averageGrade = useMemo(
+    () => (hasInvalidGrades ? null : averageCoreGrade(parsedCoreGrades)),
+    [hasInvalidGrades, parsedCoreGrades],
+  );
+  const coreComplete = !hasInvalidGrades && coreGradesComplete(grades);
 
   const allRows = useMemo(
     () =>
       SCHOOL_COEFFICIENTS_2026.map((school) => ({
         school,
         basis: matchSchoolBasis(school),
-        result: calculateSchoolMoria(school, grades),
+        result: hasInvalidGrades ? null : calculateSchoolMoria(school, grades),
       })),
-    [grades],
+    [grades, hasInvalidGrades],
   );
 
   const filteredRows = useMemo(() => {
@@ -291,8 +315,13 @@ const MoriaCalculatorPage: React.FC = () => {
                           value={grades[subject] ?? ''}
                           onChange={(e) => setGrade(subject, e.target.value)}
                           placeholder="0–20"
-                          className="w-full px-2 py-1.5 rounded-lg border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48] text-right tabular-nums outline-none focus:border-[#f07f97]"
+                          className={`w-full px-2 py-1.5 rounded-lg border bg-white dark:bg-[#2d1c48] text-right tabular-nums outline-none ${
+                            gradeAboveMax(grades[subject] ?? '')
+                              ? 'border-red-500 text-red-700 focus:border-red-500 dark:border-red-400 dark:text-red-300'
+                              : 'border-[#f07f97]/25 dark:border-white/15 focus:border-[#f07f97]'
+                          }`}
                           aria-label={`Βαθμός ${subject}`}
+                          aria-invalid={gradeAboveMax(grades[subject] ?? '')}
                         />
                       </td>
                     </tr>
@@ -313,8 +342,13 @@ const MoriaCalculatorPage: React.FC = () => {
                             value={grades[key] ?? ''}
                             onChange={(e) => setGrade(key, e.target.value)}
                             placeholder="0–20"
-                            className="w-full px-2 py-1.5 rounded-lg border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48] text-right tabular-nums outline-none focus:border-[#f07f97]"
+                            className={`w-full px-2 py-1.5 rounded-lg border bg-white dark:bg-[#2d1c48] text-right tabular-nums outline-none ${
+                              gradeAboveMax(grades[key] ?? '')
+                                ? 'border-red-500 text-red-700 focus:border-red-500 dark:border-red-400 dark:text-red-300'
+                                : 'border-[#f07f97]/25 dark:border-white/15 focus:border-[#f07f97]'
+                            }`}
                             aria-label={`Βαθμός ${label}`}
+                            aria-invalid={gradeAboveMax(grades[key] ?? '')}
                           />
                         </td>
                       </tr>
@@ -334,7 +368,7 @@ const MoriaCalculatorPage: React.FC = () => {
                   <tr className="border-t border-[#f07f97]/10 dark:border-white/10">
                     <td className="py-2 text-gray-700 dark:text-gray-200">Μέσος όρος (Μ.Ο.)</td>
                     <td className="py-2 text-right font-black tabular-nums">
-                      {averageGrade !== null ? formatGradeDisplay(averageGrade) : '—'}
+                  {averageGrade !== null ? formatGradeDisplay(averageGrade) : '—'}
                     </td>
                   </tr>
                   <tr className="border-t border-[#f07f97]/10 dark:border-white/10">
@@ -358,11 +392,24 @@ const MoriaCalculatorPage: React.FC = () => {
                 </p>
               ) : (
                 <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                  Συμπλήρωσε τους 4 βαθμούς για άμεσο υπολογισμό.
+                  {hasInvalidGrades
+                    ? 'Διόρθωσε τους μη έγκυρους βαθμούς για να εμφανιστούν αποτελέσματα.'
+                    : 'Συμπλήρωσε τους 4 βαθμούς για άμεσο υπολογισμό.'}
                 </p>
               )}
             </div>
           </div>
+
+          {hasInvalidGrades ? (
+            <div className="rounded-2xl border-2 border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-500/40 dark:bg-red-950/30 dark:text-red-200">
+              <p className="font-black">Ο βαθμός δεν μπορεί να είναι πάνω από 20.</p>
+              <p className="mt-1">
+                Διόρθωσε {invalidGradeLabels.length === 1 ? 'το πεδίο' : 'τα πεδία'}{' '}
+                <span className="font-bold">{invalidGradeLabels.join(', ')}</span> για να γίνει ο
+                υπολογισμός μορίων.
+              </p>
+            </div>
+          ) : null}
 
           <div className="rounded-2xl border border-[#f07f97]/20 dark:border-white/10 bg-white dark:bg-[#2d1c48] p-4 space-y-3">
             <h2 className="font-black text-gray-900 dark:text-white text-sm">Επιλογές εμφάνισης</h2>
@@ -396,7 +443,7 @@ const MoriaCalculatorPage: React.FC = () => {
               <Link to="/sxoles" className="text-[#f07f97] font-semibold hover:underline">
                 Σχολές
               </Link>
-              . Η λίστα ταξινομείται κατά βάση 2025.
+              . Η λίστα ταξινομείται κατά βάση 2026.
             </p>
           </div>
 
@@ -419,7 +466,12 @@ const MoriaCalculatorPage: React.FC = () => {
       </div>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 pb-16 space-y-4">
-        {filteredRows.length === 0 ? (
+        {hasInvalidGrades ? (
+          <div className="rounded-2xl border border-red-300 bg-white/90 p-6 text-center text-red-700 shadow-md dark:border-red-500/40 dark:bg-[#3a2658] dark:text-red-200">
+            <p className="font-black">Δεν εμφανίζονται αποτελέσματα με βαθμό πάνω από 20.</p>
+            <p className="mt-2 text-sm">Διόρθωσε τον βαθμό και τα μόρια θα υπολογιστούν ξανά.</p>
+          </div>
+        ) : filteredRows.length === 0 ? (
           <p className="text-center text-gray-600 dark:text-gray-400 py-16">
             Δεν βρέθηκαν σχολές για «{searchQuery}».
           </p>

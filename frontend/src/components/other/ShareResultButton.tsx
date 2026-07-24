@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Instagram, Loader2, Check, AlertCircle } from 'lucide-react';
 import {
   buildShareCaption,
-  generateShareImageBlob,
   shareToInstagramStory,
   type ShareCardData,
 } from '@/utils/shareImage';
@@ -36,9 +35,8 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
     if (status === 'generating') return;
     setStatus('generating');
     try {
-      const blob = await generateShareImageBlob(data);
       const filename = data.kind === 'quiz' ? 'technotesgr-quiz-score.png' : 'technotesgr-streak.png';
-      const outcome = await shareToInstagramStory(blob, filename, buildShareCaption(data));
+      const outcome = await shareToInstagramStory(data, filename, buildShareCaption(data));
       if (outcome === 'cancelled') {
         setStatus('idle');
         return;

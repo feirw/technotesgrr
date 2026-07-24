@@ -2,6 +2,7 @@ import { getBackendUrl } from '@/utils/backendUrl';
 
 type VitalName = 'LCP' | 'CLS' | 'INP';
 type VitalRating = 'good' | 'needs-improvement' | 'poor';
+type EventPerformanceObserverInit = PerformanceObserverInit & { durationThreshold?: number };
 
 const BACKEND_URL = getBackendUrl();
 const ANALYTICS_URL = `${BACKEND_URL}/api/metrics/web-vitals`;
@@ -96,7 +97,11 @@ export const initWebVitalsTracking = () => {
         reportMetric('INP', maxDuration);
       }
     });
-    inpObserver.observe({ type: 'event', buffered: true, durationThreshold: 40 });
+    inpObserver.observe({
+      type: 'event',
+      buffered: true,
+      durationThreshold: 40,
+    } as EventPerformanceObserverInit);
   } catch {
     // Browser does not support this metric observer.
   }

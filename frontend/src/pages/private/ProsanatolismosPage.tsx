@@ -197,17 +197,6 @@ const SECTIONS: Section[] = [
 // ─────────────────────────────────────────────────────────────
 // RESULTS DATA
 // ─────────────────────────────────────────────────────────────
-const CAT_NAMES: CategoryKey[] = [
-  'INFO',
-  'FIN',
-  'DIOIK',
-  'OIK',
-  'SERV',
-  'PEDAGOGIKA',
-  'SOMATA',
-  'TEXNES',
-];
-
 const BORDER_MAP: Record<CategoryKey, string> = {
   INFO: 'border-[#f07f97]',
   FIN: 'border-[#e06d88]',

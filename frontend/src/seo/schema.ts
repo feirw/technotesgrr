@@ -4,7 +4,6 @@ import {
   LOGO_URL,
   SITE_NAME,
   SITE_NAME_FULL,
-  SITE_TAGLINE,
   SOCIAL_LINKS,
   absoluteUrl,
   canonicalUrl,

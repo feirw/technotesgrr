@@ -81,8 +81,7 @@ const QuizMenu: React.FC<QuizMenuProps> = ({ onSelect, onClose, categoryAnswers 
   // UI State
   const [showSortMenu, setShowSortMenu] = useState<boolean>(false);
   const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);

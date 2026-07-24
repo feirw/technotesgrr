@@ -1,4 +1,4 @@
-/** Single source of truth for school bases (2025) and EBE — used by Σχολές & Υπολογισμός Μορίων. */
+/** Single source of truth for school bases (2026) and EBE — used by Σχολές & Υπολογισμός Μορίων. */
 
 export interface School {
   id: string;
@@ -18,8 +18,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διεθνών και Ευρωπαϊκών Σπουδών',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 19295,
-    ebe: '12.99',
+    points: 18635,
+    ebe: '14.33',
 
     category: 'Διεθνών & Ευρωπαϊκών',
     requirements: 'Ξένη Γλώσσα',
@@ -29,8 +29,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διεθνών και Ευρωπαϊκών Σπουδών',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 18990,
-    ebe: '12.99',
+    points: 18950,
+    ebe: '13.03',
 
     category: 'Διεθνών & Ευρωπαϊκών',
     requirements: 'Ξένη Γλώσσα',
@@ -40,8 +40,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διεθνών και Ευρωπαϊκών Σπουδών',
     uni: 'ΠΑΝΤΕΙΟ',
     city: 'Αθήνα',
-    points: 17040,
-    ebe: '10.82',
+    points: 16860,
+    ebe: '13.03',
 
     category: 'Διεθνών & Ευρωπαϊκών',
     requirements: 'Ξένη Γλώσσα',
@@ -51,7 +51,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διεθνών και Ευρωπαϊκών Οικ. Σπουδών',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 15150,
+    points: 15450,
     ebe: '12.39',
 
     category: 'Διεθνών & Ευρωπαϊκών',
@@ -61,7 +61,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διεθνών και Ευρωπαϊκών Οικ. Σπουδών',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Κοζάνη',
-    points: 8400,
+    points: 8275,
     ebe: '8.26',
 
     category: 'Διεθνών & Ευρωπαϊκών',
@@ -73,7 +73,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ναυτιλιακών Σπουδών',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 19210,
+    points: 19600,
     ebe: '10.82',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -84,8 +84,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Τουρισμού',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 15850,
-    ebe: '12.99',
+    points: 15270,
+    ebe: '12.99, Ξένη Γλώσσα 13.81',
 
     category: 'Ναυτιλιακά & Τουρισμός',
     requirements: 'Ξένη Γλώσσα',
@@ -95,7 +95,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Τουριστικών Σπουδών',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 14785,
+    points: 14860,
     ebe: '12.99',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -106,7 +106,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διαχείρισης Λιμένων και Ναυτιλίας',
     uni: 'ΕΚΠΑ',
     city: 'Ψαχνά',
-    points: 12600,
+    points: 11200,
     ebe: '10.84',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -116,7 +116,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Τουρισμού',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 13275,
+    points: 12895,
     ebe: '8.66',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -127,7 +127,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αστε Κρήτης (ΑΣΤΕΚ)',
     uni: 'ΑΣΤΕ',
     city: 'Αγ. Νικόλαος',
-    points: 11706,
+    points: 11256,
     ebe: '8.66',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -138,7 +138,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικής και Διοίκησης Τουρισμού',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Χίος',
-    points: 11550,
+    points: 10955,
     ebe: '8.66',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -149,7 +149,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αστε Ρόδου (ΑΣΤΕΡ)',
     uni: 'ΑΣΤΕ',
     city: 'Ρόδος',
-    points: 11312,
+    points: 10992,
     ebe: '8.66',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -160,7 +160,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ναυτιλίας και Επιχειρηματικών Υπηρεσιών',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Χίος',
-    points: 9890,
+    points: 10720,
     ebe: '10.33',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -171,7 +171,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Τουρισμού',
     uni: 'ΙΟΝΙΟ',
     city: 'Κέρκυρα',
-    points: 9820,
+    points: 9450,
     ebe: '8.66',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -182,7 +182,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΑΕΝ Σχολή Μηχανικών',
     uni: 'ΑΕΝ',
     city: 'Μη προσδιορισμένη',
-    points: 8400,
+    points: 8300,
     ebe: '8.26',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -192,7 +192,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΑΕΝ Σχολή Πλοιάρχων',
     uni: 'ΑΕΝ',
     city: 'Μη προσδιορισμένη',
-    points: 8400,
+    points: 8275,
     ebe: '8.26',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -204,7 +204,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 18400,
+    points: 18425,
     ebe: '12.39',
 
     category: 'Διοικητικής Επιστήμης',
@@ -224,7 +224,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οργάνωσης και Διοίκησης Επιχειρήσεων',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 16620,
+    points: 16360,
     ebe: '12.39',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -234,7 +234,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων και Οργανισμών',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 16220,
+    points: 15930,
     ebe: '12.39',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -244,7 +244,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οργάνωσης και Διοίκησης Επιχειρήσεων',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 15532,
+    points: 15670,
     ebe: '12.39',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -254,7 +254,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 12920,
+    points: 13110,
     ebe: '12.39',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -264,7 +264,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Οργανισμών, Marketing και Τουρισμού',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
-    points: 12170,
+    points: 12020,
     ebe: '9.30',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -274,7 +274,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 12150,
+    points: 13400,
     ebe: '11.36',
 
     category: 'Διοικητικής Επιστήμης',
@@ -284,7 +284,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 11900,
+    points: 11640,
     ebe: '11.36',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -295,7 +295,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων και Τουρισμού',
     uni: 'ΕΛΜΕΠΑ',
     city: 'Ηράκλειο',
-    points: 10088,
+    points: 9992,
     ebe: '10.33',
 
     category: 'Ναυτιλιακά & Τουρισμός',
@@ -305,7 +305,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Τρίπολη',
-    points: 10075,
+    points: 10650,
     ebe: '9.30',
 
     category: 'Διοικητικής Επιστήμης',
@@ -315,7 +315,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λάρισα',
-    points: 9825,
+    points: 9370,
     ebe: '9.81',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -325,7 +325,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων και Οργανισμών',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Καλαμάτα',
-    points: 9715,
+    points: 9335,
     ebe: '8.26',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -335,7 +335,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Εφοδιαστικής Αλυσίδας',
     uni: 'ΔΙΠΑΕ',
     city: 'Κατερίνη',
-    points: 9660,
+    points: 9940,
     ebe: '8.26',
 
     category: 'Logistics',
@@ -345,7 +345,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΔΠΘ',
     city: 'Καβάλα',
-    points: 9530,
+    points: 9980,
     ebe: '8.26',
 
     category: 'Διοικητικής Επιστήμης',
@@ -355,7 +355,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Γεωργικών Επιχειρήσεων',
     uni: 'ΓΕΩΠΟΝΙΚΟ',
     city: 'Θήβα',
-    points: 9095,
+    points: 9570,
     ebe: '8.78',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -365,7 +365,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οργάνωσης και Διοίκησης Επιχειρήσεων',
     uni: 'ΔΙΠΑΕ',
     city: 'Σέρρες',
-    points: 8950,
+    points: 9150,
     ebe: '8.26',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -375,7 +375,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Κοζάνη',
-    points: 8920,
+    points: 9320,
     ebe: '8.26',
 
     category: 'Διοικητικής Επιστήμης',
@@ -385,7 +385,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοικητικής Επιστήμης και Τεχνολογίας',
     uni: 'ΕΛΜΕΠΑ',
     city: 'Αγ. Νικόλαος',
-    points: 8875,
+    points: 9080,
     ebe: '8.26',
 
     category: 'Διοικητικής Επιστήμης',
@@ -395,7 +395,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Διοίκησης Επιχειρήσεων',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Χίος',
-    points: 8630,
+    points: 8605,
     ebe: '8.26',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -405,7 +405,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οργάνωσης και Διοίκησης Επιχειρήσεων',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Γρεβενά',
-    points: 7840,
+    points: 7540,
     ebe: '8.26',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -417,7 +417,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μάρκετινγκ και Επικοινωνίας',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 16350,
+    points: 16225,
     ebe: '12.39',
 
     category: 'Marketing & Επικοινωνία',
@@ -427,7 +427,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ψηφιακών Μέσων και Επικοινωνίας',
     uni: 'ΙΟΝΙΟ',
     city: 'Αργοστόλι',
-    points: 8550,
+    points: 8110,
     ebe: '8.26',
 
     category: 'Marketing & Επικοινωνία',
@@ -437,7 +437,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επικοινωνίας και Ψηφιακών Μέσων',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Καστοριά',
-    points: 11020,
+    points: 10950,
     ebe: '9.31',
 
     category: 'Marketing & Επικοινωνία',
@@ -450,7 +450,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής (ΣΣΑΣ)',
     uni: 'ΣΣΑΣ',
     city: 'Θεσσαλονίκη',
-    points: 18240,
+    points: 18600,
     ebe: '12.39',
     requirements: 'Ακολουθεί το πρόγραμμα σπουδών Πληροφορικής ΑΠΘ, με επιπλέον στρατιωτική εκπαίδευση.',
     category: 'Πληροφορική',
@@ -460,7 +460,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 17720,
+    points: 17740,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -470,7 +470,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 17590,
+    points: 17680,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -480,7 +480,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής και Τηλεπικοινωνιών',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 16955,
+    points: 17015,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -490,7 +490,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 16935,
+    points: 16870,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -500,7 +500,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Εφαρμοσμένης Πληροφορικής (Επιστήμη και Τεχνολογία Υπολογιστών)',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 16915,
+    points: 16975,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -510,7 +510,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Εφαρμοσμένης Πληροφορικής (Πληροφοριακά Συστήματα)',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 16705,
+    points: 16855,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -520,7 +520,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής και Τηλεματικής',
     uni: 'ΧΑΡΟΚΟΠΕΙΟ',
     city: 'Αθήνα',
-    points: 16320,
+    points: 16360,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -530,7 +530,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ψηφιακών Συστημάτων',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 15940,
+    points: 15860,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -540,7 +540,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης Υπολογιστών',
     uni: 'ΚΡΗΤΗΣ',
     city: 'Ηράκλειο',
-    points: 15646,
+    points: 15867,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -550,7 +550,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Πληροφορικής και Υπολογιστών',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 15336,
+    points: 15436,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -560,7 +560,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Πληροφορικής & Ηλεκτρονικών Συστημάτων',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
-    points: 14740,
+    points: 15475,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -570,7 +570,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Πληροφορικής,Υπολογιστών & Τηλεπικοινωνιών',
     uni: 'ΔΙΠΑΕ',
     city: 'Σέρρες',
-    points: 13450,
+    points: 14000,
     ebe: '10.33',
 
     category: 'Πληροφορική',
@@ -580,7 +580,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής',
     uni: 'ΔΠΘ',
     city: 'Καβάλα',
-    points: 12880,
+    points: 13165,
     ebe: '11.36',
 
     category: 'Πληροφορική',
@@ -590,7 +590,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής με Εφαρμογές στη Βιοϊατρική',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λαμία',
-    points: 12515,
+    points: 12718,
     ebe: '10.33',
 
     category: 'Πληροφορική',
@@ -600,7 +600,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής και Τηλεπικοινωνιών',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Τρίπολη',
-    points: 11550,
+    points: 12400,
     ebe: '12.39',
 
     category: 'Πληροφορική',
@@ -610,7 +610,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής και Τηλεπικοινωνιών',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λαμία',
-    points: 10500,
+    points: 10325,
     ebe: '8.26',
 
     category: 'Πληροφορική',
@@ -620,7 +620,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ψηφιακών Συστημάτων',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λάρισα',
-    points: 10445,
+    points: 10720,
     ebe: '10.33',
 
     category: 'Πληροφορική',
@@ -630,7 +630,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Καστοριά',
-    points: 10340,
+    points: 12040,
     ebe: '11.88',
 
     category: 'Πληροφορική',
@@ -640,7 +640,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ηλεκτρονικών Μηχανικών',
     uni: 'ΕΛΜΕΠΑ',
     city: 'Χανιά',
-    points: 10071,
+    points: 10965,
     ebe: '8.26',
 
     category: 'Πληροφορική',
@@ -650,7 +650,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Πληροφοριακών & Επικοινωνιακών Συστημάτων',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Σάμος',
-    points: 9660,
+    points: 11070,
     ebe: '8.26',
 
     category: 'Πληροφορική',
@@ -660,7 +660,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ψηφιακών Συστημάτων',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Σπάρτη',
-    points: 9040,
+    points: 9264,
     ebe: '8.26',
 
     category: 'Πληροφορική',
@@ -670,7 +670,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Συστημάτων Ενέργειας',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λάρισα',
-    points: 8990,
+    points: 9520,
     ebe: '8.26',
 
     category: 'Ενέργεια & Μηχανική',
@@ -680,7 +680,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής και Τηλεπικοινωνιών',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Άρτα',
-    points: 8911,
+    points: 9450,
     ebe: '8.26',
 
     category: 'Πληροφορική',
@@ -690,7 +690,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πληροφορικής',
     uni: 'ΙΟΝΙΟ',
     city: 'Κέρκυρα',
-    points: 8640,
+    points: 9190,
     ebe: '8.26',
 
     category: 'Πληροφορική',
@@ -703,7 +703,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Βιομηχανικής Διοίκησης και Τεχνολογίας',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 13465,
+    points: 13880,
     ebe: '12.39',
 
     category: 'Βιομηχανία',
@@ -713,7 +713,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Παραγωγής και Διοίκησης',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
-    points: 12585,
+    points: 13475,
     ebe: '10.33',
 
     category: 'Βιομηχανία',
@@ -723,7 +723,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Παραγωγής και Διοίκησης',
     uni: 'Πολυτεχνείο Κρήτης',
     city: 'Χανιά',
-    points: 12290,
+    points: 12510,
     ebe: '10.33',
 
     category: 'Βιομηχανία',
@@ -733,7 +733,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Βιομηχανικής Σχεδίασης και Παραγωγής',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 12032,
+    points: 12952,
     ebe: '12.39',
     category: 'Βιομηχανία',
   },
@@ -742,7 +742,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Παραγωγής και Διοίκησης',
     uni: 'ΔΠΘ',
     city: 'Ξάνθη',
-    points: 11590,
+    points: 12820,
     ebe: '11.36',
 
     category: 'Βιομηχανία',
@@ -752,7 +752,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Σχεδίασης Προϊόντων και Συστημάτων',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Σύρος',
-    points: 10330,
+    points: 10580,
     ebe: '10.33',
 
     category: 'Βιομηχανία',
@@ -762,7 +762,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Σχεδίασης Προϊόντων και Συστημάτων',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Κοζάνη',
-    points: 9225,
+    points: 9650,
     ebe: '9.30',
 
     category: 'Βιομηχανία',
@@ -772,7 +772,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Τεχνολογιών Ψηφιακής Βιομηχανίας',
     uni: 'ΕΚΠΑ',
     city: 'Ψαχνά',
-    points: 9830,
+    points: 10060,
     ebe: '8.78',
 
     category: 'Βιομηχανία',
@@ -783,7 +783,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικό (ΣΣΑΣ)',
     uni: 'ΣΣΑΣ',
     city: 'Θεσσαλονίκη',
-    points: 17735,
+    points: 17875,
     ebe: '12.39',
     requirements: 'Ακολουθεί το πρόγραμμα σπουδών Οικονομικών Επιστημών ΑΠΘ, με επιπλέον στρατιωτική εκπαίδευση.',
     category: 'Οικονομικά',
@@ -793,7 +793,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικής Επιστήμης',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 15900,
+    points: 16025,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -803,7 +803,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικής Επιστήμης',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 15100,
+    points: 14990,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -813,7 +813,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 14460,
+    points: 14620,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -823,7 +823,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 13896,
+    points: 13832,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -833,7 +833,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 13240,
+    points: 13290,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -843,7 +843,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικής & Περιφερειακής Ανάπτυξης',
     uni: 'ΠΑΝΤΕΙΟ',
     city: 'Αθήνα',
-    points: 12675,
+    points: 12550,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -853,7 +853,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομίας και Βιώσιμης Ανάπτυξης',
     uni: 'ΧΑΡΟΚΟΠΕΙΟ',
     city: 'Αθήνα',
-    points: 12556,
+    points: 12613,
     ebe: '11.36',
 
     category: 'Οικονομικά',
@@ -863,7 +863,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 12426,
+    points: 12030,
     ebe: '12.39',
 
     category: 'Οικονομικά',
@@ -873,7 +873,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αγροτικής Οικονομίας και Ανάπτυξης',
     uni: 'ΓΕΩΠΟΝΙΚΟ',
     city: 'Αθήνα',
-    points: 12310,
+    points: 12120,
     ebe: '8.78',
 
     category: 'Οικονομικά',
@@ -883,7 +883,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Βόλος',
-    points: 11851,
+    points: 11802,
     ebe: '10.33',
 
     category: 'Οικονομικά',
@@ -893,7 +893,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Ιωάννινα',
-    points: 11450,
+    points: 11225,
     ebe: '10.33',
 
     category: 'Οικονομικά',
@@ -903,7 +903,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΚΡΗΤΗΣ',
     city: 'Ρέθυμνο',
-    points: 10415,
+    points: 10530,
     ebe: '10.84',
 
     category: 'Οικονομικά',
@@ -913,7 +913,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Καστοριά',
-    points: 10330,
+    points: 8920,
     ebe: '8.26',
 
     category: 'Οικονομικά',
@@ -923,7 +923,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Τρίπολη',
-    points: 10030,
+    points: 10325,
     ebe: '10.33',
 
     category: 'Οικονομικά',
@@ -933,7 +933,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΔΠΘ',
     city: 'Κομοτηνή',
-    points: 9696,
+    points: 8940,
     ebe: '9.30',
 
     category: 'Οικονομικά',
@@ -943,7 +943,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οικονομικών Επιστημών',
     uni: 'ΔΙΠΑΕ',
     city: 'Σέρρες',
-    points: 9555,
+    points: 8985,
     ebe: '8.26',
 
     category: 'Οικονομικά',
@@ -953,7 +953,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μηχανικών Οικονομίας και Διοίκησης',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Χίος',
-    points: 9050,
+    points: 9375,
     ebe: '8.26',
 
     category: 'Διοίκηση Επιχειρήσεων',
@@ -963,7 +963,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Περιφερειακής και Οικονομικής Ανάπτυξης',
     uni: 'ΓΕΩΠΟΝΙΚΟ',
     city: 'Άμφισσα',
-    points: 7040,
+    points: 8950,
     ebe: '8.26',
 
     category: 'Οικονομικά',
@@ -975,7 +975,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 15775,
+    points: 15925,
     ebe: '12.39',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -985,7 +985,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Χρηματοοικονομικής & Τραπεζικής Διοικητικής',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 14850,
+    points: 15000,
     ebe: '12.39',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -995,7 +995,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 13525,
+    points: 13800,
     ebe: '12.39',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1005,7 +1005,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 12765,
+    points: 12952,
     ebe: '12.39',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1015,7 +1015,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Πληροφοριακών Συστημάτων',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
-    points: 12360,
+    points: 12160,
     ebe: '10.33',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1025,7 +1025,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Καλαμάτα',
-    points: 9250,
+    points: 8915,
     ebe: '8.26',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1035,7 +1035,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λάρισα',
-    points: 8867,
+    points: 9008,
     ebe: '8.26',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1045,7 +1045,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΕΛΜΕΠΑ',
     city: 'Ηράκλειο',
-    points: 8780,
+    points: 8700,
     ebe: '9.30',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1065,7 +1065,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Πρέβεζα',
-    points: 7890,
+    points: 7640,
     ebe: '8.26',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1075,7 +1075,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Λογιστικής και Χρηματοοικονομικής',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Κοζάνη',
-    points: 7310,
+    points: 7380,
     ebe: '8.26',
 
     category: 'Λογιστική & Χρηματοοικονομικά',
@@ -1087,7 +1087,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Στατιστικής',
     uni: 'ΟΠΑ',
     city: 'Αθήνα',
-    points: 14440,
+    points: 14940,
     ebe: '12.39',
 
     category: 'Στατιστική',
@@ -1097,7 +1097,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Στατιστικής και Ασφαλιστικής Επιστήμης',
     uni: 'ΠΑΠΕΙ',
     city: 'Πειραιάς',
-    points: 13070,
+    points: 13425,
     ebe: '12.39',
 
     category: 'Στατιστική',
@@ -1107,7 +1107,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Στατιστικής και Αναλογιστικών-Χρηματοοικονομικών Μαθηματικών',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Σάμος',
-    points: 8550,
+    points: 8475,
     ebe: '8.26',
 
     category: 'Στατιστική',
@@ -1117,7 +1117,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Στατιστικής',
     uni: 'Δυτικής Μακεδονίας',
     city: 'Γρεβενά',
-    points: 7280,
+    points: 7190,
     ebe: '8.26',
 
     category: 'Στατιστική',
@@ -1129,7 +1129,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αξιωματικών Ελληνικής Αστυνομίας',
     uni: 'ΑΣΤΥΝΟΜΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 17590,
+    points: 17690,
     ebe: '12.39',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1140,7 +1140,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ικάρων (ΣΙ) Εφοδιαστών',
     uni: 'ΑΕΡΟΠΟΡΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 17465,
+    points: 17530,
     ebe: '12.39',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1151,7 +1151,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αξιωματικών Πυροσβεστικής',
     uni: 'ΠΥΡΟΣΒΕΣΤΙΚΗ',
     city: 'Μη προσδιορισμένη',
-    points: 17460,
+    points: 17630,
     ebe: '8.26',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1162,7 +1162,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αξιωματικών ΕΛ.ΑΣ. (για Αστυνομικούς)',
     uni: 'ΑΣΤΥΝΟΜΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 17370,
+    points: 17540,
     ebe: '12.39',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1173,7 +1173,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ικάρων (ΣΙ) Διοικητικών',
     uni: 'ΑΕΡΟΠΟΡΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 17260,
+    points: 17275,
     ebe: '12.39',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1184,7 +1184,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Σχολή Δοκίμων Σημαιοφόρων Λ.Σ.',
     uni: 'ΛΙΜΕΝΙΚΟ',
     city: 'Μη προσδιορισμένη',
-    points: 16650,
+    points: 16870,
     ebe: '9.30',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1195,7 +1195,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΣΜΥΑ - Κατ. Διοικ. & Εφοδ. Υποστήριξης',
     uni: 'ΑΕΡΟΠΟΡΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 16030,
+    points: 16155,
     ebe: '10.33',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1206,7 +1206,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πυροσβεστών (για Πολίτες)',
     uni: 'ΠΥΡΟΣΒΕΣΤΙΚΗ',
     city: 'Μη προσδιορισμένη',
-    points: 14460,
+    points: 15130,
     ebe: '8.26',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1228,7 +1228,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΣΜΥ - Σώματα',
     uni: 'ΣΤΡΑΤΟΣ',
     city: 'Μη προσδιορισμένη',
-    points: 13080,
+    points: 11120,
     ebe: '8.26',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1239,7 +1239,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αστυφυλάκων (για Πολίτες)',
     uni: 'ΑΣΤΥΝΟΜΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 11710,
+    points: 11470,
     ebe: '8.26',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1250,7 +1250,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αξιωματικών Πυροσβεστικής (Πυροσβέστες)',
     uni: 'ΠΥΡΟΣΒΕΣΤΙΚΗ',
     city: 'Μη προσδιορισμένη',
-    points: 9940,
+    points: 17510,
     ebe: '8.26',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1261,7 +1261,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΣΜΥΝ (Μονίμων Υπαξιωματικών Ναυτικού)',
     uni: 'ΝΑΥΤΙΚΟ',
     city: 'Μη προσδιορισμένη',
-    points: 8940,
+    points: 8900,
     ebe: '9.30',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1272,7 +1272,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΣΜΥ - Όπλα',
     uni: 'ΣΤΡΑΤΟΣ',
     city: 'Μη προσδιορισμένη',
-    points: 9170,
+    points: 8820,
     ebe: '8.26',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1283,7 +1283,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ευελπίδων (ΣΣΕ) - Όπλα',
     uni: 'ΣΤΡΑΤΟΣ',
     city: 'Μη προσδιορισμένη',
-    points: 10865,
+    points: 12990,
     ebe: '9.30',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1294,7 +1294,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ευελπίδων (ΣΣΕ) - Σώματα',
     uni: 'ΣΤΡΑΤΟΣ',
     city: 'Μη προσδιορισμένη',
-    points: 13055,
+    points: 15750,
     ebe: '9.30',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1305,7 +1305,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΣΜΥΑ - Κατ. Τεχνολογικής Υποστήριξης',
     uni: 'ΑΕΡΟΠΟΡΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 11095,
+    points: 12865,
     ebe: '9.30',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1316,7 +1316,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'ΣΜΥΑ - Κατ. Επιχειρησιακής Υποστήριξης',
     uni: 'ΑΕΡΟΠΟΡΙΑ',
     city: 'Μη προσδιορισμένη',
-    points: 12265,
+    points: 14855,
     ebe: '9.30',
 
     category: 'Σώματα Ασφαλείας & Στρατιωτικές',
@@ -1347,7 +1347,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Δασολογίας και Διαχείρισης Φυσικού Περιβάλλοντος',
     uni: 'ΓΕΩΠΟΝΙΚΟ',
     city: 'Καρπενήσι',
-    points: 9700,
+    points: 8700,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1357,7 +1357,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Θεατρικών Σπουδών',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 10550,
+    points: 10875,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1367,7 +1367,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Θεατρικών Σπουδών',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Ναύπλιο',
-    points: 9075,
+    points: 9025,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1377,7 +1377,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Θεατρικών Σπουδών',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 9040,
+    points: 9645,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1389,8 +1389,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μουσικής Επιστήμης και Τέχνης',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 15600,
-    ebe: '9.69',
+    points: 15540,
+    ebe: 'Μουσική Αντίληψη, Θεωρία και Αρμονία 8.42, Μουσική Εκτέλεση και Ερμηνεία 13.46',
 
     category: 'Μουσική & Πολιτισμός',
     requirements: 'Μουσικά Μαθήματα',
@@ -1400,8 +1400,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μουσικών Σπουδών',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 15050,
-    ebe: '10.90',
+    points: 15150,
+    ebe: 'Μουσική Αντίληψη, Θεωρία και Αρμονία 8.42, Μουσική Εκτέλεση και Ερμηνεία 13.46',
 
     category: 'Μουσική & Πολιτισμός',
     requirements: 'Μουσικά Μαθήματα',
@@ -1411,8 +1411,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μουσικών Σπουδών',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 14590,
-    ebe: '9.69',
+    points: 14150,
+    ebe: 'Μουσική Αντίληψη, Θεωρία και Αρμονία 7.37, Μουσική Εκτέλεση και Ερμηνεία 11.78',
 
     category: 'Μουσική & Πολιτισμός',
     requirements: 'Μουσικά Μαθήματα',
@@ -1422,7 +1422,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μουσικών Σπουδών',
     uni: 'ΙΟΝΙΟ',
     city: 'Κέρκυρα',
-    points: 13440,
+    points: 10980,
     ebe: '9.69',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1433,7 +1433,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Κινηματογράφου',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 13125,
+    points: 12625,
     ebe: '12.39',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1443,7 +1443,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μουσικών Σπουδών',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Άρτα',
-    points: 11660,
+    points: 11390,
     ebe: '10.90',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1454,7 +1454,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Φωτογραφίας & Οπτικοακουστικών Τεχνών',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 11540,
+    points: 12210,
     ebe: '12.39',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1464,7 +1464,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Θεάτρου',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 11425,
+    points: 11125,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1474,7 +1474,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ψηφιακών Τεχνών και Κινηματογράφου',
     uni: 'ΕΚΠΑ',
     city: 'Ψαχνά',
-    points: 10520,
+    points: 10640,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1484,7 +1484,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πολιτισμού & Δημιουργικών Μέσων και Βιομηχανιών',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Βόλος',
-    points: 9410,
+    points: 9240,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1494,7 +1494,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Τεχνών Ήχου και Εικόνας',
     uni: 'ΙΟΝΙΟ',
     city: 'Κέρκυρα',
-    points: 9410,
+    points: 9675,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1504,7 +1504,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παραστατικών και Ψηφιακών Τεχνών',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Ναύπλιο',
-    points: 9200,
+    points: 9025,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1514,7 +1514,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μουσικής Τεχνολογίας & Ακουστικής',
     uni: 'ΕΛΜΕΠΑ',
     city: 'Ρέθυμνο',
-    points: 8400,
+    points: 8275,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1524,7 +1524,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Πολιτισμικής Τεχνολογίας & Επικοινωνίας',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Μυτιλήνη',
-    points: 8355,
+    points: 7970,
     ebe: '8.26',
 
     category: 'Μουσική & Πολιτισμός',
@@ -1536,7 +1536,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης Φυσικής Αγωγής και Αθλητισμού',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 17399,
+    points: 17226,
     ebe: '8.47',
 
     category: 'Αθλητισμός',
@@ -1547,8 +1547,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης Φυσικής Αγωγής και Αθλητισμού',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 17161,
-    ebe: '8.47',
+    points: 17060,
+    ebe: '8.89',
 
     category: 'Αθλητισμός',
     requirements: 'Αγωνίσματα',
@@ -1558,8 +1558,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης Φυσικής Αγωγής και Αθλητισμού',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Τρίκαλα',
-    points: 15134,
-    ebe: '8.47',
+    points: 15470,
+    ebe: '8.47, Αγωνίσματα 7.78',
 
     category: 'Αθλητισμός',
     requirements: 'Αγωνίσματα',
@@ -1569,7 +1569,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης Φυσικής Αγωγής και Αθλητισμού',
     uni: 'ΑΠΘ',
     city: 'Σέρρες',
-    points: 13729,
+    points: 13440,
     ebe: '8.47',
 
     category: 'Αθλητισμός',
@@ -1580,7 +1580,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης Φυσικής Αγωγής και Αθλητισμού',
     uni: 'ΔΠΘ',
     city: 'Κομοτηνή',
-    points: 13219,
+    points: 13425,
     ebe: '8.47',
 
     category: 'Αθλητισμός',
@@ -1591,7 +1591,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Οργάνωσης και Διαχείρισης Αθλητισμού',
     uni: 'ΠΕΛΟΠΟΝΝΗΣΟΥ',
     city: 'Σπάρτη',
-    points: 8940,
+    points: 8980,
     ebe: '8.26',
 
     category: 'Αθλητισμός',
@@ -1602,7 +1602,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 16250,
+    points: 15950,
     ebe: '12.39',
 
     category: 'Παιδαγωγικά',
@@ -1612,7 +1612,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 15950,
+    points: 15800,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1622,7 +1622,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Βόλος',
-    points: 15125,
+    points: 14550,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1642,7 +1642,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Ιωάννινα',
-    points: 14575,
+    points: 14100,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1652,7 +1652,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστημών Εκπαίδευσης & Κοινωνικής Εργασίας',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 14422,
+    points: 14380,
     ebe: '12.39',
 
     category: 'Παιδαγωγικά',
@@ -1662,7 +1662,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστημών Προσχολικής Αγωγής και Εκπαίδευσης',
     uni: 'ΑΠΘ',
     city: 'Θεσσαλονίκη',
-    points: 13875,
+    points: 14175,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1672,7 +1672,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΚΡΗΤΗΣ',
     city: 'Ρέθυμνο',
-    points: 13375,
+    points: 12875,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1692,7 +1692,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Ειδικής Αγωγής',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Βόλος',
-    points: 13050,
+    points: 12425,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1702,7 +1702,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΔΠΘ',
     city: 'Αλεξ/πολη',
-    points: 13000,
+    points: 12400,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1712,7 +1712,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστημών Της Εκπαίδευσης & Της Αγωγής Στην Προσχολική Ηλικία',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Πάτρα',
-    points: 13000,
+    points: 12760,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1722,7 +1722,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Φλώρινα',
-    points: 12860,
+    points: 12430,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1732,7 +1732,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Προσχολικής Εκπαίδευσης',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Βόλος',
-    points: 12425,
+    points: 12075,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1742,7 +1742,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Νηπιαγωγών',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Ιωάννινα',
-    points: 11905,
+    points: 11640,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1752,7 +1752,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Δημοτικής Εκπαίδευσης',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Ρόδος',
-    points: 11875,
+    points: 10950,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1762,7 +1762,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Προσχολικής Εκπαίδευσης',
     uni: 'ΚΡΗΤΗΣ',
     city: 'Ρέθυμνο',
-    points: 11600,
+    points: 11260,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1772,7 +1772,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αγωγής και Φροντίδας στην Πρώιμη Ηλικία',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
-    points: 11250,
+    points: 11450,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1782,7 +1782,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Παιδαγωγικό Νηπιαγωγών',
     uni: 'ΔΥΤ. ΜΑΚΕΔΟΝΙΑΣ',
     city: 'Φλώρινα',
-    points: 10975,
+    points: 10675,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1792,7 +1792,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αγωγής και Φροντίδας στην Πρώιμη Ηλικία',
     uni: 'ΙΩΑΝΝΙΝΩΝ',
     city: 'Ιωάννινα',
-    points: 10914,
+    points: 10756,
     ebe: '10.33',
 
     category: 'Παιδαγωγικά',
@@ -1802,7 +1802,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστημών της Εκπαίδευσης στην Προσχολική Ηλικία',
     uni: 'ΔΠΘ',
     city: 'Αλεξ/πολη',
-    points: 10750,
+    points: 10400,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1812,7 +1812,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστημών της Προσχολικής Αγωγής και Εκπαιδευτικού Σχεδιασμού',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Ρόδος',
-    points: 10150,
+    points: 9850,
     ebe: '8.26',
 
     category: 'Παιδαγωγικά',
@@ -1824,7 +1824,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Δημόσιας Διοίκησης',
     uni: 'ΠΑΝΤΕΙΟ',
     city: 'Αθήνα',
-    points: 13075,
+    points: 13125,
     ebe: '12.39',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1834,7 +1834,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Κοινωνικής Πολιτικής',
     uni: 'ΠΑΝΤΕΙΟ',
     city: 'Αθήνα',
-    points: 12430,
+    points: 12410,
     ebe: '8.26',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1844,7 +1844,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Βαλκανικών, Σλαβικών & Ανατολικών Σπουδών',
     uni: 'ΠΑΜΑΚ',
     city: 'Θεσσαλονίκη',
-    points: 12240,
+    points: 12110,
     ebe: '12.39',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1854,7 +1854,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Κοινωνικής Πολιτικής',
     uni: 'ΔΠΘ',
     city: 'Κομοτηνή',
-    points: 10820,
+    points: 10920,
     ebe: '8.26',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1864,7 +1864,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ιστορίας και Φιλοσοφίας της Επιστήμης',
     uni: 'ΕΚΠΑ',
     city: 'Αθήνα',
-    points: 10810,
+    points: 10674,
     ebe: '10.33',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1874,7 +1874,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αρχειονομίας,Βιβλιοθηκονομίας και Συστημάτων Πληροφόρησης',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 10730,
+    points: 11110,
     ebe: '9.30',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1884,7 +1884,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Επιστήμης της Πληροφορίας',
     uni: 'ΙΟΝΙΟ',
     city: 'Κέρκυρα',
-    points: 8525,
+    points: 8325,
     ebe: '8.26',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1894,7 +1894,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Μεσογειακών Σπουδών : Αρχαιολογία,Γλωσσολογία,Διεθνέις Σχέσεις',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Ρόδος',
-    points: 8798,
+    points: 8534,
     ebe: '8.26',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1904,7 +1904,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Βιβλιοθηκονομίας & Συστημάτων Πληροφόρησης',
     uni: 'ΔΙΠΑΕ',
     city: 'Θεσσαλονίκη',
-    points: 9300,
+    points: 9625,
     ebe: '8.26',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1914,7 +1914,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Ανθρωπιστικών Σπουδών',
     uni: 'ΔΠΘ',
     city: 'Κομοτηνή',
-    points: 8650,
+    points: 8525,
     ebe: '8.26',
 
     category: 'Ανθρωπιστικά & Κοινωνικά',
@@ -1927,7 +1927,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Γεωγραφίας',
     uni: 'ΧΑΡΟΚΟΠΕΙΟ',
     city: 'Αθήνα',
-    points: 10725,
+    points: 11250,
     ebe: '9.30',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1937,7 +1937,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αγροτικής Ανάπτυξης',
     uni: 'ΕΚΠΑ',
     city: 'Ψαχνά',
-    points: 9870,
+    points: 9660,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1947,7 +1947,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Περιβάλλοντος',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Λάρισα',
-    points: 9590,
+    points: 9770,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1957,7 +1957,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αγροτικής Ανάπτυξης',
     uni: 'ΔΠΘ',
     city: 'Ορεστιάδα',
-    points: 9125,
+    points: 8975,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1967,7 +1967,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Περιβάλλοντος',
     uni: 'ΙΟΝΙΟ',
     city: 'Ζάκυνθος',
-    points: 8670,
+    points: 8470,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1977,7 +1977,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Δασολογίας & Διαχείρησης Περιβάλλοντος και Φυσικών Πόρων',
     uni: 'ΔΠΘ',
     city: 'Ορεστιάδα',
-    points: 8640,
+    points: 8080,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1987,7 +1987,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Δασολογίας, Επιστημών Ξύλου και Σχεδιασμού',
     uni: 'ΘΕΣΣΑΛΙΑΣ',
     city: 'Καρδίτσα',
-    points: 8605,
+    points: 8490,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -1997,7 +1997,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Περιβάλλοντος',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Μυτιλήνη',
-    points: 8550,
+    points: 8440,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -2007,7 +2007,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Αλιείας & Υδατοκαλλιεργειών',
     uni: 'ΠΑΤΡΩΝ',
     city: 'Μεσολόγγι',
-    points: 8335,
+    points: 8238,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -2017,7 +2017,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Γεωγραφίας',
     uni: 'ΑΙΓΑΙΟΥ',
     city: 'Μυτιλήνη',
-    points: 7740,
+    points: 7690,
     ebe: '8.26',
 
     category: 'Άλλα (Γεωγραφία, Περιβάλλον κ.α.)',
@@ -2029,8 +2029,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Εσωτερικής Αρχιτεκτονικής',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 14405,
-    ebe: '13.13',
+    points: 14725,
+    ebe: '13.13, Ελεύθερο Σχέδιο 14.96, Γραμμικό Σχέδιο 15.20',
 
     category: 'Τέχνες',
     requirements: 'Σχέδιο',
@@ -2040,7 +2040,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Γραφιστικής και Οπτικής Επικοινωνίας',
     uni: 'ΠΑΔΑ',
     city: 'Αιγάλεω',
-    points: 13745,
+    points: 13890,
     ebe: '9.13',
 
     category: 'Τέχνες',
@@ -2051,8 +2051,8 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Εσωτερικής Αρχιτεκτονικής',
     uni: 'ΔΙΠΑΕ',
     city: 'Σέρρες',
-    points: 13545,
-    ebe: '9.13',
+    points: 14315,
+    ebe: '9.13, Γραμμικό Σχέδιο 10.13',
 
     category: 'Τέχνες',
     requirements: 'Σχέδιο',
@@ -2064,7 +2064,7 @@ export const ALL_SCHOOLS: School[] = [
     name: 'Δημιουργικού Σχεδιασμού και Ένδυσης',
     uni: 'ΔΙΠΑΕ',
     city: 'Κιλκίς',
-    points: 8650,
+    points: 8750,
     ebe: '8.26',
 
     category: 'Σχέδιο Μόδας',
