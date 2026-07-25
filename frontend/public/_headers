@@ -8,6 +8,7 @@
 
 /pdfs/*
   Content-Disposition: inline
+  X-Frame-Options: SAMEORIGIN
 
 # Vite build output — repeat visits
 /assets/*
