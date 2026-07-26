@@ -8,6 +8,7 @@ const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
 const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
+const VivliaPage = lazy(() => import('@/pages/public/VivliaPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
 // const LoginPage = lazy(() => import('@/pages/public/LoginPage'));
@@ -101,6 +102,10 @@ const routes: RouteConfig[] = [
   {
     path: '/gloglossa',
     element: <GloglossaEmbedPage />,
+  },
+  {
+    path: '/vivlia',
+    element: <VivliaPage />,
   },
   {
     path: '/announcements',

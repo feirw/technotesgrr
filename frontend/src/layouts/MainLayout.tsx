@@ -79,6 +79,7 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
   { to: '/gloglossa', label: 'GloGlossa', iconSrc: MENU_ICONS.gloglossa },
+  { to: '/vivlia', label: 'Βιβλία', iconSrc: MENU_ICONS.vivlia },
 ];
 
 const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [

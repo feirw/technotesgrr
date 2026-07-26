@@ -27,6 +27,7 @@ export const MENU_ICONS = {
   mixanografiko: `${HP}/47.png`,
   antistixia: `${HP}/48.png`,
   meteggrafes: `${HP}/49.png`,
+  vivlia: `${HP}/50.png`,
 } as const;
 
 /** Εικονίδια σημειώσεων στη σελίδα Σχολών. */

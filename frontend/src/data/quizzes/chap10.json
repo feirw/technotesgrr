@@ -75,11 +75,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
@@ -257,11 +257,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": false
+        "correct": true
       },
       {
         "text": "Λάθος",
-        "correct": true
+        "correct": false
       }
     ]
   },
@@ -307,34 +307,7 @@
       }
     ]
   },
-  {
-    "id": "23",
-    "question": "Ο τμηματικός προγραμματισμός έχει ως αποτέλεσμα την ταχύτερη εκτέλεση του προγράμματος",
-    "answers": [
-      {
-        "text": "Σωστό",
-        "correct": false
-      },
-      {
-        "text": "Λάθος",
-        "correct": true
-      }
-    ]
-  },
-  {
-    "id": "24",
-    "question": "Το κυρίως πρόγραμμα πρέπει να είναι πολύ μεγαλύτερο από τα υποπρογράμματα",
-    "answers": [
-      {
-        "text": "Σωστό",
-        "correct": false
-      },
-      {
-        "text": "Λάθος",
-        "correct": true
-      }
-    ]
-  },
+
   {
     "id": "25",
     "question": "Η διαδικασίες έχουν περιορισμένες λειτουργίες σε σχέση με τις συναρτήσεις",
