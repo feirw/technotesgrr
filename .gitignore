@@ -45,6 +45,10 @@ ai.md
 # Local ΑΕΠΠ lesson source files for AI corrector KB (run scripts/build_corrector_knowledge.py)
 frontend/ΜΑΘΗΜΑΤΑ/
 
+# Νέα Διαγωνίσματα + AI corrector OG image — local only, not ready to publish
+frontend/public/pdfs/diagonismata/
+frontend/public/og/pages/ai-corrector.png
+
 # ===================
 # Mobile (Capacitor) — generated native build output, not source
 # ===================
