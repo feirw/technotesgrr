@@ -43,7 +43,7 @@ function SchoolCompareRedirect() {
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
 const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
-const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
+// const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
 const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
@@ -183,10 +183,10 @@ const routes: RouteConfig[] = [
     path: '/askiseis',
     element: <AskiseisPage />,
   },
-  {
-    path: '/ai-corrector',
-    element: <AiCorrectorPage />,
-  },
+  // {
+  //   path: '/ai-corrector',
+  //   element: <AiCorrectorPage />,
+  // },
   {
     path: '/syntelestes-sxolon',
     element: <SchoolCoefficientsPage />,

@@ -381,7 +381,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
               <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
               <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
-              <NavButton to="/ai-corrector" iconSrc={MENU_ICONS.aiCorrector}>AI Διορθωτής</NavButton>
+              {/* <NavButton to="/ai-corrector" iconSrc={MENU_ICONS.aiCorrector}>AI Διορθωτής</NavButton> */}
 
               <button
                 type="button"
@@ -572,10 +572,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     </MobileNavButton>
                   ))}
 
-                  <MobileMenuSectionTitle>AI Διορθωτής</MobileMenuSectionTitle>
+                  {/* <MobileMenuSectionTitle>AI Διορθωτής</MobileMenuSectionTitle>
                   <MobileNavButton to="/ai-corrector" iconSrc={MENU_ICONS.aiCorrector} onClick={closeMenu}>
                     AI Διορθωτής
-                  </MobileNavButton>
+                  </MobileNavButton> */}
 
                   <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">
