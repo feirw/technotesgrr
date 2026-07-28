@@ -11,6 +11,7 @@ const WIDTH = 1080;
 const HEIGHT = 1920;
 const SITE_LABEL = 'technotesgr.com';
 const LOGO_SRC = '/images/logo.png';
+const INSTAGRAM_STORIES_URL = 'instagram-stories://share?source_application=technotesgr';
 
 async function ensureFontsReady(): Promise<void> {
   try {
@@ -107,7 +108,7 @@ export async function generateShareImageBlob(data: ShareCardData): Promise<Blob>
   const canvas = document.createElement('canvas');
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { alpha: false });
   if (!ctx) throw new Error('Canvas 2D context is not available');
 
   drawBackground(ctx);
@@ -207,6 +208,25 @@ function isIOS(): boolean {
   return /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
 }
 
+function waitForInstagramOpen(): Promise<boolean> {
+  return new Promise<boolean>((resolve) => {
+    let settled = false;
+    let timer = 0;
+    const finish = (result: boolean) => {
+      if (settled) return;
+      settled = true;
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.clearTimeout(timer);
+      resolve(result);
+    };
+    const onVisibilityChange = () => {
+      if (document.hidden) finish(true);
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    timer = window.setTimeout(() => finish(false), 1500);
+  });
+}
+
 /**
  * Μοιράζεται την εικόνα μέσω Web Share API (ανοίγει native share sheet, π.χ. Instagram Stories)
  * αν υποστηρίζεται, αλλιώς την κατεβάζει ώστε ο χρήστης να την ανεβάσει χειροκίνητα.
@@ -252,46 +272,30 @@ export async function shareOrDownloadImage(
  * web deep-link), πέφτει στο γενικό Web Share API / download· εκεί μέσα στο Instagram
  * ο χρήστης διαλέγει ο ίδιος «Story» από το δικό του share sheet.
  *
- * Σημαντικό: το `navigator.clipboard.write` πρέπει να κληθεί όσο το δυνατόν πιο κοντά
- * στο user gesture (το click) — στη Safari/iOS, οποιοδήποτε `await` πριν από αυτό
- * (π.χ. να περιμένουμε να «ψηθεί» πρώτα η εικόνα) καταναλώνει το transient user
- * activation και το write αποτυγχάνει σιωπηλά με NotAllowedError. Γι' αυτό περνάμε
- * το promise της εικόνας ΑΠΕΥΘΕΙΑΣ μέσα στο ClipboardItem αντί να κάνουμε πρώτα await.
+ * Σημαντικό: στο iOS γράφουμε στο clipboard έτοιμο image Blob. Pending ClipboardItem
+ * promises έχουν δώσει μαύρο/κενό paste μέσα στο Instagram Stories composer.
  */
 export async function shareToInstagramStory(
   data: ShareCardData,
   filename: string,
-  caption: string
+  caption: string,
+  preparedBlob?: Blob | null
 ): Promise<ShareOutcome> {
-  if (isIOS() && typeof ClipboardItem !== 'undefined') {
-    const blobPromise = generateShareImageBlob(data);
+  const blob = preparedBlob ?? (await generateShareImageBlob(data));
+
+  if (isIOS() && typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
     try {
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
-      window.location.href = 'instagram-stories://share?source_application=technotesgr';
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      window.location.href = INSTAGRAM_STORIES_URL;
 
-      const openedInstagram = await new Promise<boolean>((resolve) => {
-        let settled = false;
-        const finish = (result: boolean) => {
-          if (settled) return;
-          settled = true;
-          document.removeEventListener('visibilitychange', onVisibilityChange);
-          window.clearTimeout(timer);
-          resolve(result);
-        };
-        const onVisibilityChange = () => {
-          if (document.hidden) finish(true);
-        };
-        document.addEventListener('visibilitychange', onVisibilityChange);
-        const timer = window.setTimeout(() => finish(false), 1500);
-      });
-
+      const openedInstagram = await waitForInstagramOpen();
       if (openedInstagram) return 'story';
-      return shareOrDownloadImage(await blobPromise, filename, caption);
+      return shareOrDownloadImage(blob, filename, caption);
     } catch {
       // Clipboard write ή deep link απέτυχαν — πέφτουμε στο γενικό share flow.
-      return shareOrDownloadImage(await blobPromise, filename, caption);
+      return shareOrDownloadImage(blob, filename, caption);
     }
   }
 
-  return shareOrDownloadImage(await generateShareImageBlob(data), filename, caption);
+  return shareOrDownloadImage(blob, filename, caption);
 }

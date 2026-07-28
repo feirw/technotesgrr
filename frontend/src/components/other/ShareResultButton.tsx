@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Instagram, Loader2, Check, AlertCircle } from 'lucide-react';
 import {
   buildShareCaption,
+  generateShareImageBlob,
   shareToInstagramStory,
   type ShareCardData,
 } from '@/utils/shareImage';
@@ -30,13 +31,57 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
   label = 'Μοιράσου το σε Instagram Story',
 }) => {
   const [status, setStatus] = useState<Status>('idle');
+  const preparedBlobRef = useRef<Blob | null>(null);
+  const preparePromiseRef = useRef<Promise<Blob> | null>(null);
+  const prepareRunRef = useRef(0);
+
+  const prepareShareImage = useCallback(() => {
+    if (preparedBlobRef.current || preparePromiseRef.current) return preparePromiseRef.current;
+
+    const runId = ++prepareRunRef.current;
+    const promise = generateShareImageBlob(data)
+      .then((blob) => {
+        if (prepareRunRef.current === runId) {
+          preparedBlobRef.current = blob;
+        }
+        return blob;
+      })
+      .catch((err) => {
+        if (prepareRunRef.current === runId) {
+          preparePromiseRef.current = null;
+        }
+        throw err;
+      });
+
+    preparePromiseRef.current = promise;
+    return promise;
+  }, [data]);
+
+  useEffect(() => {
+    preparedBlobRef.current = null;
+    preparePromiseRef.current = null;
+    void prepareShareImage()?.catch(() => {
+      // Το click path θα ξαναδοκιμάσει και θα δείξει error/fallback αν χρειαστεί.
+    });
+
+    return () => {
+      prepareRunRef.current += 1;
+      preparedBlobRef.current = null;
+      preparePromiseRef.current = null;
+    };
+  }, [prepareShareImage]);
 
   const handleShare = async () => {
     if (status === 'generating') return;
     setStatus('generating');
     try {
       const filename = data.kind === 'quiz' ? 'technotesgr-quiz-score.png' : 'technotesgr-streak.png';
-      const outcome = await shareToInstagramStory(data, filename, buildShareCaption(data));
+      const outcome = await shareToInstagramStory(
+        data,
+        filename,
+        buildShareCaption(data),
+        preparedBlobRef.current
+      );
       if (outcome === 'cancelled') {
         setStatus('idle');
         return;
@@ -57,6 +102,9 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
       <motion.button
         type="button"
         onClick={() => void handleShare()}
+        onFocus={() => void prepareShareImage()?.catch(() => {})}
+        onPointerDown={() => void prepareShareImage()?.catch(() => {})}
+        onPointerEnter={() => void prepareShareImage()?.catch(() => {})}
         disabled={status === 'generating'}
         whileHover={status === 'generating' ? {} : { scale: 1.05 }}
         whileTap={status === 'generating' ? {} : { scale: 0.95 }}

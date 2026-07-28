@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Printer, ExternalLink, Maximize, FileText } from 'lucide-react';
+import { Download, Printer, ExternalLink, Maximize, FileText, RefreshCw } from 'lucide-react';
 
 const PaliaMobilePdf = lazy(() => import('./PaliaMobilePdf'));
 
@@ -12,16 +12,10 @@ interface PaliaProps {
   fileName?: string;
 }
 
-const MOBILE_MQ = '(max-width: 767px)';
-
 const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const frameRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [narrowViewport, setNarrowViewport] = useState(() =>
-    typeof window !== 'undefined' ? window.matchMedia(MOBILE_MQ).matches : false
-  );
-  const [iframeFallback, setIframeFallback] = useState(false);
+  const [viewerError, setViewerError] = useState(false);
 
   const fileUrl = useMemo(() => {
     try {
@@ -32,19 +26,9 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
   }, [pdfPath]);
 
   useEffect(() => {
-    const mq = window.matchMedia(MOBILE_MQ);
-    const onChange = () => setNarrowViewport(mq.matches);
-    onChange();
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-
-  useEffect(() => {
     setLoading(true);
-    setIframeFallback(false);
+    setViewerError(false);
   }, [pdfPath]);
-
-  const usePdfJs = narrowViewport && !iframeFallback;
 
   const handleOpenNew = () => {
     if (pdfPath) {
@@ -135,7 +119,30 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
             </motion.div>
           )}
 
-          {usePdfJs ? (
+          {viewerError ? (
+            <div className="h-full w-full flex flex-col items-center justify-center gap-4 bg-white px-4 text-center">
+              <FileText className="w-12 h-12 text-[#f088a5]" />
+              <div>
+                <h2 className="text-lg sm:text-xl font-black text-gray-900">
+                  Δεν ήταν δυνατή η προβολή του PDF.
+                </h2>
+                <p className="mt-2 text-sm sm:text-base font-semibold text-gray-600">
+                  Άνοιξέ το σε νέα καρτέλα ή κατέβασέ το από τα κουμπιά από κάτω.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setViewerError(false);
+                  setLoading(true);
+                }}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#fea2bb] px-4 py-3 text-sm font-bold text-gray-900 shadow"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Ξανά φόρτωση
+              </button>
+            </div>
+          ) : (
             <div className="h-full w-full overflow-y-auto overflow-x-hidden overscroll-y-contain touch-pan-y">
               <Suspense
                 fallback={
@@ -151,22 +158,11 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
                 <PaliaMobilePdf
                   fileUrl={fileUrl}
                   onReady={() => setLoading(false)}
-                  onFatal={() => setIframeFallback(true)}
-                  className="px-1 py-2"
+                  onFatal={() => setViewerError(true)}
+                  className="px-1 py-2 sm:px-4"
                 />
               </Suspense>
             </div>
-          ) : (
-            <iframe
-              ref={frameRef}
-              src={`${fileUrl}#navpanes=0`}
-              title={fileName}
-              width="100%"
-              className={`${viewerFrameClass} border-0`}
-              onLoad={() => setLoading(false)}
-              allow="fullscreen"
-              loading="eager"
-            />
           )}
         </div>
 

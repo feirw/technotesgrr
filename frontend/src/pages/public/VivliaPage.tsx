@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { Download, ExternalLink } from 'lucide-react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Download, ExternalLink, RefreshCw } from 'lucide-react';
 import { MenuIconImg, MENU_ICONS } from '@/data/menuIcons';
+
+const PaliaMobilePdf = lazy(() => import('@/components/private/PaliaMobilePdf'));
 
 interface VivlioItem {
   id: string;
@@ -24,6 +26,11 @@ const VIVLIA: VivlioItem[] = [
 const VivliaPage: React.FC = () => {
   const [activeId, setActiveId] = useState<string>(VIVLIA[0].id);
   const active = useMemo(() => VIVLIA.find((v) => v.id === activeId) ?? VIVLIA[0], [activeId]);
+  const [viewerError, setViewerError] = useState(false);
+
+  useEffect(() => {
+    setViewerError(false);
+  }, [activeId]);
 
   return (
     <div className="min-h-screen bg-coral-wash dark:bg-gradient-to-br dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 px-4 sm:px-6 py-6 sm:py-8">
@@ -75,14 +82,38 @@ const VivliaPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-900 h-[80vh]">
-          <iframe
-            key={active.id}
-            src={active.path}
-            title={active.title}
-            className="w-full h-full border-0 block"
-            loading="lazy"
-          />
+        <div className="rounded-2xl overflow-hidden border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-900 h-[80vh] overflow-y-auto overscroll-contain">
+          {viewerError ? (
+            <div className="h-full w-full flex flex-col items-center justify-center gap-4 px-4 text-center">
+              <p className="text-sm sm:text-base font-semibold text-gray-600 dark:text-gray-300">
+                Δεν ήταν δυνατή η προβολή του PDF. Άνοιξέ το σε νέα καρτέλα ή κατέβασέ το από τα κουμπιά από πάνω.
+              </p>
+              <button
+                type="button"
+                onClick={() => setViewerError(false)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-coral-accent px-4 py-3 text-sm font-bold text-white shadow"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Ξανά φόρτωση
+              </button>
+            </div>
+          ) : (
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-full text-sm font-semibold text-gray-500">
+                  Άνοιγμα προβολής PDF…
+                </div>
+              }
+            >
+              <PaliaMobilePdf
+                key={active.id}
+                fileUrl={active.path}
+                onReady={() => {}}
+                onFatal={() => setViewerError(true)}
+                className="px-1 py-2 sm:px-4"
+              />
+            </Suspense>
+          )}
         </div>
       </div>
     </div>
