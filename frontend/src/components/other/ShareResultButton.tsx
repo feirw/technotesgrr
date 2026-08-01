@@ -8,7 +8,7 @@ import {
   type ShareCardData,
 } from '@/utils/shareImage';
 
-type Status = 'idle' | 'generating' | 'story' | 'shared' | 'downloaded' | 'error';
+type Status = 'idle' | 'generating' | 'shared' | 'downloaded' | 'error';
 
 interface ShareResultButtonProps {
   data: ShareCardData;
@@ -19,7 +19,6 @@ interface ShareResultButtonProps {
 const STATUS_LABEL: Record<Status, string | null> = {
   idle: null,
   generating: 'Δημιουργία εικόνας...',
-  story: 'Άνοιξε το Instagram Story!',
   shared: 'Επίλεξε Story μέσα στο Instagram!',
   downloaded: 'Η εικόνα κατέβηκε — ανέβασέ τη ως Story!',
   error: 'Κάτι πήγε στραβά, δοκίμασε ξανά.',
@@ -112,7 +111,7 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
       >
         {status === 'generating' ? (
           <Loader2 className="w-5 h-5 animate-spin" />
-        ) : status === 'story' || status === 'shared' || status === 'downloaded' ? (
+        ) : status === 'shared' || status === 'downloaded' ? (
           <Check className="w-5 h-5" />
         ) : status === 'error' ? (
           <AlertCircle className="w-5 h-5" />

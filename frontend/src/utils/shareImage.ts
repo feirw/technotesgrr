@@ -11,7 +11,6 @@ const WIDTH = 1080;
 const HEIGHT = 1920;
 const SITE_LABEL = 'technotesgr.com';
 const LOGO_SRC = '/images/logo.png';
-const INSTAGRAM_STORIES_URL = 'instagram-stories://share?source_application=technotesgr';
 
 async function ensureFontsReady(): Promise<void> {
   try {
@@ -202,30 +201,7 @@ export function buildShareCaption(data: ShareCardData): string {
   return `${data.days} ${label} σερί διαβάσματος στο technotesgr 🔥 ${url}`;
 }
 
-export type ShareOutcome = 'story' | 'shared' | 'downloaded' | 'cancelled';
-
-function isIOS(): boolean {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
-}
-
-function waitForInstagramOpen(): Promise<boolean> {
-  return new Promise<boolean>((resolve) => {
-    let settled = false;
-    let timer = 0;
-    const finish = (result: boolean) => {
-      if (settled) return;
-      settled = true;
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-      window.clearTimeout(timer);
-      resolve(result);
-    };
-    const onVisibilityChange = () => {
-      if (document.hidden) finish(true);
-    };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    timer = window.setTimeout(() => finish(false), 1500);
-  });
-}
+export type ShareOutcome = 'shared' | 'downloaded' | 'cancelled';
 
 /**
  * Μοιράζεται την εικόνα μέσω Web Share API (ανοίγει native share sheet, π.χ. Instagram Stories)
@@ -264,16 +240,15 @@ export async function shareOrDownloadImage(
 }
 
 /**
- * Στέλνει την εικόνα κατευθείαν στο Instagram Stories composer (όχι σε post/feed).
- * Σε iOS αντιγράφει την εικόνα στο system pasteboard και ανοίγει το τεκμηριωμένο
- * `instagram-stories://share` URL scheme (λειτουργεί χωρίς registered app id για
- * απλό background image — βλ. developers.facebook.com/docs/instagram/sharing-to-stories).
- * Αν αποτύχει ή δεν τρέχει σε iOS (π.χ. Android/desktop, όπου δεν υπάρχει αντίστοιχο
- * web deep-link), πέφτει στο γενικό Web Share API / download· εκεί μέσα στο Instagram
- * ο χρήστης διαλέγει ο ίδιος «Story» από το δικό του share sheet.
+ * Μοιράζεται την εικόνα για Instagram Story μέσω του native share sheet (Web Share API).
  *
- * Σημαντικό: στο iOS γράφουμε στο clipboard έτοιμο image Blob. Pending ClipboardItem
- * promises έχουν δώσει μαύρο/κενό paste μέσα στο Instagram Stories composer.
+ * Σημείωση: το τεκμηριωμένο `instagram-stories://share` deep-link + clipboard-write "hack"
+ * ΔΕΝ δουλεύει από web σελίδα — το Instagram Stories composer διαβάζει την εικόνα μόνο από
+ * ειδικά UTI pasteboard keys (π.χ. `com.instagram.sharedSticker.backgroundImage`) που μόνο
+ * native apps μπορούν να γράψουν μέσω `UIPasteboard`. Η web Clipboard API γράφει μόνο γενικό
+ * `image/png`, οπότε το Instagram δεν «βλέπει» ποτέ την εικόνα — απλώς ανοίγει (ή ούτε καν)
+ * χωρίς περιεχόμενο. Ο μόνος αξιόπιστος τρόπος από web είναι το native share sheet: ο
+ * χρήστης επιλέγει Instagram και μέσα στο δικό του share extension διαλέγει «Story».
  */
 export async function shareToInstagramStory(
   data: ShareCardData,
@@ -282,20 +257,5 @@ export async function shareToInstagramStory(
   preparedBlob?: Blob | null
 ): Promise<ShareOutcome> {
   const blob = preparedBlob ?? (await generateShareImageBlob(data));
-
-  if (isIOS() && typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
-    try {
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      window.location.href = INSTAGRAM_STORIES_URL;
-
-      const openedInstagram = await waitForInstagramOpen();
-      if (openedInstagram) return 'story';
-      return shareOrDownloadImage(blob, filename, caption);
-    } catch {
-      // Clipboard write ή deep link απέτυχαν — πέφτουμε στο γενικό share flow.
-      return shareOrDownloadImage(blob, filename, caption);
-    }
-  }
-
   return shareOrDownloadImage(blob, filename, caption);
 }

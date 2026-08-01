@@ -27,9 +27,11 @@ const VivliaPage: React.FC = () => {
   const [activeId, setActiveId] = useState<string>(VIVLIA[0].id);
   const active = useMemo(() => VIVLIA.find((v) => v.id === activeId) ?? VIVLIA[0], [activeId]);
   const [viewerError, setViewerError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setViewerError(false);
+    setLoading(true);
   }, [activeId]);
 
   return (
@@ -82,7 +84,13 @@ const VivliaPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-900 h-[80vh] overflow-y-auto overscroll-contain">
+        <div className="relative rounded-2xl overflow-hidden border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-900 h-[80vh] overflow-y-auto overscroll-contain">
+          {loading && !viewerError && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white dark:bg-gray-900">
+              <div className="w-12 h-12 rounded-full border-4 border-coral-accent border-t-transparent animate-spin" />
+              <p className="text-sm font-semibold text-gray-600 dark:text-gray-300">Φόρτωση βιβλίου…</p>
+            </div>
+          )}
           {viewerError ? (
             <div className="h-full w-full flex flex-col items-center justify-center gap-4 px-4 text-center">
               <p className="text-sm sm:text-base font-semibold text-gray-600 dark:text-gray-300">
@@ -108,7 +116,7 @@ const VivliaPage: React.FC = () => {
               <PaliaMobilePdf
                 key={active.id}
                 fileUrl={active.path}
-                onReady={() => {}}
+                onReady={() => setLoading(false)}
                 onFatal={() => setViewerError(true)}
                 className="px-1 py-2 sm:px-4"
               />

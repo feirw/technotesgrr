@@ -20,7 +20,6 @@ import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
-import PwaInstallPrompt from '@/components/other/PwaInstallPrompt';
 import { MENU_ICONS, MenuNavIcon } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
@@ -719,7 +718,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       )}
 
       <CookieConsent />
-      <PwaInstallPrompt />
     </div>
   );
 };

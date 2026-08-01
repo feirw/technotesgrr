@@ -12,13 +12,29 @@ type Props = {
   className?: string;
 };
 
+type PdfProxy = {
+  numPages: number;
+  getPage: (n: number) => Promise<{ getViewport: (opts: { scale: number }) => { width: number; height: number } }>;
+};
+
+const INITIAL_VISIBLE_PAGES = 2;
+/** Preload buffer γύρω από το viewport ώστε οι επόμενες σελίδες να είναι έτοιμες πριν φανούν. */
+const OBSERVER_ROOT_MARGIN = '1200px 0px';
+
 /**
  * Προβολή PDF με PDF.js — στο κινητό τα iframes συχνά κατεβάζουν αρχείο αντί για inline προβολή.
+ * Οι σελίδες γίνονται render προοδευτικά (μόνο όσες πλησιάζουν το viewport) — σε πολυσέλιδα βιβλία
+ * το render όλων των σελίδων μαζί καθυστερούσε αισθητά την πρώτη εμφάνιση περιεχομένου.
  */
 const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(300);
   const [numPages, setNumPages] = useState(0);
+  const [pageAspect, setPageAspect] = useState(1.414); // height/width — A4 fallback μέχρι να μετρηθεί η 1η σελίδα
+  const [visiblePages, setVisiblePages] = useState<Set<number>>(
+    () => new Set(Array.from({ length: INITIAL_VISIBLE_PAGES }, (_, i) => i + 1))
+  );
+  const firstPageReadyRef = useRef(false);
 
   const measure = useCallback(() => {
     const el = wrapRef.current;
@@ -39,18 +55,62 @@ const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className 
     };
   }, [measure]);
 
-  const onLoadSuccess = useCallback(
-    (pdf: { numPages: number }) => {
-      setNumPages(pdf.numPages);
-      onReady();
-    },
-    [onReady]
-  );
+  const onLoadSuccess = useCallback((pdf: PdfProxy) => {
+    setNumPages(pdf.numPages);
+    pdf
+      .getPage(1)
+      .then((page) => {
+        const vp = page.getViewport({ scale: 1 });
+        if (vp.width > 0) setPageAspect(vp.height / vp.width);
+      })
+      .catch(() => {});
+  }, []);
 
   const onLoadError = useCallback(() => {
     onFatal?.();
     onReady();
   }, [onReady, onFatal]);
+
+  const handleFirstPageRendered = useCallback(() => {
+    if (firstPageReadyRef.current) return;
+    firstPageReadyRef.current = true;
+    onReady();
+  }, [onReady]);
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const newlyVisible: number[] = [];
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const n = Number((entry.target as HTMLElement).dataset.page);
+            if (n) newlyVisible.push(n);
+          }
+        }
+        if (newlyVisible.length === 0) return;
+        setVisiblePages((prev) => {
+          let changed = false;
+          const next = new Set(prev);
+          for (const n of newlyVisible) {
+            if (!next.has(n)) {
+              next.add(n);
+              changed = true;
+            }
+          }
+          return changed ? next : prev;
+        });
+      },
+      { rootMargin: OBSERVER_ROOT_MARGIN, threshold: 0.01 }
+    );
+    return () => observerRef.current?.disconnect();
+  }, []);
+
+  const registerSlot = useCallback((el: HTMLDivElement | null) => {
+    if (el && observerRef.current) observerRef.current.observe(el);
+  }, []);
+
+  const placeholderHeight = Math.round(width * pageAspect);
 
   return (
     <div ref={wrapRef} className={className}>
@@ -62,16 +122,30 @@ const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className 
         className="flex flex-col items-center gap-2 pb-2"
       >
         {numPages > 0
-          ? Array.from({ length: numPages }, (_, i) => (
-              <Page
-                key={i + 1}
-                pageNumber={i + 1}
-                width={width}
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-                className="shadow-sm bg-white"
-              />
-            ))
+          ? Array.from({ length: numPages }, (_, i) => {
+              const pageNumber = i + 1;
+              const isVisible = visiblePages.has(pageNumber);
+              return (
+                <div
+                  key={pageNumber}
+                  ref={registerSlot}
+                  data-page={pageNumber}
+                  style={!isVisible ? { width, height: placeholderHeight } : undefined}
+                  className="bg-white shadow-sm"
+                >
+                  {isVisible ? (
+                    <Page
+                      pageNumber={pageNumber}
+                      width={width}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      onRenderSuccess={pageNumber === 1 ? handleFirstPageRendered : undefined}
+                      className="bg-white"
+                    />
+                  ) : null}
+                </div>
+              );
+            })
           : null}
       </Document>
     </div>
