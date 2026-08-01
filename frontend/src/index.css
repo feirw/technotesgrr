@@ -4,7 +4,8 @@
 
 @font-face {
   font-family: 'Manrope';
-  src: url('./assets/fonts/Manrope.ttf') format('truetype');
+  src: url('./assets/fonts/Manrope.woff2') format('woff2'),
+    url('./assets/fonts/Manrope.ttf') format('truetype');
   font-display: swap;
   font-weight: 100 900;
 }
@@ -57,26 +58,27 @@ code {
     --radius: 0.5rem;
   }
   .dark {
-    --background: 222 24% 6%;
-    --foreground: 220 20% 96%;
-    --card: 222 20% 9%;
-    --card-foreground: 220 20% 96%;
-    --popover: 222 20% 9%;
-    --popover-foreground: 220 20% 96%;
+    /* Match quiz dark palette: #1a1028 / #2d1c48 / #3a2658 */
+    --background: 263 43% 11%;
+    --foreground: 40 33% 96%;
+    --card: 263 40% 25%;
+    --card-foreground: 40 33% 96%;
+    --popover: 263 40% 25%;
+    --popover-foreground: 40 33% 96%;
     --primary: 0 0% 98%;
-    --primary-foreground: 222 24% 8%;
-    --secondary: 220 16% 15%;
-    --secondary-foreground: 220 20% 96%;
-    --muted: 220 14% 14%;
-    --muted-foreground: 220 12% 74%;
-    --accent: 220 14% 16%;
+    --primary-foreground: 263 45% 16%;
+    --secondary: 263 45% 20%;
+    --secondary-foreground: 40 33% 96%;
+    --muted: 263 35% 18%;
+    --muted-foreground: 260 15% 75%;
+    --accent: 263 35% 22%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 12% 20%;
-    --input: 220 12% 20%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
+    --border: 263 25% 32%;
+    --input: 263 25% 32%;
+    --ring: 343 75% 75%;
+    --chart-1: 343 75% 70%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;

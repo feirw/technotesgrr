@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import {
   ShoppingBag,
@@ -13,7 +13,7 @@ const MerchPage: React.FC = () => {
   const instagramLink = 'https://instagram.com/technotesgr';
 
   return (
-    <div className="min-h-screen bg-coral-wash dark:bg-gray-900 overflow-x-hidden text-gray-800 dark:text-gray-100">
+    <div className="min-h-screen bg-coral-wash dark:bg-[#3a2658] overflow-x-hidden text-gray-800 dark:text-gray-100">
       {/* 🌸 Hero Section */}
       <section className="relative pt-20 pb-16 px-6">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
@@ -62,7 +62,7 @@ const MerchPage: React.FC = () => {
           >
             <div className="absolute inset-0 bg-coral-light/50 rounded-full blur-[120px] opacity-50 animate-pulse" />
 
-            <div className="relative bg-white dark:bg-gray-800 p-4 rounded-[2.5rem] shadow-2xl border border-coral-accent/15 dark:border-gray-700 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+            <div className="relative bg-white dark:bg-[#2d1c48] p-4 rounded-[2.5rem] shadow-2xl border border-coral-accent/15 dark:border-white/15 transform rotate-2 hover:rotate-0 transition-transform duration-500">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-gradient-to-tr from-coral-wash to-coral-light/40 dark:from-gray-700 dark:to-gray-600 flex flex-col items-center justify-center border-2 border-dashed border-coral-accent/35">
                 {/* Visual Placeholder for the Agenda */}
                 <img src="/images/ag1.jpg" alt="Logo" className="w-85 drop-shadow-2xl" />
@@ -97,7 +97,7 @@ const MerchPage: React.FC = () => {
             <motion.div
               key={i}
               whileHover={{ y: -10 }}
-              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-coral-accent/15 dark:border-gray-700 text-center"
+              className="bg-white dark:bg-[#2d1c48] p-8 rounded-3xl shadow-lg border border-coral-accent/15 dark:border-white/15 text-center"
             >
               <img src={feature.image} alt={`Image ${i + 1}`} />
             </motion.div>
@@ -138,7 +138,7 @@ const MerchPage: React.FC = () => {
               <motion.div
                 key={i}
                 whileHover={{ y: -10 }}
-                className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-coral-accent/15 dark:border-gray-700 text-center"
+                className="bg-white dark:bg-[#2d1c48] p-8 rounded-3xl shadow-lg border border-coral-accent/15 dark:border-white/15 text-center"
               >
                 <div className="w-16 h-16 bg-coral-wash dark:bg-coral-accent/15 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   {feature.icon}

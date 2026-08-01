@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Circle, Search, RotateCcw, BookOpen } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
@@ -96,7 +96,7 @@ const ProgressTrackerPage: React.FC = () => {
   }, [isAllComplete]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028] p-4 sm:p-6">
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
           {Array.from({ length: 80 }).map((_, i) => (
@@ -127,7 +127,7 @@ const ProgressTrackerPage: React.FC = () => {
         </div>
       )}
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white/90 dark:bg-gray-800/90 rounded-3xl border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl p-5 sm:p-7 mb-5">
+        <div className="bg-white/90 dark:bg-[#3a2658]/90 rounded-3xl border-2 border-coral-accent/25 dark:border-white/15 shadow-xl p-5 sm:p-7 mb-5">
           <div className="flex flex-col items-center text-center">
             <PageMenuIcon
               icon="progressTracker"
@@ -145,7 +145,7 @@ const ProgressTrackerPage: React.FC = () => {
           <div className="flex justify-end mt-4">
             <button
               onClick={resetAll}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-gray-700 border border-coral-accent/30 dark:border-gray-600 text-coral-strong dark:text-coral-light font-semibold inline-flex items-center gap-2 hover:border-coral-accent transition-colors"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-[#2d1c48] border border-coral-accent/30 dark:border-white/15 text-coral-strong dark:text-coral-light font-semibold inline-flex items-center gap-2 hover:border-coral-accent transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Reset
@@ -159,7 +159,7 @@ const ProgressTrackerPage: React.FC = () => {
                 {doneCount}/{LESSONS.length} ({progressPercent}%)
               </span>
             </div>
-            <div className="h-3 w-full rounded-full bg-coral-accent/15 dark:bg-gray-700 overflow-hidden">
+            <div className="h-3 w-full rounded-full bg-coral-accent/15 dark:bg-[#2d1c48] overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-coral-accent to-coral-strong"
                 initial={{ width: 0 }}
@@ -175,7 +175,7 @@ const ProgressTrackerPage: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Αναζήτηση μαθήματος..."
-              className="w-full pl-10 pr-3 py-2.5 rounded-xl border-2 border-coral-accent/25 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-coral-accent"
+              className="w-full pl-10 pr-3 py-2.5 rounded-xl border-2 border-coral-accent/25 dark:border-white/15 bg-white dark:bg-[#2d1c48] dark:text-white focus:outline-none focus:border-coral-accent"
             />
           </div>
         </div>
@@ -190,7 +190,7 @@ const ProgressTrackerPage: React.FC = () => {
                 className={`w-full text-left rounded-2xl border p-4 transition ${
                   isDone
                     ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700'
-                    : 'bg-white dark:bg-gray-800 border-coral-accent/25 dark:border-gray-700'
+                    : 'bg-white dark:bg-[#2d1c48] border-coral-accent/25 dark:border-white/15'
                 }`}
               >
                 <div className="flex items-center gap-3">

@@ -1,9 +1,9 @@
-import React from 'react';
+﻿import React from 'react';
 import { PageMenuIcon } from '@/data/menuIcons';
 
 const AlgorithmsPage: React.FC = () => {
   return (
-    <div className="min-h-[100dvh] bg-[#fff2f2] dark:bg-gray-950 px-3 py-4 sm:px-6 sm:py-6 md:p-10 box-border">
+    <div className="min-h-[100dvh] bg-[#fff2f2] dark:bg-[#2d1c48] px-3 py-4 sm:px-6 sm:py-6 md:p-10 box-border">
       <div className="mx-auto w-full max-w-[1450px]">
         <div className="flex flex-col items-center mb-3 sm:mb-4">
           <PageMenuIcon
@@ -21,7 +21,7 @@ const AlgorithmsPage: React.FC = () => {
         <iframe
           src="https://evripides.mysch.gr/dave/"
           title="Algorithms Visualization"
-          className="w-full max-w-full rounded-xl border-none shadow-xl bg-white dark:bg-gray-900 block"
+          className="w-full max-w-full rounded-xl border-none shadow-xl bg-white dark:bg-[#3a2658] block"
           style={{
             height: 'clamp(320px, calc(100dvh - 8.5rem), 1000px)',
             maxWidth: '1450px',

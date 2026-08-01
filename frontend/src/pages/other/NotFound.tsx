@@ -1,10 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 
 const NotFound: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-900 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-[#3a2658] text-center">
       <div className="text-9xl mb-4">🤔</div>
       <p className="text-6xl font-black text-gray-900 dark:text-white mb-2" aria-hidden="true">
         404

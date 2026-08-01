@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, FileText, X } from 'lucide-react';
@@ -44,7 +44,7 @@ const StatementView: React.FC<{ statement: AskisiStatement; title: string }> = (
       {statement.tasks.map((task) => (
         <li
           key={task.code}
-          className="rounded-xl border border-coral-accent/20 dark:border-gray-700 bg-coral-wash/40 dark:bg-gray-800/60 p-4 sm:p-5"
+          className="rounded-xl border border-coral-accent/20 dark:border-white/15 bg-coral-wash/40 dark:bg-[#2d1c48]/60 p-4 sm:p-5"
         >
           <div className="flex flex-wrap items-baseline gap-2 mb-2">
             <span className="inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 rounded-lg bg-coral-accent text-white text-sm font-black">
@@ -102,7 +102,7 @@ const ExerciseCard: React.FC<{
         ${
           isSelected
             ? 'bg-coral-accent text-white shadow-2xl ring-2 ring-coral-light/60'
-            : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:shadow-xl active:scale-[0.98]'
+            : 'bg-white dark:bg-[#3a2658] text-gray-800 dark:text-white hover:shadow-xl active:scale-[0.98]'
         }
       `}
       initial={{ opacity: 0, y: 12 }}
@@ -211,7 +211,7 @@ const AskiseisPage: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]"
+      className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -234,7 +234,7 @@ const AskiseisPage: React.FC = () => {
       </header>
 
       <motion.div
-        className="sticky top-0 z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-coral-accent/15 dark:border-gray-800 shadow-sm"
+        className="sticky top-0 z-30 bg-white/95 dark:bg-[#3a2658]/95 backdrop-blur-lg border-b border-coral-accent/15 dark:border-white/10 shadow-sm"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -249,7 +249,7 @@ const AskiseisPage: React.FC = () => {
                 className={`min-h-11 px-5 sm:px-6 py-2.5 rounded-xl text-sm font-bold border transition-all touch-manipulation ${
                   activeTheme === theme.id
                     ? 'bg-coral-accent text-white border-coral-accent shadow-lg'
-                    : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-coral-accent/35 dark:border-gray-600 hover:border-coral-accent/60'
+                    : 'bg-white dark:bg-[#3a2658] text-gray-800 dark:text-gray-100 border-coral-accent/35 dark:border-white/15 hover:border-coral-accent/60'
                 }`}
               >
                 {theme.label}
@@ -264,7 +264,7 @@ const AskiseisPage: React.FC = () => {
                 placeholder={`Αναζήτηση στο ${activeThemeLabel}...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-3 pl-11 pr-10 rounded-xl border-2 border-coral-accent/25 dark:border-gray-600 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-4 py-3 pl-11 pr-10 rounded-xl border-2 border-coral-accent/25 dark:border-white/15 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all bg-white dark:bg-[#2d1c48] text-gray-900 dark:text-white"
                 aria-label="Αναζήτηση άσκησης"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden />
@@ -319,7 +319,7 @@ const AskiseisPage: React.FC = () => {
           {themeExercises.length === 0 ? (
             <motion.div
               key={`empty-${activeTheme}`}
-              className="text-center py-16 sm:py-24 rounded-2xl border-2 border-dashed border-coral-accent/30 dark:border-gray-700 bg-white/60 dark:bg-gray-800/40"
+              className="text-center py-16 sm:py-24 rounded-2xl border-2 border-dashed border-coral-accent/30 dark:border-white/15 bg-white/60 dark:bg-[#2d1c48]/40"
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
@@ -386,12 +386,12 @@ const AskiseisPage: React.FC = () => {
             transition={{ type: 'spring', stiffness: 300, damping: 300 }}
           >
             {selected.statement && (
-              <motion.div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-coral-accent/15 dark:border-gray-700">
+              <motion.div className="bg-white dark:bg-[#3a2658] rounded-3xl shadow-2xl overflow-hidden border border-coral-accent/15 dark:border-white/15">
                 <StatementView statement={selected.statement} title={selected.title} />
               </motion.div>
             )}
             {pdfPathForAskisi(selected) && (
-              <motion.div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+              <motion.div className="bg-white dark:bg-[#3a2658] rounded-3xl shadow-2xl overflow-hidden">
                 <Palia pdfPath={pdfPathForAskisi(selected)!} fileName={selected.fileName ?? 'askisi.pdf'} />
               </motion.div>
             )}

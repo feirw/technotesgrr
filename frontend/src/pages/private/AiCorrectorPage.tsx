@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, CheckCircle2, XCircle, BookOpen, Camera, ImagePlus, X, Type } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
@@ -88,7 +88,7 @@ const ModeTab: React.FC<{
     className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-colors ${
       active
         ? 'bg-[#f07f97] text-white shadow-sm'
-        : 'bg-white/80 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-[#ff97b2]/20'
+        : 'bg-white/80 dark:bg-[#2d1c48] text-gray-700 dark:text-gray-200 hover:bg-[#ff97b2]/20'
     }`}
   >
     {icon}
@@ -147,7 +147,7 @@ const PhotoField: React.FC<{
           type="button"
           disabled={disabled || photos.length >= MAX_PHOTOS}
           onClick={() => cameraRef.current?.click()}
-          className="inline-flex items-center gap-2 rounded-xl border border-[#ff97b2]/50 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#ff97b2]/50 bg-white dark:bg-[#2d1c48] px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 disabled:opacity-50"
         >
           <Camera className="w-4 h-4 text-[#f07f97]" aria-hidden />
           Φωτογραφία
@@ -156,7 +156,7 @@ const PhotoField: React.FC<{
           type="button"
           disabled={disabled || photos.length >= MAX_PHOTOS}
           onClick={() => galleryRef.current?.click()}
-          className="inline-flex items-center gap-2 rounded-xl border border-[#ff97b2]/50 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#ff97b2]/50 bg-white dark:bg-[#2d1c48] px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 disabled:opacity-50"
         >
           <ImagePlus className="w-4 h-4 text-[#f07f97]" aria-hidden />
           Από gallery
@@ -198,7 +198,7 @@ const PhotoField: React.FC<{
           {photos.map((photo, index) => (
             <div
               key={`${id}-${index}`}
-              className="relative overflow-hidden rounded-xl border border-[#ff97b2]/35 dark:border-gray-700 bg-gray-100 dark:bg-gray-800"
+              className="relative overflow-hidden rounded-xl border border-[#ff97b2]/35 dark:border-white/15 bg-gray-100 dark:bg-[#2d1c48]"
             >
               <img src={photo} alt={`${label} ${index + 1}`} className="h-36 w-full object-cover" />
               <button
@@ -214,7 +214,7 @@ const PhotoField: React.FC<{
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-[#ff97b2]/50 dark:border-gray-600 px-4 py-8 text-center text-sm text-gray-600 dark:text-gray-400">
+        <div className="rounded-xl border border-dashed border-[#ff97b2]/50 dark:border-white/15 px-4 py-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Δεν έχεις προσθέσει φωτογραφία ακόμα.
         </div>
       )}
@@ -295,7 +295,7 @@ const AiCorrectorPage: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-[100dvh] bg-[#fff5f4] dark:bg-gray-950 px-3 py-6 sm:px-6 sm:py-10 -mt-20 pt-24"
+      className="min-h-[100dvh] bg-[#fff5f4] dark:bg-[#2d1c48] px-3 py-6 sm:px-6 sm:py-10 -mt-20 pt-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -313,7 +313,7 @@ const AiCorrectorPage: React.FC = () => {
             το κείμενο και θα σου δώσει αυτόματη διόρθωση με βαθμό, σχόλια και διορθωμένη λύση.
           </p>
           {knowledge?.loaded && (knowledge.fileCount ?? 0) > 0 && (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#ff97b2]/40 bg-white/70 dark:bg-gray-900/60 px-4 py-1.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#ff97b2]/40 bg-white/70 dark:bg-[#3a2658]/60 px-4 py-1.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
               <BookOpen className="w-4 h-4 text-[#f07f97]" aria-hidden />
               Εκπαιδευμένο με {knowledge.fileCount} αρχεία ύλης από τα μαθήματα ΑΕΠΠ
             </p>
@@ -329,7 +329,7 @@ const AiCorrectorPage: React.FC = () => {
           </div>
         )}
 
-        <div className="rounded-2xl border border-[#ff97b2]/35 dark:border-gray-700 bg-white/80 dark:bg-gray-900/70 shadow-sm p-5 sm:p-7 space-y-5">
+        <div className="rounded-2xl border border-[#ff97b2]/35 dark:border-white/15 bg-white/80 dark:bg-[#3a2658]/70 shadow-sm p-5 sm:p-7 space-y-5">
           <div className="flex flex-wrap gap-2">
             <ModeTab
               active={inputMode === 'photo'}
@@ -379,7 +379,7 @@ const AiCorrectorPage: React.FC = () => {
                   value={exercise}
                   onChange={(e) => setExercise(e.target.value)}
                   placeholder={EXERCISE_PLACEHOLDER}
-                  className="w-full rounded-xl border border-[#ff97b2]/40 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 text-sm sm:text-base text-gray-800 dark:text-gray-100 leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#f07f97]/50 resize-y min-h-[8rem]"
+                  className="w-full rounded-xl border border-[#ff97b2]/40 dark:border-white/15 bg-white dark:bg-[#2d1c48] px-4 py-3 text-sm sm:text-base text-gray-800 dark:text-gray-100 leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#f07f97]/50 resize-y min-h-[8rem]"
                 />
               </div>
 
@@ -397,7 +397,7 @@ const AiCorrectorPage: React.FC = () => {
                   onChange={(e) => setStudentAnswer(e.target.value)}
                   placeholder={ANSWER_PLACEHOLDER}
                   spellCheck={false}
-                  className="w-full rounded-xl border border-[#ff97b2]/40 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 text-sm font-mono text-gray-800 dark:text-gray-100 leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#f07f97]/50 resize-y min-h-[12rem]"
+                  className="w-full rounded-xl border border-[#ff97b2]/40 dark:border-white/15 bg-white dark:bg-[#2d1c48] px-4 py-3 text-sm font-mono text-gray-800 dark:text-gray-100 leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#f07f97]/50 resize-y min-h-[12rem]"
                 />
               </div>
             </>
@@ -421,7 +421,7 @@ const AiCorrectorPage: React.FC = () => {
         </div>
 
         {loading && (
-          <div className="mt-8 rounded-2xl border border-[#ff97b2]/25 dark:border-gray-700 bg-white/60 dark:bg-gray-900/50 p-6 animate-pulse">
+          <div className="mt-8 rounded-2xl border border-[#ff97b2]/25 dark:border-white/15 bg-white/60 dark:bg-[#3a2658]/50 p-6 animate-pulse">
             <div className="h-4 w-48 rounded bg-[#ff97b2]/30 mb-4" />
             <div className="space-y-2">
               <div className="h-3 w-full rounded bg-gray-200 dark:bg-gray-700" />
@@ -435,10 +435,10 @@ const AiCorrectorPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 rounded-2xl border border-[#ff97b2]/40 dark:border-gray-600 bg-white dark:bg-gray-900 shadow-md p-5 sm:p-7 space-y-6"
+            className="mt-8 rounded-2xl border border-[#ff97b2]/40 dark:border-white/15 bg-white dark:bg-[#3a2658] shadow-md p-5 sm:p-7 space-y-6"
           >
             {(result.extractedExercise || result.extractedStudentAnswer) && (
-              <section className="rounded-xl border border-[#ff97b2]/25 dark:border-gray-700 bg-[#fff5f4]/70 dark:bg-gray-800/50 p-4 space-y-3">
+              <section className="rounded-xl border border-[#ff97b2]/25 dark:border-white/15 bg-[#fff5f4]/70 dark:bg-[#2d1c48]/50 p-4 space-y-3">
                 <h2 className="text-sm font-black text-gray-900 dark:text-white">
                   Αναγνωρισμένο κείμενο από τις φωτογραφίες
                 </h2>
@@ -471,7 +471,7 @@ const AiCorrectorPage: React.FC = () => {
             ) : (
               <>
                 {typeof result.score === 'number' && (
-                  <div className="text-center pb-4 border-b border-[#ff97b2]/25 dark:border-gray-700">
+                  <div className="text-center pb-4 border-b border-[#ff97b2]/25 dark:border-white/15">
                     <p className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Βαθμός</p>
                     <p
                       className={`text-4xl sm:text-5xl font-black ${scoreColorClass(result.score, maxScore)}`}

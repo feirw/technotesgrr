@@ -65,9 +65,7 @@ export const prefetchCriticalPrivateRoutes = () => {
   void import('@/utils/quizUtils').then((m) => {
     void m.fetchAllQuizzes().catch(() => {});
   });
-  void import('@/utils/flashcardsFetch').then((m) => {
-    void m.fetchFlashcardsFromBackend().catch(() => {});
-  });
+  void import('@/utils/flashcards');
 };
 
 /** Chat widget: μόνο δημόσιες «εισόδου» / αρχικές σελίδες — όχι quiz, flashcards, κ.λπ. */

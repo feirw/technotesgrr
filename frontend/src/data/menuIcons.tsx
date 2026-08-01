@@ -98,17 +98,20 @@ export const MENU_ICON_SLOT = 'inline-flex h-9 w-9 shrink-0 items-center justify
 export const MENU_ICON_SIZE = 'h-8 w-8';
 export const MENU_ICON_SIZE_COMPACT = 'h-7 w-7';
 
-export const MenuIconImg: React.FC<{ src: string; className?: string; alt?: string }> = ({
-  src,
-  className = MENU_ICON_SIZE,
-  alt,
-}) => (
+export const MenuIconImg: React.FC<{
+  src: string;
+  className?: string;
+  alt?: string;
+  /** Default lazy — pass "eager" only for above-the-fold icons. */
+  loading?: 'lazy' | 'eager';
+}> = ({ src, className = MENU_ICON_SIZE, alt, loading = 'lazy' }) => (
   <img
     src={src}
     alt={alt ?? ''}
     aria-hidden={alt ? undefined : true}
     className={`${className} object-contain shrink-0 mix-blend-normal [image-rendering:pixelated]`}
     decoding="async"
+    loading={loading}
   />
 );
 

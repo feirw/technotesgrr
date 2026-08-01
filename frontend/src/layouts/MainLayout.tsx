@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -78,7 +78,14 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
   { to: '/gloglossa', label: 'GloGlossa', iconSrc: MENU_ICONS.gloglossa },
-  { to: '/vivlia', label: 'Βιβλία', iconSrc: MENU_ICONS.vivlia },
+  {
+    to: '/vivlia',
+    label: 'Βιβλία',
+    iconSrc: MENU_ICONS.vivlia,
+    onPrefetch: () => {
+      void import('@/pages/public/VivliaPage').then((m) => m.prefetchVivliaPdfs());
+    },
+  },
 ];
 
 const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [
@@ -107,7 +114,7 @@ const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[] }> = ({ title
       type="button"
       onClick={() => navigate(to)}
       onMouseEnter={() => onPrefetch?.()}
-      className="flex w-full min-h-11 items-center gap-3 px-3 py-2 rounded-lg hover:bg-coral-wash dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 text-left"
+      className="flex w-full min-h-11 items-center gap-3 px-3 py-2 rounded-lg hover:bg-coral-wash dark:hover:bg-[#2d1c48] text-sm text-gray-700 dark:text-gray-200 text-left"
     >
       <MenuNavIcon src={iconSrc} />
       <span className="font-semibold leading-tight">{label}</span>
@@ -127,7 +134,7 @@ const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[] }> = ({ title
       <AnimatePresence>
         {open && (
           <motion.div
-            className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-1.5rem))] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-coral-accent/15 dark:border-gray-800 p-3 z-50"
+            className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-1.5rem))] bg-white dark:bg-[#3a2658] rounded-2xl shadow-2xl border border-coral-accent/15 dark:border-white/10 p-3 z-50"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -189,7 +196,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
       return `relative block w-full text-left min-h-11 py-3.5 px-4 rounded-xl transition-all touch-manipulation border border-transparent ${
         active
           ? 'border-coral-accent/25 shadow-sm'
-          : 'text-gray-700 dark:text-gray-200 hover:bg-rose-50/90 dark:hover:bg-gray-800/90'
+          : 'text-gray-700 dark:text-gray-200 hover:bg-rose-50/90 dark:hover:bg-[#2d1c48]/90'
       }`;
     }}
   >
@@ -232,7 +239,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
-  const isQuizPage = location.pathname === '/quiz';
   // const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
@@ -255,25 +261,48 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     setShowPanic(true);
   };
 
-  // Ping the API the instant the app boots — on a Render free-tier backend a cold
-  // dyno can take 30-60s to wake up, so this warm-up (fired well before the idle
-  // prefetch below, and before the user has a chance to click into Quiz) absorbs
-  // that wake-up time in the background instead of the user hitting it later.
+  // Defer API warm-up + route prefetch until after first paint / LCP window —
+  // early network contention was hurting mobile PageSpeed (LCP ~10s).
   useEffect(() => {
-    for (const base of getBackendUrlCandidates()) {
-      fetch(`${base}/api/health`).catch(() => {});
-    }
-  }, []);
+    let cancelled = false;
+    let idleId: number | undefined;
+    let timeoutId: number | undefined;
+    let postLoadTimeoutId: number | undefined;
 
-  // Prefetch heavy routes after idle.
-  useEffect(() => {
-    const run = () => prefetchCriticalPrivateRoutes();
-    if (typeof window.requestIdleCallback === 'function') {
-      const idleId = window.requestIdleCallback(run, { timeout: 8000 });
-      return () => window.cancelIdleCallback(idleId);
+    const warmAndPrefetch = () => {
+      if (cancelled) return;
+      for (const base of getBackendUrlCandidates()) {
+        fetch(`${base}/api/health`).catch(() => {});
+      }
+      prefetchCriticalPrivateRoutes();
+    };
+
+    const schedule = () => {
+      if (cancelled) return;
+      if (typeof window.requestIdleCallback === 'function') {
+        idleId = window.requestIdleCallback(warmAndPrefetch, { timeout: 12000 });
+      } else {
+        timeoutId = window.setTimeout(warmAndPrefetch, 4000);
+      }
+    };
+
+    const onLoad = () => {
+      postLoadTimeoutId = window.setTimeout(schedule, 1500);
+    };
+
+    if (document.readyState === 'complete') {
+      postLoadTimeoutId = window.setTimeout(schedule, 1500);
+    } else {
+      window.addEventListener('load', onLoad, { once: true });
     }
-    const t = window.setTimeout(run, 3000);
-    return () => clearTimeout(t);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('load', onLoad);
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      if (postLoadTimeoutId !== undefined) window.clearTimeout(postLoadTimeoutId);
+    };
   }, []);
 
   // Chatbot — προσωρινά απενεργοποιημένο
@@ -316,7 +345,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       className={`min-h-screen overflow-x-hidden text-gray-900 dark:text-gray-100 flex flex-col ${
         isHomePage || isSchoolsPage || isAboutPage
           ? 'bg-[#ff97b2] dark:bg-[#2d1c48]'
-          : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]'
+          : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]'
       }`}
     >
       {/* Chatbot — προσωρινά απενεργοποιημένο
@@ -335,7 +364,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           pointerEvents: showNavbar ? 'auto' : 'none',
         }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
-        className="bg-white/55 dark:bg-[#0f152a]/75 backdrop-blur-md fixed top-0 left-0 right-0 z-30 pt-[env(safe-area-inset-top,0px)]"
+        className="bg-white/55 dark:bg-[#3a2658]/85 backdrop-blur-md fixed top-0 left-0 right-0 z-30 pt-[env(safe-area-inset-top,0px)]"
       >
         <div className="container mx-auto px-3 sm:px-6 max-w-[100vw]">
           <div className="flex justify-between items-center gap-2 py-3 sm:py-4 min-h-[3.25rem]">
@@ -343,12 +372,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div className="flex items-center gap-3">
               <NavLink to="/" className="flex items-center gap-3 group shrink-0">
                 <motion.img
-                  src="/images/logo.png"
+                  src="/images/logo-80.webp"
                   alt="Λογότυπο Technotes — Πληροφορική Πανελλήνιες"
                   width={40}
                   height={40}
                   decoding="async"
-                  fetchPriority="high"
+                  fetchPriority="low"
                   className="w-10 h-10 object-contain bg-transparent p-0 m-0"
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
@@ -450,7 +479,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
             <motion.div
-              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-gray-900 border-2 border-coral-accent/40 p-5 sm:p-6 shadow-2xl"
+              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 p-5 sm:p-6 shadow-2xl"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
@@ -472,7 +501,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <button
                   type="button"
                   onClick={() => setShowPanic(false)}
-                  className="min-h-11 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold touch-manipulation"
+                  className="min-h-11 px-4 py-3 rounded-xl bg-gray-100 dark:bg-[#2d1c48] text-gray-700 dark:text-gray-200 font-semibold touch-manipulation"
                 >
                   Κλείσιμο
                 </button>
@@ -498,7 +527,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               role="dialog"
               aria-modal="true"
               aria-label="Κύριο μενού"
-              className="lg:hidden fixed top-0 right-0 h-[100dvh] max-h-[100dvh] w-[min(100vw-2.5rem,20rem)] max-w-sm bg-white dark:bg-gray-900 z-[90] shadow-2xl overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] border-l-[3px] border-blue-500/85 dark:border-blue-400/70"
+              className="lg:hidden fixed top-0 right-0 h-[100dvh] max-h-[100dvh] w-[min(100vw-2.5rem,20rem)] max-w-sm bg-white dark:bg-[#3a2658] z-[90] shadow-2xl overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)] border-l-[3px] border-blue-500/85 dark:border-blue-400/70"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -510,7 +539,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <button
                     type="button"
                     onClick={closeMenu}
-                    className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-coral-wash dark:hover:bg-gray-800 touch-manipulation"
+                    className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-coral-wash dark:hover:bg-[#2d1c48] touch-manipulation"
                     aria-label="Κλείσιμο μενού"
                   >
                     <X className="w-6 h-6" aria-hidden />
@@ -570,7 +599,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     </MobileNavButton>
                   ))}
 
-                  <div className="border-t border-coral-accent/15 dark:border-gray-800 my-2" />
+                  <div className="border-t border-coral-accent/15 dark:border-white/10 my-2" />
                   <div className="flex items-center justify-between px-4 py-2">
                     <span className="text-sm font-semibold">Θέμα</span>
                     <button
@@ -624,7 +653,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)] pt-20">{children}</main>
 
       {/* Footer */}
-      {!isQuizPage && (
       <footer className="relative -mt-px overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:bg-none"
@@ -715,7 +743,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </div>
         </div>
       </footer>
-      )}
 
       <CookieConsent />
     </div>

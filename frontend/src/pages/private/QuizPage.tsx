@@ -401,11 +401,11 @@ const QuizPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-[calc(100dvh-5rem)]">
       {TechBackgroundPattern}
 
       {/* Main Content Area */}
-      <div className="relative z-20 flex flex-col min-h-screen">
+      <div className="relative z-20 flex flex-col">
         {/* Header */}
         <div className="sticky top-0 z-30 border-b border-[#f07f97]/30 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-xl text-gray-900 dark:text-gray-100 p-6 shadow-sm">
           <div className="max-w-7xl mx-auto">

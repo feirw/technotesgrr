@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Lesson {
@@ -803,7 +803,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-4xl bg-gradient-to-br from-white to-coral-wash dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-4xl bg-gradient-to-br from-white to-coral-wash dark:from-[#3a2658] dark:to-[#2d1c48] rounded-3xl shadow-2xl overflow-hidden"
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
@@ -830,7 +830,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose }) => {
             </svg>
           </button>
 
-          <div className="flex items-center justify-center bg-gradient-to-br from-coral-light/40 via-white to-coral-wash dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+          <div className="flex items-center justify-center bg-gradient-to-br from-coral-light/40 via-white to-coral-wash dark:from-[#2d1c48] dark:via-[#3a2658] dark:to-[#2d1c48]">
             {/* Content */}
             <div className="p-8 md:p-4 text-center">
               {/* Header */}
@@ -890,7 +890,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ lesson, isOpen, onClose }) => {
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-5xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-5xl bg-white dark:bg-[#3a2658] rounded-2xl shadow-2xl overflow-hidden"
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
@@ -961,7 +961,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ lesson, onClick, index }) => {
 
   return (
     <motion.div
-      className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col h-full"
+      className="group relative bg-white dark:bg-[#2d1c48] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col h-full"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
@@ -1042,7 +1042,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ lesson, onClick, index }) => {
           {lesson.description}
         </p>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700 mt-auto">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-white/15 mt-auto">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-coral-accent flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
               {lesson.instructor.charAt(0)}
@@ -1115,7 +1115,7 @@ const OnlinePage: React.FC = () => {
   const lockedLessons = LESSONS.filter((l) => l.locked).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]">
       {/* Header Section */}
       <div className="relative overflow-hidden bg-coral-accent text-white py-16 px-6">
         <div className="absolute inset-0 overflow-hidden opacity-20">
@@ -1174,7 +1174,7 @@ const OnlinePage: React.FC = () => {
       </div>
 
       {/* Search & Filter Section */}
-      <div className="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg border-b border-coral-accent/20 dark:border-gray-700">
+      <div className="sticky top-0 z-40 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-lg shadow-lg border-b border-coral-accent/20 dark:border-white/15">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
@@ -1183,7 +1183,7 @@ const OnlinePage: React.FC = () => {
                 placeholder="Αναζήτηση μαθήματος..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-3 pl-12 rounded-xl border-2 border-coral-accent/25 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                className="w-full px-4 py-3 pl-12 rounded-xl border-2 border-coral-accent/25 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all dark:bg-[#2d1c48] dark:border-white/15 dark:text-white"
               />
               <svg
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -1203,7 +1203,7 @@ const OnlinePage: React.FC = () => {
             <select
               value={selectedLevel}
               onChange={(e) => setSelectedLevel(e.target.value)}
-              className="px-4 py-3 rounded-xl border-2 border-coral-accent/25 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+              className="px-4 py-3 rounded-xl border-2 border-coral-accent/25 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all dark:bg-[#2d1c48] dark:border-white/15 dark:text-white"
             >
               {levels.map((level) => (
                 <option key={level} value={level}>
@@ -1215,7 +1215,7 @@ const OnlinePage: React.FC = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 rounded-xl border-2 border-coral-accent/25 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+              className="px-4 py-3 rounded-xl border-2 border-coral-accent/25 focus:border-coral-accent focus:ring-2 focus:ring-coral-accent/25 outline-none transition-all dark:bg-[#2d1c48] dark:border-white/15 dark:text-white"
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>

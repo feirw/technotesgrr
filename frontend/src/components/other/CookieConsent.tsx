@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cookie } from 'lucide-react';
@@ -8,9 +8,20 @@ const CookieConsent: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!hasCookieConsent()) {
-      setVisible(true);
+    if (hasCookieConsent()) return;
+    // Defer banner so it doesn't compete with LCP / first paint.
+    let idleId: number | undefined;
+    let timeoutId: number | undefined;
+    const show = () => setVisible(true);
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(show, { timeout: 4000 });
+    } else {
+      timeoutId = window.setTimeout(show, 2500);
     }
+    return () => {
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const accept = () => {
@@ -79,7 +90,7 @@ const CookieConsent: React.FC = () => {
                   <button
                     type="button"
                     onClick={essentialOnly}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-[#ff8f8e]/45 dark:border-gray-600 bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-100 font-semibold text-sm hover:bg-[#fff5f4] dark:hover:bg-gray-700/80 transition-colors"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-[#ff8f8e]/45 dark:border-white/15 bg-white/80 dark:bg-[#2d1c48]/80 text-gray-800 dark:text-gray-100 font-semibold text-sm hover:bg-[#fff5f4] dark:hover:bg-white/10 transition-colors"
                   >
                     Μόνο απαραίτητα
                   </button>

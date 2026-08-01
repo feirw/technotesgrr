@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
+import { getPreferredTheme } from '@/utils/theme';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
 // import { FiSend } from 'react-icons/fi';
@@ -48,8 +49,10 @@ interface FaqItem {
 
 // ---------- MOCK DATA ----------
 
-const HERO_BACKGROUND_LIGHT = '/images/home%20page/bc11.jpg';
-const HERO_BACKGROUND_DARK = '/images/home%20page/night.jpg';
+const HERO_LIGHT_800 = '/images/home%20page/bc11-800.webp';
+const HERO_LIGHT_1280 = '/images/home%20page/bc11-1280.webp';
+const HERO_DARK_800 = '/images/home%20page/night-800.webp';
+const HERO_DARK_1280 = '/images/home%20page/night-1280.webp';
 
 const SHOWCASE_VIDEOS = [
   '/videos/v24044gl0000d8dc50vog65ursbvt0u0.MP4',
@@ -261,6 +264,38 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavig
   </motion.div>
 );
 
+const HeroBackground: React.FC = () => {
+  const [isDark, setIsDark] = useState(() => getPreferredTheme() === 'dark');
+
+  useEffect(() => {
+    const sync = () => setIsDark(document.documentElement.classList.contains('dark'));
+    sync();
+    const obs = new MutationObserver(sync);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
+  }, []);
+
+  const src800 = isDark ? HERO_DARK_800 : HERO_LIGHT_800;
+  const src1280 = isDark ? HERO_DARK_1280 : HERO_LIGHT_1280;
+
+  return (
+    <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
+      <img
+        key={isDark ? 'dark' : 'light'}
+        src={src800}
+        srcSet={`${src800} 800w, ${src1280} 1280w`}
+        sizes="100vw"
+        width={1280}
+        height={720}
+        alt=""
+        className="w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center"
+        decoding="async"
+        fetchPriority="high"
+      />
+    </div>
+  );
+};
+
 interface VideoShowcaseCardProps {
   src: string;
   index: number;
@@ -268,7 +303,25 @@ interface VideoShowcaseCardProps {
 
 const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [muted, setMuted] = useState(true);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setShouldLoad(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px', threshold: 0.01 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const toggleSound = () => {
     const video = videoRef.current;
@@ -279,6 +332,7 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
 
   return (
     <motion.div
+      ref={wrapRef}
       className="relative group mx-auto w-full max-w-[300px]"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -289,13 +343,13 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
       <div className="relative rounded-[1.75rem] border-[6px] border-[#f07f97] bg-black overflow-hidden shadow-2xl shadow-[#f07f97]/40 aspect-[9/16] transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.03]">
         <video
           ref={videoRef}
-          src={src}
+          src={shouldLoad ? src : undefined}
           className="w-full h-full object-cover"
-          autoPlay
+          autoPlay={shouldLoad}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
         />
 
         {/* Top sheen for legibility */}
@@ -546,21 +600,7 @@ const HomePage: React.FC = () => {
       <div className="min-h-screen transition-colors duration-500 bg-[#ff97b2] dark:bg-[#2d1c48]">
         {/* 🚀 HERO SECTION 🚀 */}
         <section className="relative w-full min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
-            <img
-              src={HERO_BACKGROUND_LIGHT}
-              alt="Φόντο πλατφόρμας προετοιμασίας Πανελληνίων Πληροφορικής Technotes"
-              className="w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center dark:hidden"
-              decoding="async"
-              fetchPriority="high"
-            />
-            <img
-              src={HERO_BACKGROUND_DARK}
-              alt="Φόντο πλατφόρμας προετοιμασίας Πανελληνίων Πληροφορικής Technotes (σκοτεινό θέμα)"
-              className="hidden w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center dark:block"
-              decoding="async"
-            />
-          </div>
+          <HeroBackground />
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20">
             <h1
               className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight"
@@ -638,7 +678,7 @@ const HomePage: React.FC = () => {
             <div className="relative pt-3 pb-1">
               {/* «Δεύτερη κάρτα» πίσω για αίσθηση στοίβας */}
               <div
-                className="pointer-events-none absolute left-3 right-3 top-5 bottom-0 rounded-3xl bg-white/70 dark:bg-gray-800/55 border border-[#f07f97]/20 dark:border-gray-600/50 shadow-lg scale-[0.97] -z-10"
+                className="pointer-events-none absolute left-3 right-3 top-5 bottom-0 rounded-3xl bg-white/70 dark:bg-[#2d1c48]/55 border border-[#f07f97]/20 dark:border-white/15 shadow-lg scale-[0.97] -z-10"
                 aria-hidden
               />
               <div className="relative min-h-[320px] sm:min-h-[290px] md:min-h-[250px]">
@@ -651,7 +691,7 @@ const HomePage: React.FC = () => {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 flex flex-col justify-center rounded-3xl border-2 border-[#f07f97]/35 dark:border-[#f07f97]/25 bg-white dark:bg-gray-800 p-8 sm:p-10 shadow-[0_20px_50px_-12px_rgba(240,127,151,0.28),0_8px_24px_-8px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] ring-1 ring-black/5 dark:ring-white/10"
+                    className="absolute inset-0 flex flex-col justify-center rounded-3xl border-2 border-[#f07f97]/35 dark:border-[#f07f97]/25 bg-white dark:bg-[#2d1c48] p-8 sm:p-10 shadow-[0_20px_50px_-12px_rgba(240,127,151,0.28),0_8px_24px_-8px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] ring-1 ring-black/5 dark:ring-white/10"
                   >
                     <div
                       className="absolute top-0 left-6 right-6 h-1 rounded-full bg-gradient-to-r from-transparent via-[#f07f97] to-transparent opacity-80"

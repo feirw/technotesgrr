@@ -119,6 +119,8 @@ const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className 
         onLoadSuccess={onLoadSuccess}
         onLoadError={onLoadError}
         loading={null}
+        // Stream + range requests: first pages appear before the whole book downloads.
+        options={{ disableStream: false, disableAutoFetch: false }}
         className="flex flex-col items-center gap-2 pb-2"
       >
         {numPages > 0

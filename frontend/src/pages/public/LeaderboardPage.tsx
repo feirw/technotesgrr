@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award } from 'lucide-react';
 import { apiFetch } from '@/utils/apiClient';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
@@ -46,19 +46,19 @@ const LeaderboardPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-pink-50 dark:bg-gray-950 py-8 flex items-center justify-center">
+      <div className="min-h-screen bg-pink-50 dark:bg-[#2d1c48] py-8 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-pink-50 dark:bg-gray-950 py-8">
+    <div className="min-h-screen bg-pink-50 dark:bg-[#2d1c48] py-8">
       <div className="container mx-auto px-6 max-w-4xl">
         <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-center text-gray-900 dark:text-[#faf5ef] mb-8">
           Leaderboard 🏆
         </h1>
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 sm:p-8 border border-pink-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-[#3a2658] rounded-xl shadow-lg p-6 sm:p-8 border border-pink-100 dark:border-white/15">
           <h2 className="text-lg sm:text-2xl font-semibold mb-6 text-center text-gray-700 dark:text-gray-200">
             Κορυφαίοι Παίκτες του Μήνα
           </h2>

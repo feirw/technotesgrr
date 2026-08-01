@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ExternalLink } from 'lucide-react';
 import { MenuIconImg, MENU_ICONS } from '@/data/menuIcons';
 
@@ -25,14 +25,14 @@ const GloglossaEmbedPage: React.FC = () => {
             href={EMBED_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-900 border-2 border-coral-accent/30 dark:border-gray-700 text-coral-strong dark:text-coral-light font-semibold hover:border-coral-accent"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/30 dark:border-white/15 text-coral-strong dark:text-coral-light font-semibold hover:border-coral-accent"
           >
             Άνοιγμα σε νέο tab
             <ExternalLink className="w-4 h-4" />
           </a>
         </div>
 
-        <div className="flex-1 min-h-0 rounded-2xl overflow-hidden border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-900 overscroll-y-contain isolate">
+        <div className="flex-1 min-h-0 rounded-2xl overflow-hidden border-2 border-coral-accent/25 dark:border-white/15 shadow-xl bg-white dark:bg-[#3a2658] overscroll-y-contain isolate">
           <iframe
             src={EMBED_URL}
             title="GloGlossa Embedded"
@@ -42,8 +42,8 @@ const GloglossaEmbedPage: React.FC = () => {
           />
         </div>
 
-        <details className="shrink-0 max-h-[28vh] overflow-y-auto overscroll-y-contain rounded-xl border border-coral-accent/25 dark:border-gray-700 bg-white/60 dark:bg-gray-900/60 text-sm text-gray-600 dark:text-gray-300">
-          <summary className="cursor-pointer select-none px-4 py-3 font-semibold text-coral-strong dark:text-coral-light sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm z-[1]">
+        <details className="shrink-0 max-h-[28vh] overflow-y-auto overscroll-y-contain rounded-xl border border-coral-accent/25 dark:border-white/15 bg-white/60 dark:bg-[#3a2658]/60 text-sm text-gray-600 dark:text-gray-300">
+          <summary className="cursor-pointer select-none px-4 py-3 font-semibold text-coral-strong dark:text-coral-light sticky top-0 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-sm z-[1]">
             Ευχαριστίες &amp; σχετικά
           </summary>
           <p className="px-4 pb-4 pt-0 leading-relaxed">

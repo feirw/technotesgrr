@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+﻿import React, { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -13,7 +13,7 @@ const preClass =
   'mt-3 mb-2 rounded-xl bg-slate-900/95 text-slate-100 p-4 text-sm font-mono leading-relaxed overflow-x-auto border border-slate-700/80 whitespace-pre';
 
 const blockTitleClass =
-  'scroll-mt-6 mt-10 sm:mt-12 first:mt-0 border-t border-[#fea2bb]/25 dark:border-gray-600/45 pt-8 sm:pt-10 text-lg sm:text-xl font-black tracking-tight text-gray-900 dark:text-white first:border-t-0 first:pt-0 inline-flex items-center gap-2.5 before:h-7 before:w-1 before:shrink-0 before:rounded-full before:bg-[#fea2bb]/90';
+  'scroll-mt-6 mt-10 sm:mt-12 first:mt-0 border-t border-[#fea2bb]/25 dark:border-white/15/45 pt-8 sm:pt-10 text-lg sm:text-xl font-black tracking-tight text-gray-900 dark:text-white first:border-t-0 first:pt-0 inline-flex items-center gap-2.5 before:h-7 before:w-1 before:shrink-0 before:rounded-full before:bg-[#fea2bb]/90';
 
 const blockTitleAfterSectionClass =
   'scroll-mt-4 mt-8 sm:mt-10 border-t-0 pt-0 text-lg sm:text-xl font-black tracking-tight text-gray-900 dark:text-white inline-flex items-center gap-2.5 before:h-7 before:w-1 before:shrink-0 before:rounded-full before:bg-[#fea2bb]/90';
@@ -25,7 +25,7 @@ const partSubtitleClass =
   'mt-4 text-base font-bold text-gray-800 dark:text-gray-100 whitespace-pre-line';
 
 const mainSectionTitleClass =
-  'text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white pb-3 mb-1 border-b border-[#fea2bb]/35 dark:border-gray-600/60';
+  'text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white pb-3 mb-1 border-b border-[#fea2bb]/35 dark:border-white/15/60';
 
 const ExampleList: React.FC<{ examples: OsoExample[] }> = ({ examples }) => (
   <motion.div className="mt-6 flex flex-col gap-4 text-gray-800 dark:text-gray-100">
@@ -68,7 +68,7 @@ const MethodologiesPage: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-[100dvh] bg-[#fff5f4] dark:bg-gray-950 px-3 py-6 sm:px-6 sm:py-10"
+      className="min-h-[100dvh] bg-[#fff5f4] dark:bg-[#2d1c48] px-3 py-6 sm:px-6 sm:py-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
@@ -101,7 +101,7 @@ const MethodologiesPage: React.FC = () => {
               className={`min-h-11 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold border transition-all touch-manipulation ${
                 active === topic.id
                   ? 'bg-[#fea2bb] text-gray-900 border-[#fea2bb] shadow-lg'
-                  : 'bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-gray-100 border-[#fea2bb]/40 dark:border-gray-600 hover:border-[#fea2bb]/60'
+                  : 'bg-white/90 dark:bg-[#3a2658]/90 text-gray-800 dark:text-gray-100 border-[#fea2bb]/40 dark:border-white/15 hover:border-[#fea2bb]/60'
               }`}
             >
               {topic.menuLabel}
@@ -114,7 +114,7 @@ const MethodologiesPage: React.FC = () => {
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.25 }}
-          className="rounded-2xl border border-[#fea2bb]/30 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 shadow-xl p-6 sm:p-9 sm:pb-10"
+          className="rounded-2xl border border-[#fea2bb]/30 dark:border-white/15 bg-white/95 dark:bg-[#3a2658]/95 shadow-xl p-6 sm:p-9 sm:pb-10"
         >
           <h2 className={mainSectionTitleClass}>{content.theoryTitle}</h2>
 

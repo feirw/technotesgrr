@@ -26,6 +26,17 @@
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://technotesgr.com/" />
+
+    <!-- LCP: preload mobile hero before JS boots (light theme = PageSpeed default) -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/images/home%20page/bc11-800.webp"
+      imagesrcset="/images/home%20page/bc11-800.webp 800w, /images/home%20page/bc11-1280.webp 1280w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>

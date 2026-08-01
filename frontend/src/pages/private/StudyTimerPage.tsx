@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Target, Clock3, Trophy, Flame } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
@@ -181,12 +181,12 @@ const StudyTimerPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028] p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-3xl border-2 border-coral-accent/25 dark:border-gray-700 shadow-xl p-6 sm:p-8"
+          className="bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-sm rounded-3xl border-2 border-coral-accent/25 dark:border-white/15 shadow-xl p-6 sm:p-8"
         >
           <div className="flex flex-col items-center mb-2">
             <PageMenuIcon
@@ -222,7 +222,7 @@ const StudyTimerPage: React.FC = () => {
             </button>
             <button
               onClick={onReset}
-              className="px-5 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-coral-accent/35 dark:border-gray-700 text-coral-strong dark:text-coral-light font-bold flex items-center gap-2 hover:border-coral-accent transition-colors"
+              className="px-5 py-3 rounded-xl bg-white dark:bg-[#2d1c48] border-2 border-coral-accent/35 dark:border-white/15 text-coral-strong dark:text-coral-light font-bold flex items-center gap-2 hover:border-coral-accent transition-colors"
             >
               <RotateCcw className="w-5 h-5" />
               Μηδενισμός
@@ -230,7 +230,7 @@ const StudyTimerPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-[#2d1c48] border border-coral-accent/25 dark:border-white/15 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-1">
                 <Flame className="w-4 h-4 text-orange-500" />
                 Σερί
@@ -239,15 +239,15 @@ const StudyTimerPage: React.FC = () => {
                 {timer.streakDays} {timer.streakDays === 1 ? 'μέρα' : 'μέρες'}
               </div>
             </div>
-            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-[#2d1c48] border border-coral-accent/25 dark:border-white/15 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Sessions σήμερα</div>
               <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{timer.sessionsToday}</div>
             </div>
-            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-[#2d1c48] border border-coral-accent/25 dark:border-white/15 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Λεπτά μελέτης</div>
               <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{studiedMin}</div>
             </div>
-            <div className="bg-coral-wash dark:bg-gray-800 border border-coral-accent/25 dark:border-gray-700 rounded-xl p-4">
+            <div className="bg-coral-wash dark:bg-[#2d1c48] border border-coral-accent/25 dark:border-white/15 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Ημερήσιος στόχος</div>
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-coral-accent" />
@@ -262,7 +262,7 @@ const StudyTimerPage: React.FC = () => {
                       dailyGoalMin: Math.max(10, Number(e.target.value) || 10),
                     }))
                   }
-                  className="w-24 px-2 py-1 rounded border border-coral-accent/40 dark:border-gray-600 text-coral-strong dark:text-coral-light font-bold bg-white dark:bg-gray-900"
+                  className="w-24 px-2 py-1 rounded border border-coral-accent/40 dark:border-white/15 text-coral-strong dark:text-coral-light font-bold bg-white dark:bg-[#3a2658]"
                 />
                 <span className="text-sm text-gray-600 dark:text-gray-300">λεπτά</span>
               </div>
