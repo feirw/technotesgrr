@@ -262,6 +262,74 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'ΣΑΕΚ', path: '/saek' },
     ],
   },
+  '/vivlia': {
+    path: '/vivlia',
+    slug: 'vivlia',
+    title: 'Σχολικά Βιβλία Πληροφορικής | Technotes',
+    description:
+      'Σχολικά βιβλία ΑΕΠΠ και Πληροφορικής Γ\' Λυκείου σε online προβολή — βιβλίο μαθητή και συμπληρωματικό εκπαιδευτικό υλικό.',
+    ogImage: og('vivlia'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Βιβλία', path: '/vivlia' },
+    ],
+  },
+  '/ypologismos-morion': {
+    path: '/ypologismos-morion',
+    slug: 'ypologismos-morion',
+    title: 'Υπολογισμός Μορίων | 4ο Πεδίο Πανελλήνιες',
+    description:
+      'Υπολόγισε τα μόριά σου για σχολές 4ου επιστημονικού πεδίου με βάση τους συντελεστές και τους βαθμούς σου στα Πανελλήνια εξεταζόμενα μαθήματα.',
+    ogImage: og('ypologismos-morion'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Υπολογισμός Μορίων', path: '/ypologismos-morion' },
+    ],
+  },
+  '/mixanografiko': {
+    path: '/mixanografiko',
+    slug: 'mixanografiko',
+    title: 'Μηχανογραφικό (Πρόβα) | 4ο Πεδίο',
+    description:
+      'Φτιάξε πρόβα μηχανογραφικού για σχολές 4ου επιστημονικού πεδίου: σειρά προτίμησης, μόρια και βάσεις εισαγωγής.',
+    ogImage: og('mixanografiko'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Μηχανογραφικό', path: '/mixanografiko' },
+    ],
+  },
+  '/antistoixies-sxolon': {
+    path: '/antistoixies-sxolon',
+    slug: 'antistoixies-sxolon',
+    title: 'Αντιστοιχίες Σχολών | 4ο Πεδίο',
+    description:
+      'Επίσημος πίνακας αντίστοιχων τμημάτων ΑΕΙ 4ου επιστημονικού πεδίου — ποια τμήματα θεωρούνται «αντίστοιχα» μεταξύ τους.',
+    ogImage: og('antistoixies-sxolon'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Αντιστοιχίες Σχολών', path: '/antistoixies-sxolon' },
+    ],
+  },
+  '/meteggrafes': {
+    path: '/meteggrafes',
+    slug: 'meteggrafes',
+    title: 'Μετεγγραφές Φοιτητών | Προϋποθέσεις & Μόρια',
+    description:
+      'Προϋποθέσεις και μοριοδότηση μετεγγραφών φοιτητών ΑΕΙ — οικογενειακό εισόδημα, αδέλφια σε άλλη πόλη και λοιπά κριτήρια.',
+    ogImage: og('meteggrafes'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Μετεγγραφές', path: '/meteggrafes' },
+    ],
+  },
+  '/sygkrisi-mathimaton': {
+    path: '/sygkrisi-mathimaton',
+    slug: 'sygkrisi-mathimaton',
+    title: 'Σύγκριση Μαθημάτων Σχολών | Technotes',
+    description: 'Σύγκριση εξεταζόμενων μαθημάτων και προγραμμάτων σπουδών σχολών 4ου επιστημονικού πεδίου.',
+    ogImage: og('sygkrisi-mathimaton'),
+    noindex: true,
+  },
 };
 
 export const NOT_FOUND_SEO: PageSeo = {

@@ -387,7 +387,7 @@ const Flashcards: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-coral-wash dark:bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] flex items-center justify-center">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <motion.div
             className="w-16 h-16 rounded-full border-4 border-t-transparent mb-4"
@@ -402,7 +402,7 @@ const Flashcards: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-coral-wash dark:bg-black">
+    <div className="min-h-screen bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]">
       <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md">
         <motion.div
           className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center"

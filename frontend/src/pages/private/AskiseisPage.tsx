@@ -211,7 +211,7 @@ const AskiseisPage: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-900"
+      className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}

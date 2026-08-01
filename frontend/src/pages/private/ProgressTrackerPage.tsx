@@ -96,7 +96,7 @@ const ProgressTrackerPage: React.FC = () => {
   }, [isAllComplete]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] p-4 sm:p-6">
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
           {Array.from({ length: 80 }).map((_, i) => (

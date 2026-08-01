@@ -627,7 +627,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {!isQuizPage && (
       <footer className="relative -mt-px overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:from-transparent dark:via-[#3d2858] dark:to-white"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:bg-none"
           aria-hidden="true"
         />
         <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 items-start w-full max-w-[100vw]">

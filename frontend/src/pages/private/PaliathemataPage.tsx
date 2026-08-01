@@ -294,7 +294,7 @@ const PaliathemataPage: React.FC = () => {
       : 'χρονιές';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020]">
       {/* Header Section */}
       <header className="border-b border-[#f07f97]/35 dark:border-white/10 bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md py-10 sm:py-12 px-4 sm:px-6">
         <div className="relative max-w-4xl mx-auto text-center">

@@ -35,7 +35,7 @@ const VivliaPage: React.FC = () => {
   }, [activeId]);
 
   return (
-    <div className="min-h-screen bg-coral-wash dark:bg-gradient-to-br dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 px-4 sm:px-6 py-6 sm:py-8">
+    <div className="min-h-screen bg-coral-wash dark:bg-gradient-to-br dark:from-[#0b1020] dark:via-[#141b34] dark:to-[#0b1020] px-4 sm:px-6 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <MenuIconImg src={MENU_ICONS.vivlia} className="w-9 h-9 sm:w-10 sm:h-10" />
