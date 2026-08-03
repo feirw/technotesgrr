@@ -9,8 +9,8 @@ export type ShareCardData =
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
-const SITE_LABEL = 'technotesgr.com';
-const LOGO_SRC = '/images/logo.png';
+const SITE_LABEL = 'technotes.gr';
+const LOGO_SRC = '/images/logo-80.webp';
 
 async function ensureFontsReady(): Promise<void> {
   try {
@@ -183,11 +183,16 @@ export async function generateShareImageBlob(data: ShareCardData): Promise<Blob>
   ctx.fillStyle = 'rgba(255,255,255,0.7)';
   ctx.fillText('Διάβασμα για τις Πανελλήνιες Πληροφορικής', WIDTH / 2, HEIGHT - 110);
 
+  // JPEG: μικρότερο αρχείο + καλύτερη συμβατότητα με Instagram / iOS share sheet.
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(blob);
-      else reject(new Error('Η δημιουργία της εικόνας απέτυχε'));
-    }, 'image/png');
+    canvas.toBlob(
+      (blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error('Η δημιουργία της εικόνας απέτυχε'));
+      },
+      'image/jpeg',
+      0.92
+    );
   });
 }
 
@@ -206,25 +211,37 @@ export type ShareOutcome = 'shared' | 'downloaded' | 'cancelled';
 /**
  * Μοιράζεται την εικόνα μέσω Web Share API (ανοίγει native share sheet, π.χ. Instagram Stories)
  * αν υποστηρίζεται, αλλιώς την κατεβάζει ώστε ο χρήστης να την ανεβάσει χειροκίνητα.
+ *
+ * Σημαντικό για iOS: το `navigator.share({ files, text })` κάνει πολλές εφαρμογές
+ * (Instagram, WhatsApp, …) να αγνοήσουν το αρχείο και να μοιραστούν μόνο κείμενο.
+ * Μοιραζόμαστε ΜΟΝΟ `{ files }` — το caption μένει για fallback / download.
  */
 export async function shareOrDownloadImage(
   blob: Blob,
   filename: string,
-  caption: string
+  _caption: string
 ): Promise<ShareOutcome> {
-  const file = new File([blob], filename, { type: 'image/png' });
+  const mime = blob.type || 'image/jpeg';
+  const file = new File([blob], filename, { type: mime });
   const nav = navigator as Navigator & {
     canShare?: (data?: ShareData) => boolean;
     share?: (data: ShareData) => Promise<void>;
   };
 
-  if (nav.share && nav.canShare?.({ files: [file] })) {
-    try {
-      await nav.share({ files: [file], text: caption });
-      return 'shared';
-    } catch (err) {
-      if ((err as { name?: string })?.name === 'AbortError') return 'cancelled';
-      // Πέφτουμε σε download για οποιοδήποτε άλλο σφάλμα (π.χ. μη υποστηριζόμενος τύπος αρχείου).
+  const filesOnly = { files: [file] };
+
+  if (typeof nav.share === 'function') {
+    const canShareFiles =
+      typeof nav.canShare !== 'function' || nav.canShare(filesOnly) === true;
+
+    if (canShareFiles) {
+      try {
+        await nav.share(filesOnly);
+        return 'shared';
+      } catch (err) {
+        if ((err as { name?: string })?.name === 'AbortError') return 'cancelled';
+        // Πέφτουμε σε download για οποιοδήποτε άλλο σφάλμα.
+      }
     }
   }
 
@@ -241,14 +258,8 @@ export async function shareOrDownloadImage(
 
 /**
  * Μοιράζεται την εικόνα για Instagram Story μέσω του native share sheet (Web Share API).
- *
- * Σημείωση: το τεκμηριωμένο `instagram-stories://share` deep-link + clipboard-write "hack"
- * ΔΕΝ δουλεύει από web σελίδα — το Instagram Stories composer διαβάζει την εικόνα μόνο από
- * ειδικά UTI pasteboard keys (π.χ. `com.instagram.sharedSticker.backgroundImage`) που μόνο
- * native apps μπορούν να γράψουν μέσω `UIPasteboard`. Η web Clipboard API γράφει μόνο γενικό
- * `image/png`, οπότε το Instagram δεν «βλέπει» ποτέ την εικόνα — απλώς ανοίγει (ή ούτε καν)
- * χωρίς περιεχόμενο. Ο μόνος αξιόπιστος τρόπος από web είναι το native share sheet: ο
- * χρήστης επιλέγει Instagram και μέσα στο δικό του share extension διαλέγει «Story».
+ * Ο χρήστης επιλέγει Instagram από το sheet και μέσα στο Instagram διαλέγει «Story».
+ * (Τα deep-links `instagram-stories://share` δεν δουλεύουν από web.)
  */
 export async function shareToInstagramStory(
   data: ShareCardData,

@@ -45,7 +45,7 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true,
         globPatterns: ["**/*.{js,css,html,woff2}"],
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/pdfs\//],
         runtimeCaching: [
           {
             // Quiz/flashcard/category GET data — show cached content instantly if offline,
@@ -71,7 +71,17 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
+            urlPattern: ({ url }) => url.pathname.startsWith('/pdfs/'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pdf-documents',
+              networkTimeoutSeconds: 30,
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
             handler: "NetworkOnly",
           },
         ],

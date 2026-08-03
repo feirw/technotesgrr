@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
-import { prefetchCriticalPrivateRoutes } from '@/routes/routes';
+import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/routes';
+import { prefetchGloglossaEmbed } from '@/utils/gloglossaPrefetch';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
 import { MENU_ICONS, MenuNavIcon } from '@/data/menuIcons';
@@ -73,14 +74,15 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/quiz', label: 'Quiz', iconSrc: MENU_ICONS.quiz },
   { to: '/flashcards', label: 'Flashcards', iconSrc: MENU_ICONS.flashcards },
   { to: '/methodologies', label: 'Μεθοδολογίες', iconSrc: MENU_ICONS.methodologies },
+  { to: '/domes-dedomenon', label: 'Δομές Δεδομένων', iconSrc: MENU_ICONS.dataStructures },
   { to: '/paliathemata', label: 'Παλιά Θέματα', iconSrc: MENU_ICONS.paliathemata },
   { to: '/askiseis', label: 'Ασκήσεις', iconSrc: MENU_ICONS.askiseis },
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
-  { to: '/gloglossa', label: 'GloGlossa', iconSrc: MENU_ICONS.gloglossa },
+  { to: '/gloglossa', label: 'GloGlossa', iconSrc: MENU_ICONS.gloglossa, onPrefetch: () => { loadGloglossaPage(); prefetchGloglossaEmbed(); } },
   {
     to: '/vivlia',
-    label: 'Βιβλία',
+    label: 'Σχολικά βιβλία',
     iconSrc: MENU_ICONS.vivlia,
     onPrefetch: () => {
       void import('@/pages/public/VivliaPage').then((m) => m.prefetchVivliaPdfs());
@@ -229,6 +231,30 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
       );
     }}
   </NavLink>
+);
+
+const ThemeToggleButton: React.FC<{
+  isDark: boolean;
+  onToggle: () => void;
+  className?: string;
+}> = ({ isDark, onToggle, className = '' }) => (
+  <button
+    type="button"
+    aria-label="Theme toggle"
+    onClick={onToggle}
+    className={`min-h-11 min-w-11 p-1.5 rounded-xl border border-coral-accent/35 text-coral-accent hover:bg-coral-wash transition-colors touch-manipulation inline-flex items-center justify-center ${className}`}
+    title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
+  >
+    {isDark ? (
+      <img
+        src={LIGHT_THEME_ICON}
+        alt=""
+        className="w-8 h-8 object-contain [image-rendering:pixelated]"
+      />
+    ) : (
+      <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
+    )}
+  </button>
 );
 
 // --- Main Layout Component ---
@@ -410,23 +436,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
               <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
 
-              <button
-                type="button"
-                aria-label="Theme toggle"
-                onClick={() => setIsDark(toggleTheme() === 'dark')}
-                className="ml-2 min-h-11 min-w-11 p-1.5 rounded-xl border border-coral-accent/35 text-coral-accent hover:bg-coral-wash transition-colors touch-manipulation inline-flex items-center justify-center"
-                title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
-              >
-                {isDark ? (
-                  <img
-                    src={LIGHT_THEME_ICON}
-                    alt=""
-                    className="w-8 h-8 object-contain [image-rendering:pixelated]"
-                  />
-                ) : (
-                  <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
-                )}
-              </button>
+              <ThemeToggleButton
+                isDark={isDark}
+                onToggle={() => setIsDark(toggleTheme() === 'dark')}
+                className="ml-2"
+              />
 
               {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
               {user ? (
@@ -451,19 +465,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               */}
             </div>
 
-            {/* Mobile Menu Button */}
-            <motion.button
-              type="button"
-              aria-expanded={isMenuOpen}
-              aria-controls="mobile-nav-drawer"
-              aria-label={isMenuOpen ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού'}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden min-h-11 min-w-11 p-3 rounded-xl text-white bg-coral-accent hover:bg-coral-strong shadow-lg shrink-0 touch-manipulation inline-flex items-center justify-center transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {isMenuOpen ? <X size={24} aria-hidden /> : <Menu size={24} aria-hidden />}
-            </motion.button>
+            {/* Mobile header actions */}
+            <div className="lg:hidden flex items-center gap-2 shrink-0">
+              <ThemeToggleButton
+                isDark={isDark}
+                onToggle={() => setIsDark(toggleTheme() === 'dark')}
+                className="bg-white/80 dark:bg-[#2d1c48]/80 shadow-sm"
+              />
+              <motion.button
+                type="button"
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-nav-drawer"
+                aria-label={isMenuOpen ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού'}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="min-h-11 min-w-11 p-3 rounded-xl text-white bg-coral-accent hover:bg-coral-strong shadow-lg touch-manipulation inline-flex items-center justify-center transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isMenuOpen ? <X size={24} aria-hidden /> : <Menu size={24} aria-hidden />}
+              </motion.button>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -479,33 +500,34 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
             <motion.div
-              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 p-5 sm:p-6 shadow-2xl"
+              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 p-5 sm:p-6 pt-12 shadow-2xl"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             >
-              <div className="flex items-center gap-3 mb-3">
+              <button
+                type="button"
+                onClick={() => setShowPanic(false)}
+                className="absolute top-3 right-3 z-10 inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-[#2d1c48] touch-manipulation transition-colors"
+                aria-label="Κλείσιμο"
+              >
+                <X size={22} aria-hidden />
+              </button>
+
+              <button
+                type="button"
+                onClick={triggerPanic}
+                className="mb-4 w-full min-h-11 rounded-xl bg-coral-accent px-4 py-3 font-bold text-white transition-colors hover:bg-coral-strong touch-manipulation"
+              >
+                Άλλο ένα
+              </button>
+
+              <div className="mb-3 flex items-center gap-3">
                 <MenuNavIcon src={MENU_ICONS.takeABreath} />
                 <h3 className="text-xl font-black text-gray-900 dark:text-white">Take a breath</h3>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{panicMsg.text}</p>
-              <div className="mt-5 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={triggerPanic}
-                  className="min-h-11 px-4 py-3 rounded-xl bg-coral-accent hover:bg-coral-strong text-white font-bold touch-manipulation transition-colors"
-                >
-                  Άλλο ένα
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowPanic(false)}
-                  className="min-h-11 px-4 py-3 rounded-xl bg-gray-100 dark:bg-[#2d1c48] text-gray-700 dark:text-gray-200 font-semibold touch-manipulation"
-                >
-                  Κλείσιμο
-                </button>
-              </div>
+              <p className="leading-relaxed text-gray-700 dark:text-gray-300">{panicMsg.text}</p>
             </motion.div>
           </motion.div>
         )}
@@ -598,27 +620,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
-
-                  <div className="border-t border-coral-accent/15 dark:border-white/10 my-2" />
-                  <div className="flex items-center justify-between px-4 py-2">
-                    <span className="text-sm font-semibold">Θέμα</span>
-                    <button
-                      type="button"
-                      aria-label="Theme toggle"
-                      onClick={() => setIsDark(toggleTheme() === 'dark')}
-                      className="min-h-11 min-w-11 p-1.5 rounded-lg border border-coral-accent/35 text-coral-accent touch-manipulation inline-flex items-center justify-center"
-                    >
-                      {isDark ? (
-                        <img
-                          src={LIGHT_THEME_ICON}
-                          alt=""
-                          className="w-8 h-8 object-contain [image-rendering:pixelated]"
-                        />
-                      ) : (
-                        <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
-                      )}
-                    </button>
-                  </div>
 
                   {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
                   {user ? (

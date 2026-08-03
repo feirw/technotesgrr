@@ -117,6 +117,10 @@ const MixanografikoPage: React.FC = () => {
   const [specialGrades, setSpecialGrades] = useState<GradeInputs>(EMPTY_SPECIAL_GRADES);
   const [rankedIds, setRankedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [appliedGrades, setAppliedGrades] = useState<{
+    meanGrade: string;
+    specialGrades: GradeInputs;
+  } | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
@@ -125,6 +129,12 @@ const MixanografikoPage: React.FC = () => {
     setMeanGrade(s.meanGrade);
     setSpecialGrades(s.specialGrades);
     setRankedIds(s.rankedIds);
+    const hasGrades =
+      s.meanGrade.trim() !== '' ||
+      SPECIAL_EXAM_SUBJECTS.some(({ key }) => parseExamGrade(s.specialGrades[key] ?? '') !== null);
+    if (hasGrades) {
+      setAppliedGrades({ meanGrade: s.meanGrade, specialGrades: { ...s.specialGrades } });
+    }
     setHydrated(true);
   }, []);
 
@@ -156,29 +166,57 @@ const MixanografikoPage: React.FC = () => {
 
   const numericMean = meanGrade.trim() ? Number(meanGrade.trim().replace(',', '.')) : null;
   const validMean = numericMean !== null && Number.isFinite(numericMean) && numericMean >= 0 && numericMean <= 20;
-  const coreMeanForEval = validMean ? (numericMean as number) : null;
-
   const anySpecialGradeEntered = SPECIAL_EXAM_SUBJECTS.some(
     ({ key }) => parseExamGrade(specialGrades[key] ?? '') !== null,
   );
+  const canSearch = validMean || anySpecialGradeEntered;
+
+  const appliedNumericMean = appliedGrades?.meanGrade.trim()
+    ? Number(appliedGrades.meanGrade.trim().replace(',', '.'))
+    : null;
+  const appliedValidMean =
+    appliedNumericMean !== null &&
+    Number.isFinite(appliedNumericMean) &&
+    appliedNumericMean >= 0 &&
+    appliedNumericMean <= 20;
+  const appliedCoreMean = appliedValidMean ? (appliedNumericMean as number) : null;
+  const appliedSpecialGrades = appliedGrades?.specialGrades ?? EMPTY_SPECIAL_GRADES;
+  const appliedAnySpecial = SPECIAL_EXAM_SUBJECTS.some(
+    ({ key }) => parseExamGrade(appliedSpecialGrades[key] ?? '') !== null,
+  );
+  const hasAppliedSearch = appliedGrades !== null && (appliedValidMean || appliedAnySpecial);
+
+  const gradesChangedSinceSearch =
+    !appliedGrades ||
+    appliedGrades.meanGrade !== meanGrade ||
+    SPECIAL_EXAM_SUBJECTS.some(
+      ({ key }) => (appliedGrades.specialGrades[key] ?? '') !== (specialGrades[key] ?? ''),
+    );
+
+  const runSearch = () => {
+    if (!canSearch) return;
+    setAppliedGrades({
+      meanGrade,
+      specialGrades: { ...specialGrades },
+    });
+  };
 
   const setSpecialGrade = (key: string, value: string) => {
     setSpecialGrades((prev) => ({ ...prev, [key]: value }));
   };
 
-  const evalFor = (school: School): Eligibility =>
-    evaluateSchool(school, coeffEntryBySchoolId.get(school.id), coreMeanForEval, specialGrades);
+  const evalFor = (school: School, grades: GradeInputs, coreMean: number | null): Eligibility =>
+    evaluateSchool(school, coeffEntryBySchoolId.get(school.id), coreMean, grades);
 
   const availableSchools = useMemo(() => {
-    if (!validMean && !anySpecialGradeEntered) return [];
+    if (!hasAppliedSearch) return [];
     const rankedSet = new Set(rankedIds);
     return ALL_SCHOOLS.filter((s) => {
       if (rankedSet.has(s.id)) return false;
       if (!schoolMatchesQuery(s, searchQuery)) return false;
-      return evalFor(s).eligible;
+      return evalFor(s, appliedSpecialGrades, appliedCoreMean).eligible;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rankedIds, searchQuery, validMean, anySpecialGradeEntered, numericMean, specialGrades]);
+  }, [rankedIds, searchQuery, hasAppliedSearch, appliedSpecialGrades, appliedCoreMean, coeffEntryBySchoolId]);
 
   const addSchool = (id: string) => {
     setRankedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -281,6 +319,27 @@ const MixanografikoPage: React.FC = () => {
               </div>
             ))}
           </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={runSearch}
+              disabled={!canSearch}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#f07f97] px-5 py-2.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-[#e86a8f] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Search className="w-4 h-4" aria-hidden />
+              Αναζήτηση
+            </button>
+            {gradesChangedSinceSearch && canSearch ? (
+              <span className="text-xs font-semibold text-[#f07f97] dark:text-[#ffc4d6]">
+                Έχεις αλλάξει βαθμούς — πάτα Αναζήτηση για ενημέρωση.
+              </span>
+            ) : hasAppliedSearch ? (
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Εμφανίζονται σχολές με βάση τους τελευταίους βαθμούς που αναζήτησες.
+              </span>
+            ) : null}
+          </div>
         </div>
 
         {/* Ranked preference list */}
@@ -377,13 +436,20 @@ const MixanografikoPage: React.FC = () => {
         <div className="rounded-2xl border border-[#f07f97]/20 dark:border-white/10 bg-white dark:bg-[#3a2658] p-4 sm:p-5">
           <h2 className="font-black text-gray-900 dark:text-white mb-3">Δήλωσε σχολές</h2>
 
-          {!validMean && !anySpecialGradeEntered ? (
+          {!hasAppliedSearch ? (
             <p className="text-sm text-gray-500 dark:text-gray-400 py-6 text-center">
-              Συμπλήρωσε τον μέσο όρο σου ή/και κάποιο ειδικό μάθημα παραπάνω για να δεις ποιες σχολές μπορείς να
+              Συμπλήρωσε τον μέσο όρο σου ή/και κάποιο ειδικό μάθημα και πάτα{' '}
+              <span className="font-bold text-[#f07f97]">Αναζήτηση</span> για να δεις ποιες σχολές μπορείς να
               δηλώσεις.
             </p>
           ) : (
             <>
+              {gradesChangedSinceSearch ? (
+                <p className="mb-4 rounded-xl border border-[#f07f97]/30 bg-[#fff5f8] px-4 py-3 text-sm font-semibold text-[#f07f97] dark:border-[#ffc4d6]/30 dark:bg-[#2d1c48] dark:text-[#ffc4d6]">
+                  Άλλαξες βαθμούς — πάτα ξανά <span className="font-black">Αναζήτηση</span> πάνω για να ανανεωθεί η
+                  λίστα.
+                </p>
+              ) : null}
               <div className="relative mb-4">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden />
                 <input

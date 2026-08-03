@@ -134,7 +134,7 @@ _extra_cors_origins = [
 # Regex εφεξής: αν το Render/.env έχει μόνο .gr, τα αιτήματα από technotesgr.com εξακολουθούν να επιτρέπονται.
 # re.match() από την αρχή του Origin — χρειάζεται ^ … $
 _cors_origin_regex = (
-    r"^https://([\w-]+\.)?technotesgr\.(gr|com)$"
+    r"^https://([\w-]+\.)?(technotes\.gr|technotesgr\.(gr|com))$"
     r"|^https://[\w.-]+\.netlify\.app$"
     r"|^https://[\w.-]+\.vercel\.app$"
 )
@@ -145,6 +145,8 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:5173",
         "http://localhost:5173",
+        "https://technotes.gr",
+        "https://www.technotes.gr",
         "https://technotesgr.gr",
         "https://www.technotesgr.gr",
         "https://technotesgr.com",
@@ -803,7 +805,7 @@ def forgot_password(request: Request, data: ForgotPasswordRequest):
         expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
         create_password_reset(user_id=user["id"], token=token, expires_at=expires_at)
 
-        default_frontend_origin = "http://localhost:5173" if IS_DEV else "https://technotesgr.com"
+        default_frontend_origin = "http://localhost:5173" if IS_DEV else "https://www.technotes.gr"
         frontend_origin = os.getenv("FRONTEND_URL", default_frontend_origin)
         reset_link = f"{frontend_origin.rstrip('/')}/reset-password?token={token}"
         try:

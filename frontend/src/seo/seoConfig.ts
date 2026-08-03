@@ -51,7 +51,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     slug: 'privacy-policy',
     title: 'Όροι Χρήσης & Απόρρητο | Technotes',
     description:
-      'Όροι χρήσης και πολιτική απορρήτου του technotesgr.com. Πληροφορίες για cookies, δεδομένα χρηστών και υπηρεσίες προετοιμασίας Πληροφορικής.',
+      'Όροι χρήσης και πολιτική απορρήτου του technotes.gr. Πληροφορίες για cookies, δεδομένα χρηστών και υπηρεσίες προετοιμασίας Πληροφορικής.',
     ogImage: og('privacy-policy'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
@@ -63,7 +63,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     slug: 'data-protection',
     title: 'Προστασία Δεδομένων | Technotes',
     description:
-      'Πολιτική προστασίας προσωπικών δεδομένων (GDPR) για την πλατφόρμα προετοιμασίας Πανελληνίων Πληροφορικής technotesgr.com.',
+      'Πολιτική προστασίας προσωπικών δεδομένων (GDPR) για την πλατφόρμα προετοιμασίας Πανελληνίων Πληροφορικής technotes.gr.',
     ogImage: og('data-protection'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
@@ -152,6 +152,18 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Αλγόριθμοι', path: '/algorithms' },
+    ],
+  },
+  '/domes-dedomenon': {
+    path: '/domes-dedomenon',
+    slug: 'domes-dedomenon',
+    title: 'Δομές Δεδομένων Visualizer | Technotes',
+    description:
+      'Διαδραστικός οπτικοποιητής δομών δεδομένων: δέντρα, λίστες, στοίβα, ουρά και γράφοι με animations, learning mode και παραγωγή κώδικα.',
+    ogImage: og('algorithms'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Δομές Δεδομένων', path: '/domes-dedomenon' },
     ],
   },
   '/paliathemata': {
@@ -283,7 +295,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     ogImage: og('vivlia'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
-      { name: 'Βιβλία', path: '/vivlia' },
+      { name: 'Σχολικά βιβλία', path: '/vivlia' },
     ],
   },
   '/ypologismos-morion': {

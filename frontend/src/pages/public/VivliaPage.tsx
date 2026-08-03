@@ -1,4 +1,4 @@
-﻿import React, { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+﻿import React, { lazy, Suspense, useCallback, useEffect, useMemo, useState, Component, type ErrorInfo, type ReactNode } from 'react';
 import { Download, ExternalLink, RefreshCw } from 'lucide-react';
 import { MenuIconImg, MENU_ICONS } from '@/data/menuIcons';
 
@@ -26,14 +26,25 @@ const VIVLIA: VivlioItem[] = [
   },
 ];
 
+const LOAD_TIMEOUT_MS = 25_000;
+
 const prefetchedUrls = new Set<string>();
+
+function resolvePdfUrl(path: string): string {
+  if (typeof window === 'undefined') return path;
+  try {
+    return new URL(path, window.location.origin).href;
+  } catch {
+    return path;
+  }
+}
 
 /** Warm HTTP cache so switching books / revisiting is instant. */
 export function prefetchVivliaPdfs(paths: string[] = VIVLIA.map((v) => v.path)) {
   for (const path of paths) {
     if (prefetchedUrls.has(path)) continue;
     prefetchedUrls.add(path);
-    void fetch(path, { credentials: 'same-origin', cache: 'force-cache' }).catch(() => {
+    void fetch(path, { credentials: 'same-origin' }).catch(() => {
       prefetchedUrls.delete(path);
     });
   }
@@ -56,13 +67,41 @@ function usePreferNativePdfViewer() {
   return preferNative;
 }
 
+class PdfErrorBoundary extends Component<
+  { children: ReactNode; onError: () => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(_error: Error, _info: ErrorInfo) {
+    this.props.onError();
+  }
+
+  componentDidUpdate(prevProps: { children: ReactNode }) {
+    if (prevProps.children !== this.props.children && this.state.hasError) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
 const VivliaPage: React.FC = () => {
   const [activeId, setActiveId] = useState<string>(VIVLIA[0].id);
   const active = useMemo(() => VIVLIA.find((v) => v.id === activeId) ?? VIVLIA[0], [activeId]);
   const [viewerError, setViewerError] = useState(false);
   const [loading, setLoading] = useState(true);
   const preferNative = usePreferNativePdfViewer();
-  const iframeSrc = `${active.path}#view=FitH&toolbar=1`;
+
+  const fileUrl = useMemo(() => resolvePdfUrl(active.path), [active.path]);
+  const iframeSrc = `${fileUrl}#view=FitH&toolbar=1`;
 
   useEffect(() => {
     prefetchVivliaPdfs();
@@ -73,8 +112,19 @@ const VivliaPage: React.FC = () => {
     setLoading(true);
   }, [activeId, preferNative]);
 
+  useEffect(() => {
+    if (!loading || viewerError) return;
+    const timer = window.setTimeout(() => setViewerError(true), LOAD_TIMEOUT_MS);
+    return () => window.clearTimeout(timer);
+  }, [loading, viewerError, activeId, preferNative]);
+
   const handleIframeLoad = useCallback(() => {
     setLoading(false);
+  }, []);
+
+  const retryViewer = useCallback(() => {
+    setViewerError(false);
+    setLoading(true);
   }, []);
 
   return (
@@ -83,7 +133,7 @@ const VivliaPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <MenuIconImg src={MENU_ICONS.vivlia} className="w-9 h-9 sm:w-10 sm:h-10" />
           <h1 className="text-2xl sm:text-3xl font-black text-coral-accent dark:text-coral-light">
-            Βιβλία
+            Σχολικά βιβλία
           </h1>
         </div>
 
@@ -111,7 +161,7 @@ const VivliaPage: React.FC = () => {
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">{active.title}</h2>
           <div className="flex items-center gap-2">
             <a
-              href={active.path}
+              href={fileUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/30 dark:border-white/15 text-coral-strong dark:text-coral-light font-semibold hover:border-coral-accent"
@@ -120,7 +170,7 @@ const VivliaPage: React.FC = () => {
               <ExternalLink className="w-4 h-4" />
             </a>
             <a
-              href={active.path}
+              href={fileUrl}
               download
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/30 dark:border-white/15 text-coral-strong dark:text-coral-light font-semibold hover:border-coral-accent"
             >
@@ -144,10 +194,7 @@ const VivliaPage: React.FC = () => {
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  setViewerError(false);
-                  setLoading(true);
-                }}
+                onClick={retryViewer}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-coral-accent px-4 py-3 text-sm font-bold text-white shadow"
               >
                 <RefreshCw className="w-4 h-4" />
@@ -172,13 +219,15 @@ const VivliaPage: React.FC = () => {
                   </div>
                 }
               >
-                <PaliaMobilePdf
-                  key={active.id}
-                  fileUrl={active.path}
-                  onReady={() => setLoading(false)}
-                  onFatal={() => setViewerError(true)}
-                  className="px-1 py-2 sm:px-4"
-                />
+                <PdfErrorBoundary onError={() => setViewerError(true)}>
+                  <PaliaMobilePdf
+                    key={active.id}
+                    fileUrl={fileUrl}
+                    onReady={() => setLoading(false)}
+                    onFatal={() => setViewerError(true)}
+                    className="px-1 py-2 sm:px-4"
+                  />
+                </PdfErrorBoundary>
               </Suspense>
             </div>
           )}

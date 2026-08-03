@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
@@ -42,6 +42,12 @@ const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className 
     const w = el.getBoundingClientRect().width;
     if (w > 40) setWidth(Math.floor(w));
   }, []);
+
+  useEffect(() => {
+    firstPageReadyRef.current = false;
+    setNumPages(0);
+    setVisiblePages(new Set(Array.from({ length: INITIAL_VISIBLE_PAGES }, (_, i) => i + 1)));
+  }, [fileUrl]);
 
   useEffect(() => {
     measure();
@@ -112,6 +118,11 @@ const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className 
 
   const placeholderHeight = Math.round(width * pageAspect);
 
+  const pdfOptions = useMemo(
+    () => ({ disableStream: false, disableAutoFetch: false }),
+    []
+  );
+
   return (
     <div ref={wrapRef} className={className}>
       <Document
@@ -119,8 +130,7 @@ const PaliaMobilePdf: React.FC<Props> = ({ fileUrl, onReady, onFatal, className 
         onLoadSuccess={onLoadSuccess}
         onLoadError={onLoadError}
         loading={null}
-        // Stream + range requests: first pages appear before the whole book downloads.
-        options={{ disableStream: false, disableAutoFetch: false }}
+        options={pdfOptions}
         className="flex flex-col items-center gap-2 pb-2"
       >
         {numPages > 0

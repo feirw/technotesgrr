@@ -6,7 +6,7 @@ interface Window {
 }
 
 interface ImportMetaEnv {
-  /** Public site URL for auth emails, e.g. https://technotesgr.com (no trailing slash). */
+  /** Public site URL for auth emails, e.g. https://www.technotes.gr (no trailing slash). */
   readonly VITE_SITE_URL?: string;
 }
 

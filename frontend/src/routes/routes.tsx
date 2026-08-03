@@ -7,7 +7,8 @@ const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
 // const MerchPage = lazy(() => import('@/pages/public/MerchPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
-const GloglossaEmbedPage = lazy(() => import('@/pages/public/GloglossaEmbedPage'));
+export const loadGloglossaPage = () => import('@/pages/public/GloglossaEmbedPage');
+const GloglossaEmbedPage = lazy(loadGloglossaPage);
 const VivliaPage = lazy(() => import('@/pages/public/VivliaPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
@@ -26,6 +27,7 @@ const QuizPage = lazy(loadQuizPage);
 const FlashcardsPage = lazy(loadFlashcardsPage);
 const LeaderboardPage = lazy(() => import('@/pages/public/LeaderboardPage'));
 const AlgorithmsPage = lazy(() => import('@/pages/private/AlgorithmsPage'));
+const DataStructuresPage = lazy(() => import('@/pages/private/DataStructuresPage'));
 const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
 // const OnlinePage = lazy(() => import('@/pages/private/OnlinePage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
@@ -144,6 +146,10 @@ const routes: RouteConfig[] = [
   {
     path: '/algorithms',
     element: <AlgorithmsPage />,
+  },
+  {
+    path: '/domes-dedomenon',
+    element: <DataStructuresPage />,
   },
   {
     path: '/paliathemata',

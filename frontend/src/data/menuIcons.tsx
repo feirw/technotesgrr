@@ -21,6 +21,7 @@ export const MENU_ICONS = {
   studyTimer: `${HP}/3.png`,
   prosanatolismos: `${HP}/17.png`,
   algorithms: `${HP}/5.png`,
+  dataStructures: `${HP}/51.png`,
   takeABreath: `${HP}/8.png`,
   faq: `${HP}/17.png`,
   saek: `${HP}/44.png`,

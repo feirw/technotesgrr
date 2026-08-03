@@ -74,7 +74,7 @@ function buildSvg(headline, subtitle = 'Πληροφορική για τις Π�
   ${logoBlock}
   ${lineEls}
   <text x="600" y="520" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="600">${escapeXml(subtitle)}</text>
-  <text x="600" y="565" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="500">technotesgr.com</text>
+  <text x="600" y="565" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="500">technotes.gr</text>
 </svg>`;
 }
 

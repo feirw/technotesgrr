@@ -1,7 +1,7 @@
-import { getSiteOrigin } from '@/utils/siteUrl';
+import { getConfiguredSiteOrigin, getSiteOrigin } from '@/utils/siteUrl';
 
 /** Canonical production domain when env is unset (local dev uses window.location). */
-export const DEFAULT_SITE_ORIGIN = 'https://technotesgr.com';
+export const DEFAULT_SITE_ORIGIN = 'https://www.technotes.gr';
 
 export const SITE_NAME = 'Technotes';
 export const SITE_NAME_FULL = 'technotesgr';
@@ -20,7 +20,7 @@ export const SOCIAL_LINKS = [
 ] as const;
 
 export function resolveSiteOrigin(): string {
-  return getSiteOrigin() || DEFAULT_SITE_ORIGIN;
+  return getConfiguredSiteOrigin() || (import.meta.env.PROD ? DEFAULT_SITE_ORIGIN : getSiteOrigin() || DEFAULT_SITE_ORIGIN);
 }
 
 export function absoluteUrl(path: string): string {

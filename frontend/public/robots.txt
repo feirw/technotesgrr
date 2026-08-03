@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://technotesgr.com/sitemap.xml
+Sitemap: https://www.technotes.gr/sitemap.xml

@@ -1,8 +1,10 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
+import { loadGloglossaPage } from '@/routes/routes';
+import { prefetchGloglossaEmbed } from '@/utils/gloglossaPrefetch';
 import { getPreferredTheme } from '@/utils/theme';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
@@ -51,8 +53,8 @@ interface FaqItem {
 
 const HERO_LIGHT_800 = '/images/home%20page/bc11-800.webp';
 const HERO_LIGHT_1280 = '/images/home%20page/bc11-1280.webp';
-const HERO_DARK_800 = '/images/home%20page/night-800.webp';
-const HERO_DARK_1280 = '/images/home%20page/night-1280.webp';
+const HERO_DARK_800 = '/images/home%20page/nighthome-800.webp';
+const HERO_DARK_1280 = '/images/home%20page/nighthome-1280.webp';
 
 const SHOWCASE_VIDEOS = [
   '/videos/v24044gl0000d8dc50vog65ursbvt0u0.MP4',
@@ -101,8 +103,10 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Quiz', path: '/quiz', iconSrc: MENU_ICONS.quiz },
       { label: 'Παλιά Θέματα', path: '/paliathemata', iconSrc: MENU_ICONS.paliathemata },
       { label: 'Μεθοδολογίες', path: '/methodologies', iconSrc: MENU_ICONS.methodologies },
+      { label: 'Οπτικοποίηση δομών', path: '/domes-dedomenon', iconSrc: MENU_ICONS.dataStructures },
       { label: 'Ασκήσεις', path: '/askiseis', iconSrc: MENU_ICONS.askiseis },
       { label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa', iconSrc: MENU_ICONS.gloglossa },
+      { label: 'Σχολικά βιβλία', path: '/vivlia', iconSrc: MENU_ICONS.vivlia },
       { label: 'Study Timer', path: '/study-timer', iconSrc: MENU_ICONS.studyTimer },
       { label: 'Tracker Ύλης', path: '/progress-tracker', iconSrc: MENU_ICONS.progressTracker },
     ],
@@ -159,8 +163,6 @@ const faqData: FaqItem[] = [
 // const BACKEND_URL = getBackendUrl();
 
 /** Κοραλί (ζεστό): κύριο `#ff8f8e`, accent `#ff6b7a`, hover `#e85563`, ανοιχτό `#ffb0a4`. */
-
-const REVIEW_CAROUSEL_INTERVAL_MS = 6000;
 
 /** Διεύθυνση: +1 = επόμενη κριτική (μπαίνει από δεξιά), -1 = προηγούμενη (από αριστερά). */
 const reviewCarouselVariants = {
@@ -251,6 +253,18 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavig
             key={item.label}
             type="button"
             onClick={() => onNavigate(item.path)}
+            onMouseEnter={() => {
+              if (item.path === '/gloglossa') {
+                loadGloglossaPage();
+                prefetchGloglossaEmbed();
+              }
+            }}
+            onFocus={() => {
+              if (item.path === '/gloglossa') {
+                loadGloglossaPage();
+                prefetchGloglossaEmbed();
+              }
+            }}
             className="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 dark:border-white/10 bg-coral-wash/60 dark:bg-white/5 hover:bg-[#f07f97]/15 dark:hover:bg-[#f07f97]/15 hover:border-[#f07f97] px-3 py-4 text-center transition-colors"
           >
             <MenuIconImg src={item.iconSrc} className="w-10 h-10 sm:w-12 sm:h-12" />
@@ -501,21 +515,10 @@ const HomePage: React.FC = () => {
     setReviewDirection(1);
     setReviewIndex((i) => (i + 1) % reviewCount);
   }, [reviewCount]);
-  const goToReview = useCallback(
-    (target: number) => {
-      if (target === reviewIndex || target < 0 || target >= reviewCount) return;
-      const forward = (target - reviewIndex + reviewCount) % reviewCount;
-      const backward = (reviewIndex - target + reviewCount) % reviewCount;
-      setReviewDirection(forward <= backward ? 1 : -1);
-      setReviewIndex(target);
-    },
-    [reviewIndex, reviewCount]
-  );
-
-  useEffect(() => {
-    const id = window.setInterval(goNextReview, REVIEW_CAROUSEL_INTERVAL_MS);
-    return () => window.clearInterval(id);
-  }, [goNextReview]);
+  const goPrevReview = useCallback(() => {
+    setReviewDirection(-1);
+    setReviewIndex((i) => (i - 1 + reviewCount) % reviewCount);
+  }, [reviewCount]);
 
   // (Take a breath moved to the top navbar in MainLayout)
 
@@ -709,22 +712,23 @@ const HomePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-center items-center gap-2 mt-10" role="tablist" aria-label="Επιλογή κριτικής">
-              {reviewsData.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  role="tab"
-                  aria-selected={idx === reviewIndex}
-                  aria-label={`Κριτική ${idx + 1} από ${reviewCount}`}
-                  onClick={() => goToReview(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    idx === reviewIndex
-                      ? 'w-8 bg-[#f07f97]'
-                      : 'w-2.5 bg-gray-300 dark:bg-white/25 hover:bg-[#f07f97]/80'
-                  }`}
-                />
-              ))}
+            <div className="flex justify-center items-center gap-4 mt-10" aria-label="Πλοήγηση κριτικών">
+              <button
+                type="button"
+                onClick={goPrevReview}
+                aria-label="Προηγούμενη κριτική"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/70 bg-white/15 text-white shadow-sm transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                <ChevronLeft className="h-6 w-6" aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={goNextReview}
+                aria-label="Επόμενη κριτική"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/70 bg-white/15 text-white shadow-sm transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              >
+                <ChevronRight className="h-6 w-6" aria-hidden />
+              </button>
             </div>
           </motion.div>
         </Section>

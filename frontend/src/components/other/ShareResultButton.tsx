@@ -19,8 +19,8 @@ interface ShareResultButtonProps {
 const STATUS_LABEL: Record<Status, string | null> = {
   idle: null,
   generating: 'Δημιουργία εικόνας...',
-  shared: 'Επίλεξε Story μέσα στο Instagram!',
-  downloaded: 'Η εικόνα κατέβηκε — ανέβασέ τη ως Story!',
+  shared: 'Άνοιξε Instagram → Story από το μενού!',
+  downloaded: 'Κατέβηκε η εικόνα — άνοιξέ την ως Story στο Instagram!',
   error: 'Κάτι πήγε στραβά, δοκίμασε ξανά.',
 };
 
@@ -74,19 +74,27 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
     if (status === 'generating') return;
     setStatus('generating');
     try {
-      const filename = data.kind === 'quiz' ? 'technotesgr-quiz-score.png' : 'technotesgr-streak.png';
+      // Πρέπει να έχουμε έτοιμο blob πριν το share — στο iOS το gesture
+      // «σπάει» αν γίνει βαριά canvas εργασία μέσα στο ίδιο click.
+      const blob =
+        preparedBlobRef.current ??
+        (await (prepareShareImage() ?? generateShareImageBlob(data)));
+      preparedBlobRef.current = blob;
+
+      const filename =
+        data.kind === 'quiz' ? 'technotesgr-quiz-score.jpg' : 'technotesgr-streak.jpg';
       const outcome = await shareToInstagramStory(
         data,
         filename,
         buildShareCaption(data),
-        preparedBlobRef.current
+        blob
       );
       if (outcome === 'cancelled') {
         setStatus('idle');
         return;
       }
       setStatus(outcome);
-      window.setTimeout(() => setStatus('idle'), 4000);
+      window.setTimeout(() => setStatus('idle'), 5000);
     } catch (err) {
       console.error('Error generating share image:', err);
       setStatus('error');
