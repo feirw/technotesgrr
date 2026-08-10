@@ -18,7 +18,7 @@ import {
   LucideIcon,
 } from 'lucide-react';
 import QuizDialog from '@/components/private/QuizDialog';
-import { fetchAllQuizzes } from '@/utils/quizUtils';
+import { fetchAllQuizzes, sortQuizzesByChapterOrder } from '@/utils/quizUtils';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { useSyncedStorage } from '@/utils/useSyncedStorage';
 
@@ -87,7 +87,7 @@ const QuizPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [q, setQ] = useState<string>('');
-  const [sortBy, setSortBy] = useState<'progress' | 'title' | 'recent' | 'default'>('progress');
+  const [sortBy, setSortBy] = useState<'progress' | 'title' | 'recent' | 'default'>('default');
   const [filterBy, setFilterBy] = useState<'all' | 'completed' | 'inProgress' | 'notStarted'>(
     'all'
   );
@@ -255,7 +255,9 @@ const QuizPage: React.FC = () => {
     }
 
     // Sort
-    if (sortBy === 'progress') {
+    if (sortBy === 'default') {
+      result = sortQuizzesByChapterOrder(result);
+    } else if (sortBy === 'progress') {
       result.sort((a, b) => b.percent - a.percent);
     } else if (sortBy === 'title') {
       result.sort((a, b) => a.title.localeCompare(b.title, 'el'));
@@ -520,10 +522,10 @@ const QuizPage: React.FC = () => {
                       exit={{ opacity: 0, y: -10 }}
                     >
                       {[
+                        { value: 'default', label: 'Σειρά βιβλίου' },
                         { value: 'progress', label: 'Πρόοδος' },
                         { value: 'title', label: 'Αλφαβητικά' },
                         { value: 'recent', label: 'Πρόσφατα' },
-                        { value: 'default', label: 'Προεπιλογή' },
                       ].map((option) => (
                         <button
                           key={option.value}
@@ -606,7 +608,7 @@ const QuizPage: React.FC = () => {
         </div>
 
         {/* Content (Quiz Grid) */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-28 sm:pb-32 max-w-7xl mx-auto w-full">
           <motion.div
             className="mb-6 flex items-start gap-3 rounded-xl border border-[#f07f97]/30 bg-white/85 p-4 text-sm text-gray-700 shadow-sm backdrop-blur dark:border-[#f07f97]/30 dark:bg-[#3a2658]/85 dark:text-gray-200"
             initial={{ opacity: 0, y: 12 }}

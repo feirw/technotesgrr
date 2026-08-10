@@ -21,7 +21,7 @@ import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/route
 import { prefetchGloglossaEmbed } from '@/utils/gloglossaPrefetch';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
-import { MENU_ICONS, MenuNavIcon } from '@/data/menuIcons';
+import { MENU_ICONS, MenuNavIcon, prefetchMenuIcons } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 // const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
@@ -297,6 +297,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     const warmAndPrefetch = () => {
       if (cancelled) return;
+      prefetchMenuIcons();
       for (const base of getBackendUrlCandidates()) {
         fetch(`${base}/api/health`).catch(() => {});
       }
@@ -660,10 +661,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           aria-hidden="true"
         />
         <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 items-start w-full max-w-[100vw]">
-          <motion.div
-            {...fadeIn}
-            className="text-center md:text-left md:pr-6"
-          >
+          <motion.div {...fadeIn} className="text-center md:text-left md:pr-6">
             <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3">Νομικά</h3>
             <div className="flex flex-col gap-2 text-black dark:text-gray-100 text-sm md:items-start md:mx-0 mx-auto max-w-xs md:max-w-none">
               <NavLink to="/privacy-policy" className="hover:opacity-80 transition-opacity">
@@ -717,7 +715,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 <Youtube className="w-4 h-4" /> <span>YouTube</span>
               </a>
-              
             </div>
           </motion.div>
 
@@ -726,7 +723,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             transition={{ delay: 0.25 }}
             className="text-center md:text-right md:pl-6 flex flex-col items-center md:items-end"
           >
-            <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3 w-full md:w-auto">Τοποθεσία</h3>
+            <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3 w-full md:w-auto">
+              Τοποθεσία
+            </h3>
             <div className="flex flex-col gap-2 text-black dark:text-gray-100 text-sm items-center md:items-end">
               <div className="inline-flex items-center gap-2 justify-center md:justify-end">
                 <span role="img" aria-label="location">

@@ -86,6 +86,48 @@ const EIMASTE_MESA_C_IDS = ['april25', 'april24', 'april23', 'april22', 'april21
 const yearsToItems = (years: number[]): ExamItem[] =>
   years.map((year) => ({ id: year.toString(), label: year.toString() }));
 
+const KANONIKES_EXTRA_BY_YEAR: Record<string, ExamItem[]> = {
+  '2016': [
+    {
+      id: '2016_old',
+      label: '2016 old',
+      path: '/pdfs/kanonikes/palio_aepp_2016_panellinies_net.pdf',
+    },
+  ],
+  '2020': [
+    {
+      id: '2020_old',
+      label: '2020 old',
+      path: '/pdfs/kanonikes/old_aepp_2020_panellinies_net.pdf',
+    },
+  ],
+};
+
+const KANONIKES_ITEMS: ExamItem[] = yearsToItems(KANONIKES_YEARS).flatMap((item) =>
+  KANONIKES_EXTRA_BY_YEAR[item.id] ? [item, ...KANONIKES_EXTRA_BY_YEAR[item.id]] : [item],
+);
+
+const EPANALIPTIKES_EXTRA_BY_YEAR: Record<string, ExamItem[]> = {
+  '2016': [
+    {
+      id: '2016_palaio',
+      label: '2016 παλαιό',
+      path: '/pdfs/epanaliptikes/epanal_palio_aepp_2016_panellinies_net.pdf',
+    },
+  ],
+  '2020': [
+    {
+      id: '2020_palaio',
+      label: '2020 παλαιό',
+      path: '/pdfs/epanaliptikes/2020_old.pdf',
+    },
+  ],
+};
+
+const EPANALIPTIKES_ITEMS: ExamItem[] = yearsToItems(EPANALIPTIKES_YEARS).flatMap((item) =>
+  EPANALIPTIKES_EXTRA_BY_YEAR[item.id] ? [item, ...EPANALIPTIKES_EXTRA_BY_YEAR[item.id]] : [item],
+);
+
 const parseEimasteMesaId = (id: string): ExamItem => {
   const match = id.match(/^([a-z]+)(\d{2})$/);
   if (!match) return { id, label: id };
@@ -132,8 +174,8 @@ const DIAGONISMATA_EFOLIS = filesToItems('efolis', DIAGONISMATA_EFOLIS_FILES);
 const DIAGONISMATA_PINAKES = filesToItems('pinakes', DIAGONISMATA_PINAKES_FILES);
 
 const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
-  kanonikes: yearsToItems(KANONIKES_YEARS),
-  epanaliptikes: yearsToItems(EPANALIPTIKES_YEARS),
+  kanonikes: KANONIKES_ITEMS,
+  epanaliptikes: EPANALIPTIKES_ITEMS,
   'oefe-a': yearsToItems(OEFE_YEARS1),
   'oefe-b': yearsToItems(OEFE_YEARS2),
   'eimaste-mesa-a': EIMASTE_MESA_A,
@@ -149,12 +191,12 @@ const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
 };
 
 const MODE_TABS: ModeTabConfig[] = [
-  { mode: 'kanonikes', label: 'Κανονικές', mobileLabel: 'Κανονικές', count: KANONIKES_YEARS.length },
+  { mode: 'kanonikes', label: 'Κανονικές', mobileLabel: 'Κανονικές', count: KANONIKES_ITEMS.length },
   {
     mode: 'epanaliptikes',
     label: 'Επαναληπτικές',
     mobileLabel: 'Επαναληπτικές',
-    count: EPANALIPTIKES_YEARS.length,
+    count: EPANALIPTIKES_ITEMS.length,
   },
   { mode: 'oefe-a', label: 'ΟΕΦΕ Α Φάση', mobileLabel: 'ΟΕΦΕ Α', count: OEFE_YEARS1.length },
   { mode: 'oefe-b', label: 'ΟΕΦΕ Β Φάση', mobileLabel: 'ΟΕΦΕ Β', count: OEFE_YEARS2.length },

@@ -94,6 +94,38 @@ export function getSchoolCategoryIcon(category: string): string {
 
 export type MenuIconKey = keyof typeof MENU_ICONS;
 
+export function menuIconWebpSrc(pngSrc: string): string {
+  return pngSrc.endsWith('.png') ? pngSrc.replace(/\.png$/, '-96.webp') : pngSrc;
+}
+
+const ALL_MENU_ICON_PNG_URLS = [
+  ...new Set([
+    ...Object.values(MENU_ICONS),
+    ...Object.values(SCHOOL_PAGE_NOTICE_ICONS),
+    FUTURE_CAREERS_ICON,
+    ...Object.values(SCHOOL_CATEGORY_ICONS),
+  ]),
+];
+
+const prefetchedMenuIconUrls = new Set<string>();
+
+/** Warm browser cache for pixel menu icons (WebP ~3 KB each). */
+export function prefetchMenuIcons(urls: string[] = ALL_MENU_ICON_PNG_URLS): void {
+  if (typeof document === 'undefined') return;
+
+  for (const png of urls) {
+    const webp = menuIconWebpSrc(png);
+    if (prefetchedMenuIconUrls.has(webp)) continue;
+    prefetchedMenuIconUrls.add(webp);
+
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.as = 'image';
+    link.href = webp;
+    document.head.appendChild(link);
+  }
+}
+
 /** Σταθερό πλαίσιο + μέγεθος για ευθυγράμμιση icons στο μενού. */
 export const MENU_ICON_SLOT = 'inline-flex h-9 w-9 shrink-0 items-center justify-center';
 export const MENU_ICON_SIZE = 'h-8 w-8';
@@ -103,25 +135,45 @@ export const MenuIconImg: React.FC<{
   src: string;
   className?: string;
   alt?: string;
-  /** Default lazy — pass "eager" only for above-the-fold icons. */
   loading?: 'lazy' | 'eager';
-}> = ({ src, className = MENU_ICON_SIZE, alt, loading = 'lazy' }) => (
-  <img
-    src={src}
-    alt={alt ?? ''}
-    aria-hidden={alt ? undefined : true}
-    className={`${className} object-contain shrink-0 mix-blend-normal [image-rendering:pixelated]`}
-    decoding="async"
-    loading={loading}
-  />
-);
+  fetchPriority?: 'high' | 'low' | 'auto';
+}> = ({
+  src,
+  className = MENU_ICON_SIZE,
+  alt,
+  loading = 'eager',
+  fetchPriority = 'auto',
+}) => {
+  const webpSrc = menuIconWebpSrc(src);
+
+  return (
+    <picture>
+      <source type="image/webp" srcSet={webpSrc} />
+      <img
+        src={src}
+        alt={alt ?? ''}
+        aria-hidden={alt ? undefined : true}
+        className={`${className} object-contain shrink-0 mix-blend-normal [image-rendering:pixelated]`}
+        decoding="async"
+        loading={loading}
+        fetchPriority={fetchPriority}
+        width={96}
+        height={96}
+      />
+    </picture>
+  );
+};
 
 export const MenuNavIcon: React.FC<{ src: string; compact?: boolean }> = ({
   src,
   compact = false,
 }) => (
   <span className={MENU_ICON_SLOT} aria-hidden>
-    <MenuIconImg src={src} className={compact ? MENU_ICON_SIZE_COMPACT : MENU_ICON_SIZE} />
+    <MenuIconImg
+      src={src}
+      className={compact ? MENU_ICON_SIZE_COMPACT : MENU_ICON_SIZE}
+      fetchPriority="high"
+    />
   </span>
 );
 

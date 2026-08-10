@@ -18,6 +18,7 @@ import {
 import { flashcards as staticFlashcardChapters } from '@/utils/flashcards';
 import { PageMenuIcon } from '@/data/menuIcons';
 import { useSyncedStorage } from '@/utils/useSyncedStorage';
+import { FlashcardText } from '@/utils/flashcardTextFormat';
 
 // --- Types & Interfaces ---
 
@@ -624,14 +625,17 @@ const Flashcards: React.FC = () => {
                           >
                             {isFlipped ? 'Απάντηση' : 'Ερώτηση'}
                           </div>
-                          <p
-                            className={`text-xl sm:text-2xl leading-relaxed ${
+                          <div
+                            className={`${
                               isFlipped ? 'text-gray-800 dark:text-gray-100 font-normal' : 'text-coral-strong dark:text-coral-light font-bold'
                             }`}
                             style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
                           >
-                            {isFlipped ? currentCard.back : currentCard.front}
-                          </p>
+                            <FlashcardText
+                              text={isFlipped ? currentCard.back : currentCard.front}
+                              className="text-xl sm:text-2xl"
+                            />
+                          </div>
                         </motion.button>
                       </AnimatePresence>
                     </div>

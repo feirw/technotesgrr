@@ -63,6 +63,35 @@ const chapterNameMap: Record<string | number, string> = {
   debug: 'Εκσφαλμάτωση',
 };
 
+/** Σειρά κεφαλαίων όπως στο σχολικό βιβλίο / ύλη Πανελληνίων. */
+const QUIZ_CHAPTER_ORDER = [
+  '1',
+  '2',
+  '3',
+  '6',
+  '7',
+  '8',
+  '10',
+  '12',
+  '13',
+  'stack',
+  'queue',
+  'lists',
+  'trees',
+  'oop',
+  'debug',
+] as const;
+
+export const getQuizChapterSortIndex = (quiz: Pick<QuizData, 'number' | 'id'>): number => {
+  const key = String(quiz.number ?? quiz.id.replace(/^chapter-/, ''));
+  const idx = QUIZ_CHAPTER_ORDER.indexOf(key as (typeof QUIZ_CHAPTER_ORDER)[number]);
+  return idx === -1 ? QUIZ_CHAPTER_ORDER.length + 1 : idx;
+};
+
+export const sortQuizzesByChapterOrder = <T extends Pick<QuizData, 'number' | 'id'>>(
+  quizzes: T[],
+): T[] => [...quizzes].sort((a, b) => getQuizChapterSortIndex(a) - getQuizChapterSortIndex(b));
+
 // --- Functions ---
 
 export const fetchQuizCategories = async (): Promise<string[]> => {
@@ -188,7 +217,7 @@ const buildStaticQuizzes = (): QuizData[] => {
     existing.questions = Array.from(byQuestionId.values());
   });
 
-  return Array.from(mergedByKey.values());
+  return sortQuizzesByChapterOrder(Array.from(mergedByKey.values()));
 };
 
 const STATIC_QUIZZES: QuizData[] = buildStaticQuizzes();
