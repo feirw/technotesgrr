@@ -61,7 +61,7 @@ export const ACCOUNTING_FINANCE_CAREERS: Career[] = [
   {
     section: 'Ελεγκτική',
     title: 'Compliance Officer',
-    description: 'Διασφαλίζει τη συμμόρφωση με κανονισμούς.',
+    description: 'Διασφαλίζει τη συμμόρφωση με κανονισμούς.  ',
   },
   {
     section: 'Ελεγκτική',
