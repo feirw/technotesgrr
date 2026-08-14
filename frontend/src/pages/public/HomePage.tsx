@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
-import { loadGloglossaPage } from '@/routes/routes';
-import { prefetchGloglossaEmbed } from '@/utils/gloglossaPrefetch';
 import { getPreferredTheme } from '@/utils/theme';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
@@ -253,18 +251,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavig
             key={item.label}
             type="button"
             onClick={() => onNavigate(item.path)}
-            onMouseEnter={() => {
-              if (item.path === '/gloglossa') {
-                loadGloglossaPage();
-                prefetchGloglossaEmbed();
-              }
-            }}
-            onFocus={() => {
-              if (item.path === '/gloglossa') {
-                loadGloglossaPage();
-                prefetchGloglossaEmbed();
-              }
-            }}
             className="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 dark:border-white/10 bg-coral-wash/60 dark:bg-white/5 hover:bg-[#f07f97]/15 dark:hover:bg-[#f07f97]/15 hover:border-[#f07f97] px-3 py-4 text-center transition-colors"
           >
             <MenuIconImg src={item.iconSrc} className="w-10 h-10 sm:w-12 sm:h-12" />

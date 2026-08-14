@@ -164,29 +164,61 @@ export const MenuIconImg: React.FC<{
   );
 };
 
-export const MenuNavIcon: React.FC<{ src: string; compact?: boolean }> = ({
+export const MenuNavIcon: React.FC<{ src: string; compact?: boolean; label?: string }> = ({
   src,
   compact = false,
+  label,
 }) => (
-  <span className={MENU_ICON_SLOT} aria-hidden>
+  <span className={MENU_ICON_SLOT} aria-hidden={label ? undefined : true}>
     <MenuIconImg
       src={src}
       className={compact ? MENU_ICON_SIZE_COMPACT : MENU_ICON_SIZE}
       fetchPriority="high"
+      alt={label}
     />
   </span>
 );
+
+const PAGE_MENU_ICON_LABELS: Record<MenuIconKey, string> = {
+  home: 'Αρχική',
+  about: 'Σχετικά',
+  announcements: 'Ανακοινώσεις',
+  quiz: 'Quiz',
+  flashcards: 'Flashcards',
+  methodologies: 'Μεθοδολογίες',
+  askiseis: 'Ασκήσεις',
+  aiCorrector: 'AI Διορθωτής',
+  schools: 'Σχολές',
+  syntelestesSxolon: 'Συντελεστές σχολών',
+  ypologismosMorion: 'Υπολογισμός μορίων',
+  paliathemata: 'Παλιά θέματα',
+  gloglossa: 'Διερμηνευτής ΓΛΩΣΣΑΣ',
+  progressTracker: 'Πρόοδος',
+  studyTimer: 'Χρονόμετρο μελέτης',
+  prosanatolismos: 'Προσανατολισμός',
+  algorithms: 'Αλγόριθμοι',
+  dataStructures: 'Δομές δεδομένων',
+  takeABreath: 'Take a breath',
+  faq: 'FAQ',
+  saek: 'ΣΑΕΚ',
+  mixanografiko: 'Μηχανογραφικό',
+  antistixia: 'Αντιστοιχίες σχολών',
+  meteggrafes: 'Μεταγγραφές',
+  vivlia: 'Βιβλία',
+};
 
 export const PageMenuIcon: React.FC<{
   icon: MenuIconKey;
   wrapperClassName?: string;
   className?: string;
+  label?: string;
 }> = ({
   icon,
   wrapperClassName = 'inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/20 mb-3',
   className = 'w-10 h-10 sm:w-12 sm:h-12',
+  label,
 }) => (
   <div className={wrapperClassName}>
-    <MenuIconImg src={MENU_ICONS[icon]} className={className} />
+    <MenuIconImg src={MENU_ICONS[icon]} className={className} alt={label ?? PAGE_MENU_ICON_LABELS[icon]} />
   </div>
 );

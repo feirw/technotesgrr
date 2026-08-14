@@ -19,6 +19,7 @@ payload = {
     "VITE_SUPABASE_ANON_KEY": os.environ.get("VITE_SUPABASE_ANON_KEY", "") or "",
     "VITE_BACKEND_URL": os.environ.get("VITE_BACKEND_URL", "") or "",
     "VITE_SITE_URL": os.environ.get("VITE_SITE_URL", "") or "",
+    "VITE_GA_MEASUREMENT_ID": os.environ.get("VITE_GA_MEASUREMENT_ID", "") or "",
 }
 # Merge with any stub from the image so we only override known keys
 out.write_text(

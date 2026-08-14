@@ -4,6 +4,7 @@ import MainLayout from '@/layouts/MainLayout';
 import ScrollToTop from '@/components/other/ScrollToTop';
 import NativeAppBridge from '@/components/other/NativeAppBridge';
 import SeoHead from '@/seo/SeoHead';
+import AnalyticsTracker from '@/components/other/AnalyticsTracker';
 import routes, { RouteConfig } from './routes/routes';
 
 const App: React.FC = () => {
@@ -16,6 +17,7 @@ const App: React.FC = () => {
   return (
     <MainLayout>
       <SeoHead />
+      <AnalyticsTracker />
       <ScrollToTop />
       <NativeAppBridge />
       <Routes>
