@@ -1,0 +1,32 @@
+# technotes.gr (Technotes)
+
+> Δωρεάν online πλατφόρμα προετοιμασίας για Πανελλήνιες Πληροφορικής (Γ' Λυκείου, ΑΕΠΠ, δομημένος προγραμματισμός).
+
+## About
+
+Technotes (technotesgr) βοηθά μαθητές Γ' Λυκείου να προετοιμαστούν για το μάθημα Πληροφορικής στις Πανελλήνιες με quiz, flashcards, παλιά θέματα, ασκήσεις, μεθοδολογίες και εργαλεία προσανατολισμού.
+
+- Γλώσσα: Ελληνικά (el-GR)
+- Περιοχή: Ελλάδα (Αθήνα)
+- Ιστοσελίδα: https://www.technotes.gr/
+
+## Key pages
+
+- Αρχική: https://www.technotes.gr/
+- Quiz: https://www.technotes.gr/quiz
+- Flashcards: https://www.technotes.gr/flashcards
+- Παλιά θέματα: https://www.technotes.gr/paliathemata
+- Ασκήσεις: https://www.technotes.gr/askiseis
+- Σχολές / προσανατολισμός: https://www.technotes.gr/sxoles
+- FAQ: https://www.technotes.gr/faq
+- Σχετικά: https://www.technotes.gr/about
+
+## Legal
+
+- Όροι & Απόρρητο: https://www.technotes.gr/privacy-policy
+- Προστασία δεδομένων (GDPR): https://www.technotes.gr/data
+
+## Contact / social
+
+- Instagram: https://instagram.com/technotesgr
+- YouTube: https://www.youtube.com/@technotesgr-elenizafeiri

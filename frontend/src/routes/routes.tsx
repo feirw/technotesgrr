@@ -32,6 +32,7 @@ const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
 // const OnlinePage = lazy(() => import('@/pages/private/OnlinePage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
 const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
+const ThankYouPage = lazy(() => import('@/pages/public/ThankYouPage'));
 const NotFound = lazy(() => import('@/pages/other/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
@@ -110,6 +111,18 @@ const routes: RouteConfig[] = [
   {
     path: '/announcements',
     element: <AnnouncementsPage />,
+  },
+  {
+    path: '/thank-you',
+    element: <ThankYouPage />,
+  },
+  {
+    path: '/terms',
+    element: <Navigate to="/privacy-policy" replace />,
+  },
+  {
+    path: '/terms-of-service',
+    element: <Navigate to="/privacy-policy" replace />,
   },
   {
     path: '/faq',

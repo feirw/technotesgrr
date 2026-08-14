@@ -18,9 +18,10 @@ import {
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/routes';
-import { prefetchGloglossaEmbed } from '@/utils/gloglossaPrefetch';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
+import Breadcrumbs from '@/components/other/Breadcrumbs';
+import StickyMobileCta from '@/components/other/StickyMobileCta';
 import { MENU_ICONS, MenuNavIcon, prefetchMenuIcons } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
@@ -43,6 +44,7 @@ interface NavButtonProps {
   to: string;
   children: React.ReactNode;
   iconSrc?: string;
+  iconLabel?: string;
 }
 
 interface MobileNavButtonProps {
@@ -50,6 +52,7 @@ interface MobileNavButtonProps {
   children: React.ReactNode;
   icon?: LucideIcon;
   iconSrc?: string;
+  iconLabel?: string;
   onClick: () => void;
   /** Παράκαμψη isActive (π.χ. `/methodologies?t=...`). */
   isActiveOverride?: boolean;
@@ -79,7 +82,7 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/askiseis', label: 'Ασκήσεις', iconSrc: MENU_ICONS.askiseis },
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
-  { to: '/gloglossa', label: 'GloGlossa', iconSrc: MENU_ICONS.gloglossa, onPrefetch: () => { loadGloglossaPage(); prefetchGloglossaEmbed(); } },
+  { to: '/gloglossa', label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', iconSrc: MENU_ICONS.gloglossa, onPrefetch: loadGloglossaPage },
   {
     to: '/vivlia',
     label: 'Σχολικά βιβλία',
@@ -153,7 +156,7 @@ const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[] }> = ({ title
   );
 };
 
-const NavButton: React.FC<NavButtonProps> = ({ to, children, iconSrc }) => (
+const NavButton: React.FC<NavButtonProps> = ({ to, children, iconSrc, iconLabel }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
@@ -174,7 +177,7 @@ const NavButton: React.FC<NavButtonProps> = ({ to, children, iconSrc }) => (
           />
         )}
         <span className="relative z-10 inline-flex items-center gap-2">
-          {iconSrc ? <MenuNavIcon src={iconSrc} compact /> : null}
+          {iconSrc ? <MenuNavIcon src={iconSrc} compact label={iconLabel} /> : null}
           {children}
         </span>
       </>
@@ -187,6 +190,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
   children,
   icon: Icon,
   iconSrc,
+  iconLabel,
   onClick,
   isActiveOverride,
 }) => (
@@ -215,7 +219,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
           )}
           <div className="flex items-center gap-3 relative z-10">
             {iconSrc ? (
-              <MenuNavIcon src={iconSrc} />
+              <MenuNavIcon src={iconSrc} label={iconLabel} />
             ) : Icon ? (
               <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center" aria-hidden>
                 <Icon
@@ -427,10 +431,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 Take a breath
               </button>
-              <NavButton to="/" iconSrc={MENU_ICONS.home}>Αρχική</NavButton>
-              <NavButton to="/about" iconSrc={MENU_ICONS.about}>Σχετικά με εμένα</NavButton>
-              <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements}>Ανακοινώσεις</NavButton>
-              <NavButton to="/faq" iconSrc={MENU_ICONS.faq}>FAQ</NavButton>
+              <NavButton to="/" iconSrc={MENU_ICONS.home} iconLabel="Αρχική">Αρχική</NavButton>
+              <NavButton to="/about" iconSrc={MENU_ICONS.about} iconLabel="Σχετικά">Σχετικά με εμένα</NavButton>
+              <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements} iconLabel="Ανακοινώσεις">Ανακοινώσεις</NavButton>
+              <NavButton to="/faq" iconSrc={MENU_ICONS.faq} iconLabel="FAQ">FAQ</NavButton>
 
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
 
@@ -652,7 +656,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)] pt-20">{children}</main>
+      <main className="flex-grow relative z-10 pb-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] md:pb-[env(safe-area-inset-bottom,0px)] pt-20">
+        <Breadcrumbs />
+        {children}
+      </main>
+
+      <StickyMobileCta />
 
       {/* Footer */}
       <footer className="relative -mt-px overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
@@ -733,6 +742,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </span>
                 <span>Αθήνα, Ελλάδα</span>
               </div>
+              <p className="text-xs text-black/80 dark:text-gray-200 max-w-xs">
+                Απάντηση σε μηνύματα εντός <strong className="font-semibold">48 ωρών</strong> (εργάσιμες).
+              </p>
             </div>
           </motion.div>
         </div>

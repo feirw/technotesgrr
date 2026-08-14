@@ -70,16 +70,30 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Προστασία Δεδομένων', path: '/data' },
     ],
   },
+  '/thank-you': {
+    path: '/thank-you',
+    slug: 'thank-you',
+    title: 'Ευχαριστούμε | Technotes',
+    description:
+      'Το μήνυμά σας καταχωρήθηκε. Η ομάδα Technotes θα απαντήσει εντός 48 ωρών (εργάσιμες).',
+    ogImage: og('home'),
+    noindex: true,
+    robots: 'noindex, follow',
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Ευχαριστίες', path: '/thank-you' },
+    ],
+  },
   '/gloglossa': {
     path: '/gloglossa',
     slug: 'gloglossa',
-    title: 'GloGlossa | Ορολογία Πληροφορικής Πανελληνίων',
+    title: 'Διερμηνευτής ΓΛΩΣΣΑΣ | Technotes',
     description:
-      'GloGlossa: γλωσσάρι όρων Πληροφορικής για Πανελλήνιες, ΑΕΠΠ, αλγόριθμοι, δομές δεδομένων και θεωρία μαθήματος Γ\' Λυκείου.',
+      'Online διερμηνευτής ΓΛΩΣΣΑΣ και Ψευδογλώσσας για Πανελλήνιες Πληροφορικής (ΑΕΠΠ). Γράψε και εκτέλεσε κώδικα ΓΛΩΣΣΑΣ στον browser.',
     ogImage: og('gloglossa'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
-      { name: 'GloGlossa', path: '/gloglossa' },
+      { name: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa' },
     ],
   },
   '/announcements': {

@@ -23,6 +23,17 @@ export function buildOrganizationSchema() {
       '@type': 'Country',
       name: 'Greece',
     },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Αθήνα',
+      addressRegion: 'Αττική',
+      addressCountry: 'GR',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 37.9838,
+      longitude: 23.7275,
+    },
     inLanguage: 'el-GR',
     sameAs: [...SOCIAL_LINKS],
     contactPoint: {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cookie } from 'lucide-react';
 import { hasCookieConsent, setCookieConsent } from '@/utils/cookieConsent';
+import { initGoogleAnalytics } from '@/utils/analytics';
 
 const CookieConsent: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -26,6 +27,7 @@ const CookieConsent: React.FC = () => {
 
   const accept = () => {
     setCookieConsent('accepted');
+    initGoogleAnalytics();
     setVisible(false);
   };
 
@@ -69,7 +71,8 @@ const CookieConsent: React.FC = () => {
                   className="mt-1.5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed"
                 >
                   Χρησιμοποιούμε τοπική αποθήκευση (π.χ. localStorage) για προτιμήσεις, πρόοδο
-                  μελέτης και τη λειτουργία της πλατφόρμας. Δεν χρησιμοποιούμε διαφημιστικά
+                  μελέτης και τη λειτουργία της πλατφόρμας. Με «Αποδοχή» ενεργοποιείται και
+                  ανώνυμη στατιστική (Google Analytics). Δεν χρησιμοποιούμε διαφημιστικά
                   cookies.{' '}
                   <Link
                     to="/privacy-policy"
