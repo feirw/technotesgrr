@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cookie } from 'lucide-react';
 import { hasCookieConsent, setCookieConsent } from '@/utils/cookieConsent';
-import { initGoogleAnalytics } from '@/utils/analytics';
+import { denyAnalyticsConsent, grantAnalyticsConsent } from '@/utils/analytics';
 
 const CookieConsent: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -27,12 +27,13 @@ const CookieConsent: React.FC = () => {
 
   const accept = () => {
     setCookieConsent('accepted');
-    initGoogleAnalytics();
+    grantAnalyticsConsent();
     setVisible(false);
   };
 
   const essentialOnly = () => {
     setCookieConsent('essential');
+    denyAnalyticsConsent();
     setVisible(false);
   };
 

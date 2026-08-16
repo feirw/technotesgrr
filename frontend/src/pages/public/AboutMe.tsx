@@ -1,5 +1,6 @@
 import React from 'react';
 import { MenuIconImg } from '@/data/menuIcons';
+import { OptimizedImg } from '@/components/other/OptimizedImg';
 
 const HP = '/images/home%20page';
 const ABOUT_SECTION_ICONS = {
@@ -123,14 +124,17 @@ const AboutPage: React.FC = () => {
   return (
     <div className="relative min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
-        <img
+        <OptimizedImg
           src={ABOUT_BACKGROUND_LIGHT}
           alt=""
+          loading="eager"
+          fetchPriority="high"
           className="w-full h-full object-cover dark:hidden"
         />
-        <img
+        <OptimizedImg
           src={ABOUT_BACKGROUND_DARK}
           alt=""
+          loading="lazy"
           className="hidden w-full h-full object-cover dark:block"
         />
       </div>
@@ -160,7 +164,7 @@ const AboutPage: React.FC = () => {
                     key={imageSrc}
                     className="aspect-square overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
                   >
-                    <img
+                    <OptimizedImg
                       src={imageSrc}
                       alt={`Επίτευγμα ${i + 1}`}
                       className="w-full h-full object-cover"
@@ -178,7 +182,7 @@ const AboutPage: React.FC = () => {
                     key={imageSrc}
                     className="aspect-[16/10] overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
                   >
-                    <img
+                    <OptimizedImg
                       src={imageSrc}
                       alt={`Προσωπική εικόνα ${i + 1}`}
                       className="w-full h-full object-contain"

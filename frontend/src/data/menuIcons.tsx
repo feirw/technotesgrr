@@ -98,6 +98,13 @@ export function menuIconWebpSrc(pngSrc: string): string {
   return pngSrc.endsWith('.png') ? pngSrc.replace(/\.png$/, '-96.webp') : pngSrc;
 }
 
+const CRITICAL_NAV_ICON_PNGS = [
+  MENU_ICONS.home,
+  MENU_ICONS.about,
+  MENU_ICONS.announcements,
+  MENU_ICONS.faq,
+];
+
 const ALL_MENU_ICON_PNG_URLS = [
   ...new Set([
     ...Object.values(MENU_ICONS),
@@ -109,21 +116,21 @@ const ALL_MENU_ICON_PNG_URLS = [
 
 const prefetchedMenuIconUrls = new Set<string>();
 
-/** Warm browser cache for pixel menu icons (WebP ~3 KB each). */
-export function prefetchMenuIcons(urls: string[] = ALL_MENU_ICON_PNG_URLS): void {
+/** Warm cache for a small set of icons without flooding the network. */
+export function prefetchMenuIcons(urls: string[] = CRITICAL_NAV_ICON_PNGS): void {
   if (typeof document === 'undefined') return;
 
   for (const png of urls) {
     const webp = menuIconWebpSrc(png);
     if (prefetchedMenuIconUrls.has(webp)) continue;
     prefetchedMenuIconUrls.add(webp);
-
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
-    link.as = 'image';
-    link.href = webp;
-    document.head.appendChild(link);
+    const img = new Image();
+    img.src = webp;
   }
+}
+
+export function prefetchAllMenuIcons(): void {
+  prefetchMenuIcons(ALL_MENU_ICON_PNG_URLS);
 }
 
 /** Σταθερό πλαίσιο + μέγεθος για ευθυγράμμιση icons στο μενού. */
@@ -141,8 +148,8 @@ export const MenuIconImg: React.FC<{
   src,
   className = MENU_ICON_SIZE,
   alt,
-  loading = 'eager',
-  fetchPriority = 'auto',
+  loading = 'lazy',
+  fetchPriority = 'low',
 }) => {
   const webpSrc = menuIconWebpSrc(src);
 
@@ -174,6 +181,7 @@ export const MenuNavIcon: React.FC<{ src: string; compact?: boolean; label?: str
       src={src}
       className={compact ? MENU_ICON_SIZE_COMPACT : MENU_ICON_SIZE}
       fetchPriority="high"
+      loading="eager"
       alt={label}
     />
   </span>
@@ -219,6 +227,12 @@ export const PageMenuIcon: React.FC<{
   label,
 }) => (
   <div className={wrapperClassName}>
-    <MenuIconImg src={MENU_ICONS[icon]} className={className} alt={label ?? PAGE_MENU_ICON_LABELS[icon]} />
+    <MenuIconImg
+      src={MENU_ICONS[icon]}
+      className={className}
+      alt={label ?? PAGE_MENU_ICON_LABELS[icon]}
+      loading="eager"
+      fetchPriority="high"
+    />
   </div>
 );

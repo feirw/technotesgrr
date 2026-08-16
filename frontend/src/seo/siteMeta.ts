@@ -12,11 +12,14 @@ export const DEFAULT_OG_IMAGE_PATH = '/og/default.png';
 export const LOGO_PATH = '/images/logo.png';
 export const LOGO_URL = `${DEFAULT_SITE_ORIGIN}${LOGO_PATH}`;
 
+export const DISCORD_INVITE_URL = 'https://discord.gg/b7BEHVFhaZ';
+
 export const SOCIAL_LINKS = [
   'https://instagram.com/technotesgr',
   'https://tiktok.com/@technotesgr',
   'https://www.linkedin.com/company/technotesgr/',
   'https://www.youtube.com/@technotesgr-elenizafeiri',
+  DISCORD_INVITE_URL,
 ] as const;
 
 export function resolveSiteOrigin(): string {

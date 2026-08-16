@@ -15,15 +15,18 @@ import {
   // LogIn,
   // LogOut,
 } from 'lucide-react';
+import { FaDiscord } from 'react-icons/fa';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/routes';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
 import Breadcrumbs from '@/components/other/Breadcrumbs';
-import { MENU_ICONS, MenuNavIcon, prefetchMenuIcons } from '@/data/menuIcons';
+import { MENU_ICONS, MenuNavIcon, prefetchAllMenuIcons, prefetchMenuIcons } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
+import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
+import { OptimizedImg } from '@/components/other/OptimizedImg';
 // const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
@@ -249,13 +252,19 @@ const ThemeToggleButton: React.FC<{
     title={isDark ? 'Φωτεινό θέμα' : 'Σκοτεινό θέμα'}
   >
     {isDark ? (
-      <img
+      <OptimizedImg
         src={LIGHT_THEME_ICON}
         alt=""
+        loading="eager"
         className="w-8 h-8 object-contain [image-rendering:pixelated]"
       />
     ) : (
-      <img src={DARK_THEME_ICON} alt="" className="w-8 h-8 object-contain" />
+      <OptimizedImg
+        src={DARK_THEME_ICON}
+        alt=""
+        loading="eager"
+        className="w-8 h-8 object-contain"
+      />
     )}
   </button>
 );
@@ -277,6 +286,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  useEffect(() => {
+    if (isMenuOpen) prefetchAllMenuIcons();
+  }, [isMenuOpen]);
 
   // Take a breath (global wellness prompt)
   const [showPanic, setShowPanic] = useState(false);
@@ -407,7 +420,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   width={40}
                   height={40}
                   decoding="async"
-                  fetchPriority="low"
+                  loading="eager"
+                  fetchPriority="high"
                   className="w-10 h-10 object-contain bg-transparent p-0 m-0"
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
@@ -720,6 +734,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity justify-center"
               >
                 <Youtube className="w-4 h-4" /> <span>YouTube</span>
+              </a>
+              <a
+                href={DISCORD_INVITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity justify-center"
+              >
+                <FaDiscord className="w-4 h-4" /> <span>Discord</span>
               </a>
             </div>
           </motion.div>

@@ -2,8 +2,11 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
+import { FaDiscord } from 'react-icons/fa';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { getPreferredTheme } from '@/utils/theme';
+import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
+import { OptimizedImg } from '@/components/other/OptimizedImg';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
 // import { FiSend } from 'react-icons/fi';
@@ -253,7 +256,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavig
             onClick={() => onNavigate(item.path)}
             className="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 dark:border-white/10 bg-coral-wash/60 dark:bg-white/5 hover:bg-[#f07f97]/15 dark:hover:bg-[#f07f97]/15 hover:border-[#f07f97] px-3 py-4 text-center transition-colors"
           >
-            <MenuIconImg src={item.iconSrc} className="w-10 h-10 sm:w-12 sm:h-12" />
+            <MenuIconImg src={item.iconSrc} className="w-10 h-10 sm:w-12 sm:h-12" loading="lazy" fetchPriority="low" />
             <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight">
               {item.label}
             </span>
@@ -290,6 +293,7 @@ const HeroBackground: React.FC = () => {
         alt=""
         className="w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center"
         decoding="async"
+        loading="eager"
         fetchPriority="high"
       />
     </div>
@@ -396,11 +400,11 @@ const StarRating: React.FC<{ value?: number }> = ({ value = 0 }) => {
             delay: i * 0.08,
           }}
         >
-          <img
+          <OptimizedImg
             src={REVIEW_STARS_IMG}
             alt=""
+            loading="lazy"
             className={`w-16 h-16 sm:w-20 sm:h-20 object-contain ${i < clamped ? 'opacity-100' : 'opacity-25 grayscale'}`}
-            decoding="async"
           />
         </motion.span>
       ))}
@@ -604,24 +608,31 @@ const HomePage: React.FC = () => {
               για τις πανελλήνιες,εντελώς <span className="font-bold text-[#00000]"> ΔΩΡΕΑΝ!</span>
             </p>
 
-            <motion.button
-              className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
-              onClick={() => navigate('/quiz')}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span>Ξεκίνα την προετοιμασία</span>
-              <span
-                className="absolute inset-0 rounded-full ring-2 ring-[#f07f97]/55 animate-pulse"
-                aria-hidden="true"
-              />
-              <span
-                className="absolute -inset-px rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition"
-                aria-hidden="true"
-              />
-            </motion.button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <motion.button
+                className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
+                onClick={() => navigate('/quiz')}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span>Ξεκίνα την προετοιμασία</span>
+                <span
+                  className="absolute inset-0 rounded-full ring-2 ring-[#f07f97]/55 animate-pulse"
+                  aria-hidden="true"
+                />
+              </motion.button>
 
-            
-          </div>
+              <motion.a
+                href={DISCORD_INVITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#c2185b] hover:bg-[#ad1457] text-white font-extrabold rounded-full shadow-xl transition-colors"
+                whileTap={{ scale: 0.98 }}
+                whileHover={{ y: -4 }}
+              >
+                <FaDiscord className="w-6 h-6" aria-hidden />
+                <span>Discord</span>
+              </motion.a>
+            </div>          </div>
         </section>
 
         {/* Take a breath relocated to navbar (MainLayout) */}
