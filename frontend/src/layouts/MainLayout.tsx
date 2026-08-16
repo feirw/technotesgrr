@@ -21,7 +21,6 @@ import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/route
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/other/CookieConsent';
 import Breadcrumbs from '@/components/other/Breadcrumbs';
-import StickyMobileCta from '@/components/other/StickyMobileCta';
 import { MENU_ICONS, MenuNavIcon, prefetchMenuIcons } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
@@ -656,12 +655,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-grow relative z-10 pb-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] md:pb-[env(safe-area-inset-bottom,0px)] pt-20">
+      <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)] pt-20">
         <Breadcrumbs />
         {children}
       </main>
-
-      <StickyMobileCta />
 
       {/* Footer */}
       <footer className="relative -mt-px overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
