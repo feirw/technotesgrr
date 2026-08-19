@@ -1,3 +1,5 @@
+# Technotes production image: Vite frontend + FastAPI backend behind Nginx.
+
 # Stage 1: Build React App
 FROM node:20 AS frontend-build
 ARG FRONTEND_ENV

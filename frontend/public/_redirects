@@ -1,3 +1,4 @@
+# Netlify: canonical host + SPA fallback. Keep /pdfs as 200 so files are not rewritten to index.html.
 /protaseis-thema-d /askiseis 301
 /protaseis-thema-d/* /askiseis 301
 /pdfs/* 200

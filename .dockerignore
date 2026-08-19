@@ -1,3 +1,4 @@
+# Files excluded from the Docker build context.
 .github
 .env
 .git

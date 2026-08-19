@@ -1,4 +1,5 @@
 #!/bin/sh
+# Technotes container entrypoint: inject SPA env, then start FastAPI + Nginx.
 set -e
 
 # Inject Supabase (and optional backend) public config for the SPA — Vite only bakes env at build time;

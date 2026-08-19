@@ -1,3 +1,4 @@
+# Netlify: frontend SPA build and canonical domain redirects.
 [build]
   base = "frontend"
   command = "npm run build"
