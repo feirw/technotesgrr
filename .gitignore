@@ -4,6 +4,7 @@
 # IDE & Editor
 # ===================
 .vscode/
+.claude/
 
 # ===================
 # Dependencies
