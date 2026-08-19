@@ -1,3 +1,4 @@
+"""Technotes FastAPI app: auth, quizzes, AI corrector, and community APIs."""
 from contextlib import asynccontextmanager
 import asyncio
 from collections import defaultdict, deque

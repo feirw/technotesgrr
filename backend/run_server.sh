@@ -1,4 +1,5 @@
 #!/bin/bash
+# Local backend bootstrap: venv, dependencies, data load, then the API server.
 
 python3 -m venv env
 source env/bin/activate
