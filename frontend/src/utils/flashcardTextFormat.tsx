@@ -11,8 +11,9 @@ type FlashcardBlock =
   | { type: 'paragraph'; content: string }
   | { type: 'labeled'; label: string; content: string }
   | { type: 'section'; title: string }
+  | { type: 'code'; lines: string[] }
   | { type: 'ordered-list'; items: ListItemNode[] }
-  | { type: 'bullet-list'; items: string[]; marker: '•' | '✓' | '➢' };
+  | { type: 'bullet-list'; items: ListItemNode[]; marker: '•' | '✓' | '➢' };
 
 const BULLET_MARKERS = ['•', '✓', '➢'] as const;
 
@@ -317,9 +318,189 @@ function tryParseTrailingLabel(text: string): FlashcardBlock[] | null {
   ];
 }
 
+const CODE_LINE_RE =
+  /^\s*(?:ΑΝ|ΟΣΟ|ΓΙΑ|ΕΠΙΛΕΞΕ|ΔΙΑΒΑΣΕ|ΓΡΑΨΕ|ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ|ΜΕΧΡΙΣ_ΟΤΟΥ|ΤΕΛΟΣ_|ΑΛΛΙΩΣ|ΠΕΡΙΠΤΩΣΗ|εντολή-|<εντολές|<έκφραση|Μεταβλητή\s*←|\.\.\.|…)/;
+
+function isShortLabel(label: string): boolean {
+  const plain = label.replace(/\*\*/g, '').trim();
+  if (!plain || plain.length > 42) return false;
+  if (plain.includes('.')) return false;
+  return plain.split(/\s+/).length <= 6;
+}
+
+type ClassifiedLine =
+  | { kind: 'empty' }
+  | { kind: 'bullet'; marker: '•' | '✓' | '➢'; content: string }
+  | { kind: 'sub'; content: string }
+  | { kind: 'numbered'; content: string }
+  | { kind: 'labeled'; label: string; content: string }
+  | { kind: 'text'; content: string };
+
+function classifyLine(raw: string): ClassifiedLine {
+  const line = raw.trimEnd();
+  if (!line.trim()) return { kind: 'empty' };
+
+  const trimmed = line.trimStart();
+  const bullet = trimmed.match(/^([•✓➢])\s+(.*)$/);
+  if (bullet) {
+    return { kind: 'bullet', marker: bullet[1] as '•' | '✓' | '➢', content: bullet[2].trim() };
+  }
+
+  const sub = trimmed.match(/^[-–]\s+(.*)$/);
+  if (sub) return { kind: 'sub', content: sub[1].trim() };
+
+  const numbered = trimmed.match(/^\d+\.\s+(.*)$/);
+  if (numbered) return { kind: 'numbered', content: numbered[1].trim() };
+
+  const labeled = trimmed.match(/^(?:\*\*)?([^:*]{1,42}):(?:\*\*)?\s*(.*)$/);
+  if (labeled && isShortLabel(labeled[1])) {
+    return { kind: 'labeled', label: labeled[1].replace(/\*\*/g, '').trim(), content: labeled[2].trim() };
+  }
+
+  return { kind: 'text', content: line };
+}
+
+function appendSubBullet(items: ListItemNode[], content: string) {
+  if (items.length === 0) {
+    items.push({ main: '', subBullets: [content] });
+    return;
+  }
+  const last = items[items.length - 1];
+  if (typeof last === 'string') {
+    items[items.length - 1] = { main: last, subBullets: [content] };
+    return;
+  }
+  last.subBullets.push(content);
+}
+
+function parseMultiline(text: string): FlashcardBlock[] {
+  const lines = text.replace(/\r\n/g, '\n').split('\n').map(classifyLine);
+  const blocks: FlashcardBlock[] = [];
+  let i = 0;
+
+  const flushParagraph = (parts: string[]) => {
+    const content = parts.join(' ').trim();
+    if (content) blocks.push({ type: 'paragraph', content });
+  };
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    if (line.kind === 'empty') {
+      i += 1;
+      continue;
+    }
+
+    if (line.kind === 'bullet') {
+      const marker = line.marker;
+      const items: ListItemNode[] = [];
+      while (i < lines.length) {
+        const current = lines[i];
+        if (current.kind === 'empty') {
+          const next = lines[i + 1];
+          if (
+            next &&
+            (next.kind === 'sub' || (next.kind === 'bullet' && next.marker === marker))
+          ) {
+            i += 1;
+            continue;
+          }
+          break;
+        }
+        if (current.kind === 'bullet' && current.marker === marker) {
+          items.push(current.content);
+          i += 1;
+          continue;
+        }
+        if (current.kind === 'sub' && items.length > 0) {
+          appendSubBullet(items, current.content);
+          i += 1;
+          continue;
+        }
+        break;
+      }
+      if (items.length > 0) blocks.push({ type: 'bullet-list', items, marker });
+      continue;
+    }
+
+    if (line.kind === 'numbered') {
+      const items: ListItemNode[] = [];
+      while (i < lines.length) {
+        const current = lines[i];
+        if (current.kind === 'empty') {
+          const next = lines[i + 1];
+          if (
+            next &&
+            (next.kind === 'numbered' || next.kind === 'bullet' || next.kind === 'sub')
+          ) {
+            i += 1;
+            continue;
+          }
+          break;
+        }
+        if (current.kind === 'numbered') {
+          items.push(current.content);
+          i += 1;
+          continue;
+        }
+        if ((current.kind === 'bullet' || current.kind === 'sub') && items.length > 0) {
+          appendSubBullet(items, current.content);
+          i += 1;
+          continue;
+        }
+        break;
+      }
+      if (items.length > 0) blocks.push({ type: 'ordered-list', items });
+      continue;
+    }
+
+    if (line.kind === 'labeled') {
+      blocks.push({ type: 'labeled', label: line.label, content: line.content });
+      i += 1;
+      continue;
+    }
+
+    if (line.kind === 'sub') {
+      const items: ListItemNode[] = [];
+      while (i < lines.length && (lines[i].kind === 'sub' || lines[i].kind === 'empty')) {
+        if (lines[i].kind === 'sub') items.push(lines[i].content);
+        i += 1;
+      }
+      if (items.length > 0) blocks.push({ type: 'bullet-list', items, marker: '•' });
+      continue;
+    }
+
+    const codeLines: string[] = [];
+    const prose: string[] = [];
+    while (i < lines.length && lines[i].kind === 'text') {
+      const content = lines[i].kind === 'text' ? lines[i].content : '';
+      if (CODE_LINE_RE.test(content)) {
+        if (prose.length) {
+          flushParagraph(prose);
+          prose.length = 0;
+        }
+        codeLines.push(content);
+      } else if (codeLines.length > 0) {
+        codeLines.push(content);
+      } else {
+        prose.push(content);
+      }
+      i += 1;
+    }
+    if (prose.length) flushParagraph(prose);
+    if (codeLines.length) blocks.push({ type: 'code', lines: codeLines });
+  }
+
+  return blocks.length > 0 ? blocks : [{ type: 'paragraph', content: text.trim() }];
+}
+
 export function parseFlashcardText(text: string): FlashcardBlock[] {
   const trimmed = preprocessText(text.trim());
   if (!trimmed) return [];
+
+  if (trimmed.includes('\n')) {
+    return parseMultiline(trimmed);
+  }
 
   const hasBullets = BULLET_MARKERS.some((marker) => trimmed.includes(marker));
 
@@ -398,6 +579,21 @@ export const FlashcardText: React.FC<{ text: string; className?: string }> = ({
           );
         }
 
+        if (block.type === 'code') {
+          return (
+            <div
+              key={index}
+              className="rounded-lg bg-black/5 px-3 py-2 font-mono text-[0.92em] leading-relaxed dark:bg-white/10"
+            >
+              {block.lines.map((codeLine, lineIndex) => (
+                <p key={lineIndex} className="whitespace-pre-wrap">
+                  {renderInline(codeLine)}
+                </p>
+              ))}
+            </div>
+          );
+        }
+
         if (block.type === 'labeled') {
           return (
             <div key={index} className="leading-relaxed">
@@ -437,7 +633,7 @@ export const FlashcardText: React.FC<{ text: string; className?: string }> = ({
                 <span className="shrink-0 font-bold text-coral-accent" aria-hidden>
                   {block.marker}
                 </span>
-                <span className="min-w-0">{renderInline(item)}</span>
+                <span className="min-w-0">{renderListItem(item)}</span>
               </li>
             ))}
           </ul>

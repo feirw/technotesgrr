@@ -5,11 +5,11 @@
     "answers": [
       {
         "text": "Σωστό",
-        "correct": true
+        "correct": false
       },
       {
         "text": "Λάθος",
-        "correct": false
+        "correct": true
       }
     ]
   },
