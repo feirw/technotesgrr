@@ -7,12 +7,17 @@ type ListItemNode =
       subBullets: string[];
     };
 
+type OrderedListItem = {
+  n: number;
+  item: ListItemNode;
+};
+
 type FlashcardBlock =
   | { type: 'paragraph'; content: string }
   | { type: 'labeled'; label: string; content: string }
   | { type: 'section'; title: string }
   | { type: 'code'; lines: string[] }
-  | { type: 'ordered-list'; items: ListItemNode[] }
+  | { type: 'ordered-list'; items: OrderedListItem[] }
   | { type: 'bullet-list'; items: ListItemNode[]; marker: '•' | '✓' | '➢' };
 
 const BULLET_MARKERS = ['•', '✓', '➢'] as const;
@@ -31,7 +36,7 @@ const TERM_DEFINITION_RE =
   /(?:^|\s)([\p{L}][\p{L}\s]*(?:\([^)]+\))?):(?=\s)/gu;
 
 function preprocessText(text: string): string {
-  return text.replace(/\*\*([^*]+?):\s+\*\*/g, '**$1:** ');
+  return text.replace(/\*\*/g, '');
 }
 
 function parseListItem(item: string): ListItemNode {
@@ -117,18 +122,21 @@ function tryParseNumberedList(text: string): FlashcardBlock[] | null {
   const intro = parts[0].trim();
   if (intro) blocks.push({ type: 'paragraph', content: intro });
 
-  const rawItems = parts.slice(1).map((part) => part.replace(/^\d+\.\s+/u, '').trim());
-  const items: ListItemNode[] = [];
+  const items: OrderedListItem[] = [];
   const trailing: string[] = [];
 
-  rawItems.forEach((item, index) => {
-    if (index === rawItems.length - 1) {
-      const { body, note } = splitTrailingNote(item);
-      items.push(parseListItem(body));
+  parts.slice(1).forEach((part, index, all) => {
+    const numMatch = part.match(/^(\d+)\.\s+/u);
+    const n = numMatch ? Number(numMatch[1]) : index + 1;
+    const rest = part.replace(/^\d+\.\s+/u, '').trim();
+
+    if (index === all.length - 1) {
+      const { body, note } = splitTrailingNote(rest);
+      items.push({ n, item: parseListItem(body) });
       if (note) trailing.push(note);
       return;
     }
-    items.push(parseListItem(item));
+    items.push({ n, item: parseListItem(rest) });
   });
 
   blocks.push({ type: 'ordered-list', items });
@@ -228,33 +236,6 @@ function tryParseTermDefinitions(text: string): FlashcardBlock[] | null {
   return blocks.length >= 3 ? blocks : null;
 }
 
-function tryParseCommaList(text: string): FlashcardBlock[] | null {
-  if (text.includes('•') || text.includes('✓') || text.includes('➢')) return null;
-  if (/\d+\.\s+\p{L}/u.test(text)) return null;
-  if (text.includes('. ') && !/^\([^)]+\)(,\s)/.test(text)) return null;
-
-  const parts = text.split(/,\s+/).map((p) => p.trim()).filter(Boolean);
-  if (parts.length < 3) return null;
-  if (parts.some((p) => p.length > 120)) return null;
-  if (/\b(είναι|δηλώνει|εννοείται|αναφέρεται|πρέπει|μπορεί|όπου|ότι|αποτελείται)\b/iu.test(text)) {
-    return null;
-  }
-
-  return [{ type: 'bullet-list', items: parts, marker: '•' }];
-}
-
-function tryParseCommaListWithParens(text: string): FlashcardBlock[] | null {
-  if (text.includes('•') || /\d+\.\s/.test(text)) return null;
-  if (!text.includes(', ') || text.includes('. ')) return null;
-
-  const parts = text.split(/,\s+/).map((p) => p.trim()).filter(Boolean);
-  if (parts.length < 2 || parts.length > 8) return null;
-  if (parts.some((p) => p.length > 100)) return null;
-  if (/\b(είναι|δηλώνει|εννοείται|αποτελείται|πρέπει)\b/iu.test(text)) return null;
-
-  return [{ type: 'bullet-list', items: parts, marker: '•' }];
-}
-
 function tryParseColonAndList(text: string): FlashcardBlock[] | null {
   const match = text.match(/^(.+?:\s*)(.+)$/s);
   if (!match) return null;
@@ -280,22 +261,6 @@ function tryParseColonAndList(text: string): FlashcardBlock[] | null {
   return blocks;
 }
 
-function tryParseTwoPartAnd(text: string): FlashcardBlock[] | null {
-  if (text.includes('•') || text.includes('. ') || /\d+\.\s/.test(text)) return null;
-
-  const match = text.match(/^(.{10,120}?)\s+και\s+(.{10,120})$/iu);
-  if (!match) return null;
-  if (/\b(είναι|δηλώνει|εννοείται|αποτελείται|πρέπει|μπορεί)\b/iu.test(text)) return null;
-
-  return [
-    {
-      type: 'bullet-list',
-      items: [match[1].trim(), match[2].trim()],
-      marker: '•',
-    },
-  ];
-}
-
 function tryParseInlineNumberedSuffix(text: string): FlashcardBlock[] | null {
   const match = text.match(/^(.+?(?:[:.]|\s))\s*((?:\d+\.\s+[^,]+(?:,\s*)?)+)$/u);
   if (!match) return null;
@@ -319,7 +284,7 @@ function tryParseTrailingLabel(text: string): FlashcardBlock[] | null {
 }
 
 const CODE_LINE_RE =
-  /^\s*(?:ΑΝ|ΟΣΟ|ΓΙΑ|ΕΠΙΛΕΞΕ|ΔΙΑΒΑΣΕ|ΓΡΑΨΕ|ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ|ΜΕΧΡΙΣ_ΟΤΟΥ|ΤΕΛΟΣ_|ΑΛΛΙΩΣ|ΠΕΡΙΠΤΩΣΗ|εντολή-|<εντολές|<έκφραση|Μεταβλητή\s*←|\.\.\.|…)/;
+  /^\s*(?:ΑΝ |ΟΣΟ |ΓΙΑ |ΕΠΙΛΕΞΕ|ΔΙΑΒΑΣΕ|ΓΡΑΨΕ|ΑΡΧΗ_ΕΠΑΝΑΛΗΨΗΣ|ΜΕΧΡΙΣ_ΟΤΟΥ|ΤΕΛΟΣ_|ΑΛΛΙΩΣ|ΠΕΡΙΠΤΩΣΗ|ΤΟΤΕ|ΕΠΑΝΑΛΑΒΕ|ΑΠΟ |ΜΕΧΡΙ |ΜΕ_ΒΗΜΑ|εντολ|Μεταβλητή\s*←|\S+\s*←|\.\.\.|…)/;
 
 function isShortLabel(label: string): boolean {
   const plain = label.replace(/\*\*/g, '').trim();
@@ -332,7 +297,7 @@ type ClassifiedLine =
   | { kind: 'empty' }
   | { kind: 'bullet'; marker: '•' | '✓' | '➢'; content: string }
   | { kind: 'sub'; content: string }
-  | { kind: 'numbered'; content: string }
+  | { kind: 'numbered'; n: number; content: string }
   | { kind: 'labeled'; label: string; content: string }
   | { kind: 'text'; content: string };
 
@@ -349,8 +314,8 @@ function classifyLine(raw: string): ClassifiedLine {
   const sub = trimmed.match(/^[-–]\s+(.*)$/);
   if (sub) return { kind: 'sub', content: sub[1].trim() };
 
-  const numbered = trimmed.match(/^\d+\.\s+(.*)$/);
-  if (numbered) return { kind: 'numbered', content: numbered[1].trim() };
+  const numbered = trimmed.match(/^(\d+)\.\s+(.*)$/);
+  if (numbered) return { kind: 'numbered', n: Number(numbered[1]), content: numbered[2].trim() };
 
   const labeled = trimmed.match(/^(?:\*\*)?([^:*]{1,42}):(?:\*\*)?\s*(.*)$/);
   if (labeled && isShortLabel(labeled[1])) {
@@ -424,7 +389,8 @@ function parseMultiline(text: string): FlashcardBlock[] {
     }
 
     if (line.kind === 'numbered') {
-      const items: ListItemNode[] = [];
+      const items: OrderedListItem[] = [];
+      const wrapItems: ListItemNode[] = [];
       while (i < lines.length) {
         const current = lines[i];
         if (current.kind === 'empty') {
@@ -439,12 +405,17 @@ function parseMultiline(text: string): FlashcardBlock[] {
           break;
         }
         if (current.kind === 'numbered') {
-          items.push(current.content);
+          wrapItems.push(current.content);
+          items.push({ n: current.n, item: current.content });
           i += 1;
           continue;
         }
         if ((current.kind === 'bullet' || current.kind === 'sub') && items.length > 0) {
-          appendSubBullet(items, current.content);
+          appendSubBullet(wrapItems, current.content);
+          items[items.length - 1] = {
+            n: items[items.length - 1].n,
+            item: wrapItems[wrapItems.length - 1],
+          };
           i += 1;
           continue;
         }
@@ -514,10 +485,7 @@ export function parseFlashcardText(text: string): FlashcardBlock[] {
     (!hasBullets ? tryParseAnyBulletList(trimmed) : null) ??
     tryParseTermDefinitions(trimmed) ??
     tryParseColonAndList(trimmed) ??
-    tryParseTrailingLabel(trimmed) ??
-    tryParseCommaList(trimmed) ??
-    tryParseCommaListWithParens(trimmed) ??
-    tryParseTwoPartAnd(trimmed) ?? [{ type: 'paragraph', content: trimmed }]
+    tryParseTrailingLabel(trimmed) ?? [{ type: 'paragraph', content: trimmed }]
   );
 }
 
@@ -583,10 +551,10 @@ export const FlashcardText: React.FC<{ text: string; className?: string }> = ({
           return (
             <div
               key={index}
-              className="rounded-lg bg-black/5 px-3 py-2 font-mono text-[0.92em] leading-relaxed dark:bg-white/10"
+              className="overflow-x-auto rounded-lg bg-black/5 px-3 py-2 font-mono text-[0.92em] leading-relaxed dark:bg-white/10"
             >
               {block.lines.map((codeLine, lineIndex) => (
-                <p key={lineIndex} className="whitespace-pre-wrap">
+                <p key={lineIndex} className="whitespace-nowrap">
                   {renderInline(codeLine)}
                 </p>
               ))}
@@ -609,13 +577,13 @@ export const FlashcardText: React.FC<{ text: string; className?: string }> = ({
 
         if (block.type === 'ordered-list') {
           return (
-            <ol
-              key={index}
-              className="list-decimal space-y-2 pl-5 marker:font-bold marker:text-coral-accent/90"
-            >
-              {block.items.map((item, itemIndex) => (
-                <li key={itemIndex} className="pl-1 leading-relaxed">
-                  {renderListItem(item)}
+            <ol key={index} className="list-none space-y-2">
+              {block.items.map((entry, itemIndex) => (
+                <li key={itemIndex} className="flex gap-2 leading-relaxed">
+                  <span className="w-7 shrink-0 font-bold text-coral-accent">
+                    {entry.n}.
+                  </span>
+                  <span className="min-w-0">{renderListItem(entry.item)}</span>
                 </li>
               ))}
             </ol>
