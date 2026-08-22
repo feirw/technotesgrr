@@ -2,10 +2,8 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
-import { FaDiscord } from 'react-icons/fa';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { getPreferredTheme } from '@/utils/theme';
-import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
 import { OptimizedImg } from '@/components/other/OptimizedImg';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
@@ -52,10 +50,16 @@ interface FaqItem {
 
 // ---------- MOCK DATA ----------
 
-const HERO_LIGHT_800 = '/images/home%20page/bc11-800.webp';
-const HERO_LIGHT_1280 = '/images/home%20page/bc11-1280.webp';
-const HERO_DARK_800 = '/images/home%20page/nighthome-800.webp';
-const HERO_DARK_1280 = '/images/home%20page/nighthome-1280.webp';
+function heroSrcSet(basename: 'hero-light' | 'hero-dark'): string {
+  return [800, 1280, 1920, 2560, 3840]
+    .map((w) => `/images/home%20page/${basename}-${w}.webp ${w}w`)
+    .join(', ');
+}
+
+const HERO_LIGHT_SRC = '/images/home%20page/hero-light-1920.webp';
+const HERO_DARK_SRC = '/images/home%20page/hero-dark-1920.webp';
+const HERO_LIGHT_SRCSET = heroSrcSet('hero-light');
+const HERO_DARK_SRCSET = heroSrcSet('hero-dark');
 
 const SHOWCASE_VIDEOS = [
   '/videos/v24044gl0000d8dc50vog65ursbvt0u0.MP4',
@@ -123,7 +127,7 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Μετεγγραφές', path: '/meteggrafes', iconSrc: MENU_ICONS.meteggrafes },
       { label: 'Μελλοντικές Καριέρες & Προσανατολισμός', path: '/prosanatolismos', iconSrc: MENU_ICONS.prosanatolismos },
       { label: 'ΣΑΕΚ', path: '/saek', iconSrc: MENU_ICONS.saek },
-      {label : 'Πρόβα Μηχανογραφικού', path: '/prova-mixanografiko', iconSrc: MENU_ICONS.mixanografiko},
+      {label : 'Πρόβα Μηχανογραφικού', path: '/mixanografiko', iconSrc: MENU_ICONS.mixanografiko},
     ],
   },
 ];
@@ -278,20 +282,20 @@ const HeroBackground: React.FC = () => {
     return () => obs.disconnect();
   }, []);
 
-  const src800 = isDark ? HERO_DARK_800 : HERO_LIGHT_800;
-  const src1280 = isDark ? HERO_DARK_1280 : HERO_LIGHT_1280;
+  const src = isDark ? HERO_DARK_SRC : HERO_LIGHT_SRC;
+  const srcSet = isDark ? HERO_DARK_SRCSET : HERO_LIGHT_SRCSET;
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
       <img
         key={isDark ? 'dark' : 'light'}
-        src={src800}
-        srcSet={`${src800} 800w, ${src1280} 1280w`}
+        src={src}
+        srcSet={srcSet}
         sizes="100vw"
-        width={1280}
-        height={720}
+        width={1920}
+        height={1080}
         alt=""
-        className="w-full h-full min-h-[80vh] sm:min-h-screen object-cover object-center"
+        className="h-full min-h-[80vh] w-full object-cover object-center sm:min-h-screen"
         decoding="async"
         loading="eager"
         fetchPriority="high"
@@ -608,7 +612,7 @@ const HomePage: React.FC = () => {
               για τις πανελλήνιες,εντελώς <span className="font-bold text-[#00000]"> ΔΩΡΕΑΝ!</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex items-center justify-center">
               <motion.button
                 className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
                 onClick={() => navigate('/quiz')}
@@ -620,18 +624,6 @@ const HomePage: React.FC = () => {
                   aria-hidden="true"
                 />
               </motion.button>
-
-              <motion.a
-                href={DISCORD_INVITE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#c2185b] hover:bg-[#ad1457] text-white font-extrabold rounded-full shadow-xl transition-colors"
-                whileTap={{ scale: 0.98 }}
-                whileHover={{ y: -4 }}
-              >
-                <FaDiscord className="w-6 h-6" aria-hidden />
-                <span>Discord</span>
-              </motion.a>
             </div>          </div>
         </section>
 

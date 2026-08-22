@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technotes — Greek Exam prep, completely free</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Manrope', 'system-ui', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: Manrope, system-ui, sans-serif; }
+    .fade-up { animation: fadeUp .7s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .review-enter { animation: reviewIn .42s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes reviewIn {
+      from { opacity: 0; transform: translateX(40px) scale(.97); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#ff97b2] text-gray-900 transition-colors duration-500 dark:bg-[#2d1c48] dark:text-gray-100">
+  <!-- Navbar -->
+  <header id="navbar" class="fixed top-0 left-0 right-0 z-30 bg-white/55 backdrop-blur-md dark:bg-[#3a2658]/85">
+    <div class="container mx-auto flex min-h-[3.25rem] items-center justify-between gap-2 px-3 py-3 sm:px-6 sm:py-4">
+      <a href="#top" class="flex shrink-0 items-center gap-3">
+        <img src="assets/icons/logo.webp" alt="Technotes logo" width="40" height="40" class="h-10 w-10 object-contain" />
+        <span class="hidden font-bold text-gray-800 dark:text-white sm:block">technotesgr</span>
+      </a>
+
+      <nav class="hidden items-center gap-1 lg:flex xl:gap-2">
+        <button type="button" id="breath-btn" class="mr-2 min-h-11 rounded-full bg-[#f07f97] px-6 py-3 font-black text-white shadow-lg hover:bg-[#e06d88]">Take a breath</button>
+        <a href="#top" class="rounded-xl px-3 py-2 text-sm font-semibold hover:bg-rose-50 dark:hover:bg-[#2d1c48]/90">Home</a>
+        <a href="#features" class="rounded-xl px-3 py-2 text-sm font-semibold hover:bg-rose-50 dark:hover:bg-[#2d1c48]/90">About</a>
+        <a href="#faq" class="rounded-xl px-3 py-2 text-sm font-semibold hover:bg-rose-50 dark:hover:bg-[#2d1c48]/90">FAQ</a>
+        <button type="button" id="theme-btn" class="ml-2 inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#f07f97]/35 p-1.5 hover:bg-[#fff5f8]" aria-label="Toggle theme">
+          <img id="theme-icon" src="assets/icons/sun.png" alt="" class="h-7 w-7 object-contain" />
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-2 lg:hidden">
+        <button type="button" id="theme-btn-m" class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#f07f97]/35 bg-white/80 p-1.5 dark:bg-[#2d1c48]/80" aria-label="Toggle theme">
+          <img id="theme-icon-m" src="assets/icons/sun.png" alt="" class="h-7 w-7 object-contain" />
+        </button>
+        <button type="button" id="menu-btn" class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-[#f07f97] p-3 text-white shadow-lg" aria-label="Open menu">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile drawer -->
+  <div id="drawer-bg" class="fixed inset-0 z-[85] hidden bg-black/50 backdrop-blur-sm lg:hidden"></div>
+  <aside id="drawer" class="fixed top-0 right-0 z-[90] hidden h-[100dvh] w-[min(100vw-2.5rem,20rem)] overflow-y-auto border-l-[3px] border-blue-500/85 bg-white p-6 dark:border-blue-400/70 dark:bg-[#3a2658] lg:hidden">
+    <div class="mb-6 flex items-center justify-between">
+      <span class="text-xl font-black text-[#f07f97]">Menu</span>
+      <button type="button" id="menu-close" class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl" aria-label="Close menu">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="space-y-2 text-sm font-bold">
+      <button type="button" id="breath-btn-m" class="flex min-h-11 w-full items-center gap-3 rounded-xl border border-[#f07f97]/30 bg-[#fff5f8] px-4 py-3.5 text-[#e06d88] dark:bg-[#f07f97]/15">
+        <img src="assets/icons/8.png" alt="" class="h-8 w-8" /> Take a breath
+      </button>
+      <a href="#top" class="drawer-link flex items-center gap-3 rounded-xl px-4 py-3.5"><img src="assets/icons/16.png" class="h-8 w-8" alt="" /> Home</a>
+      <a href="#features" class="drawer-link flex items-center gap-3 rounded-xl px-4 py-3.5"><img src="assets/icons/4.png" class="h-8 w-8" alt="" /> About</a>
+      <a href="#faq" class="drawer-link flex items-center gap-3 rounded-xl px-4 py-3.5"><img src="assets/icons/17.png" class="h-8 w-8" alt="" /> FAQ</a>
+      <a href="https://technotes.gr" class="mt-4 flex min-h-11 items-center justify-center rounded-full bg-[#f07f97] px-4 py-3.5 font-extrabold text-white">Let's Prepare</a>
+    </div>
+  </aside>
+
+  <!-- Take a breath modal -->
+  <div id="breath-modal" class="fixed inset-0 z-[95] hidden items-center justify-center p-4">
+    <div id="breath-backdrop" class="absolute inset-0 bg-black/40"></div>
+    <div class="relative max-h-[min(90dvh,32rem)] w-full max-w-md overflow-y-auto rounded-3xl border-2 border-[#f07f97]/40 bg-white p-6 pt-12 shadow-2xl dark:bg-[#3a2658]">
+      <button type="button" id="breath-close" class="absolute top-3 right-3 inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl text-gray-500" aria-label="Close">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <button type="button" id="breath-next" class="mb-4 min-h-11 w-full rounded-xl bg-[#f07f97] px-4 py-3 font-bold text-white hover:bg-[#e06d88]">Another one</button>
+      <div class="mb-3 flex items-center gap-3">
+        <img src="assets/icons/8.png" alt="" class="h-10 w-10" />
+        <h3 class="text-xl font-black">Take a breath</h3>
+      </div>
+      <p id="breath-text" class="leading-relaxed text-gray-700 dark:text-gray-300"></p>
+    </div>
+  </div>
+
+  <main class="relative z-10 pt-20">
+    <!-- Hero -->
+    <section id="top" class="relative flex min-h-[80vh] w-full items-center justify-center overflow-hidden sm:min-h-screen">
+      <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <img
+          id="hero-img"
+          src="assets/hero/hero-light-1920.webp"
+          srcset="assets/hero/hero-light-800.webp 800w, assets/hero/hero-light-1280.webp 1280w, assets/hero/hero-light-1920.webp 1920w, assets/hero/hero-light-2560.webp 2560w, assets/hero/hero-light-3840.webp 3840w"
+          sizes="100vw"
+          width="1920"
+          height="1080"
+          alt=""
+          class="h-full min-h-[80vh] w-full object-cover object-center sm:min-h-screen"
+        />
+      </div>
+      <div class="container relative z-10 mx-auto px-4 py-16 text-center sm:px-6 sm:py-20">
+        <h1 class="mb-4 text-5xl font-black leading-tight tracking-tight text-[#f07f97] drop-shadow-lg sm:mb-6 sm:text-6xl md:text-8xl lg:text-9xl">Technotes</h1>
+        <p class="mx-auto mb-8 max-w-3xl text-lg leading-relaxed text-gray-700 dark:text-gray-200 sm:text-xl md:mb-12 md:text-2xl lg:text-3xl">
+          The <span class="font-bold text-[#f07f97]">ideal platform</span> for Greek exam prep, completely <span class="font-bold">FREE!</span>
+        </p>
+        <a href="https://technotes.gr" class="relative inline-flex items-center gap-3 rounded-full bg-[#f07f97] px-10 py-5 text-lg font-extrabold text-white shadow-xl transition hover:-translate-y-1 hover:bg-[#e06d88] sm:text-xl">
+          Prepare
+          <span class="absolute inset-0 animate-pulse rounded-full ring-2 ring-[#f07f97]/55" aria-hidden="true"></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="relative overflow-hidden py-20">
+      <div class="container relative z-10 mx-auto px-6">
+        <header class="mb-16 text-center">
+          <h2 class="mb-4 text-4xl font-black tracking-tight text-[#faf5ef] drop-shadow-sm md:text-5xl">What we offer:</h2>
+        </header>
+        <div class="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
+          <article class="group relative overflow-hidden rounded-3xl border border-[#f07f97]/35 bg-white p-8 shadow-xl dark:border-[#f07f97]/25 dark:bg-[#3a2658] sm:p-10">
+            <h3 class="mb-3 text-2xl font-black text-[#f07f97] sm:text-3xl">Before the exams</h3>
+            <p class="mb-8 leading-relaxed text-gray-600 dark:text-gray-300">All the study and practice tools you need to arrive prepared.</p>
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/10.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Flashcards</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/11.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Quiz</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/2.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Past papers</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/13.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Methodologies</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/51.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Data structures</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/9.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Exercises</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/12.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Language interpreter</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/50.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">School textbooks</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/3.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Study Timer</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/14.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Syllabus tracker</span></div>
+            </div>
+          </article>
+          <article class="group relative overflow-hidden rounded-3xl border border-[#f07f97]/35 bg-white p-8 shadow-xl dark:border-[#f07f97]/25 dark:bg-[#3a2658] sm:p-10">
+            <h3 class="mb-3 text-2xl font-black text-[#f07f97] sm:text-3xl">After the exams</h3>
+            <p class="mb-8 leading-relaxed text-gray-600 dark:text-gray-300">A guide to universities, scores, and the next steps after exams.</p>
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/6.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Universities</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/40.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Admission scores</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/15.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Coefficients</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/48.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Correspondences</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/49.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Transfers</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/17.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Careers & orientation</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/44.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Vocational training</span></div>
+              <div class="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 bg-[#fff5f8]/60 px-3 py-4 text-center dark:border-white/10 dark:bg-white/5"><img src="assets/icons/47.png" class="h-12 w-12" alt="" /><span class="text-xs font-bold leading-tight sm:text-sm">Application rehearsal</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section id="reviews" class="relative overflow-hidden py-20">
+      <div class="container relative z-10 mx-auto px-6">
+        <header class="mb-16 text-center">
+          <h2 class="mb-4 text-4xl font-black tracking-tight text-[#faf5ef] drop-shadow-sm md:text-5xl">What our students say</h2>
+        </header>
+        <div class="mx-auto max-w-2xl px-2 sm:px-0">
+          <div class="relative pt-3 pb-1">
+            <div class="pointer-events-none absolute top-5 bottom-0 left-3 right-3 -z-10 scale-[0.97] rounded-3xl border border-[#f07f97]/20 bg-white/70 shadow-lg dark:border-white/15 dark:bg-[#2d1c48]/55" aria-hidden="true"></div>
+            <div class="relative min-h-[320px] sm:min-h-[290px] md:min-h-[250px]">
+              <div id="review-card" class="absolute inset-0 flex flex-col justify-center rounded-3xl border-2 border-[#f07f97]/35 bg-white p-8 shadow-[0_20px_50px_-12px_rgba(240,127,151,0.28)] ring-1 ring-black/5 dark:border-[#f07f97]/25 dark:bg-[#2d1c48] sm:p-10">
+                <div class="absolute top-0 left-6 right-6 h-1 rounded-full bg-gradient-to-r from-transparent via-[#f07f97] to-transparent opacity-80" aria-hidden="true"></div>
+                <div id="review-stars" class="flex justify-center gap-2 sm:gap-3"></div>
+                <p id="review-text" class="mt-4 text-base leading-relaxed text-gray-700 italic dark:text-gray-200 sm:text-lg"></p>
+                <p id="review-name" class="mt-4 mb-1 text-right font-bold text-[#f07f97]"></p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-10 flex items-center justify-center gap-4" aria-label="Review navigation">
+            <button type="button" id="review-prev" class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/70 bg-white/15 text-white shadow-sm hover:bg-white/25" aria-label="Previous review">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" id="review-next" class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/70 bg-white/15 text-white shadow-sm hover:bg-white/25" aria-label="Next review">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="relative overflow-hidden py-20">
+      <div class="container relative z-10 mx-auto max-w-3xl space-y-4 px-6">
+        <header class="mb-16 text-center">
+          <h2 class="mb-4 text-4xl font-black tracking-tight text-[#faf5ef] drop-shadow-sm md:text-5xl">Frequently asked questions</h2>
+        </header>
+        <div class="faq-item overflow-hidden rounded-2xl border border-gray-200/50 bg-white/80 shadow-lg backdrop-blur-xl dark:border-white/15 dark:bg-[#3a2658]/90">
+          <button type="button" class="faq-btn group flex w-full items-center justify-between px-6 py-5 text-left">
+            <h3 class="pr-8 text-lg font-bold group-hover:text-[#f07f97]">Is the platform free?</h3>
+            <svg class="h-6 w-6 shrink-0 text-[#f07f97] transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-body hidden px-6 pt-3 pb-5 leading-relaxed text-gray-600 dark:text-gray-300">Yes! Technotes is completely free for every student. Our goal is to help as many people as possible prepare for their exams.</div>
+        </div>
+        <div class="faq-item overflow-hidden rounded-2xl border border-gray-200/50 bg-white/80 shadow-lg backdrop-blur-xl dark:border-white/15 dark:bg-[#3a2658]/90">
+          <button type="button" class="faq-btn group flex w-full items-center justify-between px-6 py-5 text-left">
+            <h3 class="pr-8 text-lg font-bold group-hover:text-[#f07f97]">Does it cover the full Computer Science syllabus?</h3>
+            <svg class="h-6 w-6 shrink-0 text-[#f07f97] transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-body hidden px-6 pt-3 pb-5 leading-relaxed text-gray-600 dark:text-gray-300">Yes. Our flashcards and quizzes cover the full school Computer Science textbook in detail.</div>
+        </div>
+        <div class="faq-item overflow-hidden rounded-2xl border border-gray-200/50 bg-white/80 shadow-lg backdrop-blur-xl dark:border-white/15 dark:bg-[#3a2658]/90">
+          <button type="button" class="faq-btn group flex w-full items-center justify-between px-6 py-5 text-left">
+            <h3 class="pr-8 text-lg font-bold group-hover:text-[#f07f97]">How can I track my progress?</h3>
+            <svg class="h-6 w-6 shrink-0 text-[#f07f97] transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-body hidden px-6 pt-3 pb-5 leading-relaxed text-gray-600 dark:text-gray-300">Through quizzes and flashcards you can review your answers and spot what needs more study. Every quiz gives you instant feedback.</div>
+        </div>
+        <div class="faq-item overflow-hidden rounded-2xl border border-gray-200/50 bg-white/80 shadow-lg backdrop-blur-xl dark:border-white/15 dark:bg-[#3a2658]/90">
+          <button type="button" class="faq-btn group flex w-full items-center justify-between px-6 py-5 text-left">
+            <h3 class="pr-8 text-lg font-bold group-hover:text-[#f07f97]">Can I use the platform on my phone?</h3>
+            <svg class="h-6 w-6 shrink-0 text-[#f07f97] transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-body hidden px-6 pt-3 pb-5 leading-relaxed text-gray-600 dark:text-gray-300">Absolutely. The platform is fully responsive and works well on phones, tablets, and computers.</div>
+        </div>
+        <div class="faq-item overflow-hidden rounded-2xl border border-gray-200/50 bg-white/80 shadow-lg backdrop-blur-xl dark:border-white/15 dark:bg-[#3a2658]/90">
+          <button type="button" class="faq-btn group flex w-full items-center justify-between px-6 py-5 text-left">
+            <h3 class="pr-8 text-lg font-bold group-hover:text-[#f07f97]">How often is the content updated?</h3>
+            <svg class="h-6 w-6 shrink-0 text-[#f07f97] transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-body hidden px-6 pt-3 pb-5 leading-relaxed text-gray-600 dark:text-gray-300">We update regularly with new quizzes, flashcards, and improved notes.</div>
+        </div>
+        <div class="faq-item overflow-hidden rounded-2xl border border-gray-200/50 bg-white/80 shadow-lg backdrop-blur-xl dark:border-white/15 dark:bg-[#3a2658]/90">
+          <button type="button" class="faq-btn group flex w-full items-center justify-between px-6 py-5 text-left">
+            <h3 class="pr-8 text-lg font-bold group-hover:text-[#f07f97]">Can I ask questions if I get stuck?</h3>
+            <svg class="h-6 w-6 shrink-0 text-[#f07f97] transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-body hidden px-6 pt-3 pb-5 leading-relaxed text-gray-600 dark:text-gray-300">Of course. You can reach us through the contact form or our social media. We are happy to help.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative overflow-hidden bg-[#ff97b2] dark:bg-[#2d1c48]">
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:bg-none" aria-hidden="true"></div>
+    <div class="relative z-10 container mx-auto grid w-full max-w-[100vw] grid-cols-1 items-start gap-8 px-4 py-8 sm:px-6 md:grid-cols-3 md:gap-0">
+      <div class="text-center md:pr-6 md:text-left">
+        <h3 class="mb-3 text-lg font-extrabold">Legal</h3>
+        <div class="mx-auto flex max-w-xs flex-col gap-2 text-sm md:mx-0 md:max-w-none md:items-start">
+          <span>Terms of Use & Privacy Policy</span>
+          <span>Personal Data Protection</span>
+          <span class="text-xs">Last updated: 22/6/2026</span>
+        </div>
+      </div>
+      <div class="flex flex-col items-center text-center md:px-6">
+        <h3 class="mb-3 w-full text-lg font-extrabold">Socials</h3>
+        <div class="flex flex-col items-center gap-2 text-sm">
+          <a class="hover:opacity-80" href="https://instagram.com/technotesgr" target="_blank" rel="noopener">Instagram</a>
+          <a class="hover:opacity-80" href="https://tiktok.com/@technotesgr" target="_blank" rel="noopener">TikTok</a>
+          <a class="hover:opacity-80" href="https://www.linkedin.com/company/technotesgr/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="hover:opacity-80" href="https://www.youtube.com/@technotesgr-elenizafeiri" target="_blank" rel="noopener">YouTube</a>
+          <a class="hover:opacity-80" href="https://discord.gg/b7BEHVFhaZ" target="_blank" rel="noopener">Discord</a>
+        </div>
+      </div>
+      <div class="flex flex-col items-center text-center md:items-end md:pl-6 md:text-right">
+        <h3 class="mb-3 text-lg font-extrabold">Location</h3>
+        <div class="flex flex-col items-center gap-2 text-sm md:items-end">
+          <div>📍 Athens, Greece</div>
+          <p class="max-w-xs text-xs text-black/80 dark:text-gray-200">We reply to messages within <strong>48 hours</strong> (business days).</p>
+        </div>
+      </div>
+    </div>
+    <div class="relative z-10 py-4 text-center text-xs text-gray-600 dark:text-gray-700">All Rights Reserved © technotesgr • 2026</div>
+  </footer>
+
+  <script>
+    const reviews = [
+      { name: 'Ria K. Graduate 2025', text: 'The notes are excellent! They helped me understand computer science really well. The quiz is fun and educational!' },
+      { name: 'Christina S. Senior student', text: 'Amazing site! The flashcards helped me review every concept quickly. I feel much more confident for the exams!' },
+      { name: 'Demy L. Senior student', text: 'A very good prep platform. The algorithm visualizations are extremely useful. Highly recommended!' },
+      { name: 'Victoria K. Senior student', text: 'The questions are well structured and prepare you properly.' },
+      { name: 'Angeliki B. Junior student', text: 'An excellent study tool. The visualization games helped me understand algorithms better. Thank you!' },
+    ];
+    const tips = [
+      'Good things come to those who keep trying. Well done!',
+      'You can achieve anything you decide to do.',
+      'You are capable.',
+      'You are on the right path now.',
+      'You have worked so hard for this.',
+      'That turned out really well.',
+      'This is going well — keep going.',
+      'You understood that perfectly!',
+      'This is the best you have done so far.',
+      'You stayed calm and solved a hard problem. That is impressive.',
+    ];
+
+    const heroLight = 'assets/hero/hero-light-1920.webp';
+    const heroDark = 'assets/hero/hero-dark-1920.webp';
+    const heroLightSet = 'assets/hero/hero-light-800.webp 800w, assets/hero/hero-light-1280.webp 1280w, assets/hero/hero-light-1920.webp 1920w, assets/hero/hero-light-2560.webp 2560w, assets/hero/hero-light-3840.webp 3840w';
+    const heroDarkSet = 'assets/hero/hero-dark-800.webp 800w, assets/hero/hero-dark-1280.webp 1280w, assets/hero/hero-dark-1920.webp 1920w, assets/hero/hero-dark-2560.webp 2560w, assets/hero/hero-dark-3840.webp 3840w';
+
+    function isDark() { return document.documentElement.classList.contains('dark'); }
+    function applyTheme(dark) {
+      document.documentElement.classList.toggle('dark', dark);
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      const icon = dark ? 'assets/icons/starr.png' : 'assets/icons/sun.png';
+      document.getElementById('theme-icon').src = icon;
+      document.getElementById('theme-icon-m').src = icon;
+      const img = document.getElementById('hero-img');
+      img.src = dark ? heroDark : heroLight;
+      img.srcset = dark ? heroDarkSet : heroLightSet;
+    }
+    applyTheme(localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('theme-btn').onclick = () => applyTheme(!isDark());
+    document.getElementById('theme-btn-m').onclick = () => applyTheme(!isDark());
+
+    const drawer = document.getElementById('drawer');
+    const drawerBg = document.getElementById('drawer-bg');
+    function openMenu(open) {
+      drawer.classList.toggle('hidden', !open);
+      drawerBg.classList.toggle('hidden', !open);
+    }
+    document.getElementById('menu-btn').onclick = () => openMenu(true);
+    document.getElementById('menu-close').onclick = () => openMenu(false);
+    drawerBg.onclick = () => openMenu(false);
+    document.querySelectorAll('.drawer-link').forEach((a) => a.addEventListener('click', () => openMenu(false)));
+
+    let tipIndex = 0;
+    const modal = document.getElementById('breath-modal');
+    const breathText = document.getElementById('breath-text');
+    function showBreath() {
+      breathText.textContent = tips[tipIndex % tips.length];
+      tipIndex += 1;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+    function hideBreath() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+    document.getElementById('breath-btn').onclick = showBreath;
+    document.getElementById('breath-btn-m').onclick = () => { openMenu(false); showBreath(); };
+    document.getElementById('breath-next').onclick = showBreath;
+    document.getElementById('breath-close').onclick = hideBreath;
+    document.getElementById('breath-backdrop').onclick = hideBreath;
+
+    let reviewIndex = 0;
+    function renderReview() {
+      const r = reviews[reviewIndex];
+      const stars = document.getElementById('review-stars');
+      stars.innerHTML = '';
+      for (let i = 0; i < 5; i += 1) {
+        const img = document.createElement('img');
+        img.src = 'assets/icons/stars.png';
+        img.alt = '';
+        img.className = 'h-16 w-16 object-contain sm:h-20 sm:w-20' + (i < 5 ? '' : '');
+        stars.appendChild(img);
+      }
+      const card = document.getElementById('review-card');
+      card.classList.remove('review-enter');
+      void card.offsetWidth;
+      card.classList.add('review-enter');
+      document.getElementById('review-text').textContent = '"' + r.text + '"';
+      document.getElementById('review-name').textContent = '— ' + r.name;
+    }
+    document.getElementById('review-next').onclick = () => { reviewIndex = (reviewIndex + 1) % reviews.length; renderReview(); };
+    document.getElementById('review-prev').onclick = () => { reviewIndex = (reviewIndex - 1 + reviews.length) % reviews.length; renderReview(); };
+    renderReview();
+
+    document.querySelectorAll('.faq-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const body = item.querySelector('.faq-body');
+        const icon = btn.querySelector('svg');
+        const open = !body.classList.contains('hidden');
+        body.classList.toggle('hidden', open);
+        icon.style.transform = open ? '' : 'rotate(180deg)';
+      });
+    });
+
+    let lastY = 0;
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      const show = y <= 8 || y < lastY;
+      nav.style.transform = show ? 'translateY(0)' : 'translateY(-96px)';
+      nav.style.opacity = show ? '1' : '0';
+      lastY = y;
+    }, { passive: true });
+  </script>
+</body>
+</html>

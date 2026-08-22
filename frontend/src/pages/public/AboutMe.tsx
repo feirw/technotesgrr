@@ -117,25 +117,43 @@ const personalCardImages = ['/images/c2.png', '/images/c3.png'];
 const cardClass =
   'bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md rounded-3xl shadow-xl p-6 md:p-8 border border-[#f07f97]/25 dark:border-white/10';
 
-const ABOUT_BACKGROUND_LIGHT = '/images/α1.jpg';
-const ABOUT_BACKGROUND_DARK = '/images/α2.jpg';
+function aboutBgSrcSet(basename: 'about-bg-light' | 'about-bg-dark'): string {
+  return [800, 1280, 1920, 2560, 3840]
+    .map((w) => `/images/${basename}-${w}.webp ${w}w`)
+    .join(', ');
+}
+
+const ABOUT_BACKGROUND_LIGHT = '/images/about-bg-light-1920.webp';
+const ABOUT_BACKGROUND_DARK = '/images/about-bg-dark-1920.webp';
+const ABOUT_BACKGROUND_LIGHT_SRCSET = aboutBgSrcSet('about-bg-light');
+const ABOUT_BACKGROUND_DARK_SRCSET = aboutBgSrcSet('about-bg-dark');
 
 const AboutPage: React.FC = () => {
   return (
     <div className="relative min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
-        <OptimizedImg
+        <img
           src={ABOUT_BACKGROUND_LIGHT}
+          srcSet={ABOUT_BACKGROUND_LIGHT_SRCSET}
+          sizes="100vw"
+          width={1920}
+          height={1080}
           alt=""
           loading="eager"
           fetchPriority="high"
-          className="w-full h-full object-cover dark:hidden"
+          decoding="async"
+          className="h-full w-full object-cover dark:hidden"
         />
-        <OptimizedImg
+        <img
           src={ABOUT_BACKGROUND_DARK}
+          srcSet={ABOUT_BACKGROUND_DARK_SRCSET}
+          sizes="100vw"
+          width={1920}
+          height={1080}
           alt=""
           loading="lazy"
-          className="hidden w-full h-full object-cover dark:block"
+          decoding="async"
+          className="hidden h-full w-full object-cover dark:block"
         />
       </div>
 

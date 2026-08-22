@@ -1,34 +1,19 @@
 ﻿import React from 'react';
 import { PageMenuIcon } from '@/data/menuIcons';
+import { AlgoVisualizer } from '@/features/algo-viz';
 
 const AlgorithmsPage: React.FC = () => {
   return (
-    <div className="min-h-[100dvh] bg-[#fff2f2] dark:bg-[#2d1c48] px-3 py-4 sm:px-6 sm:py-6 md:p-10 box-border">
-      <div className="mx-auto w-full max-w-[1450px]">
-        <div className="flex flex-col items-center mb-3 sm:mb-4">
-          <PageMenuIcon
-            icon="algorithms"
-            wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
-            className="w-9 h-9"
-          />
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
-            Αλγόριθμοι
-          </h1>
-        </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-3 sm:mb-4 px-1">
-          Αν δεν φορτώνει σωστά, δοκίμασε οριζόντια περιστροφή ή desktop — το embed μπορεί να απαιτεί πλάτος οθόνης.
-        </p>
-        <iframe
-          src="https://evripides.mysch.gr/dave/"
-          title="Algorithms Visualization"
-          className="w-full max-w-full rounded-xl border-none shadow-xl bg-white dark:bg-[#3a2658] block"
-          style={{
-            height: 'clamp(320px, calc(100dvh - 8.5rem), 1000px)',
-            maxWidth: '1450px',
-          }}
-          loading="lazy"
+    <div className="min-h-[100dvh] bg-[#fff5f8] px-3 py-4 text-slate-900 dark:bg-[#2d1c48] dark:text-[#faf5ef] sm:px-6 sm:py-6">
+      <div className="mx-auto mb-4 flex max-w-[1200px] flex-col items-center">
+        <PageMenuIcon
+          icon="algorithms"
+          wrapperClassName="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#ff97b2]/15 dark:bg-white/10 mb-3"
+          className="w-9 h-9"
         />
+        <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Προσομοίωση Αλγορίθμων</h1>
       </div>
+      <AlgoVisualizer />
     </div>
   );
 };
