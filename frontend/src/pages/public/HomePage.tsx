@@ -127,7 +127,7 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Μετεγγραφές', path: '/meteggrafes', iconSrc: MENU_ICONS.meteggrafes },
       { label: 'Μελλοντικές Καριέρες & Προσανατολισμός', path: '/prosanatolismos', iconSrc: MENU_ICONS.prosanatolismos },
       { label: 'ΣΑΕΚ', path: '/saek', iconSrc: MENU_ICONS.saek },
-      {label : 'Πρόβα Μηχανογραφικού', path: '/mixanografiko', iconSrc: MENU_ICONS.mixanografiko},
+      {label : 'Πρόβα Μηχανογραφικού', path: '/mixanografiko', iconSrc: MENU_ICONS.mixanografiko },
     ],
   },
 ];
