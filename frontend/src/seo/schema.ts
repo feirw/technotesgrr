@@ -18,7 +18,7 @@ export function buildOrganizationSchema() {
     url: DEFAULT_SITE_ORIGIN,
     logo: LOGO_URL,
     description:
-      'Online πλατφόρμα προετοιμασίας για Πανελλήνιες Πληροφορικής: quiz, flashcards, ΑΕΠΠ, δομημένος προγραμματισμός και ασκήσεις.',
+      'Online πλατφόρμα προετοιμασίας για Πανελλήνιες Πληροφορικής: quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα και ασκήσεις.',
     areaServed: {
       '@type': 'Country',
       name: 'Greece',
@@ -51,7 +51,7 @@ export function buildCourseSchema(pageUrl: string) {
     '@type': 'Course',
     name: 'Προετοιμασία Πανελληνίων Πληροφορικής',
     description:
-      'Δωρεάν online μαθήματα προετοιμασίας για το μάθημα Πληροφορικής Γ\' Λυκείου: ΑΕΠΠ, δομημένος προγραμματισμός, θεωρία, quiz και ασκήσεις.',
+      'Δωρεάν online προετοιμασία Πληροφορικής Γ\' Λυκείου: quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα και ασκήσεις.',
     provider: {
       '@type': 'EducationalOrganization',
       name: SITE_NAME,
@@ -61,10 +61,12 @@ export function buildCourseSchema(pageUrl: string) {
     inLanguage: 'el-GR',
     educationalLevel: 'Secondary education',
     teaches: [
-      'ΑΕΠΠ',
-      'Δομημένος Προγραμματισμός',
-      'Πληροφορική Πανελλήνιες',
+      'Quiz Πληροφορικής',
+      'Flashcards',
+      'Δομές Δεδομένων',
       'Αλγόριθμοι',
+      'Παλιά Θέματα Πανελληνίων',
+      'Πληροφορική Πανελλήνιες',
     ],
     hasCourseInstance: {
       '@type': 'CourseInstance',

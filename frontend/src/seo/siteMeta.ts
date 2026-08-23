@@ -5,7 +5,7 @@ export const DEFAULT_SITE_ORIGIN = 'https://www.technotes.gr';
 
 export const SITE_NAME = 'Technotes';
 export const SITE_NAME_FULL = 'technotesgr';
-export const SITE_TAGLINE = 'Πληροφορική για τις Πανελλήνιες';
+export const SITE_TAGLINE = 'Quiz, flashcards, αλγόριθμοι και παλιά θέματα για Πανελλήνιες Πληροφορικής';
 
 export const DEFAULT_OG_IMAGE_PATH = '/og/default.png';
 
