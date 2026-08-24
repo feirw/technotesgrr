@@ -351,11 +351,38 @@ export function matchSchoolBasis(entry: SchoolCoefficientsEntry): School | null 
   );
 }
 
+export type ParsedEbePart = { label: string; value: number };
+
+export type ParsedEbe = {
+  /** ΕΒΕ των 4 βασικών (μη επισημασμένος αριθμός στην αρχή). */
+  core: number | null;
+  /** ΕΒΕ ειδικών μαθημάτων, π.χ. «Ξένη Γλώσσα 13.81». */
+  specials: ParsedEbePart[];
+};
+
+/** Σπάει σύνθετες ΕΒΕ τύπου «12.99, Ξένη Γλώσσα 13.81». */
+export function parseEbeParts(raw: string): ParsedEbe {
+  const specials: ParsedEbePart[] = [];
+  let core: number | null = null;
+  let lastIndex = 0;
+  const re = /\d+(?:[.,]\d+)?/g;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(raw)) !== null) {
+    const value = Number(match[0].replace(',', '.'));
+    if (!Number.isFinite(value)) continue;
+    const label = raw.slice(lastIndex, match.index).replace(/^[,\s]+|[,\s]+$/g, '');
+    lastIndex = match.index + match[0].length;
+    if (!label) {
+      if (core === null) core = value;
+    } else {
+      specials.push({ label, value });
+    }
+  }
+  return { core, specials };
+}
+
 export function parseEbeGrade(raw: string): number | null {
-  const trimmed = raw.trim().replace(',', '.');
-  if (!trimmed) return null;
-  const value = Number(trimmed);
-  return Number.isFinite(value) ? value : null;
+  return parseEbeParts(raw).core;
 }
 
 export function formatEbeDisplay(raw: string): string {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowDown,
@@ -20,7 +20,7 @@ import {
   normalizeSearch,
   type SpecialExamSubjectKey,
 } from '@/utils/schoolCoefficientsUtils';
-import { formatEbeDisplay, matchSchoolBasis, parseEbeGrade } from '@/utils/schoolBasisMatching';
+import { formatEbeDisplay, matchSchoolBasis, parseEbeParts } from '@/utils/schoolBasisMatching';
 import { parseExamGrade, type GradeInputs } from '@/utils/moriaCalculation';
 
 const STORAGE_KEY = 'technotesgr_mixanografiko_v3';
@@ -63,53 +63,130 @@ function schoolMatchesQuery(school: School, query: string): boolean {
   return q.split(' ').filter(Boolean).every((token) => haystack.includes(token));
 }
 
-/** Ποια ειδικά μαθήματα απαιτεί μια σχολή — null αν δεν απαιτεί κανένα, 'anyLanguage' αν δέχεται
- * οποιαδήποτε ξένη γλώσσα, αλλιώς η λίστα των συγκεκριμένων ειδικών μαθημάτων που απαιτεί. */
-function getRequiredSpecialKeys(entry: SchoolCoefficientsEntry): SpecialExamSubjectKey[] | 'anyLanguage' | null {
+type SpecialRequirement = {
+  anyLanguage: boolean;
+  keys: SpecialExamSubjectKey[];
+};
+
+function mapSpecialLabel(label: string): SpecialExamSubjectKey | 'anyLanguage' | null {
+  const n = normalizeSearch(label);
+  if (!n) return null;
+  if (n.includes('ξενη γλωσσα') || n === 'ειδικο μαθημα') return 'anyLanguage';
+  for (const { key } of SPECIAL_EXAM_SUBJECTS) {
+    const nk = normalizeSearch(key);
+    if (n === nk || n.includes(nk)) return key;
+  }
+  return null;
+}
+
+function addSpecialRequirement(
+  target: SpecialRequirement,
+  req: SpecialExamSubjectKey[] | 'anyLanguage' | null,
+) {
+  if (req === null) return;
+  if (req === 'anyLanguage') {
+    target.anyLanguage = true;
+    return;
+  }
+  for (const key of req) {
+    if (!target.keys.includes(key)) target.keys.push(key);
+  }
+}
+
+function specialsFromCoefficients(entry: SchoolCoefficientsEntry): SpecialExamSubjectKey[] | 'anyLanguage' | null {
   const specialCoefs = entry.coefficients.filter((c) => isSpecialCoefficientSubject(c.subject));
   if (specialCoefs.length === 0) return null;
   if (specialCoefs.some((c) => c.subject === 'Ειδικό Μάθημα')) return 'anyLanguage';
   return specialCoefs.map((c) => c.subject as SpecialExamSubjectKey);
 }
 
-type Eligibility = { eligible: boolean; missing: boolean };
+function specialsFromRequirements(requirements: string | undefined): SpecialExamSubjectKey[] | 'anyLanguage' | null {
+  if (!requirements) return null;
+  const n = normalizeSearch(requirements);
+  if (n.includes('ακολουθει το προγραμμα')) return null;
+  if (n.includes('ξενη γλωσσα')) return 'anyLanguage';
+  if (n.includes('αγγλικα')) return ['Αγγλικά'];
+  if (n.includes('αγωνισματα')) return ['Αγωνίσματα'];
+  if (n.includes('μουσικ')) {
+    return ['Μουσική Αντίληψη, Θεωρία και Αρμονία', 'Μουσική Εκτέλεση και Ερμηνεία'];
+  }
+  if (n.includes('σχεδιο')) return ['Ελεύθερο Σχέδιο', 'Γραμμικό Σχέδιο'];
+  return null;
+}
+
+function specialsFromEbeLabels(ebe: string): SpecialExamSubjectKey[] | 'anyLanguage' | null {
+  const { specials } = parseEbeParts(ebe);
+  if (specials.length === 0) return null;
+  const result: SpecialRequirement = { anyLanguage: false, keys: [] };
+  for (const { label } of specials) {
+    const mapped = mapSpecialLabel(label);
+    addSpecialRequirement(result, mapped === 'anyLanguage' ? 'anyLanguage' : mapped ? [mapped] : null);
+  }
+  if (result.anyLanguage && result.keys.length === 0) return 'anyLanguage';
+  if (result.anyLanguage) return 'anyLanguage';
+  return result.keys.length ? result.keys : null;
+}
+
+function getSpecialRequirement(
+  school: School,
+  entry: SchoolCoefficientsEntry | undefined,
+): SpecialRequirement {
+  const result: SpecialRequirement = { anyLanguage: false, keys: [] };
+  const fromCoeff = entry ? specialsFromCoefficients(entry) : null;
+  const fromEbe = specialsFromEbeLabels(school.ebe);
+  const fromReqs = specialsFromRequirements(school.requirements);
+  addSpecialRequirement(result, fromCoeff ?? fromEbe ?? fromReqs);
+  return result;
+}
+
+function enteredLanguageGrades(specialGrades: GradeInputs): number[] {
+  return LANGUAGE_SPECIAL_SUBJECT_KEYS.map((k) => parseExamGrade(specialGrades[k] ?? '')).filter(
+    (g): g is number => g !== null,
+  );
+}
 
 function evaluateSchool(
   school: School,
   entry: SchoolCoefficientsEntry | undefined,
   coreMean: number | null,
   specialGrades: GradeInputs,
-): Eligibility {
-  const ebeThreshold = parseEbeGrade(school.ebe);
-  if (ebeThreshold === null) return { eligible: true, missing: false };
+): boolean {
+  const required = getSpecialRequirement(school, entry);
+  const needsSpecials = required.anyLanguage || required.keys.length > 0;
 
-  const requiredKeys = entry ? getRequiredSpecialKeys(entry) : null;
-
-  if (requiredKeys === null) {
-    if (coreMean === null) return { eligible: false, missing: true };
-    return { eligible: coreMean >= ebeThreshold, missing: false };
+  if (needsSpecials) {
+    if (required.anyLanguage && enteredLanguageGrades(specialGrades).length === 0) return false;
+    for (const key of required.keys) {
+      if (parseExamGrade(specialGrades[key] ?? '') === null) return false;
+    }
   }
 
-  if (requiredKeys === 'anyLanguage') {
-    const entered = LANGUAGE_SPECIAL_SUBJECT_KEYS.map((k) => parseExamGrade(specialGrades[k] ?? '')).filter(
-      (g): g is number => g !== null,
-    );
-    if (entered.length === 0) return { eligible: false, missing: true };
-    return { eligible: Math.max(...entered) >= ebeThreshold, missing: false };
+  const ebe = parseEbeParts(school.ebe);
+  if (ebe.core !== null && (coreMean === null || coreMean < ebe.core)) return false;
+
+  for (const { label, value } of ebe.specials) {
+    const mapped = mapSpecialLabel(label);
+    if (mapped === 'anyLanguage') {
+      const entered = enteredLanguageGrades(specialGrades);
+      if (entered.length === 0 || Math.max(...entered) < value) return false;
+    } else if (mapped) {
+      const grade = parseExamGrade(specialGrades[mapped] ?? '');
+      if (grade === null || grade < value) return false;
+    }
   }
 
-  const grades = requiredKeys.map((k) => parseExamGrade(specialGrades[k] ?? ''));
-  if (grades.some((g) => g === null)) return { eligible: false, missing: true };
-  const validGrades = grades as number[];
-  return { eligible: Math.min(...validGrades) >= ebeThreshold, missing: false };
+  return true;
 }
 
-function requiredSubjectsLabel(entry: SchoolCoefficientsEntry | undefined): string | null {
-  if (!entry) return null;
-  const requiredKeys = getRequiredSpecialKeys(entry);
-  if (requiredKeys === null) return null;
-  if (requiredKeys === 'anyLanguage') return 'Ξένη γλώσσα (μία από Αγγλικά/Γαλλικά/Γερμανικά/Ιταλικά)';
-  return requiredKeys.join(', ');
+function requiredSubjectsLabel(
+  school: School,
+  entry: SchoolCoefficientsEntry | undefined,
+): string | null {
+  const required = getSpecialRequirement(school, entry);
+  const parts: string[] = [];
+  if (required.anyLanguage) parts.push('Ξένη γλώσσα (μία από Αγγλικά/Γαλλικά/Γερμανικά/Ιταλικά)');
+  parts.push(...required.keys);
+  return parts.length ? parts.join(', ') : null;
 }
 
 const MixanografikoPage: React.FC = () => {
@@ -205,8 +282,22 @@ const MixanografikoPage: React.FC = () => {
     setSpecialGrades((prev) => ({ ...prev, [key]: value }));
   };
 
-  const evalFor = (school: School, grades: GradeInputs, coreMean: number | null): Eligibility =>
-    evaluateSchool(school, coeffEntryBySchoolId.get(school.id), coreMean, grades);
+  const isEligible = useCallback(
+    (school: School) =>
+      evaluateSchool(school, coeffEntryBySchoolId.get(school.id), appliedCoreMean, appliedSpecialGrades),
+    [coeffEntryBySchoolId, appliedCoreMean, appliedSpecialGrades],
+  );
+
+  useEffect(() => {
+    if (!hasAppliedSearch) return;
+    setRankedIds((prev) => {
+      const next = prev.filter((id) => {
+        const school = schoolsById.get(id);
+        return school ? isEligible(school) : false;
+      });
+      return next.length === prev.length && next.every((id, i) => id === prev[i]) ? prev : next;
+    });
+  }, [hasAppliedSearch, isEligible, schoolsById]);
 
   const availableSchools = useMemo(() => {
     if (!hasAppliedSearch) return [];
@@ -214,9 +305,9 @@ const MixanografikoPage: React.FC = () => {
     return ALL_SCHOOLS.filter((s) => {
       if (rankedSet.has(s.id)) return false;
       if (!schoolMatchesQuery(s, searchQuery)) return false;
-      return evalFor(s, appliedSpecialGrades, appliedCoreMean).eligible;
+      return isEligible(s);
     });
-  }, [rankedIds, searchQuery, hasAppliedSearch, appliedSpecialGrades, appliedCoreMean, coeffEntryBySchoolId]);
+  }, [rankedIds, searchQuery, hasAppliedSearch, isEligible]);
 
   const addSchool = (id: string) => {
     setRankedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -293,15 +384,14 @@ const MixanografikoPage: React.FC = () => {
               <span className="text-xs text-red-600 dark:text-red-400 mt-1 block">Πρέπει να είναι 0–20.</span>
             ) : (
               <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
-                Για σχολές χωρίς ειδικό μάθημα, συγκρίνεται με την ΕΒΕ τους.
+                Για όλες τις σχολές: αν ο μέσος όρος σου είναι κάτω από την ΕΒΕ τους, δεν εμφανίζονται.
               </span>
             )}
           </label>
 
           <h3 className="text-sm font-black text-gray-900 dark:text-white mb-2">Ειδικά μαθήματα</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-            Συμπλήρωσε μόνο όσα έχεις δώσει. Σχολές που απαιτούν ειδικό μάθημα που δεν έχεις συμπληρώσει δεν θα σου
-            εμφανίζονται.
+            Συμπλήρωσε μόνο όσα έχεις δώσει. Σχολές που απαιτούν ειδικό μάθημα χωρίς συμπληρωμένο βαθμό δεν εμφανίζονται.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
             {SPECIAL_EXAM_SUBJECTS.map(({ key, label }) => (
@@ -369,7 +459,7 @@ const MixanografikoPage: React.FC = () => {
             <ul className="space-y-2">
               {rankedSchools.map((school, index) => {
                 const entry = coeffEntryBySchoolId.get(school.id);
-                const requiredLabel = requiredSubjectsLabel(entry);
+                const requiredLabel = requiredSubjectsLabel(school, entry);
                 return (
                   <li
                     key={school.id}
@@ -483,7 +573,7 @@ const MixanografikoPage: React.FC = () => {
                 ) : (
                   availableSchools.map((school) => {
                     const entry = coeffEntryBySchoolId.get(school.id);
-                    const requiredLabel = requiredSubjectsLabel(entry);
+                    const requiredLabel = requiredSubjectsLabel(school, entry);
                     return (
                       <div
                         key={school.id}

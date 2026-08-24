@@ -1,16 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import {
-  Background,
+  BaseEdge,
   Controls,
   Handle,
-  MarkerType,
   Position,
   ReactFlow,
   ReactFlowProvider,
+  getStraightPath,
   useEdgesState,
   useNodesState,
   useReactFlow,
   type Edge,
+  type EdgeProps,
   type Node,
   type NodeProps,
 } from '@xyflow/react';
@@ -37,7 +38,15 @@ type CircleData = {
   dimmed: boolean;
 };
 
-/** Κρυφό handle στο κέντρο — οι ακμές ξεκινούν/καταλήγουν στη μέση του κύκλου. */
+type GraphEdgeData = {
+  directed: boolean;
+};
+
+/** Ακτίνα κύκλου + περίγραμμα, ώστε η γραμμή/βέλος να σταματά στην περιφέρεια. */
+const NODE_RADIUS = 28;
+const ARROW_LENGTH = 14;
+const ARROW_WIDTH = 7;
+
 const centerHandleStyle: React.CSSProperties = {
   left: '50%',
   top: '50%',
@@ -65,7 +74,62 @@ const CircleNode: React.FC<NodeProps<Node<CircleData>>> = ({ data }) => (
   </div>
 );
 
+const GraphEdge: React.FC<EdgeProps<Edge<GraphEdgeData>>> = ({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  style,
+  data,
+  selected,
+}) => {
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  const directed = Boolean(data?.directed);
+  const tipPad = NODE_RADIUS + 3;
+  const x1 = sourceX + ux * NODE_RADIUS;
+  const y1 = sourceY + uy * NODE_RADIUS;
+  const tipX = targetX - ux * tipPad;
+  const tipY = targetY - uy * tipPad;
+  const lineEndX = directed ? tipX - ux * ARROW_LENGTH : tipX;
+  const lineEndY = directed ? tipY - uy * ARROW_LENGTH : tipY;
+  const [path] = getStraightPath({
+    sourceX: x1,
+    sourceY: y1,
+    targetX: lineEndX,
+    targetY: lineEndY,
+  });
+  const color = (style?.stroke as string | undefined) ?? '#f0b4c4';
+  const px = -uy * ARROW_WIDTH;
+  const py = ux * ARROW_WIDTH;
+
+  return (
+    <>
+      <BaseEdge
+        id={id}
+        path={path}
+        style={{ ...style, stroke: color }}
+        interactionWidth={24}
+      />
+      {directed && len > NODE_RADIUS * 2 ? (
+        <polygon
+          points={`${tipX},${tipY} ${tipX - ux * ARROW_LENGTH + px},${tipY - uy * ARROW_LENGTH + py} ${tipX - ux * ARROW_LENGTH - px},${tipY - uy * ARROW_LENGTH - py}`}
+          fill={color}
+          stroke={color}
+          strokeLinejoin="round"
+          className={selected ? 'opacity-100' : undefined}
+        />
+      ) : null}
+    </>
+  );
+};
+
 const nodeTypes = { circle: CircleNode };
+const edgeTypes = { graph: GraphEdge };
 
 const GraphCanvas: React.FC<Props> = ({
   graph,
@@ -101,7 +165,7 @@ const GraphCanvas: React.FC<Props> = ({
     [graph.vertices, highlights, selectedId]
   );
 
-  const builtEdges: Edge[] = useMemo(
+  const builtEdges: Edge<GraphEdgeData>[] = useMemo(
     () =>
       graph.edges.map((e) => ({
         id: e.id,
@@ -109,19 +173,14 @@ const GraphCanvas: React.FC<Props> = ({
         target: e.target,
         sourceHandle: 'c-s',
         targetHandle: 'c-t',
-        type: 'straight',
+        type: 'graph',
+        data: { directed },
         animated: edgeHighlights[e.id] === 'active',
         style: {
           stroke: edgeStroke(edgeHighlights[e.id] as 'active' | 'visited' | 'default'),
           strokeWidth:
             selectedEdgeId === e.id || edgeHighlights[e.id] === 'active' ? 3.5 : 2,
         },
-        markerEnd: directed
-          ? {
-              type: MarkerType.ArrowClosed,
-              color: edgeStroke(edgeHighlights[e.id] as 'active' | 'visited' | 'default'),
-            }
-          : undefined,
       })),
     [graph.edges, edgeHighlights, directed, selectedEdgeId]
   );
@@ -144,7 +203,8 @@ const GraphCanvas: React.FC<Props> = ({
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        defaultEdgeOptions={{ type: 'straight' }}
+        edgeTypes={edgeTypes}
+        defaultEdgeOptions={{ type: 'graph' }}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={(_, n) => onSelectNode(n.id)}
@@ -157,7 +217,6 @@ const GraphCanvas: React.FC<Props> = ({
         proOptions={{ hideAttribution: true }}
         className="bg-transparent"
       >
-        <Background gap={18} size={1} color="#cbd5e1" />
         <Controls showInteractive={false} />
       </ReactFlow>
     </>

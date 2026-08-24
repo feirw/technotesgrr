@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import {
-  Background,
   Controls,
   Handle,
   Position,
@@ -146,8 +145,8 @@ const TreeCanvas: React.FC<Props> = ({
         fitView
         fitViewOptions={{ padding: 0.25 }}
         proOptions={{ hideAttribution: true }}
+        className="bg-transparent"
       >
-        <Background gap={18} size={1} color="#cbd5e1" />
         <Controls showInteractive={false} />
       </ReactFlow>
     </>

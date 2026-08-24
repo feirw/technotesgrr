@@ -6,6 +6,7 @@ import { CodePanel } from './components/CodePanel';
 import { ControlsBar } from './components/ControlsBar';
 import type { AlgoId, SortOrder } from './types';
 import { CELL_FILL, CELL_LABEL } from './types';
+import { Maximize2, ZoomIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function speedToMs(speed: number): number {
@@ -27,6 +28,7 @@ export const AlgoVisualizer: React.FC = () => {
   const [playing, setPlaying] = useState(false);
   const [message, setMessage] = useState('Διάλεξε αλγόριθμο και πάτα Εκτέλεση ή Βήμα-Βήμα.');
   const [messageType, setMessageType] = useState<'info' | 'ok' | 'error'>('info');
+  const [fitAll, setFitAll] = useState(true);
 
   const timer = useRef<number | null>(null);
   const stepIndexRef = useRef(0);
@@ -177,10 +179,22 @@ export const AlgoVisualizer: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(280px,38%)_1fr]">
         <CodePanel lines={codeLines} active={current?.line ?? 0} />
-        <div className="flex min-h-[280px] flex-col justify-center gap-6 overflow-auto rounded-2xl border border-[#ff97b2]/25 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1a1028] sm:p-6">
-          {current?.arrays.map((view, idx) => (
-            <ArrayStrip key={`${view.label ?? idx}`} view={view} />
-          ))}
+        <div className="flex min-h-[280px] min-w-0 flex-col rounded-2xl border border-[#ff97b2]/25 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1a1028] sm:p-6">
+          <div className="mb-3 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setFitAll((v) => !v)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[#ff97b2]/40 px-2.5 py-1 text-[11px] font-semibold text-[#f07f97] hover:bg-[#ff97b2]/10 dark:border-white/20 dark:text-[#ffc4d6]"
+            >
+              {fitAll ? <ZoomIn className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {fitAll ? 'Μεγέθυνση' : 'Όλος ο πίνακας'}
+            </button>
+          </div>
+          <div className="flex min-h-0 flex-1 flex-col justify-center gap-6 overflow-x-hidden">
+            {current?.arrays.map((view, idx) => (
+              <ArrayStrip key={`${view.label ?? idx}`} view={view} fitAll={fitAll} />
+            ))}
+          </div>
         </div>
       </div>
 

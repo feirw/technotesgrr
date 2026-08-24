@@ -68,7 +68,7 @@ export const LinkedListVisualizer: React.FC<Props> = React.memo(
             </span>
           )}
 
-          {ids.map((id, index) => {
+          {ids.map((id) => {
             const node = list.nodes[id];
             const hl = highlights[id] as NodeHighlight | undefined;
             const edgeKey = node.next ? `${id}->${node.next}` : '';
@@ -110,9 +110,6 @@ export const LinkedListVisualizer: React.FC<Props> = React.memo(
                       τρέχον
                     </span>
                   )}
-                  <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-slate-400">
-                    [{index}]
-                  </span>
                 </motion.button>
                 {node.next && <PointerArrow active={active} />}
               </React.Fragment>
