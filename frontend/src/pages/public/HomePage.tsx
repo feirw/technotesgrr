@@ -126,6 +126,7 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Αντιστοιχίες Σχολών', path: '/antistoixies-sxolon', iconSrc: MENU_ICONS.antistixia },
       { label: 'Μετεγγραφές', path: '/meteggrafes', iconSrc: MENU_ICONS.meteggrafes },
       { label: 'Μελλοντικές Καριέρες & Προσανατολισμός', path: '/prosanatolismos', iconSrc: MENU_ICONS.prosanatolismos },
+      { label: 'Προσανατολισμός Πληροφορικής', path: '/prosanatolismos-pliroforikis', iconSrc: MENU_ICONS.prosanatolismosPliroforikis },
       { label: 'ΣΑΕΚ', path: '/saek', iconSrc: MENU_ICONS.saek },
       {label : 'Πρόβα Μηχανογραφικού', path: '/mixanografiko', iconSrc: MENU_ICONS.mixanografiko},
     ],

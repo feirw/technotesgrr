@@ -6,6 +6,17 @@ import { STRUCTURE_KINDS, STRUCTURE_LABELS } from './types';
 import type { StructureKind } from './types';
 import { cn } from '@/lib/utils';
 
+const STRUCTURE_HINTS: Partial<Record<StructureKind, string>> = {
+  'binary-tree':
+    'Πάτα πάνω στον κόμβο που θέλεις να συνδέσεις και μετά «Αριστερά» ή «Δεξιά».',
+  'general-tree': 'Πάτα πάνω στον κόμβο-γονέα για να τον επιλέξεις και μετά πρόσθεσε παιδί.',
+  'linked-list': 'Πάτα πάνω στον κόμβο για να προσθέσεις μετά από αυτόν.',
+  'directed-graph':
+    'Πάτα πάνω στην κορυφή για να την επιλέξεις. Για ακμή: Από, Προς και + Ακμή στην ίδια γραμμή.',
+  'undirected-graph':
+    'Πάτα πάνω στην κορυφή για να την επιλέξεις. Για ακμή: Από, Προς και + Ακμή στην ίδια γραμμή.',
+};
+
 export const DataStructureVisualizer: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const kind = useDsvStore((s) => s.structure.kind);
@@ -32,6 +43,12 @@ export const DataStructureVisualizer: React.FC = () => {
             <BuildPanel />
           </div>
         </div>
+
+        {STRUCTURE_HINTS[kind] ? (
+          <p className="rounded-xl border border-[#ff97b2]/20 bg-white/70 px-4 py-2 text-xs font-medium text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+            {STRUCTURE_HINTS[kind]}
+          </p>
+        ) : null}
 
         <div
           role="status"

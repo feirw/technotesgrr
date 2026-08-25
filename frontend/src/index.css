@@ -123,6 +123,7 @@ code {
   .horizontal-scroll-bar {
     scrollbar-width: thin;
     scrollbar-color: #f07f97 #fff5f8;
+    -webkit-overflow-scrolling: touch;
   }
 
   .horizontal-scroll-bar::-webkit-scrollbar {

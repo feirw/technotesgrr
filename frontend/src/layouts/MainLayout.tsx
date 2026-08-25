@@ -99,6 +99,11 @@ const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/sxoles', label: 'Σχολές', iconSrc: MENU_ICONS.schools },
   { to: '/syntelestes-sxolon', label: 'Συντελεστές Σχολών', iconSrc: MENU_ICONS.syntelestesSxolon },
   { to: '/prosanatolismos', label: 'Προσανατολισμός', iconSrc: MENU_ICONS.prosanatolismos },
+  {
+    to: '/prosanatolismos-pliroforikis',
+    label: 'Προσανατολισμός Πληροφορικής',
+    iconSrc: MENU_ICONS.prosanatolismosPliroforikis,
+  },
   { to: '/ypologismos-morion', label: 'Υπολογισμός Μορίων', iconSrc: MENU_ICONS.ypologismosMorion },
   { to: '/mixanografiko', label: 'Μηχανογραφικό (Πρόβα)', iconSrc: MENU_ICONS.mixanografiko },
   { to: '/antistoixies-sxolon', label: 'Αντιστοιχίες Σχολών', iconSrc: MENU_ICONS.antistixia },
@@ -675,12 +680,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer */}
-      <footer className="relative -mt-px overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
+      <footer className="relative z-0 overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:bg-none"
           aria-hidden="true"
         />
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 items-start w-full max-w-[100vw]">
+        <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 items-start w-full max-w-[100vw]">
           <motion.div {...fadeIn} className="text-center md:text-left md:pr-6">
             <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3">Νομικά</h3>
             <div className="flex flex-col gap-2 text-black dark:text-gray-100 text-sm md:items-start md:mx-0 mx-auto max-w-xs md:max-w-none">

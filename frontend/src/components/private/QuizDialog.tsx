@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -256,9 +257,9 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
     (_, idx) => selectedAnswers?.[idx] === undefined
   ).length;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 flex items-center justify-center p-3 sm:p-6 z-50 overflow-hidden overscroll-none">
+      <div className="fixed inset-0 isolate z-[110] flex items-center justify-center overflow-hidden overscroll-none p-3 sm:p-6">
         {/* Backdrop */}
         <motion.div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm touch-none"
@@ -639,7 +640,8 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

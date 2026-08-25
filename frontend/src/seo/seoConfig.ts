@@ -204,6 +204,18 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Προσανατολισμός', path: '/prosanatolismos' },
     ],
   },
+  '/prosanatolismos-pliroforikis': {
+    path: '/prosanatolismos-pliroforikis',
+    slug: 'prosanatolismos-pliroforikis',
+    title: 'Προσανατολισμός Πληροφορικής | CS Career Path',
+    description:
+      'Τεστ καριέρας πληροφορικής: δες ποιες από τις 12 tech κατευθύνσεις σου ταιριάζουν και πάρε roadmap για να ξεκινήσεις.',
+    ogImage: og('prosanatolismos'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Προσανατολισμός Πληροφορικής', path: '/prosanatolismos-pliroforikis' },
+    ],
+  },
   '/study-timer': {
     path: '/study-timer',
     slug: 'study-timer',

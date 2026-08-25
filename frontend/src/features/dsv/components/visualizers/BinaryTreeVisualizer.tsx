@@ -37,9 +37,10 @@ export const BinaryTreeVisualizer: React.FC<Props> = React.memo(
     const height = Math.max(280, ...layout.map((p) => p.y + TOP_PAD + 100));
 
     return (
-      <div className="horizontal-scroll-bar flex h-full w-full items-start justify-center overflow-auto pt-6 sm:pt-10">
-        <svg width={width} height={height} className="mx-auto block">
-          {edges.map((e) => (
+      <div className="horizontal-scroll-bar absolute inset-0 overflow-auto overscroll-contain pt-6 sm:pt-10">
+        <div className="mx-auto w-max min-w-full px-4">
+          <svg width={width} height={height} className="mx-auto block">
+            {edges.map((e) => (
             <motion.line
               key={e.key}
               x1={e.x1}
@@ -51,8 +52,8 @@ export const BinaryTreeVisualizer: React.FC<Props> = React.memo(
               initial={false}
               animate={{ pathLength: 1 }}
             />
-          ))}
-          {layout.map((p) => {
+            ))}
+            {layout.map((p) => {
             const node = tree.nodes[p.id];
             const hl = highlights[p.id] as NodeHighlight | undefined;
             const fill = nodeFill(hl);
@@ -90,8 +91,9 @@ export const BinaryTreeVisualizer: React.FC<Props> = React.memo(
                 </text>
               </motion.g>
             );
-          })}
-        </svg>
+            })}
+          </svg>
+        </div>
       </div>
     );
   }

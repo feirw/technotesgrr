@@ -50,6 +50,7 @@ const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
 const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
+const CsCareerPathPage = lazy(() => import('@/pages/private/CsCareerPathPage'));
 const MixanografikoPage = lazy(() => import('@/pages/private/MixanografikoPage'));
 const AntistoixiesSxolonPage = lazy(() => import('@/pages/private/AntistoixiesSxolonPage'));
 const MeteggrafesPage = lazy(() => import('@/pages/private/MeteggrafesPage'));
@@ -175,6 +176,10 @@ const routes: RouteConfig[] = [
   {
     path: '/prosanatolismos',
     element: <ProsanatolismosPage />,
+  },
+  {
+    path: '/prosanatolismos-pliroforikis',
+    element: <CsCareerPathPage />,
   },
   {
     path: '/study-timer',

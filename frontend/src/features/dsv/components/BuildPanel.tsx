@@ -363,115 +363,123 @@ export const BuildPanel: React.FC = () => {
   const kind = structure.kind;
 
   return (
-    <div className="flex flex-wrap items-end gap-2">
-      <input
-        className={`${field} w-28`}
-        value={label}
-        onChange={(e) => setLabel(e.target.value)}
-        placeholder="Κορυφή"
-      />
-      <button
-        type="button"
-        className={btn}
-        onClick={() => {
-          const name = needLabel();
-          if (!name) return;
-          const r = GR.addVertex(data, name);
-          commitChange(
-            { kind, data: r.graph },
-            `Προστέθηκε η κορυφή ${name}.`,
-            'Αποτυχία προσθήκης κορυφής.'
-          );
-          setLabel('');
-        }}
-      >
-        + Κορυφή
-      </button>
-      <select
-        className={`${field} w-28`}
-        value={edgeSource}
-        onChange={(e) => setEdgeSource(e.target.value)}
-      >
-        <option value="">Από</option>
-        {vertices.map((v) => (
-          <option key={v.id} value={v.id}>
-            {formatNodeLabel(v.label, 12)}
-          </option>
-        ))}
-      </select>
-      <select
-        className={`${field} w-28`}
-        value={edgeTarget}
-        onChange={(e) => setEdgeTarget(e.target.value)}
-      >
-        <option value="">Προς</option>
-        {vertices.map((v) => (
-          <option key={v.id} value={v.id}>
-            {formatNodeLabel(v.label, 12)}
-          </option>
-        ))}
-      </select>
-      <button
-        type="button"
-        className={btn}
-        onClick={() => {
-          if (!edgeSource || !edgeTarget) {
-            setMessage('Διάλεξε πηγή και προορισμό.', 'error');
-            return;
-          }
-          const r = GR.addEdge(data, edgeSource, edgeTarget, !directed);
-          commitChange(
-            { kind, data: r.graph },
-            'Η ακμή προστέθηκε.',
-            r.steps[r.steps.length - 1]?.explanation ?? 'Η ακμή δεν μπορεί να προστεθεί.'
-          );
-        }}
-      >
-        + Ακμή
-      </button>
-      <button
-        type="button"
-        className={btnGhost}
-        disabled={!selectedNodeId}
-        onClick={() => {
-          if (!selectedNodeId) {
-            setMessage('Επίλεξε κορυφή για διαγραφή.', 'error');
-            return;
-          }
-          const r = GR.removeVertex(data, selectedNodeId);
-          commitChange(
-            { kind, data: r.graph },
-            'Η κορυφή διαγράφηκε.',
-            'Αποτυχία διαγραφής.'
-          );
-          useDsvStore.getState().selectNode(null);
-        }}
-      >
-        Διαγραφή κορυφής
-      </button>
-      <button
-        type="button"
-        className={btnGhost}
-        disabled={!selectedEdgeId}
-        onClick={() => {
-          if (!selectedEdgeId) {
-            setMessage('Επίλεξε ακμή για διαγραφή.', 'error');
-            return;
-          }
-          const r = GR.removeEdge(data, selectedEdgeId);
-          commitChange(
-            { kind, data: r.graph },
-            'Η ακμή διαγράφηκε.',
-            'Αποτυχία διαγραφής ακμής.'
-          );
-          useDsvStore.getState().selectEdge(null);
-        }}
-      >
-        Διαγραφή ακμής
-      </button>
-      <button type="button" className={btnGhost} onClick={clearStructure}>
-        Από την αρχή
-      </button>
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-end gap-2">
+        <input
+          className={`${field} min-w-0 flex-1 sm:w-28 sm:flex-none`}
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          placeholder="Κορυφή"
+        />
+        <button
+          type="button"
+          className={btn}
+          onClick={() => {
+            const name = needLabel();
+            if (!name) return;
+            const r = GR.addVertex(data, name);
+            commitChange(
+              { kind, data: r.graph },
+              `Προστέθηκε η κορυφή ${name}. Πάτα την στο canvas για να την επιλέξεις.`,
+              'Αποτυχία προσθήκης κορυφής.'
+            );
+            setLabel('');
+          }}
+        >
+          + Κορυφή
+        </button>
+      </div>
+      <div className="flex min-w-0 flex-nowrap items-end gap-2 overflow-x-auto">
+        <select
+          className={`${field} min-w-0 flex-1`}
+          value={edgeSource}
+          onChange={(e) => setEdgeSource(e.target.value)}
+          aria-label="Από"
+        >
+          <option value="">Από</option>
+          {vertices.map((v) => (
+            <option key={v.id} value={v.id}>
+              {formatNodeLabel(v.label, 12)}
+            </option>
+          ))}
+        </select>
+        <select
+          className={`${field} min-w-0 flex-1`}
+          value={edgeTarget}
+          onChange={(e) => setEdgeTarget(e.target.value)}
+          aria-label="Προς"
+        >
+          <option value="">Προς</option>
+          {vertices.map((v) => (
+            <option key={v.id} value={v.id}>
+              {formatNodeLabel(v.label, 12)}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className={`${btn} shrink-0`}
+          onClick={() => {
+            if (!edgeSource || !edgeTarget) {
+              setMessage('Διάλεξε πηγή και προορισμό.', 'error');
+              return;
+            }
+            const r = GR.addEdge(data, edgeSource, edgeTarget, !directed);
+            commitChange(
+              { kind, data: r.graph },
+              'Η ακμή προστέθηκε.',
+              r.steps[r.steps.length - 1]?.explanation ?? 'Η ακμή δεν μπορεί να προστεθεί.'
+            );
+          }}
+        >
+          + Ακμή
+        </button>
+      </div>
+      <div className="flex flex-wrap items-end gap-2">
+        <button
+          type="button"
+          className={btnGhost}
+          disabled={!selectedNodeId}
+          onClick={() => {
+            if (!selectedNodeId) {
+              setMessage('Επίλεξε κορυφή για διαγραφή.', 'error');
+              return;
+            }
+            const r = GR.removeVertex(data, selectedNodeId);
+            commitChange(
+              { kind, data: r.graph },
+              'Η κορυφή διαγράφηκε.',
+              'Αποτυχία διαγραφής.'
+            );
+            useDsvStore.getState().selectNode(null);
+          }}
+        >
+          Διαγραφή κορυφής
+        </button>
+        <button
+          type="button"
+          className={btnGhost}
+          disabled={!selectedEdgeId}
+          onClick={() => {
+            if (!selectedEdgeId) {
+              setMessage('Επίλεξε ακμή για διαγραφή.', 'error');
+              return;
+            }
+            const r = GR.removeEdge(data, selectedEdgeId);
+            commitChange(
+              { kind, data: r.graph },
+              'Η ακμή διαγράφηκε.',
+              'Αποτυχία διαγραφής ακμής.'
+            );
+            useDsvStore.getState().selectEdge(null);
+          }}
+        >
+          Διαγραφή ακμής
+        </button>
+        <button type="button" className={btnGhost} onClick={clearStructure}>
+          Από την αρχή
+        </button>
+      </div>
     </div>
   );
 };
