@@ -18,6 +18,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import type { GraphState, NodeHighlight } from '../../types';
 import { edgeStroke, nodeFill } from '../../utils/highlightColor';
+import { formatNodeLabel } from '../../utils/formatLabel';
 
 interface Props {
   graph: GraphState;
@@ -61,7 +62,8 @@ const centerHandleStyle: React.CSSProperties = {
 
 const CircleNode: React.FC<NodeProps<Node<CircleData>>> = ({ data }) => (
   <div
-    className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full text-sm font-bold text-white shadow-md"
+    className="relative flex h-[52px] w-[52px] items-center justify-center overflow-hidden rounded-full text-sm font-bold text-white shadow-md"
+    title={data.label}
     style={{
       background: data.fill,
       border: data.selected ? '3px solid #0f172a' : '2px solid #fff',
@@ -70,7 +72,9 @@ const CircleNode: React.FC<NodeProps<Node<CircleData>>> = ({ data }) => (
   >
     <Handle id="c-t" type="target" position={Position.Top} style={centerHandleStyle} />
     <Handle id="c-s" type="source" position={Position.Bottom} style={centerHandleStyle} />
-    {data.label}
+    <span className="max-w-[44px] truncate px-0.5 text-center text-xs leading-tight">
+      {formatNodeLabel(data.label, 6)}
+    </span>
   </div>
 );
 
@@ -109,12 +113,7 @@ const GraphEdge: React.FC<EdgeProps<Edge<GraphEdgeData>>> = ({
 
   return (
     <>
-      <BaseEdge
-        id={id}
-        path={path}
-        style={{ ...style, stroke: color }}
-        interactionWidth={24}
-      />
+      <BaseEdge id={id} path={path} style={{ ...style, stroke: color }} interactionWidth={24} />
       {directed && len > NODE_RADIUS * 2 ? (
         <polygon
           points={`${tipX},${tipY} ${tipX - ux * ARROW_LENGTH + px},${tipY - uy * ARROW_LENGTH + py} ${tipX - ux * ARROW_LENGTH - px},${tipY - uy * ARROW_LENGTH - py}`}
@@ -178,8 +177,7 @@ const GraphCanvas: React.FC<Props> = ({
         animated: edgeHighlights[e.id] === 'active',
         style: {
           stroke: edgeStroke(edgeHighlights[e.id] as 'active' | 'visited' | 'default'),
-          strokeWidth:
-            selectedEdgeId === e.id || edgeHighlights[e.id] === 'active' ? 3.5 : 2,
+          strokeWidth: selectedEdgeId === e.id || edgeHighlights[e.id] === 'active' ? 3.5 : 2,
         },
       })),
     [graph.edges, edgeHighlights, directed, selectedEdgeId]
@@ -188,14 +186,25 @@ const GraphCanvas: React.FC<Props> = ({
   const [nodes, setNodes, onNodesChange] = useNodesState(builtNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(builtEdges);
 
+  const nodeIdsKey = useMemo(
+    () =>
+      Object.keys(graph.vertices)
+        .sort()
+        .join(','),
+    [graph.vertices]
+  );
+
   useEffect(() => {
     setNodes(builtNodes);
     setEdges(builtEdges);
+  }, [builtNodes, builtEdges, setNodes, setEdges]);
+
+  useEffect(() => {
     const t = window.setTimeout(() => {
-      void fitView({ padding: 0.25, duration: 200 });
+      void fitView({ padding: 0.2, duration: 220, minZoom: 0.08, maxZoom: 1.6 });
     }, 50);
     return () => window.clearTimeout(t);
-  }, [builtNodes, builtEdges, setNodes, setEdges, fitView]);
+  }, [nodeIdsKey, fitView]);
 
   return (
     <>
@@ -211,11 +220,14 @@ const GraphCanvas: React.FC<Props> = ({
         onEdgeClick={(_, e) => onSelectEdge(e.id)}
         onNodeDragStop={(_, n) => onMoveNode(n.id, n.position.x, n.position.y)}
         fitView
-        fitViewOptions={{ padding: 0.25 }}
-        minZoom={0.3}
-        maxZoom={1.8}
+        fitViewOptions={{ padding: 0.2 }}
+        minZoom={0.08}
+        maxZoom={2}
+        panOnScroll
+        zoomOnPinch
+        panOnDrag
         proOptions={{ hideAttribution: true }}
-        className="bg-transparent"
+        className="bg-transparent dsv-flow"
       >
         <Controls showInteractive={false} />
       </ReactFlow>

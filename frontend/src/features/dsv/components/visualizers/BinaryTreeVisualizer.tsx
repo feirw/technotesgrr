@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import type { BinaryTreeState, NodeHighlight } from '../../types';
 import { layoutBinaryTree } from '../../utils/treeLayout';
 import { edgeStroke, nodeFill } from '../../utils/highlightColor';
+import { formatNodeLabel } from '../../utils/formatLabel';
 
 interface Props {
   tree: BinaryTreeState;
@@ -36,7 +37,7 @@ export const BinaryTreeVisualizer: React.FC<Props> = React.memo(
     const height = Math.max(280, ...layout.map((p) => p.y + TOP_PAD + 100));
 
     return (
-      <div className="flex h-full w-full items-start justify-center overflow-auto pt-6 sm:pt-10">
+      <div className="horizontal-scroll-bar flex h-full w-full items-start justify-center overflow-auto pt-6 sm:pt-10">
         <svg width={width} height={height} className="mx-auto block">
           {edges.map((e) => (
             <motion.line
@@ -77,6 +78,7 @@ export const BinaryTreeVisualizer: React.FC<Props> = React.memo(
                   stroke={selectedId === p.id ? '#0f172a' : 'white'}
                   strokeWidth={selectedId === p.id ? 3 : 2}
                 />
+                <title>{String(node.value)}</title>
                 <text
                   x={28}
                   y={33}
@@ -84,7 +86,7 @@ export const BinaryTreeVisualizer: React.FC<Props> = React.memo(
                   className="fill-white text-[13px] font-bold"
                   style={{ pointerEvents: 'none' }}
                 >
-                  {node.value}
+                  {formatNodeLabel(node.value, 5)}
                 </text>
               </motion.g>
             );

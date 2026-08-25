@@ -160,3 +160,46 @@ code {
     display: none;
   }
 }
+
+/* React Flow zoom controls — visible in light and dark */
+.dsv-flow .react-flow__controls {
+  border: 1px solid rgba(240, 127, 151, 0.35);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+.dsv-flow .react-flow__controls-button {
+  background: #fff;
+  border-bottom: 1px solid rgba(240, 127, 151, 0.2);
+  fill: #c2185b;
+  width: 28px;
+  height: 28px;
+}
+
+.dsv-flow .react-flow__controls-button:hover {
+  background: #fff5f8;
+}
+
+.dsv-flow .react-flow__controls-button svg {
+  fill: #c2185b;
+}
+
+.dark .dsv-flow .react-flow__controls {
+  border-color: rgba(255, 196, 214, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.dark .dsv-flow .react-flow__controls-button {
+  background: #3a2658;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  fill: #ffc4d6;
+}
+
+.dark .dsv-flow .react-flow__controls-button:hover {
+  background: #4a3270;
+}
+
+.dark .dsv-flow .react-flow__controls-button svg {
+  fill: #ffc4d6;
+}

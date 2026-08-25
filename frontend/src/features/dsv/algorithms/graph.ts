@@ -2,15 +2,43 @@ import type { AnimationStep, GraphEdge, GraphState } from '../types';
 import { createId, stepId } from '../utils/ids';
 import { deepClone } from '../utils/clone';
 
+const MIN_VERTEX_GAP = 110;
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+/** Θέση νέας κορυφής μακριά από τις υπάρχουσες, ώστε να μη στοιβάζονται σε γραμμή. */
+export function nextVertexPosition(graph: GraphState): { x: number; y: number } {
+  const verts = Object.values(graph.vertices);
+  if (verts.length === 0) return { x: 220, y: 170 };
+
+  const cx = verts.reduce((s, v) => s + v.x, 0) / verts.length;
+  const cy = verts.reduce((s, v) => s + v.y, 0) / verts.length;
+  const n = verts.length;
+  const baseR = 90 + 34 * Math.sqrt(n);
+
+  let fallback = { x: cx + baseR, y: cy };
+  for (let attempt = 0; attempt < 16; attempt++) {
+    const angle = (n + attempt) * GOLDEN_ANGLE;
+    const r = baseR + attempt * 22;
+    const pos = { x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r };
+    fallback = pos;
+    if (verts.every((v) => Math.hypot(v.x - pos.x, v.y - pos.y) >= MIN_VERTEX_GAP)) {
+      return pos;
+    }
+  }
+  return fallback;
+}
+
 export function addVertex(
   graph: GraphState,
   label: string,
-  x = 200 + Math.random() * 200,
-  y = 120 + Math.random() * 160
+  x?: number,
+  y?: number
 ): { graph: GraphState; steps: AnimationStep[] } {
   const next = deepClone(graph);
   const id = createId('v');
-  next.vertices[id] = { id, label, x, y };
+  const pos =
+    x !== undefined && y !== undefined ? { x, y } : nextVertexPosition(graph);
+  next.vertices[id] = { id, label, x: pos.x, y: pos.y };
   return {
     graph: next,
     steps: [

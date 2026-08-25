@@ -5,6 +5,7 @@ import * as PBT from '../algorithms/plainBinaryTree';
 import * as LL from '../algorithms/linkedList';
 import * as GR from '../algorithms/graph';
 import * as GT from '../algorithms/generalTree';
+import { formatNodeLabel } from '../utils/formatLabel';
 const field =
   'h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm dark:border-white/15 dark:bg-[#1a1028] dark:text-white';
 const btn =
@@ -375,10 +376,7 @@ export const BuildPanel: React.FC = () => {
         onClick={() => {
           const name = needLabel();
           if (!name) return;
-          const count = Object.keys(data.vertices).length;
-          const x = 80 + (count % 4) * 140;
-          const y = 80 + Math.floor(count / 4) * 120;
-          const r = GR.addVertex(data, name, x, y);
+          const r = GR.addVertex(data, name);
           commitChange(
             { kind, data: r.graph },
             `Προστέθηκε η κορυφή ${name}.`,
@@ -397,7 +395,7 @@ export const BuildPanel: React.FC = () => {
         <option value="">Από</option>
         {vertices.map((v) => (
           <option key={v.id} value={v.id}>
-            {v.label}
+            {formatNodeLabel(v.label, 12)}
           </option>
         ))}
       </select>
@@ -409,7 +407,7 @@ export const BuildPanel: React.FC = () => {
         <option value="">Προς</option>
         {vertices.map((v) => (
           <option key={v.id} value={v.id}>
-            {v.label}
+            {formatNodeLabel(v.label, 12)}
           </option>
         ))}
       </select>

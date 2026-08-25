@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import type { LinkedListState, NodeHighlight } from '../../types';
 import { nodeFill } from '../../utils/highlightColor';
 import { DSV_COLORS } from '../../types';
+import { formatNodeLabel } from '../../utils/formatLabel';
 
 interface Props {
   list: LinkedListState;
@@ -39,7 +40,7 @@ export const LinkedListVisualizer: React.FC<Props> = React.memo(
     }, [list]);
 
     return (
-      <div className="flex h-full min-h-[220px] items-center overflow-x-auto px-4 py-10">
+      <div className="horizontal-scroll-bar flex h-full min-h-[220px] items-center overflow-x-auto px-4 py-10">
         <div className="mx-auto flex items-center gap-1 sm:gap-2">
           <div className="mr-1 flex shrink-0 flex-col items-center gap-1">
             <span className="text-[10px] font-black uppercase tracking-wide text-[#f07f97] dark:text-[#ffc4d6]">
@@ -88,14 +89,15 @@ export const LinkedListVisualizer: React.FC<Props> = React.memo(
                   }}
                   transition={{ type: 'spring', stiffness: 280, damping: 20 }}
                   onClick={() => onSelect(id)}
+                  title={String(node.value)}
                   className="relative flex h-16 w-28 shrink-0 items-stretch overflow-visible rounded-xl border-2 text-white shadow-md"
                   style={{
                     background: nodeFill(hl),
                     borderColor: selectedId === id ? '#0f172a' : 'transparent',
                   }}
                 >
-                  <span className="flex flex-1 items-center justify-center text-lg font-bold">
-                    {node.value}
+                  <span className="flex min-w-0 flex-1 items-center justify-center overflow-hidden px-1 text-lg font-bold">
+                    <span className="max-w-full truncate">{formatNodeLabel(node.value, 8)}</span>
                   </span>
                   <span className="flex w-10 items-center justify-center border-l border-white/30 text-xs">
                     {node.next ? '•' : '∅'}

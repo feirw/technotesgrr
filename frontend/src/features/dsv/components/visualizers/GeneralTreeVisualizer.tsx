@@ -16,6 +16,7 @@ import '@xyflow/react/dist/style.css';
 import type { GeneralTreeState, NodeHighlight } from '../../types';
 import { layoutGeneralTree } from '../../utils/treeLayout';
 import { edgeStroke, nodeFill } from '../../utils/highlightColor';
+import { formatNodeLabel } from '../../utils/formatLabel';
 
 interface Props {
   tree: GeneralTreeState;
@@ -46,7 +47,8 @@ const centerHandleStyle: React.CSSProperties = {
 
 const CircleNode: React.FC<NodeProps<Node<CircleData>>> = ({ data }) => (
   <div
-    className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full text-sm font-bold text-white shadow-md"
+    className="relative flex h-[52px] w-[52px] items-center justify-center overflow-hidden rounded-full text-sm font-bold text-white shadow-md"
+    title={data.label}
     style={{
       background: data.fill,
       border: data.selected ? '3px solid #0f172a' : '2px solid #fff',
@@ -56,7 +58,7 @@ const CircleNode: React.FC<NodeProps<Node<CircleData>>> = ({ data }) => (
     <Handle id="c-t" type="target" position={Position.Top} style={centerHandleStyle} />
     <Handle id="c-s" type="source" position={Position.Bottom} style={centerHandleStyle} />
     <span className="max-w-[44px] truncate px-0.5 text-center text-xs leading-tight">
-      {data.label}
+      {formatNodeLabel(data.label, 6)}
     </span>
   </div>
 );
@@ -122,15 +124,19 @@ const TreeCanvas: React.FC<Props> = ({
 
   const [nodes, setNodes, onNodesChange] = useNodesState(builtNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(builtEdges);
+  const nodeCount = layout.length;
 
   useEffect(() => {
     setNodes(builtNodes);
     setEdges(builtEdges);
+  }, [builtNodes, builtEdges, setNodes, setEdges]);
+
+  useEffect(() => {
     const t = window.setTimeout(() => {
-      void fitView({ padding: 0.25, duration: 200 });
+      void fitView({ padding: 0.2, duration: 220, minZoom: 0.08, maxZoom: 1.6 });
     }, 50);
     return () => window.clearTimeout(t);
-  }, [builtNodes, builtEdges, setNodes, setEdges, fitView]);
+  }, [nodeCount, fitView]);
 
   return (
     <>
@@ -143,9 +149,14 @@ const TreeCanvas: React.FC<Props> = ({
         onEdgesChange={onEdgesChange}
         onNodeClick={(_, n) => onSelect(n.id)}
         fitView
-        fitViewOptions={{ padding: 0.25 }}
+        fitViewOptions={{ padding: 0.2 }}
+        minZoom={0.08}
+        maxZoom={2}
+        panOnScroll
+        zoomOnPinch
+        panOnDrag
         proOptions={{ hideAttribution: true }}
-        className="bg-transparent"
+        className="bg-transparent dsv-flow"
       >
         <Controls showInteractive={false} />
       </ReactFlow>

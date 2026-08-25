@@ -7,6 +7,9 @@ type EventPerformanceObserverInit = PerformanceObserverInit & { durationThreshol
 const BACKEND_URL = getBackendUrl();
 const ANALYTICS_URL = `${BACKEND_URL}/api/metrics/web-vitals`;
 
+const latest: Record<VitalName, number> = { LCP: 0, CLS: 0, INP: 0 };
+let flushed = false;
+
 const getRating = (name: VitalName, value: number): VitalRating => {
   if (name === 'LCP') {
     if (value <= 2500) return 'good';
@@ -18,13 +21,21 @@ const getRating = (name: VitalName, value: number): VitalRating => {
     if (value <= 0.25) return 'needs-improvement';
     return 'poor';
   }
-  // INP thresholds in ms
   if (value <= 200) return 'good';
   if (value <= 500) return 'needs-improvement';
   return 'poor';
 };
 
+const remember = (name: VitalName, value: number) => {
+  if (name === 'CLS') {
+    latest.CLS = value;
+    return;
+  }
+  latest[name] = Math.max(latest[name], value);
+};
+
 const reportMetric = (name: VitalName, value: number) => {
+  if (!(value > 0)) return;
   const payload = {
     name,
     value,
@@ -38,17 +49,26 @@ const reportMetric = (name: VitalName, value: number) => {
   }
 
   const body = JSON.stringify(payload);
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon(ANALYTICS_URL, body);
-    return;
+  try {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(ANALYTICS_URL, body);
+      return;
+    }
+    void fetch(ANALYTICS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      keepalive: true,
+    }).catch(() => undefined);
+  } catch {
+    // Analytics must never surface as a failed request in the console during use.
   }
+};
 
-  void fetch(ANALYTICS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body,
-    keepalive: true,
-  });
+const flush = () => {
+  if (flushed) return;
+  flushed = true;
+  (['LCP', 'CLS', 'INP'] as const).forEach((name) => reportMetric(name, latest[name]));
 };
 
 export const initWebVitalsTracking = () => {
@@ -60,9 +80,7 @@ export const initWebVitalsTracking = () => {
     const lcpObserver = new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries();
       const lastEntry = entries[entries.length - 1];
-      if (lastEntry) {
-        reportMetric('LCP', lastEntry.startTime);
-      }
+      if (lastEntry) remember('LCP', lastEntry.startTime);
     });
     lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
   } catch {
@@ -79,7 +97,7 @@ export const initWebVitalsTracking = () => {
           clsValue += entry.value || 0;
         }
       }
-      reportMetric('CLS', clsValue);
+      remember('CLS', clsValue);
     });
     clsObserver.observe({ type: 'layout-shift', buffered: true });
   } catch {
@@ -93,9 +111,7 @@ export const initWebVitalsTracking = () => {
       for (const entry of entries) {
         maxDuration = Math.max(maxDuration, entry.duration || 0);
       }
-      if (maxDuration > 0) {
-        reportMetric('INP', maxDuration);
-      }
+      if (maxDuration > 0) remember('INP', maxDuration);
     });
     inpObserver.observe({
       type: 'event',
@@ -105,4 +121,9 @@ export const initWebVitalsTracking = () => {
   } catch {
     // Browser does not support this metric observer.
   }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flush();
+  });
+  window.addEventListener('pagehide', flush);
 };
