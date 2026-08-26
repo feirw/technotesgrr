@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "aegeanChiosBusinessAdministrationCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "aegeanChiosBusinessAdministrationCurriculum.generated.ts"
 
 Y = "Υποχρεωτικό κορμού"
 KD = "Κατ' επιλογήν υποχρεωτικό · Διοίκηση"

@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "aegeanSamosIcsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "aegeanSamosIcsCurriculum.generated.ts"
 
 # (semester, code, ects, name, kind_key, lecture, lab?)
 # kind_key: Y | OPT | K1..K6 | FREE | PA | PT

@@ -264,18 +264,6 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Μεθοδολογίες', path: '/methodologies' },
     ],
   },
-  '/askiseis': {
-    path: '/askiseis',
-    slug: 'askiseis',
-    title: 'Ασκήσεις Πληροφορικής | Πανελλήνιες',
-    description:
-      'Ασκήσεις Πληροφορικής για Πανελλήνιες: αλγόριθμοι, δομές δεδομένων, θεωρία και εξάσκηση ανά ενότητα, μαζί με quiz και παλιά θέματα.',
-    ogImage: og('askiseis'),
-    breadcrumbs: [
-      { name: 'Αρχική', path: '/' },
-      { name: 'Ασκήσεις', path: '/askiseis' },
-    ],
-  },
   '/ai-corrector': {
     path: '/ai-corrector',
     slug: 'ai-corrector',

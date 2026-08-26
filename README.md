@@ -71,7 +71,7 @@ See `backend/.env.example` for the full list.
 - **Quiz** and **flashcards** (API-backed, caching & deduplication)
 - **Leaderboard**, **study timer**, **progress tracker**
 - **Methodologies** (ΑΕΠΠ pseudocode reference)
-- **Ασκήσεις**, **αλγόριθμοι**, **παλιά θέματα**
+- **Αλγόριθμοι**, **παλιά θέματα**
 - **GloGlossa** embed, **προσανατολισμός**, **ανακοινώσεις**
 
 ### Σχολές & πρόγραμμα σπουδών
@@ -83,7 +83,7 @@ On **Σχολές**, click a department that has curriculum data to open the **s
 | `338` | Πληροφορικής | ΑΠΘ |
 | `333` | Πληροφορικής | ΟΠΑ |
 
-Curriculum data lives in `frontend/src/data/*Curriculum.generated.ts`. Regenerate with:
+Curriculum data lives in `frontend/src/data/curricula/`. Regenerate with:
 
 ```bash
 python scripts/generate_ekpa_curriculum.py
@@ -123,7 +123,11 @@ frontend/
   src/
     components/          UI, quiz, flashcards, schools modal
     pages/               Public & private pages
-    data/                Curricula, menu icons, static content
+    data/
+      curricula/         Generated school study programs
+      careers/           Career lists per field
+      quizzes/ flashcards/
+      schools.ts, schoolCurricula.ts, …
     layouts/MainLayout.tsx Navigation, theme
     utils/               apiClient, backendUrl, theme, …
 

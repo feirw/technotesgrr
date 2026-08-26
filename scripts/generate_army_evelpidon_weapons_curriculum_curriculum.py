@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "armyEvelpidonWeaponsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "armyEvelpidonWeaponsCurriculum.generated.ts"
 
 HEADER = "/** Στρατός Ξηράς · Σχολή Ευελπίδων · Ευελπίδων (ΣΣΕ) - Όπλα */"
 TITLE = "Ευελπίδων (ΣΣΕ) - Όπλα"

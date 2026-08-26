@@ -29,22 +29,20 @@ import { SchoolCourseComparePanel } from '@/components/schools/SchoolCourseCompa
 import { SchoolCurriculumModal } from '@/components/schools/SchoolCurriculumModal';
 import { CareersModal } from '@/components/schools/CareersModal';
 import { SCHOOL_CURRICULA, canOpenSchoolCurriculum } from '@/data/schoolCurricula';
-
-
 import { ALL_SCHOOLS, type School } from '@/data/schools';
-import { IT_CAREERS } from '@/data/itCareers';
-import { ECONOMICS_CAREERS } from '@/data/economicsCareers';
-import { BUSINESS_ADMINISTRATION_CAREERS } from '@/data/businessAdministrationCareers';
-import { INDUSTRY_CAREERS } from '@/data/industryCareers';
-import { ACCOUNTING_FINANCE_CAREERS } from '@/data/accountingFinanceCareers';
-import { MARKETING_CAREERS } from '@/data/marketingCareers';
-import { MARITIME_TOURISM_CAREERS } from '@/data/maritimeTourismCareers';
-import { SPORTS_CAREERS } from '@/data/sportsCareers';
-import { STATISTICS_CAREERS } from '@/data/statisticsCareers';
-import { MANAGEMENT_SCIENCE_CAREERS } from '@/data/managementScienceCareers';
-import { INTERNATIONAL_EUROPEAN_CAREERS } from '@/data/internationalEuropeanCareers';
-import { PEDAGOGY_CAREERS } from '@/data/pedagogyCareers';
-import { ARTS_CAREERS } from '@/data/artsCareers';
+import { IT_CAREERS } from '@/data/careers/itCareers';
+import { ECONOMICS_CAREERS } from '@/data/careers/economicsCareers';
+import { BUSINESS_ADMINISTRATION_CAREERS } from '@/data/careers/businessAdministrationCareers';
+import { INDUSTRY_CAREERS } from '@/data/careers/industryCareers';
+import { ACCOUNTING_FINANCE_CAREERS } from '@/data/careers/accountingFinanceCareers';
+import { MARKETING_CAREERS } from '@/data/careers/marketingCareers';
+import { MARITIME_TOURISM_CAREERS } from '@/data/careers/maritimeTourismCareers';
+import { SPORTS_CAREERS } from '@/data/careers/sportsCareers';
+import { STATISTICS_CAREERS } from '@/data/careers/statisticsCareers';
+import { MANAGEMENT_SCIENCE_CAREERS } from '@/data/careers/managementScienceCareers';
+import { INTERNATIONAL_EUROPEAN_CAREERS } from '@/data/careers/internationalEuropeanCareers';
+import { PEDAGOGY_CAREERS } from '@/data/careers/pedagogyCareers';
+import { ARTS_CAREERS } from '@/data/careers/artsCareers';
 import type { Career } from '@/data/careers';
 import { formatEbeDisplay, formatMoriaDisplay } from '@/utils/schoolBasisMatching';
 

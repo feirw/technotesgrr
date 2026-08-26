@@ -1,0 +1,54 @@
+name: Πρόταση λειτουργίας
+description: Ιδέα για νέα δυνατότητα ή βελτίωση υπάρχουσας.
+title: '[Feature] '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Περιέγραψε το πρόβλημα που λύνει η ιδέα, όχι μόνο την υλοποίηση.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Τι χρειάζεται / τι λείπει
+      description: Για ποιον είναι χρήσιμο (μαθητές Γ΄ Λυκείου ΑΕΠΠ, καθηγητές, κ.λπ.);
+      placeholder: Π.χ. Στους γράφους στο κινητό τα Από / Προς / +Ακμή σπάνε σε τυχαίες γραμμές.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Πρόταση
+      description: Πώς θα ήθελες να δουλεύει.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Περιοχή
+      options:
+        - Κουίζ / flashcards / περιεχόμενο
+        - Δομές δεδομένων
+        - Αλγόριθμοι
+        - Μηχανογραφικό / σχολές
+        - UI / UX
+        - Backend / API
+        - Docs / contributor experience
+        - Άλλο
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Εναλλακτικές
+      description: Άλλος τρόπος που σκέφτηκες, ή γιατί όχι.
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Επιπλέον
+      description: Mockups, screenshots, links.

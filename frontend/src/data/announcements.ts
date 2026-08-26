@@ -17,6 +17,15 @@ export interface Announcement {
 }
 
 export const ANNOUNCEMENTS: Announcement[] = [
+  {
+    id: '7',
+    date: '2026-08-26',
+    title: 'Ηλεκτρονική εγγραφή επιτυχόντων στην Τριτοβάθμια',
+    body:
+      'Η εγγραφή των επιτυχόντων Πανελλαδικών 2026 (και της κατηγορίας σοβαρών παθήσεων) γίνεται ηλεκτρονικά από Πέμπτη 27 Αυγούστου έως Παρασκευή 4 Σεπτεμβρίου 2026, στο eregister.it.minedu.gov.gr. Για ΓΕΛ/ΕΠΑΛ: 8ψήφιος κωδικός εξετάσεων και ο κωδικός του Μηχανογραφικού. Στρατιωτικές, Αστυνομία, Πυροσβεστική, ΑΕΝ, Λιμενικό και τουριστικές σχολές εγγράφονται από τα αρμόδια Υπουργεία.',
+    link: 'https://www.minedu.gov.gr/site/70701-26-08-26-elektronike-engraphe-epitychonton-sten-tritobathmia-ekpaideuse',
+    linkLabel: 'Άνοιγμα στο minedu.gov.gr',
+  },
 
   {
     id: '6',

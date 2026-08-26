@@ -80,6 +80,7 @@ const QuizPage: React.FC = () => {
   // --- QuizPage State ---
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState<boolean>(false);
   const [selectedQuiz, setSelectedQuiz] = useState<ProcessedQuiz | null>(null);
+  const [quizStartIndex, setQuizStartIndex] = useState(0);
   const [categoryAnswers, setCategoryAnswers] = useSyncedStorage<QuizProgress>('quizProgress', {});
 
   // --- QuizMenu State ---
@@ -201,8 +202,9 @@ const QuizPage: React.FC = () => {
   };
 
   // Quiz Menu Handlers
-  const handleQuizCategorySelect = (quiz: ProcessedQuiz, _startIdx = 0) => {
+  const handleQuizCategorySelect = (quiz: ProcessedQuiz, startIdx = 0) => {
     setSelectedQuiz(quiz);
+    setQuizStartIndex(startIdx);
     setIsQuizDialogOpen(true);
   };
 
@@ -311,8 +313,9 @@ const QuizPage: React.FC = () => {
   };
 
   const continueQuiz = (quiz: ProcessedQuiz) => {
-    const firstUnanswered = quiz.questions.findIndex((_, idx) => !categoryAnswers[quiz.id]?.[idx]);
-    handleQuizCategorySelect(quiz, firstUnanswered !== -1 ? firstUnanswered : 0);
+    const answers = categoryAnswers[quiz.id] || {};
+    const firstUnanswered = quiz.questions.findIndex((_, idx) => answers[idx] === undefined);
+    handleQuizCategorySelect(quiz, firstUnanswered === -1 ? 0 : firstUnanswered);
   };
 
   const restartQuiz = (quiz: ProcessedQuiz, e: React.MouseEvent) => {
@@ -823,6 +826,7 @@ const QuizPage: React.FC = () => {
           onClose={handleQuizDialogClose}
           onQuestionAnswered={handleQuestionAnswered}
           selectedAnswers={categoryAnswers[selectedQuiz.id] || {}}
+          initialQuestionIndex={quizStartIndex}
         />
       )}
     </div>

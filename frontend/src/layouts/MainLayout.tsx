@@ -20,13 +20,13 @@ import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/routes';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
-import CookieConsent from '@/components/other/CookieConsent';
-import Breadcrumbs from '@/components/other/Breadcrumbs';
+import CookieConsent from '@/components/shared/CookieConsent';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { MENU_ICONS, MenuNavIcon, prefetchAllMenuIcons, prefetchMenuIcons } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
-import { OptimizedImg } from '@/components/other/OptimizedImg';
+import { OptimizedImg } from '@/components/shared/OptimizedImg';
 // const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
@@ -81,7 +81,6 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/methodologies', label: 'Μεθοδολογίες', iconSrc: MENU_ICONS.methodologies },
   { to: '/domes-dedomenon', label: 'Δομές Δεδομένων', iconSrc: MENU_ICONS.dataStructures },
   { to: '/paliathemata', label: 'Παλιά Θέματα', iconSrc: MENU_ICONS.paliathemata },
-  { to: '/askiseis', label: 'Ασκήσεις', iconSrc: MENU_ICONS.askiseis },
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
   { to: '/gloglossa', label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', iconSrc: MENU_ICONS.gloglossa, onPrefetch: loadGloglossaPage },

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "ekpaIptCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "ekpaIptCurriculum.generated.ts"
 
 # (code, ects, name, kind, slots) — slots: s1..s6 -> Y or B
 SEMESTERS: list[tuple[int, list[tuple]]] = [

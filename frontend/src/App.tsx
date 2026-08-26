@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
-import ScrollToTop from '@/components/other/ScrollToTop';
-import NativeAppBridge from '@/components/other/NativeAppBridge';
+import ScrollToTop from '@/components/shared/ScrollToTop';
+import NativeAppBridge from '@/components/shared/NativeAppBridge';
 import SeoHead from '@/seo/SeoHead';
-import AnalyticsTracker from '@/components/other/AnalyticsTracker';
+import AnalyticsTracker from '@/components/shared/AnalyticsTracker';
 import routes, { RouteConfig } from './routes/routes';
 
 const App: React.FC = () => {

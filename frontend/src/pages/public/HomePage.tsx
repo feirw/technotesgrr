@@ -4,7 +4,7 @@ import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { getPreferredTheme } from '@/utils/theme';
-import { OptimizedImg } from '@/components/other/OptimizedImg';
+import { OptimizedImg } from '@/components/shared/OptimizedImg';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
 // import { FiSend } from 'react-icons/fi';
@@ -109,7 +109,6 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Παλιά Θέματα', path: '/paliathemata', iconSrc: MENU_ICONS.paliathemata },
       { label: 'Μεθοδολογίες', path: '/methodologies', iconSrc: MENU_ICONS.methodologies },
       { label: 'Οπτικοποίηση δομών', path: '/domes-dedomenon', iconSrc: MENU_ICONS.dataStructures },
-      { label: 'Ασκήσεις', path: '/askiseis', iconSrc: MENU_ICONS.askiseis },
       { label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa', iconSrc: MENU_ICONS.gloglossa },
       { label: 'Σχολικά βιβλία', path: '/vivlia', iconSrc: MENU_ICONS.vivlia },
       { label: 'Study Timer', path: '/study-timer', iconSrc: MENU_ICONS.studyTimer },

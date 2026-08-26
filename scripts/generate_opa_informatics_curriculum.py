@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "opaInformaticsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "opaInformaticsCurriculum.generated.ts"
 
 # (semester, code, ects, name, kind) — kind: YM | EYM | PM | GE | PA | PT
 COURSES: list[tuple] = [

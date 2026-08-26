@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { apiFetch } from '@/utils/apiClient';
 import { getBackendUrl } from '@/utils/backendUrl';
-import ShareResultButton from '@/components/other/ShareResultButton';
+import ShareResultButton from '@/components/shared/ShareResultButton';
 
 // --- Types ---
 
@@ -49,6 +49,7 @@ interface QuizDialogProps {
   ) => void;
   // Maps question index to the selected answer index
   selectedAnswers: Record<number, number>;
+  initialQuestionIndex?: number;
 }
 
 interface Score {
@@ -73,6 +74,7 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
   onClose,
   onQuestionAnswered,
   selectedAnswers,
+  initialQuestionIndex = 0,
 }) => {
   const [current, setCurrent] = useState<number>(0);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
@@ -103,14 +105,23 @@ const QuizDialog: React.FC<QuizDialogProps> = ({
     }
   }, [selectedAnswers, quiz]);
 
-  // Reset state when quiz changes or dialog opens
+  // Resume at the first unanswered question when opening (not after each answer).
   useEffect(() => {
-    if (isOpen) {
-      setCurrent(0);
-      setShowConfetti(false);
-      setError(null);
-      setShowExplanation(false);
-    }
+    if (!isOpen || !quiz?.questions?.length) return;
+
+    const firstUnanswered = quiz.questions.findIndex(
+      (_, idx) => selectedAnswers?.[idx] === undefined
+    );
+    const fallback = Math.min(
+      Math.max(0, initialQuestionIndex),
+      quiz.questions.length - 1
+    );
+    setCurrent(firstUnanswered === -1 ? fallback : firstUnanswered);
+    setShowConfetti(false);
+    setError(null);
+    setShowExplanation(false);
+    // selectedAnswers is a snapshot on open — do not jump after the user answers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, quiz]);
 
   // Lock background scroll while quiz is open (iOS-safe).

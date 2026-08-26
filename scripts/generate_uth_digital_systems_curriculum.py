@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "uthDigitalSystemsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "uthDigitalSystemsCurriculum.generated.ts"
 
 # (semester, code, ects, name, kind, hours) — hours: "lecture+lab(E)" e.g. "5+5E", or "" if none
 # kind: K1 (Α' κύκλος) | K2 (Β' κύκλος) | EP | PED | PT | PA

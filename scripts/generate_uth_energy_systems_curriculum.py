@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "uthEnergySystemsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "uthEnergySystemsCurriculum.generated.ts"
 
 # (code, name, kind) — semester derived from code digits xy (y = 1…8)
 # kind: Y | EP | PT

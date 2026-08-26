@@ -1,0 +1,99 @@
+name: Αναφορά σφάλματος
+description: Κάτι δεν δουλεύει όπως πρέπει (UI, API, quiz, δομές δεδομένων, κ.λπ.).
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ευχαριστούμε για το report. Όσο πιο συγκεκριμένα βήματα, τόσο πιο γρήγορα διορθώνεται.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Τι συμβαίνει
+      description: Σύντομη περιγραφή του προβλήματος.
+      placeholder: Π.χ. Στο κουίζ η υποσέλιδα καλύπτει το παράθυρο όταν ανοίγω κεφάλαιο χαμηλά στη σελίδα.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Βήματα αναπαραγωγής
+      description: Τι να κάνουμε για να το δούμε κι εμείς.
+      placeholder: |
+        1. Άνοιξε …
+        2. Πάτα …
+        3. Δες ότι …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Αναμενόμενη συμπεριφορά
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Τι γίνεται στην πραγματικότητα
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Περιοχή
+      options:
+        - Κουίζ / flashcards
+        - Δομές δεδομένων
+        - Αλγόριθμοι
+        - Μηχανογραφικό / σχολές
+        - UI / layout / dark mode
+        - Backend / API
+        - Άλλο
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Συσκευή
+      options:
+        - Desktop
+        - Κινητό
+        - Και τα δύο
+        - Δεν ξέρω
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser / OS
+      placeholder: Π.χ. Chrome 128, Android · Safari, iPhone · Edge, Windows
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Θέμα
+      options:
+        - Light
+        - Dark
+        - Και τα δύο
+        - Δεν ξέρω
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / βίντεο
+      description: Σύρε εικόνες εδώ. Βοηθούν πολύ σε UI bugs.
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Επιπλέον πληροφορίες
+      description: Console errors, URL, αν γίνεται μόνο σε συγκεκριμένο κεφάλαιο, κ.λπ.

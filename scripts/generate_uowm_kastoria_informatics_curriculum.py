@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "uowmKastoriaInformaticsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "uowmKastoriaInformaticsCurriculum.generated.ts"
 
 # (semester, code, ects, name, kind_key, hours_lecture)
 # kind_key: Y | EY | ELEP | PA | PT  — EY may include area suffix e.g. "EY:NET"

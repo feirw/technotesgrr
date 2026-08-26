@@ -33,7 +33,7 @@ const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
 const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
 const ThankYouPage = lazy(() => import('@/pages/public/ThankYouPage'));
-const NotFound = lazy(() => import('@/pages/other/NotFound'));
+const NotFound = lazy(() => import('@/pages/public/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
 
@@ -45,7 +45,6 @@ function SchoolCompareRedirect() {
 }
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
-const AskiseisPage = lazy(() => import('@/pages/private/AskiseisPage'));
 // const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
@@ -203,7 +202,7 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/askiseis',
-    element: <AskiseisPage />,
+    element: <Navigate to="/" replace />,
   },
   // {
   //   path: '/ai-corrector',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PANELLINIES_FAQ } from '@/data/panelliniesFaq';
-import { FaqAccordionItem } from '@/components/other/FaqAccordionItem';
+import { FaqAccordionItem } from '@/components/shared/FaqAccordionItem';
 import { PageMenuIcon } from '@/data/menuIcons';
 
 const FaqPage: React.FC = () => {

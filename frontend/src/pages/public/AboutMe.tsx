@@ -1,6 +1,6 @@
 import React from 'react';
 import { MenuIconImg } from '@/data/menuIcons';
-import { OptimizedImg } from '@/components/other/OptimizedImg';
+import { OptimizedImg } from '@/components/shared/OptimizedImg';
 
 const HP = '/images/home%20page';
 const ABOUT_SECTION_ICONS = {
@@ -19,7 +19,6 @@ const funFactsData: string[] = [
   'Λατρεύω να μιλάω και να μεταδίδω την γνώση μου στους άλλους.',
   'Πηγαίνω συνέχεια σε events σχετικά με την τεχνολογία και την εκπαίδευση.',
   'Διαβάζω συνεχώς για νέες τεχνολογίες και εφαρμογές τους στην διδακτική.',
-  'Ονειρεύομαι να ανοίξω το δικό μου διαδικτυακό φροντιστήριο.',
 ];
 
 const timelineData: TimelineItem[] = [

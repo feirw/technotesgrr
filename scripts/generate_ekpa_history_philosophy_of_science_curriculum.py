@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "ekpaHistoryPhilosophyOfScienceCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "ekpaHistoryPhilosophyOfScienceCurriculum.generated.ts"
 
 HEADER = "/** ΕΚΠΑ · Ιστορίας και Φιλοσοφίας της Επιστήμης (Αθήνα) */"
 TITLE = "Ιστορίας και Φιλοσοφίας της Επιστήμης"

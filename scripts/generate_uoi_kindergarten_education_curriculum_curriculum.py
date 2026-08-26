@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "uoiKindergartenEducationCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "uoiKindergartenEducationCurriculum.generated.ts"
 
 HEADER = "/** Πανεπιστήμιο Ιωαννίνων · Παιδαγωγικό Νηπιαγωγών (Ιωάννινα) */"
 TITLE = "Παιδαγωγικό Νηπιαγωγών"

@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Target, Clock3, Trophy, Flame } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
-import ShareResultButton from '@/components/other/ShareResultButton';
+import ShareResultButton from '@/components/shared/ShareResultButton';
 import { useAuth } from '@/context/AuthContext';
 import { getAuthToken } from '@/context/AuthContext';
 import { apiFetch } from '@/utils/apiClient';

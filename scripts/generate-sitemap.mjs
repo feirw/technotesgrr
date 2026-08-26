@@ -14,7 +14,6 @@ const PRIORITY = {
   '/': '1.0',
   '/quiz': '0.9',
   '/flashcards': '0.9',
-  '/askiseis': '0.9',
   '/paliathemata': '0.9',
   '/methodologies': '0.85',
   '/algorithms': '0.85',

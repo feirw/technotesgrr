@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "elmepaEceCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "elmepaEceCurriculum.generated.ts"
 
 # (semester, code, ects, name, kind_key, theory, exercises, lab)
 # kind_key: Y_GYTH | Y_EYK | P_GYTH | KEY_A|B|C|D | EEY | PT

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import type { FaqSection } from '@/data/panelliniesFaq';
-import { FaqAccordionItem } from '@/components/other/FaqAccordionItem';
+import { FaqAccordionItem } from '@/components/shared/FaqAccordionItem';
 
 const METEGGRAFES_FAQ: FaqSection[] = [
   {

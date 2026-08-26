@@ -1,8 +1,3 @@
-import { apiFetch } from '@/utils/apiClient';
-import { getBackendUrlCandidates } from '@/utils/backendUrl';
-
-// --- Types ---
-
 export interface Answer {
   text: string;
   correct: boolean;
@@ -23,20 +18,6 @@ export interface QuizData {
   number?: string;
   description?: string;
 }
-
-interface BackendCategoriesResponse {
-  quiz_categories: string[];
-}
-
-interface BackendChapterResponse {
-  chapter: string | number;
-  questions: Question[];
-}
-
-// --- Constants ---
-
-const QUIZ_CACHE_TTL_MS = 5 * 60 * 1000;
-const QUIZ_FETCH_TIMEOUT_MS = 60_000;
 
 const normalizeGreek = (value: string) =>
   value
@@ -92,67 +73,6 @@ export const sortQuizzesByChapterOrder = <T extends Pick<QuizData, 'number' | 'i
   quizzes: T[],
 ): T[] => [...quizzes].sort((a, b) => getQuizChapterSortIndex(a) - getQuizChapterSortIndex(b));
 
-// --- Functions ---
-
-export const fetchQuizCategories = async (): Promise<string[]> => {
-  let lastError: unknown = null;
-  try {
-    for (const base of getBackendUrlCandidates()) {
-      try {
-        const data = await apiFetch<BackendCategoriesResponse>(`${base}/api/categories`, {
-          dedupeKey: `quiz:categories:${base}`,
-          cacheTtlMs: 10 * 60 * 1000,
-          cacheKey: `quiz:categories:${base}`,
-        });
-        return data.quiz_categories || [];
-      } catch (error) {
-        lastError = error;
-      }
-    }
-  } catch (error) {
-    lastError = error;
-  }
-  console.error('Error fetching quiz categories:', lastError);
-  return [];
-};
-
-export const fetchQuizzesByChapter = async (chapter: string | number): Promise<QuizData> => {
-  let lastError: unknown = null;
-  try {
-    for (const base of getBackendUrlCandidates()) {
-      try {
-        const data = await apiFetch<BackendChapterResponse>(`${base}/api/quiz/questions/${chapter}`, {
-          dedupeKey: `quiz:chapter:${chapter}:${base}`,
-          cacheKey: `quiz:chapter:${chapter}:${base}`,
-          cacheTtlMs: QUIZ_CACHE_TTL_MS,
-          timeoutMs: QUIZ_FETCH_TIMEOUT_MS,
-          retries: 1,
-        });
-
-        return {
-          id: `chapter-${chapter}`,
-          title: String(data.chapter),
-          questions: data.questions.map((q) => ({
-            ...q,
-            answers: q.answers,
-          })),
-        };
-      } catch (error) {
-        lastError = error;
-      }
-    }
-  } catch (error) {
-    lastError = error;
-  }
-  console.error(`Error fetching quizzes for chapter ${chapter}:`, lastError);
-  return {
-    id: `chapter-${chapter}`,
-    title: `Chapter ${chapter}`,
-    questions: [],
-  };
-};
-
-// --- Static quiz data ---
 // Το backend απλώς φορτώνει αυτά τα ίδια JSON σε DB και τα σερβίρει· τα quiz είναι ουσιαστικά
 // στατικό περιεχόμενο, οπότε τα δένουμε στο bundle στο build time (Vite import.meta.glob) αντί
 // να χτυπάμε το backend σε κάθε φόρτωση — μηδενικό network round trip, καμία εξάρτηση από

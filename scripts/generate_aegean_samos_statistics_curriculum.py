@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "frontend" / "src" / "data" / "aegeanSamosStatisticsCurriculum.generated.ts"
+OUT = ROOT / "frontend" / "src" / "data" / "curricula" / "aegeanSamosStatisticsCurriculum.generated.ts"
 
 HEADER = "/** AUTO-GENERATED — Αιγαίου Στατιστικής & Αναλογιστικών-Χρηματοοικονομικών Μαθηματικών (Σάμος) */"
 TITLE = "Στατιστικής και Αναλογιστικών-Χρηματοοικονομικών Μαθηματικών"
