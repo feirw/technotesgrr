@@ -1,6 +1,6 @@
 # Netlify: canonical host + SPA fallback. Keep /pdfs as 200 so files are not rewritten to index.html.
-/protaseis-thema-d /askiseis 301
-/protaseis-thema-d/* /askiseis 301
+/protaseis-thema-d / 301
+/protaseis-thema-d/* / 301
 /pdfs/* 200
 https://technotesgr.com/* https://www.technotes.gr/:splat 301!
 https://www.technotesgr.com/* https://www.technotes.gr/:splat 301!

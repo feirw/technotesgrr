@@ -4,7 +4,6 @@ import { Navigate, useLocation } from 'react-router-dom';
 // Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
 const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
-// const MerchPage = lazy(() => import('@/pages/public/MerchPage'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
 export const loadGloglossaPage = () => import('@/pages/public/GloglossaEmbedPage');
@@ -12,10 +11,6 @@ const GloglossaEmbedPage = lazy(loadGloglossaPage);
 const VivliaPage = lazy(() => import('@/pages/public/VivliaPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
-// const LoginPage = lazy(() => import('@/pages/public/LoginPage'));
-// const RegisterPage = lazy(() => import('@/pages/public/RegisterPage'));
-// const ForgotPasswordPage = lazy(() => import('@/pages/public/ForgotPasswordPage'));
-// const ResetPasswordPage = lazy(() => import('@/pages/public/ResetPasswordPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -29,7 +24,6 @@ const LeaderboardPage = lazy(() => import('@/pages/public/LeaderboardPage'));
 const AlgorithmsPage = lazy(() => import('@/pages/private/AlgorithmsPage'));
 const DataStructuresPage = lazy(() => import('@/pages/private/DataStructuresPage'));
 const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
-// const OnlinePage = lazy(() => import('@/pages/private/OnlinePage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
 const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
 const ThankYouPage = lazy(() => import('@/pages/public/ThankYouPage'));
@@ -45,7 +39,6 @@ function SchoolCompareRedirect() {
 }
 const ProgressTrackerPage = lazy(loadProgressTrackerPage);
 const MethodologiesPage = lazy(() => import('@/pages/private/MethodologiesPage'));
-// const AiCorrectorPage = lazy(() => import('@/pages/private/AiCorrectorPage'));
 const SchoolCoefficientsPage = lazy(() => import('@/pages/private/SchoolCoefficientsPage'));
 const MoriaCalculatorPage = lazy(() => import('@/pages/private/MoriaCalculatorPage'));
 const SaekPage = lazy(() => import('@/pages/private/SaekPage'));
@@ -71,14 +64,6 @@ export const prefetchCriticalPrivateRoutes = () => {
   void import('@/utils/flashcards');
 };
 
-/** Chat widget: μόνο δημόσιες «εισόδου» / αρχικές σελίδες — όχι quiz, flashcards, κ.λπ. */
-export function shouldShowChatWidgetOnPath(pathname: string): boolean {
-  const p =
-    pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
-  const allowList = new Set(['/', '/about', '/privacy-policy', '/data', '/announcements']);
-  return allowList.has(p);
-}
-
 const routes: RouteConfig[] = [
   {
     path: '/',
@@ -88,10 +73,6 @@ const routes: RouteConfig[] = [
     path: '/about',
     element: <AboutPage />,
   },
-  // {
-  //   path: '/merch',
-  //   element: <MerchPage />,
-  // },
   {
     path: '/privacy-policy',
     element: <PrivacyPolicyPage />,
@@ -128,22 +109,6 @@ const routes: RouteConfig[] = [
     path: '/faq',
     element: <FaqPage />,
   },
-  // {
-  //   path: '/login',
-  //   element: <LoginPage />,
-  // },
-  // {
-  //   path: '/register',
-  //   element: <RegisterPage />,
-  // },
-  // {
-  //   path: '/forgot-password',
-  //   element: <ForgotPasswordPage />,
-  // },
-  // {
-  //   path: '/reset-password',
-  //   element: <ResetPasswordPage />,
-  // },
   {
     path: '/quiz',
     element: <QuizPage />,
@@ -168,10 +133,6 @@ const routes: RouteConfig[] = [
     path: '/paliathemata',
     element: <PaliathemataPage />,
   },
-  // {
-  //   path: '/online',
-  //   element: <OnlinePage />,
-  // },
   {
     path: '/prosanatolismos',
     element: <ProsanatolismosPage />,
@@ -204,10 +165,6 @@ const routes: RouteConfig[] = [
     path: '/askiseis',
     element: <Navigate to="/" replace />,
   },
-  // {
-  //   path: '/ai-corrector',
-  //   element: <AiCorrectorPage />,
-  // },
   {
     path: '/syntelestes-sxolon',
     element: <SchoolCoefficientsPage />,

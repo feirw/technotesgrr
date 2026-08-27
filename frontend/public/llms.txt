@@ -4,7 +4,7 @@
 
 ## About
 
-Technotes (technotesgr) βοηθά μαθητές Γ' Λυκείου να προετοιμαστούν για το μάθημα Πληροφορικής στις Πανελλήνιες με quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα, ασκήσεις και μεθοδολογίες.
+Technotes (technotesgr) βοηθά μαθητές Γ' Λυκείου να προετοιμαστούν για το μάθημα Πληροφορικής στις Πανελλήνιες με quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα και μεθοδολογίες.
 
 - Γλώσσα: Ελληνικά (el-GR)
 - Περιοχή: Ελλάδα (Αθήνα)
@@ -18,7 +18,6 @@ Technotes (technotesgr) βοηθά μαθητές Γ' Λυκείου να προ
 - Παλιά θέματα: https://www.technotes.gr/paliathemata
 - Αλγόριθμοι: https://www.technotes.gr/algorithms
 - Δομές δεδομένων: https://www.technotes.gr/domes-dedomenon
-- Ασκήσεις: https://www.technotes.gr/askiseis
 - Σχολές / προσανατολισμός: https://www.technotes.gr/sxoles
 - FAQ: https://www.technotes.gr/faq
 - Σχετικά: https://www.technotes.gr/about

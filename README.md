@@ -92,8 +92,8 @@ python scripts/generate_opa_informatics_curriculum.py
 ```
 
 ### AI (backend)
-- **`POST /api/chat`** — Gemini chatbot (UI currently **disabled** in `MainLayout`)
-- **`POST /api/correct`** — AI exercise corrector for ΑΕΠΠ pseudocode (OCR from photos + RAG over lesson material). Frontend route **`/ai-corrector` is commented out**; re-enable in `routes.tsx` and `MainLayout.tsx` to expose it.
+- **`POST /api/chat`** — Gemini chatbot (no UI currently)
+- **`POST /api/correct`** — AI exercise corrector for ΑΕΠΠ pseudocode (OCR + RAG). No frontend page currently.
 
 **Corrector knowledge base:** lesson `.docx`/`.pdf` files under `frontend/ΜΑΘΗΜΑΤΑ/` are extracted into `backend/data/corrector_knowledge.json`:
 

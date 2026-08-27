@@ -264,18 +264,6 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Μεθοδολογίες', path: '/methodologies' },
     ],
   },
-  '/ai-corrector': {
-    path: '/ai-corrector',
-    slug: 'ai-corrector',
-    title: 'AI Διορθωτής Ασκήσεων | Πανελλήνιες Πληροφορικής',
-    description:
-      'Ανέβασε ή γράψε την εκφώνηση και τη λύση σου σε ΓΛΩΣΣΑ και πάρε αυτόματη διόρθωση με βαθμό, σχόλια και εξήγηση από AI.',
-    ogImage: og('ai-corrector'),
-    breadcrumbs: [
-      { name: 'Αρχική', path: '/' },
-      { name: 'AI Διορθωτής', path: '/ai-corrector' },
-    ],
-  },
   '/syntelestes-sxolon': {
     path: '/syntelestes-sxolon',
     slug: 'syntelestes-sxolon',

@@ -27,7 +27,6 @@ import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
-// const ChatWidget = lazy(() => import('@/components/ai/ChatWidget'));
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
 const LIGHT_THEME_ICON = '/images/home%20page/sun.png';
@@ -83,6 +82,7 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/paliathemata', label: 'Παλιά Θέματα', iconSrc: MENU_ICONS.paliathemata },
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
+  { to: '/study-timer', label: 'Study Timer', iconSrc: MENU_ICONS.studyTimer },
   { to: '/gloglossa', label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', iconSrc: MENU_ICONS.gloglossa, onPrefetch: loadGloglossaPage },
   {
     to: '/vivlia',
@@ -281,10 +281,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
-  // const chatPathAllowed = shouldShowChatWidgetOnPath(location.pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState<boolean>(() => getPreferredTheme() === 'dark');
-  // const [shouldLoadChat, setShouldLoadChat] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
   const lastScrollYRef = React.useRef(0);
   const currentYear = useMemo(() => new Date().getFullYear(), []);
@@ -395,13 +393,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]'
       }`}
     >
-      {/* Chatbot — προσωρινά απενεργοποιημένο
-      {shouldLoadChat && chatPathAllowed && (
-        <Suspense fallback={null}>
-          <ChatWidget />
-        </Suspense>
-      )}
-      */}
       {/* Navbar Container */}
       <motion.div
         initial={false}

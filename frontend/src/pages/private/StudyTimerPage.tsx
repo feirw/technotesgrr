@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, RotateCcw, Target, Clock3, Trophy, Flame } from 'lucide-react';
+import { Play, Pause, RotateCcw, Target, Clock3, Trophy } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
 import ShareResultButton from '@/components/shared/ShareResultButton';
 import { useAuth } from '@/context/AuthContext';
@@ -229,16 +229,7 @@ const StudyTimerPage: React.FC = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-            <div className="bg-coral-wash dark:bg-[#2d1c48] border border-coral-accent/25 dark:border-white/15 rounded-xl p-4">
-              <div className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-1">
-                <Flame className="w-4 h-4 text-orange-500" />
-                Σερί
-              </div>
-              <div className="text-2xl font-black text-coral-accent dark:text-coral-light">
-                {timer.streakDays} {timer.streakDays === 1 ? 'μέρα' : 'μέρες'}
-              </div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="bg-coral-wash dark:bg-[#2d1c48] border border-coral-accent/25 dark:border-white/15 rounded-xl p-4">
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Sessions σήμερα</div>
               <div className="text-2xl font-black text-coral-accent dark:text-coral-light">{timer.sessionsToday}</div>
