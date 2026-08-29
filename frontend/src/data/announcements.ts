@@ -22,7 +22,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     date: '2026-08-29',
     title : 'Εγγραφή σε ΣΑΕΚ της ΔΥΠΑ',
     body : ' Υποβολή αίτησης για εγγραφή σε ΣΑΕΚ της ΔΥΠΑ(Πρώην ΟΑΕΔ)',
-    link : 'https://www.gov.gr/el/services/1000501/eggraphe-se-saek-tis-dypa',
+    link : 'https://www.gov.gr/el/services/1000501/eggraphe-se-saek-tis-dypa ',
   },
   {
     id: '7',
