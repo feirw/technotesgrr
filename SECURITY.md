@@ -5,7 +5,7 @@
 ## Πώς να το αναφέρεις
 
 1. **Προτιμητέο:** [GitHub private vulnerability report](https://github.com/feirw/technotesgrr/security/advisories/new)
-2. Εναλλακτικά: φόρμα επικοινωνίας στο [technotes.gr](https://www.technotes.gr/#contact) — βάλε θέμα τύπου «Security» και μην βάζεις secrets στο μήνυμα αν μπορείς να τα στείλεις με άλλο ασφαλή τρόπο.
+2. Εναλλακτικά: Στείλε μήνυμα στο [instagram](https://www.instagram.com/technotesgr) και ανέφερε το πρόβλημα.
 
 Στο report χρειάζονται:
 
@@ -15,11 +15,10 @@
 - αντίκτυπος (π.χ. πρόσβαση σε ξένα δεδομένα, XSS, leak `.env`)
 - αν έχεις ήδη PoC, περίγραψέ τον· μην τον ανεβάζεις δημόσια
 
-Θα απαντήσουμε όσο πιο σύντομα γίνεται και θα ενημερώσουμε όταν διορθωθεί.
+Θα απαντήσουμε όσο πιο σύντομα γίνεται και θα ενημερώσουμε όταν διορθωθεί(μέγιστος χρόνος αναμονής 2 ημέρες).
 
 ## Τι καλύπτεται
 
-Παραγωγικό site (`technotes.gr` / `technotesgr.gr`) και το API, στο branch `main`.
 
 Ενδεικτικά: XSS, CSRF, injection, leak secrets, broken auth, πρόσβαση σε ξένα quiz/progress, ανοιχτά endpoints, λάθος CORS.
 
