@@ -62,7 +62,7 @@ API: **http://localhost:8001** · Python 3.12 (`runtime.txt`).
 | Flashcards | `/flashcards` | Κεφάλαια από `src/data/flashcards/`. |
 | Μεθοδολογίες | `/methodologies` | Σημειώσεις / παραδείγματα ΑΕΠΠ. |
 | Δομές δεδομένων | `/domes-dedomenon` | Interactive visualizer: δέντρα, BST, λίστες, γράφοι. |
-| Παλιά θέματα | `/paliathemata` | PDFs (κανονικές, επαναληπτικές, τράπεζα, διαγωνίσματα). |
+| Παλιά θέματα | `/paliathemata` | PDFs (κανονικές, επαναληπτικές, ΟΕΦΕ, τράπεζα θεμάτων). |
 | Αλγόριθμοι | `/algorithms` | Προσομοίωση ταξινόμησης / αναζήτησης σε ψευδοκώδικα ΓΛΩΣΣΑΣ. |
 | Progress Tracker | `/progress-tracker` | Checklist ύλης (τοπικά). |
 | Study Timer | `/study-timer` | Χρόνος μελέτης και ημερήσιος στόχος. |
@@ -176,4 +176,4 @@ scripts/                 Curriculum generators, sitemap, OG images
 ## Acknowledgements
 
 - [ABSanthosh](https://github.com/ABSanthosh) — αρχική ιδέα flashcards σε React.
-- [didactics.gr](https://www.didactics.gr/glossa) — διερμηνευτής ΓΛΩΣΣΑΣ.
+- [didactics.gr](https://www.didactics.gr/glossa) — διερμηνευτής ΓΛΩΣΣΑΣ και παλιά θέματα

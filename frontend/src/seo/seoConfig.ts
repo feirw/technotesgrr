@@ -70,20 +70,6 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Προστασία Δεδομένων', path: '/data' },
     ],
   },
-  '/thank-you': {
-    path: '/thank-you',
-    slug: 'thank-you',
-    title: 'Ευχαριστούμε | Technotes',
-    description:
-      'Το μήνυμά σας καταχωρήθηκε. Η ομάδα Technotes θα απαντήσει εντός 48 ωρών (εργάσιμες).',
-    ogImage: og('home'),
-    noindex: true,
-    robots: 'noindex, follow',
-    breadcrumbs: [
-      { name: 'Αρχική', path: '/' },
-      { name: 'Ευχαριστίες', path: '/thank-you' },
-    ],
-  },
   '/gloglossa': {
     path: '/gloglossa',
     slug: 'gloglossa',
