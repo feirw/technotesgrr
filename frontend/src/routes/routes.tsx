@@ -26,7 +26,6 @@ const DataStructuresPage = lazy(() => import('@/pages/private/DataStructuresPage
 const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
 const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
-const ThankYouPage = lazy(() => import('@/pages/public/ThankYouPage'));
 const NotFound = lazy(() => import('@/pages/public/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
@@ -94,10 +93,6 @@ const routes: RouteConfig[] = [
     element: <AnnouncementsPage />,
   },
   {
-    path: '/thank-you',
-    element: <ThankYouPage />,
-  },
-  {
     path: '/terms',
     element: <Navigate to="/privacy-policy" replace />,
   },
@@ -163,6 +158,10 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/askiseis',
+    element: <Navigate to="/" replace />,
+  },
+  {
+    path: '/thank-you',
     element: <Navigate to="/" replace />,
   },
   {
