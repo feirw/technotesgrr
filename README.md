@@ -171,7 +171,7 @@ scripts/                 Curriculum generators, sitemap, OG images
 
 ## Contributing
 
-Δες [CONTRIBUTING.md](CONTRIBUTING.md). Issues και PRs καλοδεχούμενα. Ευπάθειες: [SECURITY.md](SECURITY.md).
+Δες [CONTRIBUTING.md](CONTRIBUTING.md). Issues και PRs καλοδεχούμενα. Ευπάθειες/Προβλήματα: [SECURITY.md](SECURITY.md).
 
 ## Acknowledgements
 
