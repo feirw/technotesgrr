@@ -5,8 +5,8 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "node --watch ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch ./src/index.ts",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +15,14 @@
   "dependencies": {
     "better-auth": "^1.7.2",
     "better-sqlite3": "^13.0.3",
-    "fastify": "^5.12.1"
+    "fastify": "^5.12.1",
+    "fastify-plugin": "^6.0.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",
-    "@types/node": "^26.4.0"
+    "@types/node": "^26.4.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   }
 }
