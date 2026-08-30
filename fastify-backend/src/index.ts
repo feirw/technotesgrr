@@ -1,10 +1,13 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth } from "./lib/auth/auth.ts";
+import { auth } from "./lib/auth/auth.js";
+import authPlugin from "./plugins/auth.js";
 
 const fastify: FastifyInstance = Fastify({
   logger: true,
 });
+
+fastify.register(authPlugin);
 
 fastify.route({
   method: ["GET", "POST"],
@@ -36,15 +39,7 @@ fastify.route({
 });
 
 fastify.get("/api/@me", async function (request, reply) {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(request.headers),
-  });
-
-  if (!session) {
-    return reply.status(401).send({ error: "Unauthorized!" });
-  }
-
-  return reply.send(session);
+  return reply.send(request.user);
 });
 
 fastify.listen({ port: 3000 }, function (err, address) {
