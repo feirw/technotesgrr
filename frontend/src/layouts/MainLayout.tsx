@@ -12,12 +12,13 @@ import {
   Linkedin,
   Youtube,
   Music2,
+  LogIn,
+  LogOut,
   // LogIn,
   // LogOut,
 } from 'lucide-react';
 import { FaDiscord } from 'react-icons/fa';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
-// import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/routes';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/shared/CookieConsent';
@@ -27,6 +28,7 @@ import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
+import { useAuth } from '@/context/AuthContext';
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
 const LIGHT_THEME_ICON = '/images/home%20page/sun.png';
@@ -83,7 +85,12 @@ const PREP_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
   { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
   { to: '/study-timer', label: 'Study Timer', iconSrc: MENU_ICONS.studyTimer },
-  { to: '/gloglossa', label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', iconSrc: MENU_ICONS.gloglossa, onPrefetch: loadGloglossaPage },
+  {
+    to: '/gloglossa',
+    label: 'Διερμηνευτής ΓΛΩΣΣΑΣ',
+    iconSrc: MENU_ICONS.gloglossa,
+    onPrefetch: loadGloglossaPage,
+  },
   {
     to: '/vivlia',
     label: 'Σχολικά βιβλία',
@@ -227,13 +234,18 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
             {iconSrc ? (
               <MenuNavIcon src={iconSrc} label={iconLabel} />
             ) : Icon ? (
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center" aria-hidden>
+              <span
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center"
+                aria-hidden
+              >
                 <Icon
                   className={`h-7 w-7 ${active ? 'text-coral-accent dark:text-coral-light' : 'text-gray-500 dark:text-gray-400'}`}
                 />
               </span>
             ) : null}
-            <span className={`font-semibold leading-tight ${active ? 'text-slate-800 dark:text-gray-50' : ''}`}>
+            <span
+              className={`font-semibold leading-tight ${active ? 'text-slate-800 dark:text-gray-50' : ''}`}
+            >
               {children}
             </span>
           </div>
@@ -277,7 +289,7 @@ const ThemeToggleButton: React.FC<{
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
-  // const { user, logout } = useAuth(); // Σύνδεση — προσωρινά απενεργοποιημένη
+  const { user, logout } = useAuth(); // Σύνδεση — προσωρινά απενεργοποιημένη
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
@@ -439,23 +451,31 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 Take a breath
               </button>
-              <NavButton to="/" iconSrc={MENU_ICONS.home} iconLabel="Αρχική">Αρχική</NavButton>
-              <NavButton to="/about" iconSrc={MENU_ICONS.about} iconLabel="Σχετικά">Σχετικά με εμένα</NavButton>
-              <NavButton to="/announcements" iconSrc={MENU_ICONS.announcements} iconLabel="Ανακοινώσεις">Ανακοινώσεις</NavButton>
-              <NavButton to="/faq" iconSrc={MENU_ICONS.faq} iconLabel="FAQ">FAQ</NavButton>
-
+              <NavButton to="/" iconSrc={MENU_ICONS.home} iconLabel="Αρχική">
+                Αρχική
+              </NavButton>
+              <NavButton to="/about" iconSrc={MENU_ICONS.about} iconLabel="Σχετικά">
+                Σχετικά με εμένα
+              </NavButton>
+              <NavButton
+                to="/announcements"
+                iconSrc={MENU_ICONS.announcements}
+                iconLabel="Ανακοινώσεις"
+              >
+                Ανακοινώσεις
+              </NavButton>
+              <NavButton to="/faq" iconSrc={MENU_ICONS.faq} iconLabel="FAQ">
+                FAQ
+              </NavButton>
               <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
-
               <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
               <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
-
               <ThemeToggleButton
                 isDark={isDark}
                 onToggle={() => setIsDark(toggleTheme() === 'dark')}
                 className="ml-2"
               />
-
-              {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
+              {/*Σύνδεση/Αποσύνδεση*/}
               {user ? (
                 <button
                   type="button"
@@ -475,7 +495,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   Σύνδεση
                 </NavLink>
               )}
-              */}
             </div>
 
             {/* Mobile header actions */}
@@ -570,7 +589,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             >
               <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-lg sm:text-xl font-black text-coral-accent dark:text-coral-light">Μενού</span>
+                  <span className="text-lg sm:text-xl font-black text-coral-accent dark:text-coral-light">
+                    Μενού
+                  </span>
                   <button
                     type="button"
                     onClick={closeMenu}
@@ -600,7 +621,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   <MobileNavButton to="/about" iconSrc={MENU_ICONS.about} onClick={closeMenu}>
                     Σχετικά με εμένα
                   </MobileNavButton>
-                  <MobileNavButton to="/announcements" iconSrc={MENU_ICONS.announcements} onClick={closeMenu}>
+                  <MobileNavButton
+                    to="/announcements"
+                    iconSrc={MENU_ICONS.announcements}
+                    onClick={closeMenu}
+                  >
                     Ανακοινώσεις
                   </MobileNavButton>
                   <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
@@ -615,7 +640,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       iconSrc={item.iconSrc}
                       onClick={closeMenu}
                       isActiveOverride={
-                        item.to === '/methodologies' ? location.pathname === '/methodologies' : undefined
+                        item.to === '/methodologies'
+                          ? location.pathname === '/methodologies'
+                          : undefined
                       }
                     >
                       {item.label}
@@ -696,7 +723,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             transition={{ delay: 0.15 }}
             className="text-center md:px-6 flex flex-col items-center"
           >
-            <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3 w-full">Socials</h3>
+            <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3 w-full">
+              Socials
+            </h3>
             <div className="flex flex-col gap-2 text-black dark:text-gray-100 text-sm items-center">
               <a
                 href="https://instagram.com/technotesgr"
@@ -757,7 +786,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <span>Αθήνα, Ελλάδα</span>
               </div>
               <p className="text-xs text-black/80 dark:text-gray-200 max-w-xs">
-                Απάντηση σε μηνύματα εντός <strong className="font-semibold">48 ωρών</strong> (εργάσιμες).
+                Απάντηση σε μηνύματα εντός <strong className="font-semibold">48 ωρών</strong>{' '}
+                (εργάσιμες).
               </p>
             </div>
           </motion.div>
