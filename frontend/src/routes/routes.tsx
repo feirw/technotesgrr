@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 // Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
+import AuthTestScreen from '@/pages/public/TestAuth';
 const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
@@ -187,6 +188,11 @@ const routes: RouteConfig[] = [
   {
     path: '/meteggrafes',
     element: <MeteggrafesPage />,
+  },
+
+  {
+    path: '/test-auth',
+    element: <AuthTestScreen />,
   },
 
   {
