@@ -8,7 +8,7 @@
 
 ## Πώς δουλεύει το site
 
-Το μεγαλύτερο μέρος του περιεχομένου είναι **στατικό στο frontend** (JSON, PDFs, generated TypeScript). Δεν χρειάζεσαι backend για quiz, flashcards, οπτικοποιήσεις, σχολές ή παλιά θέματα.
+Το μεγαλύτερο μέρος του περιεχομένου είναι **στατικό στο frontend** (JSON, PDFs, generated TypeScript). Δεν χρειάζεσαι backend για quiz, flashcards, οπτικοποιήσεις, σχολές ή παλιά θέματα     .
 
 Η **σύνδεση χρηστών είναι απενεργοποιημένη** στο μενού. Πρόοδος quiz / flashcards / study timer μένει στο `localStorage`. Αν κάποιος είναι συνδεδεμένος, το ίδιο state συγχρονίζεται στο `/api/progress/{key}`.
 
