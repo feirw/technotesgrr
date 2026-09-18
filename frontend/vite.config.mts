@@ -44,7 +44,7 @@ export default defineConfig({
       },
       workbox: {
         cleanupOutdatedCaches: true,
-        globPatterns: ["**/*.{js,css,html,woff2}"],
+        globPatterns: ["**/*.js", "**/*.css", "**/*.html", "**/*.woff2"],
         navigateFallbackDenylist: [/^\/api\//, /^\/pdfs\//],
         runtimeCaching: [
           {

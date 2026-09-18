@@ -4,7 +4,7 @@ import { Play, Pause, RotateCcw, Target, Clock3, Trophy } from 'lucide-react';
 import { PageMenuIcon } from '@/data/menuIcons';
 import ShareResultButton from '@/components/shared/ShareResultButton';
 import { useAuth } from '@/context/AuthContext';
-import { getAuthToken } from '@/context/AuthContext';
+import { getAuthToken } from '@/utils/authToken';
 import { apiFetch } from '@/utils/apiClient';
 import { getBackendUrl } from '@/utils/backendUrl';
 
