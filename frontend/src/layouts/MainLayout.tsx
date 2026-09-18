@@ -12,8 +12,8 @@ import {
   Linkedin,
   Youtube,
   Music2,
-  LogIn,
-  LogOut,
+  // LogIn,
+  // LogOut,
 } from 'lucide-react';
 import { FaDiscord } from 'react-icons/fa';
 import { toggleTheme, getPreferredTheme } from '@/utils/theme';
@@ -25,7 +25,7 @@ import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
-import { useAuth } from '@/context/AuthContext';
+// import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
 const LIGHT_THEME_ICON = '/images/home%20page/sun.png';
@@ -286,7 +286,7 @@ const ThemeToggleButton: React.FC<{
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { user, logout } = useAuth(); // Σύνδεση — προσωρινά απενεργοποιημένη
+  // const { user, logout } = useAuth(); // Σύνδεση — προσωρινά απενεργοποιημένη
   const isHomePage = location.pathname === '/';
   const isSchoolsPage = location.pathname === '/sxoles';
   const isAboutPage = location.pathname === '/about';
@@ -474,7 +474,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 onToggle={() => setIsDark(toggleTheme() === 'dark')}
                 className="ml-2"
               />
-              {/*Σύνδεση/Αποσύνδεση*/}
+              {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
               {user ? (
                 <button
                   type="button"
@@ -494,6 +494,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   Σύνδεση
                 </NavLink>
               )}
+              */}
             </div>
 
             {/* Mobile header actions */}
