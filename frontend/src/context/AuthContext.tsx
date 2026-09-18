@@ -1,10 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { getBackendUrl } from '@/utils/backendUrl';
-import { apiFetch } from '@/utils/apiClient';
+import React, { createContext, useCallback, useContext } from 'react';
+import { authClient } from '@/lib/auth-client';
 
 export interface AuthUser {
-  id: number;
+  id: string;
   email: string;
+  name: string;
 }
 
 interface AuthContextValue {
@@ -12,121 +12,57 @@ interface AuthContextValue {
   /** True only while the initial session check on load is in flight. */
   isLoading: boolean;
   login: (email: string, password: string, rememberMe: boolean) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const TOKEN_KEY = 'technotesgr_auth_token';
-
-/**
- * Session token lives in local/session storage and rides on the Authorization
- * header — not a cookie. This app's frontend and API are on different domains
- * in production, and browsers (Safari's ITP in particular) block third-party/
- * cross-site cookies outright regardless of SameSite/Secure config, so a
- * cookie-based session silently never persists. A Bearer token has no such
- * restriction. "Remember me" maps directly to which storage holds it:
- * localStorage survives closing the browser, sessionStorage doesn't.
- */
-function getStoredToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
-}
-
-/** Read-only access to the current session token, for code outside the auth context (e.g. progress sync). */
-export function getAuthToken(): string | null {
-  return getStoredToken();
-}
-
-function storeToken(token: string, remember: boolean): void {
-  if (remember) {
-    localStorage.setItem(TOKEN_KEY, token);
-    sessionStorage.removeItem(TOKEN_KEY);
-  } else {
-    sessionStorage.setItem(TOKEN_KEY, token);
-    localStorage.removeItem(TOKEN_KEY);
-  }
-}
-
-function clearStoredToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
-  sessionStorage.removeItem(TOKEN_KEY);
-}
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const token = getStoredToken();
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    apiFetch<{ user: AuthUser }>(`${getBackendUrl()}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-      retries: 0,
-    })
-      .then((data) => {
-        if (!cancelled) setUser(data.user);
-      })
-      .catch(() => {
-        if (!cancelled) clearStoredToken();
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { data: session, isPending } = authClient.useSession();
 
   const login = useCallback(async (email: string, password: string, rememberMe: boolean) => {
-    const data = await apiFetch<{ user: AuthUser; token: string }>(
-      `${getBackendUrl()}/api/auth/login`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, rememberMe }),
-        retries: 0,
-      }
-    );
-    storeToken(data.token, rememberMe);
-    setUser(data.user);
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
+      rememberMe,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
   }, []);
 
-  const register = useCallback(async (email: string, password: string) => {
-    const data = await apiFetch<{ user: AuthUser; token: string }>(
-      `${getBackendUrl()}/api/auth/register`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        retries: 0,
-      }
-    );
-    storeToken(data.token, true);
-    setUser(data.user);
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    const { error } = await authClient.signUp.email({
+      name,
+      email,
+      password,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
   }, []);
 
   const logout = useCallback(async () => {
-    const token = getStoredToken();
-    try {
-      await apiFetch(`${getBackendUrl()}/api/auth/logout`, {
-        method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-        retries: 0,
-      });
-    } finally {
-      clearStoredToken();
-      setUser(null);
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      throw new Error(error.message);
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user: session?.user ?? null,
+        isLoading: isPending,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

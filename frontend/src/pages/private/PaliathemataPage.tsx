@@ -23,12 +23,7 @@ type ExamMode =
   | 'eimaste-mesa-b'
   | 'eimaste-mesa-c'
   | 'trapeza-thema-b'
-  | 'trapeza-thema-d'
-  | 'diagonismata-akolouthia'
-  | 'diagonismata-epanalipsi'
-  | 'diagonismata-epilogi'
-  | 'diagonismata-efolis'
-  | 'diagonismata-pinakes';
+  | 'trapeza-thema-d';
 
 interface ExamItem {
   id: string;
@@ -149,30 +144,6 @@ const numberedTrapezaItems = (count: number): ExamItem[] =>
 const TRAPEZA_THEMA_B = numberedTrapezaItems(75);
 const TRAPEZA_THEMA_D = numberedTrapezaItems(80);
 
-const DIAGONISMATA_BASE = '/pdfs/diagonismata';
-
-const numberedPdfFiles = (count: number): string[] =>
-  Array.from({ length: count }, (_, i) => `${i + 1}.pdf`);
-
-const filesToItems = (folder: string, files: string[]): ExamItem[] =>
-  files.map((file, index) => ({
-    id: `${folder}-${index}`,
-    label: `Διαγώνισμα ${index + 1}`,
-    path: `${DIAGONISMATA_BASE}/${folder}/${encodeURIComponent(file)}`,
-  }));
-
-const DIAGONISMATA_AKOLOUTHIA_FILES = numberedPdfFiles(5);
-const DIAGONISMATA_EPANALIPSI_FILES = numberedPdfFiles(26);
-const DIAGONISMATA_EPILOGI_FILES = numberedPdfFiles(1);
-const DIAGONISMATA_EFOLIS_FILES = numberedPdfFiles(34);
-const DIAGONISMATA_PINAKES_FILES = numberedPdfFiles(31);
-
-const DIAGONISMATA_AKOLOUTHIA = filesToItems('domi-ak', DIAGONISMATA_AKOLOUTHIA_FILES);
-const DIAGONISMATA_EPANALIPSI = filesToItems('domiep', DIAGONISMATA_EPANALIPSI_FILES);
-const DIAGONISMATA_EPILOGI = filesToItems('domiepil', DIAGONISMATA_EPILOGI_FILES);
-const DIAGONISMATA_EFOLIS = filesToItems('efolis', DIAGONISMATA_EFOLIS_FILES);
-const DIAGONISMATA_PINAKES = filesToItems('pinakes', DIAGONISMATA_PINAKES_FILES);
-
 const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
   kanonikes: KANONIKES_ITEMS,
   epanaliptikes: EPANALIPTIKES_ITEMS,
@@ -183,11 +154,6 @@ const MODE_ITEMS: Record<ExamMode, ExamItem[]> = {
   'eimaste-mesa-c': EIMASTE_MESA_C,
   'trapeza-thema-b': TRAPEZA_THEMA_B,
   'trapeza-thema-d': TRAPEZA_THEMA_D,
-  'diagonismata-akolouthia': DIAGONISMATA_AKOLOUTHIA,
-  'diagonismata-epanalipsi': DIAGONISMATA_EPANALIPSI,
-  'diagonismata-epilogi': DIAGONISMATA_EPILOGI,
-  'diagonismata-efolis': DIAGONISMATA_EFOLIS,
-  'diagonismata-pinakes': DIAGONISMATA_PINAKES,
 };
 
 const MODE_TABS: ModeTabConfig[] = [
@@ -230,47 +196,9 @@ const MODE_TABS: ModeTabConfig[] = [
     mobileLabel: 'Τράπεζα · Δ',
     count: TRAPEZA_THEMA_D.length,
   },
-  // {
-  //   mode: 'diagonismata-akolouthia',
-  //   label: 'Διαγωνίσματα · Ακολουθία',
-  //   mobileLabel: 'Διαγων. Ακολουθία',
-  //   count: DIAGONISMATA_AKOLOUTHIA.length,
-  // },
-  // {
-  //   mode: 'diagonismata-epanalipsi',
-  //   label: 'Διαγωνίσματα · Επανάληψη',
-  //   mobileLabel: 'Διαγων. Επανάληψη',
-  //   count: DIAGONISMATA_EPANALIPSI.length,
-  // },
-  // {
-  //   mode: 'diagonismata-epilogi',
-  //   label: 'Διαγωνίσματα · Επιλογή',
-  //   mobileLabel: 'Διαγων. Επιλογή',
-  //   count: DIAGONISMATA_EPILOGI.length,
-  // },
-  // {
-  //   mode: 'diagonismata-efolis',
-  //   label: "Διαγωνίσματα · Εφ' Όλης",
-  //   mobileLabel: "Διαγων. Εφ' Όλης",
-  //   count: DIAGONISMATA_EFOLIS.length,
-  // },
-  // {
-  //   mode: 'diagonismata-pinakes',
-  //   label: 'Διαγωνίσματα · Πίνακες',
-  //   mobileLabel: 'Διαγων. Πίνακες',
-  //   count: DIAGONISMATA_PINAKES.length,
-  // },
 ];
 
 const YEAR_MODES: ExamMode[] = ['kanonikes', 'epanaliptikes', 'oefe-a', 'oefe-b'];
-// const DIAGONISMATA_MODES: ExamMode[] = [
-//   'diagonismata-akolouthia',
-//   'diagonismata-epanalipsi',
-//   'diagonismata-epilogi',
-//   'diagonismata-efolis',
-//   'diagonismata-pinakes',
-// ];
-const DIAGONISMATA_MODES: ExamMode[] = [];
 
 const getModeLabel = (currentMode: ExamMode): string => {
   const tab = MODE_TABS.find((t) => t.mode === currentMode);
@@ -284,7 +212,6 @@ const getModeLabel = (currentMode: ExamMode): string => {
 const TopicCard: React.FC<TopicCardProps> = ({ item, mode, isSelected, onClick, index }) => {
   const staggerDelay = Math.min(index * 0.015, 0.2);
   const isYearMode = YEAR_MODES.includes(mode);
-  const isDiagonismataMode = DIAGONISMATA_MODES.includes(mode);
 
   return (
     <motion.button
@@ -305,15 +232,10 @@ const TopicCard: React.FC<TopicCardProps> = ({ item, mode, isSelected, onClick, 
       whileHover={{ y: -2, scale: 1.02 }}
       whileTap={{ scale: 0.97 }}
       aria-label={`${getModeLabel(mode)} ${item.label}`}
-      title={isDiagonismataMode ? item.label : undefined}
     >
       <div
         className={`font-black mb-1 sm:mb-2 leading-tight ${
-          isYearMode
-            ? 'text-lg sm:text-2xl'
-            : isDiagonismataMode
-              ? 'text-xs sm:text-sm line-clamp-3 break-words'
-              : 'text-xs sm:text-base'
+          isYearMode ? 'text-lg sm:text-2xl' : 'text-xs sm:text-base'
         }`}
       >
         {item.label}
@@ -407,17 +329,13 @@ const PaliathemataPage: React.FC = () => {
     ? 'Αναζήτηση περιόδου...'
     : mode.startsWith('trapeza')
       ? 'Αναζήτηση θέματος...'
-      : mode.startsWith('diagonismata')
-        ? 'Αναζήτηση διαγωνίσματος...'
-        : 'Αναζήτηση έτους...';
+      : 'Αναζήτηση έτους...';
 
   const resultsLabel = mode.startsWith('eimaste-mesa')
     ? 'περίοδοι'
     : mode.startsWith('trapeza')
       ? 'θέματα'
-      : mode.startsWith('diagonismata')
-        ? 'διαγωνίσματα'
-        : 'χρονιές';
+      : 'χρονιές';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-coral-wash via-white to-coral-wash dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]">
@@ -485,22 +403,7 @@ const PaliathemataPage: React.FC = () => {
                           {tab.mode === 'trapeza-thema-b' ? 'Θέμα Β' : 'Θέμα Δ'}
                         </span>
                       </span>
-                    ) : /* tab.mode.startsWith('diagonismata') ? (
-                      <span className="sm:hidden text-center text-[10px] leading-snug">
-                        <span className="block">Διαγωνίσματα</span>
-                        <span className="block">
-                          {tab.mode === 'diagonismata-akolouthia'
-                            ? 'Ακολουθία'
-                            : tab.mode === 'diagonismata-epanalipsi'
-                              ? 'Επανάληψη'
-                              : tab.mode === 'diagonismata-epilogi'
-                                ? 'Επιλογή'
-                                : tab.mode === 'diagonismata-efolis'
-                                  ? "Εφ' Όλης"
-                                  : 'Πίνακες'}
-                        </span>
-                      </span>
-                    ) : */ (
+                    ) : (
                       <span className="sm:hidden">{tab.mobileLabel}</span>
                     )}
                     <span className="hidden sm:inline">{tab.label}</span>
@@ -593,11 +496,7 @@ const PaliathemataPage: React.FC = () => {
             </motion.div>
           ) : (
             <motion.div
-              className={
-                DIAGONISMATA_MODES.includes(mode)
-                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4'
-                  : 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-4'
-              }
+              className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-4"
               key={`${mode}-grid`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 // Home is eager so refresh on "/" paints immediately (no extra chunk wait).
 import HomePage from '@/pages/public/HomePage';
+import AuthTestScreen from '@/pages/public/TestAuth';
 const AboutPage = lazy(() => import('@/pages/public/AboutMe'));
 const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage'));
 const DataProtectionPage = lazy(() => import('@/pages/public/DataProtectionPage'));
@@ -26,7 +27,6 @@ const DataStructuresPage = lazy(() => import('@/pages/private/DataStructuresPage
 const PaliathemataPage = lazy(() => import('@/pages/private/PaliathemataPage'));
 const ProsanatolismosPage = lazy(loadProsanatolismosPage);
 const StudyTimerPage = lazy(() => import('@/pages/private/StudyTimerPage'));
-const ThankYouPage = lazy(() => import('@/pages/public/ThankYouPage'));
 const NotFound = lazy(() => import('@/pages/public/NotFound'));
 
 const SchoolsPage = lazy(() => import('@/pages/private/SchoolsPage'));
@@ -92,10 +92,6 @@ const routes: RouteConfig[] = [
   {
     path: '/announcements',
     element: <AnnouncementsPage />,
-  },
-  {
-    path: '/thank-you',
-    element: <ThankYouPage />,
   },
   {
     path: '/terms',
@@ -166,6 +162,10 @@ const routes: RouteConfig[] = [
     element: <Navigate to="/" replace />,
   },
   {
+    path: '/thank-you',
+    element: <Navigate to="/" replace />,
+  },
+  {
     path: '/syntelestes-sxolon',
     element: <SchoolCoefficientsPage />,
   },
@@ -188,6 +188,11 @@ const routes: RouteConfig[] = [
   {
     path: '/meteggrafes',
     element: <MeteggrafesPage />,
+  },
+
+  {
+    path: '/test-auth',
+    element: <AuthTestScreen />,
   },
 
   {
