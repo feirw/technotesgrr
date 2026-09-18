@@ -69,7 +69,7 @@ const formatTime = (ms: number) => {
 
 const StudyTimerPage: React.FC = () => {
   const { user } = useAuth();
-  const hydratedForUserRef = useRef<number | null>(null);
+  const hydratedForUserRef = useRef<string | number | null>(null);
   const skipNextPushRef = useRef(false);
 
   const [timer, setTimer] = useState<TimerState>(() => {

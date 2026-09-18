@@ -29,7 +29,7 @@ export function useSyncedStorage<T>(
   const { user } = useAuth();
   const [value, setValue] = useState<T>(() => readLocal(key, defaultValue));
 
-  const hydratedForUserRef = useRef<number | null>(null);
+  const hydratedForUserRef = useRef<string | number | null>(null);
   const skipNextPushRef = useRef(false);
 
   // Στο login (ή στο πρώτο mount αν είναι ήδη συνδεδεμένος), φέρε το αντίγραφο του server μία φορά.
