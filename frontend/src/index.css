@@ -203,3 +203,27 @@ code {
 .dark .dsv-flow .react-flow__controls-button svg {
   fill: #ffc4d6;
 }
+
+@keyframes about-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.about-marquee-track {
+  width: max-content;
+  animation: about-marquee 42s linear infinite;
+}
+
+.about-marquee:hover .about-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-marquee-track {
+    animation: none;
+  }
+}

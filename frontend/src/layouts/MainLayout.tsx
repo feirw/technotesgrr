@@ -21,7 +21,6 @@ import { toggleTheme, getPreferredTheme } from '@/utils/theme';
 import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/routes';
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/shared/CookieConsent';
-import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { MENU_ICONS, MenuNavIcon, prefetchAllMenuIcons, prefetchMenuIcons } from '@/data/menuIcons';
 import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
@@ -388,7 +387,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div
       className={`min-h-screen overflow-x-hidden text-gray-900 dark:text-gray-100 flex flex-col ${
-        isHomePage || isSchoolsPage || isAboutPage
+        isAboutPage
+          ? 'bg-gradient-to-b from-[#ff97b2] via-[#ffd0dc] to-white dark:from-[#2d1c48] dark:via-[#3d2458] dark:to-[#1a1028]'
+          : isHomePage || isSchoolsPage
           ? 'bg-[#ff97b2] dark:bg-[#2d1c48]'
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]'
       }`}
@@ -665,12 +666,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Main Content */}
       <main className="flex-grow relative z-10 pb-[env(safe-area-inset-bottom,0px)] pt-20">
-        <Breadcrumbs />
         {children}
       </main>
 
       {/* Footer */}
-      <footer className="relative z-0 overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
+      <footer className="relative z-20 overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:bg-none"
           aria-hidden="true"

@@ -102,62 +102,26 @@ const timelineData: TimelineItem[] = [
   },
 ];
 
-const achievementImages = [
-  '/images/eg1.jpg',
-  '/images/eg2.jpg',
-  '/images/eg3.jpg',
-  '/images/eg4.jpg',
-  '/images/eg5.jpg?v=20260608',
-  '/images/eg6.jpg',
+const achievementImages: { src: string; objectPosition?: string }[] = [
+  { src: '/images/eg1.jpg' },
+  { src: '/images/eg2.jpg' },
+  { src: '/images/eg3.jpg', objectPosition: '50% 18%' },
+  { src: '/images/eg4.jpg' },
+  { src: '/images/eg5.jpg?v=20260608' },
+  { src: '/images/eg6.jpg' },
 ];
 
 const personalCardImages = ['/images/c2.png', '/images/c3.png'];
+const marqueeStrip = [...achievementImages, ...achievementImages];
+const marqueeImages = [...marqueeStrip, ...marqueeStrip];
 
 const cardClass =
   'bg-white/90 dark:bg-[#3a2658]/90 backdrop-blur-md rounded-3xl shadow-xl p-6 md:p-8 border border-[#f07f97]/25 dark:border-white/10';
 
-function aboutBgSrcSet(basename: 'about-bg-light' | 'about-bg-dark'): string {
-  return [800, 1280, 1920, 2560, 3840]
-    .map((w) => `/images/${basename}-${w}.webp ${w}w`)
-    .join(', ');
-}
-
-const ABOUT_BACKGROUND_LIGHT = '/images/about-bg-light-1920.webp';
-const ABOUT_BACKGROUND_DARK = '/images/about-bg-dark-1920.webp';
-const ABOUT_BACKGROUND_LIGHT_SRCSET = aboutBgSrcSet('about-bg-light');
-const ABOUT_BACKGROUND_DARK_SRCSET = aboutBgSrcSet('about-bg-dark');
-
 const AboutPage: React.FC = () => {
   return (
-    <div className="relative min-h-screen bg-[#ff97b2] dark:bg-[#2d1c48] text-gray-900 dark:text-gray-100 transition-colors duration-500">
-      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
-        <img
-          src={ABOUT_BACKGROUND_LIGHT}
-          srcSet={ABOUT_BACKGROUND_LIGHT_SRCSET}
-          sizes="100vw"
-          width={1920}
-          height={1080}
-          alt=""
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          className="h-full w-full object-cover dark:hidden"
-        />
-        <img
-          src={ABOUT_BACKGROUND_DARK}
-          srcSet={ABOUT_BACKGROUND_DARK_SRCSET}
-          sizes="100vw"
-          width={1920}
-          height={1080}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="hidden h-full w-full object-cover dark:block"
-        />
-      </div>
-
-      <div className="relative z-10">
-      <section className="pt-10 sm:pt-12 pb-4 sm:pb-6">
+    <div className="relative min-h-screen bg-gradient-to-b from-[#ff97b2] via-[#ffd0dc] to-white dark:from-[#2d1c48] dark:via-[#3d2458] dark:to-[#1a1028] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+      <section className="pt-28 sm:pt-36 md:pt-44 pb-4 sm:pb-6">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-4 tracking-tight text-white drop-shadow-sm">
             Γεια σου! Είμαι η Ελένη
@@ -168,48 +132,35 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
+      <section className="pt-4 pb-2 sm:pt-6">
+        <div
+          className="about-marquee relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+        >
+          <div className="about-marquee-track flex gap-4">
+            {marqueeImages.map((image, i) => (
+              <article
+                key={`${image.src}-${i}`}
+                className="w-[200px] sm:w-[230px] shrink-0 rounded-2xl bg-white p-2.5 shadow-lg dark:bg-[#3a2658]"
+                aria-hidden={i >= marqueeStrip.length}
+              >
+                <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#fff5f8] dark:bg-[#2d1c48]">
+                  <OptimizedImg
+                    src={image.src}
+                    alt={i < achievementImages.length ? `Στιγμιότυπο ${i + 1}` : ''}
+                    className="h-full w-full object-cover"
+                    style={image.objectPosition ? { objectPosition: image.objectPosition } : undefined}
+                    loading={i < 4 ? 'eager' : 'lazy'}
+                  />
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="pt-8 pb-16 sm:pt-10 md:pt-14 md:pb-20">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-5xl mx-auto space-y-8 sm:space-y-10">
-            <div className={cardClass}>
-              <h2 className="text-2xl md:text-3xl font-bold text-[#f07f97] dark:text-[#ff97b2] mb-4">
-                Some cool moments
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {achievementImages.map((imageSrc, i) => (
-                  <div
-                    key={imageSrc}
-                    className="aspect-square overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
-                  >
-                    <OptimizedImg
-                      src={imageSrc}
-                      alt={`Επίτευγμα ${i + 1}`}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={cardClass}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {personalCardImages.map((imageSrc, i) => (
-                  <div
-                    key={imageSrc}
-                    className="aspect-[16/10] overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
-                  >
-                    <OptimizedImg
-                      src={imageSrc}
-                      alt={`Προσωπική εικόνα ${i + 1}`}
-                      className="w-full h-full object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
             <div className={cardClass}>
               <div className="flex items-center gap-4 mb-6">
                 <MenuIconImg src={ABOUT_SECTION_ICONS.story} className="w-9 h-9" />
@@ -292,6 +243,24 @@ const AboutPage: React.FC = () => {
             </div>
 
             <div className={cardClass}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {personalCardImages.map((imageSrc, i) => (
+                  <div
+                    key={imageSrc}
+                    className="aspect-[16/10] overflow-hidden rounded-2xl border border-[#f07f97]/25 dark:border-white/15 bg-white dark:bg-[#2d1c48]"
+                  >
+                    <OptimizedImg
+                      src={imageSrc}
+                      alt={`Προσωπική εικόνα ${i + 1}`}
+                      className="w-full h-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={cardClass}>
               <div className="flex items-center gap-4 mb-6">
                 <MenuIconImg src={ABOUT_SECTION_ICONS.funFacts} className="w-9 h-9" />
                 <h2 className="text-3xl md:text-4xl font-bold text-[#f07f97] dark:text-[#ff97b2]">
@@ -334,7 +303,6 @@ const AboutPage: React.FC = () => {
           </div>
         </div>
       </section>
-      </div>
     </div>
   );
 };
