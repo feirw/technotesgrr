@@ -411,5 +411,13 @@
       { "text": "Σωστό", "correct": true },
       { "text": "Λάθος", "correct": false }
     ]
+  },
+  {
+    "id": "32",
+    "question": "Η έκφραση (ΑΛΗΘΗΣ ΚΑΙ Χ>Ψ) είναι πάντα ΑΛΗΘΗΣ",
+    "answers": [
+      { "text": "Σωστό", "correct": false     },
+      { "text": "Λάθος", "correct": true }
+    ]
   }
 ]

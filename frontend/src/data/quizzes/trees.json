@@ -12,5 +12,19 @@
         "correct": false
       }
     ]
+  },
+  {
+    "id": "2",
+    "question": "Η ρίζα ενός δέντρου δεν μπορεί να είναι φύλλο",
+    "answers": [
+      {
+        "text": "Σωστό",
+        "correct": false
+      },
+      {
+        "text": "Λάθος",
+        "correct": true
+      }
+    ]
   }
 ]
