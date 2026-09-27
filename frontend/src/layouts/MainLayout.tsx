@@ -399,7 +399,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       className={`min-h-screen overflow-x-hidden text-gray-900 dark:text-gray-100 flex flex-col ${
         isAboutPage
           ? 'bg-gradient-to-b from-[#ff97b2] via-[#ffd0dc] to-white dark:from-[#2d1c48] dark:via-[#3d2458] dark:to-[#1a1028]'
-          : isHomePage || isSchoolsPage
+          : isHomePage
+          ? 'bg-[#F1A3B5] dark:bg-[#2d1c48]'
+          : isSchoolsPage
           ? 'bg-[#ff97b2] dark:bg-[#2d1c48]'
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]'
       }`}

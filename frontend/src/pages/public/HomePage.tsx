@@ -594,7 +594,7 @@ const HomePage: React.FC = () => {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen transition-colors duration-500 bg-[#ff97b2] dark:bg-[#2d1c48]">
+      <div className="min-h-screen transition-colors duration-500 bg-[#F1A3B5] dark:bg-[#2d1c48]">
         {/* 🚀 HERO SECTION 🚀 */}
         <section className="relative w-full min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
           <HeroBackground />
