@@ -93,15 +93,13 @@ const CsCareerPathPage: React.FC = () => {
             href="https://github.com/Kostas-Gouridis"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-[#f07f97] hover:underline"
+            className="font-semibold text-[#000000] hover:underline"
           >
-            Κωνσταντίνος Γουρίδης
-          </a>{' '}
-          από το Τμήμα Εφαρμοσμένης Πληροφορικής στο ΠΑΜΑΚ.
-        </p>
-      </main>
-    </div>
-  );
+      Κωνσταντίνος Γουρίδης
+    </a> από το Τμήμα Εφαρμοσμένης Πληροφορικής στο ΠΑΜΑΚ.
+  </p>
+</main>
+</div>
+);
 };
-
 export default CsCareerPathPage;

@@ -534,28 +534,29 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
             <motion.div
-              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 p-5 sm:p-6 pt-12 shadow-2xl"
+              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 p-5 sm:p-6 shadow-2xl"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             >
-              <button
-                type="button"
-                onClick={() => setShowPanic(false)}
-                className="absolute top-3 right-3 z-10 inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-[#2d1c48] touch-manipulation transition-colors"
-                aria-label="Κλείσιμο"
-              >
-                <X size={22} aria-hidden />
-              </button>
-
-              <button
-                type="button"
-                onClick={triggerPanic}
-                className="mb-4 w-full min-h-11 rounded-xl bg-coral-accent px-4 py-3 font-bold text-white transition-colors hover:bg-coral-strong touch-manipulation"
-              >
-                Άλλο ένα
-              </button>
+              <div className="mb-3 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={triggerPanic}
+                  className="min-h-11 flex-1 rounded-xl bg-coral-accent px-4 py-3 font-bold text-white transition-colors hover:bg-coral-strong touch-manipulation"
+                >
+                  Άλλο ένα
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPanic(false)}
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-[#2d1c48] dark:hover:text-white touch-manipulation transition-colors"
+                  aria-label="Κλείσιμο"
+                >
+                  <X size={20} strokeWidth={2.25} aria-hidden />
+                </button>
+              </div>
 
               <div className="mb-3 flex items-center gap-3">
                 <MenuNavIcon src={MENU_ICONS.takeABreath} />
