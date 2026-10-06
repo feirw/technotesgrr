@@ -8,8 +8,10 @@ export const SITE_NAME_FULL = 'technotesgr';
 export const SITE_TAGLINE = 'Quiz, flashcards, αλγόριθμοι και παλιά θέματα για Πανελλήνιες Πληροφορικής';
 
 export const DEFAULT_OG_IMAGE_PATH = '/og/default.png';
+/** Bump when default.png changes so Facebook/Instagram recrawl the preview. */
+export const OG_IMAGE_CACHE_VERSION = '3';
 
-export const LOGO_PATH = '/images/logo.png';
+export const LOGO_PATH = '/apple-touch-icon.png';
 export const LOGO_URL = `${DEFAULT_SITE_ORIGIN}${LOGO_PATH}`;
 
 export const DISCORD_INVITE_URL = 'https://discord.gg/b7BEHVFhaZ';
@@ -40,5 +42,7 @@ export function canonicalUrl(pathname: string): string {
 }
 
 export function ogImageUrl(imagePath: string): string {
-  return absoluteUrl(imagePath);
+  const url = absoluteUrl(imagePath);
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}v=${OG_IMAGE_CACHE_VERSION}`;
 }

@@ -80,6 +80,9 @@ const SeoHead: React.FC = () => {
     upsertMeta('og:description', page.description, 'property');
     upsertMeta('og:image', imageUrl, 'property');
     upsertMeta('og:image:secure_url', imageUrl, 'property');
+    upsertMeta('og:image:type', 'image/png', 'property');
+    upsertMeta('og:image:width', '1200', 'property');
+    upsertMeta('og:image:height', '630', 'property');
     upsertMeta('og:image:alt', imageAlt, 'property');
     upsertMeta('og:url', canonical, 'property');
     upsertMeta('og:type', 'website', 'property');

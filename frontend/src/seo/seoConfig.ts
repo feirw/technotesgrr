@@ -28,9 +28,10 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     path: '/',
     slug: 'home',
     title: 'Quiz, Flashcards, Αλγόριθμοι | Πληροφορική Πανελλήνιες',
+    ogTitle: 'technotesgr',
     description:
       'Δωρεάν προετοιμασία Πανελληνίων Πληροφορικής: quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα, ασκήσεις και οπτικοποιήσεις για Γ\' Λυκείου.',
-    ogImage: og('home'),
+    ogImage: '/og/default.png',
     includeCourseSchema: true,
   },
   '/about': {

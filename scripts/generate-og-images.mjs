@@ -47,6 +47,25 @@ function wrapLines(text, maxChars = 28) {
   return lines.slice(0, 3);
 }
 
+/** Default share card: brand name only (no tiny favicon — crawlers treat that as a broken icon). */
+function buildBrandSvg() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff97b2"/>
+      <stop offset="55%" stop-color="#f07f97"/>
+      <stop offset="100%" stop-color="#e06d88"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="48" y="48" width="1104" height="534" rx="32" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="4"/>
+  <text x="600" y="320" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="88" font-weight="800">technotesgr</text>
+  <text x="600" y="400" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="600">Πληροφορική για τις Πανελλήνιες</text>
+  <text x="600" y="455" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="500">technotes.gr</text>
+</svg>`;
+}
+
 function buildSvg(headline, subtitle = 'Πληροφορική για τις Πανελλήνιες', logoDataUri) {
   const lines = wrapLines(headline);
   const lineEls = lines
@@ -58,7 +77,7 @@ function buildSvg(headline, subtitle = 'Πληροφορική για τις Π�
 
   const logoBlock = logoDataUri
     ? `<image href="${logoDataUri}" x="520" y="72" width="160" height="160" preserveAspectRatio="xMidYMid meet"/>`
-    : `<text x="600" y="150" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="900">Technotes</text>`;
+    : `<text x="600" y="150" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="900">technotesgr</text>`;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
@@ -98,11 +117,13 @@ const logoDataUri = loadLogoDataUri();
 mkdirSync(OUT_DIR, { recursive: true });
 mkdirSync(dirname(DEFAULT_OUT), { recursive: true });
 
-const home = ALL_OG_PAGES.find((p) => p.slug === 'home') ?? ALL_OG_PAGES[0];
-await renderPng(
-  buildSvg('Technotes', 'Πληροφορική για τις Πανελλήνιες', logoDataUri),
-  DEFAULT_OUT,
-);
+await renderPng(buildBrandSvg(), DEFAULT_OUT);
+console.log('OG:', DEFAULT_OUT);
+
+if (process.argv.includes('--default-only')) {
+  console.log('Done — default only');
+  process.exit(0);
+}
 
 for (const page of ALL_OG_PAGES) {
   if (page.noindex) continue;
