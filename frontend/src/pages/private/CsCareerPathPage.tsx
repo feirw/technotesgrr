@@ -35,6 +35,18 @@ const CsCareerPathPage: React.FC = () => {
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
             Προσανατολισμός Πληροφορικής
           </h1>
+          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            Την ιστοσελίδα επιμελήθηκε ο συνάδελφος{' '}
+            <a
+              href="https://github.com/Kostas-Gouridis"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#000000] dark:text-white hover:underline"
+            >
+              Κωνσταντίνος Γουρίδης
+            </a>{' '}
+            από το Τμήμα Εφαρμοσμένης Πληροφορικής στο ΠΑΜΑΚ.
+          </p>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
             Τεστ καριέρας για φοιτητές και μαθητές πληροφορικής — δες ποιες από τις 12 κατευθύνσεις σου
             ταιριάζουν.
@@ -86,20 +98,8 @@ const CsCareerPathPage: React.FC = () => {
             ))}
           </div>
         </section>
-
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-          Την ιστοσελίδα επιμελήθηκε ο συνάδελφος{' '}
-          <a
-            href="https://github.com/Kostas-Gouridis"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-[#000000] hover:underline"
-          >
-      Κωνσταντίνος Γουρίδης
-    </a> από το Τμήμα Εφαρμοσμένης Πληροφορικής στο ΠΑΜΑΚ.
-  </p>
-</main>
-</div>
-);
+      </main>
+    </div>
+  );
 };
 export default CsCareerPathPage;

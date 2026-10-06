@@ -104,6 +104,7 @@ const featureCategoriesData: FeatureCategory[] = [
     title: 'Για πριν τις πανελλήνιες',
     desc: 'Όλα τα εργαλεία μελέτης και εξάσκησης για να φτάσεις προετοιμασμένος/η στις εξετάσεις.',
     items: [
+      { label: 'Online Μαθήματα', path: '/online-mathimata', iconSrc: MENU_ICONS.onlineLessons },
       { label: 'Flashcards', path: '/flashcards', iconSrc: MENU_ICONS.flashcards },
       { label: 'Quiz', path: '/quiz', iconSrc: MENU_ICONS.quiz },
       { label: 'Παλιά Θέματα', path: '/paliathemata', iconSrc: MENU_ICONS.paliathemata },

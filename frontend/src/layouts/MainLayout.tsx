@@ -74,6 +74,7 @@ type MenuLinkItem = {
 };
 
 const PREP_MENU_ITEMS: MenuLinkItem[] = [
+  { to: '/online-mathimata', label: 'Online Μαθήματα', iconSrc: MENU_ICONS.onlineLessons },
   { to: '/quiz', label: 'Quiz', iconSrc: MENU_ICONS.quiz },
   { to: '/flashcards', label: 'Flashcards', iconSrc: MENU_ICONS.flashcards },
   { to: '/methodologies', label: 'Μεθοδολογίες', iconSrc: MENU_ICONS.methodologies },

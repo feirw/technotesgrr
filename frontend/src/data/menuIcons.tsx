@@ -28,6 +28,7 @@ export const MENU_ICONS = {
   meteggrafes: `${HP}/49.png`,
   vivlia: `${HP}/50.png`,
   prosanatolismosPliroforikis: `${HP}/23.png`,
+  onlineLessons: `${HP}/18.png`,
 } as const;
 
 /** Εικονίδια σημειώσεων στη σελίδα Σχολών. */
@@ -211,6 +212,7 @@ const PAGE_MENU_ICON_LABELS: Record<MenuIconKey, string> = {
   meteggrafes: 'Μεταγγραφές',
   vivlia: 'Βιβλία',
   prosanatolismosPliroforikis: 'Προσανατολισμός Πληροφορικής',
+  onlineLessons: 'Online Μαθήματα',
 };
 
 export const PageMenuIcon: React.FC<{

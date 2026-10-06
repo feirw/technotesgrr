@@ -46,6 +46,7 @@ const CsCareerPathPage = lazy(() => import('@/pages/private/CsCareerPathPage'));
 const MixanografikoPage = lazy(() => import('@/pages/private/MixanografikoPage'));
 const AntistoixiesSxolonPage = lazy(() => import('@/pages/private/AntistoixiesSxolonPage'));
 const MeteggrafesPage = lazy(() => import('@/pages/private/MeteggrafesPage'));
+const OnlineLessonsPage = lazy(() => import('@/pages/private/OnlineLessonsPage'));
 
 // Type Definition
 export type RouteConfig = {
@@ -188,6 +189,10 @@ const routes: RouteConfig[] = [
   {
     path: '/meteggrafes',
     element: <MeteggrafesPage />,
+  },
+  {
+    path: '/online-mathimata',
+    element: <OnlineLessonsPage />,
   },
 
   {

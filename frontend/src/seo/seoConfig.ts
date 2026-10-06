@@ -238,6 +238,18 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Progress Tracker', path: '/progress-tracker' },
     ],
   },
+  '/online-mathimata': {
+    path: '/online-mathimata',
+    slug: 'online-mathimata',
+    title: 'Online Μαθήματα Πληροφορικής | Πανελλήνιες',
+    description:
+      'Σειρά βιντεομαθημάτων Πληροφορικής για Πανελλήνιες: ανάλυση προβλήματος, ΓΛΩΣΣΑ, δομές επιλογής και επανάληψης, πίνακες και υποπρογράμματα.',
+    ogImage: og('online-mathimata'),
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Online Μαθήματα', path: '/online-mathimata' },
+    ],
+  },
   '/methodologies': {
     path: '/methodologies',
     slug: 'methodologies',
