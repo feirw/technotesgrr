@@ -16,6 +16,7 @@ const ROOT = join(__dirname, '..');
 const PUBLIC = join(ROOT, 'frontend', 'public');
 const OUT_DIR = join(PUBLIC, 'og', 'pages');
 const DEFAULT_OUT = join(PUBLIC, 'og', 'default.png');
+const CUSTOM_DEFAULT = join(ROOT, 'scripts', 'Untitled Design.png');
 
 const LOGO_CANDIDATES = [
   join(PUBLIC, 'images', 'logo.png'),
@@ -47,7 +48,7 @@ function wrapLines(text, maxChars = 28) {
   return lines.slice(0, 3);
 }
 
-/** Default share card: brand name only (no tiny favicon — crawlers treat that as a broken icon). */
+/** Default share card fallback if the custom banner file is missing. */
 function buildBrandSvg() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
@@ -64,6 +65,22 @@ function buildBrandSvg() {
   <text x="600" y="400" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="600">Πληροφορική για τις Πανελλήνιες</text>
   <text x="600" y="455" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="500">technotes.gr</text>
 </svg>`;
+}
+
+async function writeDefaultOg() {
+  mkdirSync(dirname(DEFAULT_OUT), { recursive: true });
+  if (existsSync(CUSTOM_DEFAULT)) {
+    await sharp(CUSTOM_DEFAULT)
+      .resize(1200, 630, {
+        fit: 'contain',
+        background: { r: 255, g: 255, b: 255, alpha: 1 },
+      })
+      .flatten({ background: '#ffffff' })
+      .png({ quality: 90 })
+      .toFile(DEFAULT_OUT);
+    return;
+  }
+  await renderPng(buildBrandSvg(), DEFAULT_OUT);
 }
 
 function buildSvg(headline, subtitle = 'Πληροφορική για τις Πανελλήνιες', logoDataUri) {
@@ -117,7 +134,7 @@ const logoDataUri = loadLogoDataUri();
 mkdirSync(OUT_DIR, { recursive: true });
 mkdirSync(dirname(DEFAULT_OUT), { recursive: true });
 
-await renderPng(buildBrandSvg(), DEFAULT_OUT);
+await writeDefaultOg();
 console.log('OG:', DEFAULT_OUT);
 
 if (process.argv.includes('--default-only')) {

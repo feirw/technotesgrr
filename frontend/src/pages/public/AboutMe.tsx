@@ -120,7 +120,7 @@ const cardClass =
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-[#ff97b2] via-[#ffd0dc] to-white dark:from-[#2d1c48] dark:via-[#3d2458] dark:to-[#1a1028] text-gray-900 dark:text-gray-100 transition-colors duration-500">
+    <div className="relative text-gray-900 dark:text-gray-100">
       <section className="pt-28 sm:pt-36 md:pt-44 pb-4 sm:pb-6">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-4 tracking-tight text-white drop-shadow-sm">

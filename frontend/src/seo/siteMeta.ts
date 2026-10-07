@@ -9,7 +9,7 @@ export const SITE_TAGLINE = 'Quiz, flashcards, αλγόριθμοι και πα�
 
 export const DEFAULT_OG_IMAGE_PATH = '/og/default.png';
 /** Bump when default.png changes so Facebook/Instagram recrawl the preview. */
-export const OG_IMAGE_CACHE_VERSION = '3';
+export const OG_IMAGE_CACHE_VERSION = '4';
 
 export const LOGO_PATH = '/apple-touch-icon.png';
 export const LOGO_URL = `${DEFAULT_SITE_ORIGIN}${LOGO_PATH}`;

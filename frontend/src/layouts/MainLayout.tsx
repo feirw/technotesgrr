@@ -398,11 +398,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div
       className={`min-h-screen overflow-x-hidden text-gray-900 dark:text-gray-100 flex flex-col ${
-        isAboutPage
-          ? 'bg-gradient-to-b from-[#ff97b2] via-[#ffd0dc] to-white dark:from-[#2d1c48] dark:via-[#3d2458] dark:to-[#1a1028]'
-          : isHomePage
+        isHomePage
           ? 'bg-[#F1A3B5] dark:bg-[#2d1c48]'
-          : isSchoolsPage
+          : isSchoolsPage || isAboutPage
           ? 'bg-[#ff97b2] dark:bg-[#2d1c48]'
           : 'bg-coral-wash dark:bg-gradient-to-br dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]'
       }`}
@@ -700,11 +698,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-20 overflow-hidden border-0 bg-[#ff97b2] dark:bg-[#2d1c48]">
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#ffd4e3] to-white dark:bg-none"
-          aria-hidden="true"
-        />
+      <footer className="relative z-20 overflow-hidden border-0 bg-[#faf5ef] dark:bg-[#2d1c48]">
         <div className="relative container mx-auto px-4 sm:px-6 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 items-start w-full max-w-[100vw]">
           <motion.div {...fadeIn} className="text-center md:text-left md:pr-6">
             <h3 className="text-lg font-extrabold text-black dark:text-gray-100 mb-3">Νομικά</h3>
