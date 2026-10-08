@@ -41,6 +41,7 @@
     "generate:photos": "bun ../scripts/generate-photo-webp.mjs",
     "prebuild": "bun run generate:seo",
     "build": "vite build",
+    "postbuild": "bun ../scripts/generate-html-shells.mjs",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },

@@ -18,6 +18,8 @@ export type PageSeo = {
   breadcrumbs?: BreadcrumbItem[];
   /** Include Course JSON-LD on this page */
   includeCourseSchema?: boolean;
+  /** FAQPage JSON-LD source */
+  faq?: 'home' | 'panellinies';
   noindex?: boolean;
 };
 
@@ -27,12 +29,13 @@ export const PAGE_SEO: Record<string, PageSeo> = {
   '/': {
     path: '/',
     slug: 'home',
-    title: 'Quiz, Flashcards, Αλγόριθμοι | Πληροφορική Πανελλήνιες',
+    title: 'Πληροφορική Πανελλήνιες | Δωρεάν Quiz, Flashcards, Παλιά Θέματα',
     ogTitle: 'technotesgr',
     description:
       'Δωρεάν προετοιμασία Πανελληνίων Πληροφορικής: quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα, ασκήσεις και οπτικοποιήσεις για Γ\' Λυκείου.',
     ogImage: '/og/default.png',
     includeCourseSchema: true,
+    faq: 'home',
   },
   '/about': {
     path: '/about',
@@ -78,6 +81,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Online διερμηνευτής ΓΛΩΣΣΑΣ και Ψευδογλώσσας για Πανελλήνιες Πληροφορικής (ΑΕΠΠ). Γράψε και εκτέλεσε κώδικα ΓΛΩΣΣΑΣ στον browser.',
     ogImage: og('gloglossa'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa' },
@@ -102,6 +106,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Συχνές ερωτήσεις για Πανελλήνιες Πληροφορικής: quiz, flashcards, δομές δεδομένων, αλγόριθμοι, παλιά θέματα και δωρεάν μελέτη στο Technotes.',
     ogImage: og('faq'),
+    faq: 'panellinies',
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'FAQ', path: '/faq' },
@@ -114,6 +119,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Δωρεάν quiz Πληροφορικής Πανελληνίων: θεωρία, αλγόριθμοι, δομές δεδομένων και ερωτήσεις ανά κεφάλαιο με άμεση ανατροφοδότηση.',
     ogImage: og('quiz'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Quiz', path: '/quiz' },
@@ -126,6 +132,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Flashcards Πληροφορικής για Πανελλήνιες: έννοιες, ορισμοί, αλγόριθμοι και δομές δεδομένων για γρήγορη επανάληψη θεωρίας.',
     ogImage: og('flashcards'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Flashcards', path: '/flashcards' },
@@ -150,6 +157,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Οπτικοποίηση αλγορίθμων για Πανελλήνιες Πληροφορικής: φυσαλίδα, επιλογή, σειριακή και δυαδική αναζήτηση, βήμα-βήμα.',
     ogImage: og('algorithms'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Αλγόριθμοι', path: '/algorithms' },
@@ -161,7 +169,8 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     title: 'Δομές Δεδομένων Visualizer | Technotes',
     description:
       'Διαδραστικός οπτικοποιητής δομών δεδομένων: δέντρα, λίστες, στοίβα, ουρά και γράφοι με animations, learning mode και παραγωγή κώδικα.',
-    ogImage: og('algorithms'),
+    ogImage: og('domes-dedomenon'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Δομές Δεδομένων', path: '/domes-dedomenon' },
@@ -174,6 +183,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Παλιά θέματα Πανελληνίων Πληροφορικής με λύσεις: θεωρία, αλγόριθμοι, δομές δεδομένων και ασκήσεις για Γ\' Λυκείου.',
     ogImage: og('paliathemata'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Παλιά Θέματα', path: '/paliathemata' },
@@ -197,7 +207,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     title: 'Προσανατολισμός Πληροφορικής | CS Career Path',
     description:
       'Τεστ καριέρας πληροφορικής: δες ποιες από τις 12 tech κατευθύνσεις σου ταιριάζουν και πάρε roadmap για να ξεκινήσεις.',
-    ogImage: og('prosanatolismos'),
+    ogImage: og('prosanatolismos-pliroforikis'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Προσανατολισμός Πληροφορικής', path: '/prosanatolismos-pliroforikis' },
@@ -246,6 +256,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Σειρά βιντεομαθημάτων Πληροφορικής για Πανελλήνιες: ανάλυση προβλήματος, ΓΛΩΣΣΑ, δομές επιλογής και επανάληψης, πίνακες και υποπρογράμματα.',
     ogImage: og('online-mathimata'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Online Μαθήματα', path: '/online-mathimata' },
@@ -258,6 +269,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       'Μεθοδολογίες Πληροφορικής Πανελληνίων: αλγόριθμοι, δομές δεδομένων, ασκήσεις και τεχνικές επίλυσης ανά ενότητα.',
     ogImage: og('methodologies'),
+    includeCourseSchema: true,
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
       { name: 'Μεθοδολογίες', path: '/methodologies' },

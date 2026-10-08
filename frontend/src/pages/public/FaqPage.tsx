@@ -14,7 +14,7 @@ const FaqPage: React.FC = () => {
             className="w-9 h-9"
           />
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">
-            FAQ
+            Συχνές ερωτήσεις Πανελληνίων
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
             Συχνές ερωτήσεις για Πανελλήνιες, βαθμολόγηση, ΕΒΕ και μηχανογραφικό.

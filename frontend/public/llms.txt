@@ -16,6 +16,7 @@ Technotes (technotesgr) βοηθά μαθητές Γ' Λυκείου να προ
 - Quiz: https://www.technotes.gr/quiz
 - Flashcards: https://www.technotes.gr/flashcards
 - Παλιά θέματα: https://www.technotes.gr/paliathemata
+- Online μαθήματα: https://www.technotes.gr/online-mathimata
 - Αλγόριθμοι: https://www.technotes.gr/algorithms
 - Δομές δεδομένων: https://www.technotes.gr/domes-dedomenon
 - Σχολές / προσανατολισμός: https://www.technotes.gr/sxoles

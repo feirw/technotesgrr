@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { getPreferredTheme } from '@/utils/theme';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
+import { HOME_FAQ } from '@/data/homeFaq';
 // import { getBackendUrl } from '@/utils/backendUrl';
 // import { apiFetch } from '@/utils/apiClient';
 // import { FiSend } from 'react-icons/fi';
@@ -42,11 +43,6 @@ interface FeatureCategory {
 //   submission_id: number;
 //   email_sent?: boolean;
 // }
-
-interface FaqItem {
-  question: string;
-  answer: string;
-}
 
 // ---------- MOCK DATA ----------
 
@@ -133,38 +129,7 @@ const featureCategoriesData: FeatureCategory[] = [
   },
 ];
 
-const faqData: FaqItem[] = [
-  {
-    question: 'Είναι δωρεάν η πλατφόρμα;',
-    answer:
-      "Ναι! Το technotesgr είναι εντελώς δωρεάν για όλους τους μαθητές της Γ' Λυκείου. Στόχος μας είναι να βοηθήσουμε όσο το δυνατόν περισσότερους μαθητές να προετοιμαστούν για τις Πανελλαδικές εξετάσεις.",
-  },
-  {
-    question: 'Καλύπτει όλη την ύλη της Πληροφορικής;',
-    answer:
-      "Ναι! Τα flashcards και τα quiz μας καλύπτουν αναλυτικά όλη την ύλη του σχολικού βιβλίου Πληροφορικής Γ' Λυκείου.",
-  },
-  {
-    question: 'Πώς μπορώ να παρακολουθήσω την πρόοδό μου;',
-    answer:
-      'Μέσα από τα quiz και τα flashcards μπορείς να δεις τις απαντήσεις σου και να εντοπίσεις τα σημεία που χρειάζονται περισσότερη μελέτη. Κάθε quiz σου δίνει άμεσο feedback.',
-  },
-  {
-    question: 'Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό μου;',
-    answer:
-      'Απολύτως! Η πλατφόρμα είναι πλήρως responsive και λειτουργεί άψογα σε κινητά, tablets και υπολογιστές.',
-  },
-  {
-    question: 'Πόσο συχνά ενημερώνεται το περιεχόμενο;',
-    answer:
-      'Ενημερώνουμε τακτικά το περιεχόμενο με νέα quiz, flashcards και βελτιωμένες σημειώσεις.',
-  },
-  {
-    question: 'Μπορώ να κάνω ερωτήσεις αν δυσκολευτώ;',
-    answer:
-      'Φυσικά! Μπορείς να επικοινωνήσεις μαζί μας μέσω της φόρμας επικοινωνίας ή μέσω των social media μας. Θα χαρούμε να σε βοηθήσουμε!',
-  },
-];
+const faqData = HOME_FAQ;
 
 // const BACKEND_URL = getBackendUrl();
 
@@ -417,7 +382,9 @@ const StarRating: React.FC<{ value?: number }> = ({ value = 0 }) => {
   );
 };
 
-interface FAQItemProps extends FaqItem {
+interface FAQItemProps {
+  question: string;
+  answer: string;
   index: number;
 }
 
@@ -600,17 +567,21 @@ const HomePage: React.FC = () => {
         <section className="relative w-full min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
           <HeroBackground />
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20">
-            <h1
-              className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight"
-            >
-              Technotes
+            <h1 className="mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight">
+              <span className="block text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black">
+                Technotes
+              </span>
+              <span className="mt-3 block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-800 dark:text-gray-100">
+                Πληροφορική Πανελλήνιες
+              </span>
             </h1>
 
             <p
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
             >
               Η <span className="font-bold text-[#f07f97]">ιδανική πλατφόρμα</span> προετοιμασίας
-              για τις πανελλήνιες,εντελώς <span className="font-bold text-[#00000]"> ΔΩΡΕΑΝ!</span>
+              για τις Πανελλήνιες Πληροφορικής, εντελώς{' '}
+              <span className="font-bold text-[#00000]">ΔΩΡΕΑΝ!</span>
             </p>
 
             <div className="flex items-center justify-center">

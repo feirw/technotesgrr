@@ -208,7 +208,7 @@ export function useStudyTimer() {
   useEffect(() => {
     if (originalTitleRef.current == null) originalTitleRef.current = document.title;
     const rem = remainingMs(state, nowMs);
-    document.title = `${formatCountdown(rem)} · ${phaseLabel(state.phase)}`;
+    document.title = `${formatCountdown(rem)} · ${phaseLabel(state.phase)} · ${TITLE_BASE}`;
   }, [state, nowMs]);
 
   useEffect(() => {

@@ -15,6 +15,8 @@ const PRIORITY = {
   '/quiz': '0.9',
   '/flashcards': '0.9',
   '/paliathemata': '0.9',
+  '/online-mathimata': '0.9',
+  '/gloglossa': '0.85',
   '/methodologies': '0.85',
   '/algorithms': '0.85',
 };

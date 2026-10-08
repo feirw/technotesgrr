@@ -1,4 +1,6 @@
 import type { BreadcrumbItem, PageSeo } from '@/seo/seoConfig';
+import { HOME_FAQ } from '@/data/homeFaq';
+import { flattenFaqSections, PANELLINIES_FAQ } from '@/data/panelliniesFaq';
 import {
   DEFAULT_SITE_ORIGIN,
   LOGO_URL,
@@ -89,12 +91,38 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
   };
 }
 
+export function buildFaqPageSchema(items: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+function faqItemsForPage(page: PageSeo): Array<{ question: string; answer: string }> | null {
+  if (page.faq === 'home') return HOME_FAQ;
+  if (page.faq === 'panellinies') return flattenFaqSections(PANELLINIES_FAQ);
+  return null;
+}
+
 export function buildStructuredData(page: PageSeo, pathname: string): object[] {
   const pageUrl = canonicalUrl(pathname);
   const graphs: object[] = [buildOrganizationSchema()];
 
   if (page.includeCourseSchema) {
     graphs.push(buildCourseSchema(pageUrl));
+  }
+
+  const faqItems = faqItemsForPage(page);
+  if (faqItems && faqItems.length > 0) {
+    graphs.push(buildFaqPageSchema(faqItems));
   }
 
   if (page.breadcrumbs && page.breadcrumbs.length > 0) {

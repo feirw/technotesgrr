@@ -14,17 +14,20 @@ function upsertMeta(
   key: string,
   content: string,
   type: 'name' | 'property',
-  attribute: string = type,
 ) {
+  const attribute = type;
   let el = document.head.querySelector<HTMLMetaElement>(
     `meta[${attribute}="${key}"][data-seo-managed="true"]`,
   );
   if (!el) {
+    el = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
+  }
+  if (!el) {
     el = document.createElement('meta');
     el.setAttribute(attribute, key);
-    el.dataset.seoManaged = 'true';
     document.head.appendChild(el);
   }
+  el.dataset.seoManaged = 'true';
   el.setAttribute('content', content);
 }
 
@@ -33,11 +36,14 @@ function upsertLink(rel: string, href: string) {
     `link[rel="${rel}"][data-seo-managed="true"]`,
   );
   if (!el) {
+    el = document.head.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
+  }
+  if (!el) {
     el = document.createElement('link');
     el.rel = rel;
-    el.dataset.seoManaged = 'true';
     document.head.appendChild(el);
   }
+  el.dataset.seoManaged = 'true';
   el.href = href;
 }
 
@@ -53,8 +59,10 @@ function upsertJsonLd(id: string, data: object) {
   el.textContent = JSON.stringify(data);
 }
 
-function removeManagedJsonLd(id: string) {
-  document.getElementById(id)?.remove();
+function ensureSiteVerification() {
+  const token = import.meta.env.VITE_GOOGLE_SITE_VERIFICATION;
+  if (typeof token !== 'string' || !token.trim()) return;
+  upsertMeta('google-site-verification', token.trim(), 'name');
 }
 
 const SeoHead: React.FC = () => {
@@ -75,6 +83,7 @@ const SeoHead: React.FC = () => {
     upsertMeta('description', page.description, 'name');
     upsertMeta('robots', robots, 'name');
     upsertMeta('title', page.title, 'name');
+    ensureSiteVerification();
 
     upsertMeta('og:title', ogTitle, 'property');
     upsertMeta('og:description', page.description, 'property');
@@ -98,7 +107,6 @@ const SeoHead: React.FC = () => {
     upsertLink('canonical', canonical);
 
     const graphs = buildStructuredData(page, pathname);
-    removeManagedJsonLd('seo-jsonld-graph');
     upsertJsonLd('seo-jsonld-graph', {
       '@context': 'https://schema.org',
       '@graph': graphs,

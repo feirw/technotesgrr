@@ -11,6 +11,10 @@ export type FaqSection = {
   items: FaqEntry[];
 };
 
+export function flattenFaqSections(sections: FaqSection[]): FaqEntry[] {
+  return sections.flatMap((section) => section.items);
+}
+
 export const PANELLINIES_FAQ: FaqSection[] = [
   {
     title: 'Διαδικασία Εξετάσεων & Κανονισμοί',
