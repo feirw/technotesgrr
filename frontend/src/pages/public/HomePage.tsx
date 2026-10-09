@@ -1,6 +1,5 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getRecentAnnouncement } from '@/data/announcements';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
@@ -494,18 +493,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
 
 // ---------- Main Component ----------
 
-function formatAnnouncementDate(dateStr: string): string {
-  const t = Date.parse(dateStr);
-  if (Number.isNaN(t)) return dateStr;
-  return new Intl.DateTimeFormat('el-GR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(t);
-}
-
 const HomePage: React.FC = () => {
-  const recentAnnouncement = getRecentAnnouncement();
 
   // Contact form state (προσωρινά απενεργοποιημένη η φόρμα)
   /*
@@ -652,44 +640,6 @@ const HomePage: React.FC = () => {
                 </Link>
               </motion.div>
             </div>
-
-            {recentAnnouncement && (
-              <div className="mt-8 sm:mt-10 max-w-2xl mx-auto text-left rounded-2xl border-2 border-[#f07f97]/40 bg-white/90 dark:bg-[#3a2658]/90 shadow-lg p-4 sm:p-5">
-                <p className="text-xs font-black uppercase tracking-wide text-[#f07f97]">
-                  Πρόσφατη ανακοίνωση · {formatAnnouncementDate(recentAnnouncement.date)}
-                </p>
-                <h2 className="mt-1.5 text-base sm:text-lg font-black text-gray-900 dark:text-white">
-                  {recentAnnouncement.title}
-                </h2>
-                <p className="mt-1.5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {recentAnnouncement.body.length > 160
-                    ? `${recentAnnouncement.body.slice(0, 160).trim()}…`
-                    : recentAnnouncement.body}
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <Link
-                    to="/announcements"
-                    className="inline-flex items-center rounded-full bg-[#f07f97] hover:bg-[#e06d88] text-white font-bold px-4 py-2 text-sm transition-colors"
-                  >
-                    Όλες οι ανακοινώσεις
-                  </Link>
-                  {recentAnnouncement.link && (
-                    <a
-                      href={
-                        /^https?:\/\//i.test(recentAnnouncement.link)
-                          ? recentAnnouncement.link
-                          : `https://${recentAnnouncement.link}`
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm font-bold text-[#f07f97] underline underline-offset-2 hover:text-[#e06d88]"
-                    >
-                      {recentAnnouncement.linkLabel || 'Περισσότερα'}
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </section>
 

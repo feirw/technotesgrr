@@ -16,22 +16,6 @@ export interface Announcement {
   linkLabel?: string;
 }
 
-function parseAnnouncementTime(dateStr: string): number {
-  const t = Date.parse(dateStr);
-  return Number.isNaN(t) ? 0 : t;
-}
-
-/** Νεότερη ανακοίνωση αν είναι μέσα στις τελευταίες `maxAgeDays` ημέρες. */
-export function getRecentAnnouncement(maxAgeDays = 60): Announcement | null {
-  const latest = [...ANNOUNCEMENTS].sort(
-    (a, b) => parseAnnouncementTime(b.date) - parseAnnouncementTime(a.date),
-  )[0];
-  if (!latest) return null;
-  const ageMs = Date.now() - parseAnnouncementTime(latest.date);
-  if (ageMs > maxAgeDays * 24 * 60 * 60 * 1000) return null;
-  return latest;
-}
-
 export const ANNOUNCEMENTS: Announcement[] = [
   {
     id: '8',
