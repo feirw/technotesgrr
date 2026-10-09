@@ -48,7 +48,7 @@ const CsCareerPathPage: React.FC = () => {
             από το Τμήμα Εφαρμοσμένης Πληροφορικής στο ΠΑΜΑΚ.
           </p>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            Τεστ καριέρας για φοιτητές και μαθητές πληροφορικής — δες ποιες από τις 12 κατευθύνσεις σου
+            Τεστ καριέρας για φοιτητές και μαθητές πληροφορικής. Δες ποιες από τις 12 κατευθύνσεις σου
             ταιριάζουν.
           </p>
         </div>
@@ -59,7 +59,7 @@ const CsCareerPathPage: React.FC = () => {
           <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed">
             Το <strong>CS Career Path</strong> είναι ένα ανώνυμο τεστ (χωρίς εγγραφή) που σε βοηθά να
             ανακαλύψεις ποια tech καριέρα σου ταιριάζει. Απαντάς για το πώς σκέφτεσαι και δουλεύεις, και
-            βλέπεις προφίλ με roadmap για να ξεκινήσεις. Δεν είναι πρόβλεψη — είναι αφετηρία.
+            βλέπεις προφίλ με roadmap για να ξεκινήσεις. Δεν είναι πρόβλεψη, είναι αφετηρία.
           </p>
         </section>
 

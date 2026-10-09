@@ -15,6 +15,7 @@ import {
   TrendingUp,
   Filter,
 } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { flashcards as staticFlashcardChapters } from '@/utils/flashcards';
 import { PageMenuIcon } from '@/data/menuIcons';
 import { useSyncedStorage } from '@/utils/useSyncedStorage';
@@ -70,6 +71,8 @@ const STORAGE_KEY = 'flashcardProgress';
 const STATIC_FLASHCARD_SETS = buildStaticFlashcardSets();
 
 const Flashcards: React.FC = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [flashcardSets] = useState<FlashcardSet[]>(STATIC_FLASHCARD_SETS);
   const [selectedSetIndex, setSelectedSetIndex] = useState<number | null>(null);
   const [studyMode, setStudyMode] = useState<StudyMode>('all');
@@ -295,6 +298,23 @@ const Flashcards: React.FC = () => {
     setCurrentCardIndex((prev) => Math.min(prev, filteredCards.length - 1));
   }, [filteredCards]);
 
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (!id) {
+      setSelectedSetIndex(null);
+      return;
+    }
+    const idx = flashcardSets.findIndex((set) => set.id === id);
+    if (idx < 0) {
+      setSelectedSetIndex(null);
+      return;
+    }
+    setSelectedSetIndex(idx);
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+    studySessionRef.current = { cardsStudied: new Set() };
+  }, [searchParams, flashcardSets]);
+
   // Pre-focus card so space/enter flip feels instant.
   useEffect(() => {
     if (selectedSetIndex !== null) {
@@ -310,7 +330,7 @@ const Flashcards: React.FC = () => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
       if (e.key === 'Escape') {
-        setSelectedSetIndex(null);
+        navigate('/flashcards');
       } else if (e.key === 's' || e.key === 'S') {
         shuffleCards();
       } else if (e.key === 'r' || e.key === 'R') {
@@ -329,7 +349,7 @@ const Flashcards: React.FC = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedSetIndex, resetProgress, shuffleCards, goNext, goPrev, hasCards]);
+  }, [selectedSetIndex, resetProgress, shuffleCards, goNext, goPrev, hasCards, navigate]);
 
   return (
     <div className="min-h-screen bg-coral-wash dark:bg-gradient-to-br dark:from-[#2d1c48] dark:via-[#2d1c48] dark:to-[#1a1028]">
@@ -406,15 +426,12 @@ const Flashcards: React.FC = () => {
                 };
 
                 return (
-                  <motion.button
+                  <motion.a
                     key={set.id}
-                    onClick={() => {
-                      setSelectedSetIndex(index);
-                      setCurrentCardIndex(0);
-                      setIsFlipped(false);
-                      studySessionRef.current = { cardsStudied: new Set() };
-                    }}
-                    className="group relative p-4 sm:p-6 rounded-2xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/25 dark:border-[#f07f97]/30 hover:border-coral-accent dark:hover:border-[#f07f97] hover:shadow-2xl transition-all text-left overflow-hidden"
+                    href={`/flashcards?id=${encodeURIComponent(set.id)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative p-4 sm:p-6 rounded-2xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/25 dark:border-[#f07f97]/30 hover:border-coral-accent dark:hover:border-[#f07f97] hover:shadow-2xl transition-all text-left overflow-hidden block"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
@@ -468,7 +485,7 @@ const Flashcards: React.FC = () => {
                     </div>
 
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-coral-accent to-coral-strong opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </motion.button>
+                  </motion.a>
                 );
               })}
             </motion.div>
@@ -486,8 +503,9 @@ const Flashcards: React.FC = () => {
               <div className="w-full max-w-4xl mb-6 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-4 bg-white/80 dark:bg-[#3a2658]/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-transparent dark:border-white/10">
                   <motion.button
+                    type="button"
                     onClick={() => {
-                      setSelectedSetIndex(null);
+                      navigate('/flashcards');
                     }}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 dark:border-white/15 text-gray-800 dark:text-gray-100 hover:border-coral-accent shadow-md transition-all"
                     whileHover={{ scale: 1.05, x: -4 }}

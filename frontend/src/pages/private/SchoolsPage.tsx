@@ -233,8 +233,8 @@ const SchoolsPage: React.FC = () => {
             Σχολές
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            <span className="text-[#f07f97] dark:text-[#ff97b2] font-semibold">4ο Επιστημονικό Πεδίο</span> —
-            αναζήτησε σχολές, δες μόρια/ΕΒΕ και σύγκρινε μαθήματα
+            <span className="text-[#f07f97] dark:text-[#ff97b2] font-semibold">4ο Επιστημονικό Πεδίο</span>.
+            Αναζήτησε σχολές, δες μόρια/ΕΒΕ και σύγκρινε μαθήματα
           </p>
         </div>
       </header>

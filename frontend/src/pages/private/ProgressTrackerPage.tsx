@@ -186,6 +186,7 @@ const ProgressTrackerPage: React.FC = () => {
             return (
               <button
                 key={lesson.id}
+                type="button"
                 onClick={() => toggleLesson(lesson.id)}
                 className={`w-full text-left rounded-2xl border p-4 transition ${
                   isDone

@@ -1,5 +1,6 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { getRecentAnnouncement } from '@/data/announcements';
 import { motion, MotionConfig, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
@@ -195,11 +196,7 @@ const Section: React.FC<SectionProps> = ({
   </section>
 );
 
-interface CategoryCardProps extends FeatureCategory {
-  onNavigate: (path: string) => void;
-}
-
-const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavigate }) => (
+const CategoryCard: React.FC<FeatureCategory> = ({ title, desc, items }) => (
   <motion.div
     className="group relative bg-white dark:bg-[#3a2658] rounded-3xl shadow-xl p-8 sm:p-10 border border-[#f07f97]/35 dark:border-[#f07f97]/25 overflow-hidden"
     initial={{ opacity: 0, y: 30 }}
@@ -220,17 +217,18 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ title, desc, items, onNavig
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {items.map((item) => (
-          <button
+          <Link
             key={item.label}
-            type="button"
-            onClick={() => onNavigate(item.path)}
+            to={item.path}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex flex-col items-center gap-2 rounded-2xl border border-[#f07f97]/25 dark:border-white/10 bg-coral-wash/60 dark:bg-white/5 hover:bg-[#f07f97]/15 dark:hover:bg-[#f07f97]/15 hover:border-[#f07f97] px-3 py-4 text-center transition-colors"
           >
             <MenuIconImg src={item.iconSrc} className="w-10 h-10 sm:w-12 sm:h-12" loading="lazy" fetchPriority="low" />
             <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight">
               {item.label}
             </span>
-          </button>
+          </Link>
         ))}
       </div>
     </div>
@@ -273,9 +271,18 @@ const HeroBackground: React.FC = () => {
 interface VideoShowcaseCardProps {
   src: string;
   index: number;
+  isPlaying: boolean;
+  onActivate: () => void;
+  onDeactivate: () => void;
 }
 
-const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => {
+const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({
+  src,
+  index,
+  isPlaying,
+  onActivate,
+  onDeactivate,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [muted, setMuted] = useState(true);
@@ -297,6 +304,17 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
     return () => io.disconnect();
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldLoad) return;
+    video.muted = isPlaying ? muted : true;
+    if (isPlaying) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isPlaying, shouldLoad, muted]);
+
   const toggleSound = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -312,6 +330,13 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6, delay: index * 0.12 }}
+      onPointerEnter={(e) => {
+        if (e.pointerType === 'mouse') onActivate();
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === 'mouse') onDeactivate();
+      }}
+      onClick={onActivate}
     >
       {/* Pink frame */}
       <div className="relative rounded-[1.75rem] border-[6px] border-[#f07f97] bg-black overflow-hidden shadow-2xl shadow-[#f07f97]/40 aspect-[9/16] transition-transform duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.03]">
@@ -319,11 +344,13 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
           ref={videoRef}
           src={shouldLoad ? src : undefined}
           className="w-full h-full object-cover"
-          autoPlay={shouldLoad}
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
+          onLoadedData={(e) => {
+            if (!isPlaying) e.currentTarget.pause();
+          }}
         />
 
         {/* Top sheen for legibility */}
@@ -332,7 +359,10 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
         {/* Sound toggle */}
         <button
           type="button"
-          onClick={toggleSound}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleSound();
+          }}
           aria-label={muted ? 'Ενεργοποίηση ήχου' : 'Σίγαση'}
           className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 hover:bg-white text-[#e06d88] flex items-center justify-center shadow-md backdrop-blur-sm transition-colors z-10"
         >
@@ -347,6 +377,27 @@ const VideoShowcaseCard: React.FC<VideoShowcaseCardProps> = ({ src, index }) => 
         </div>
       </div>
     </motion.div>
+  );
+};
+
+const VideoShowcase: React.FC = () => {
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+
+  return (
+    <Section id="videos" title="Tips">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8 place-items-center">
+        {SHOWCASE_VIDEOS.map((src, idx) => (
+          <VideoShowcaseCard
+            key={src}
+            src={src}
+            index={idx}
+            isPlaying={playingIndex === idx}
+            onActivate={() => setPlayingIndex(idx)}
+            onDeactivate={() => setPlayingIndex((cur) => (cur === idx ? null : cur))}
+          />
+        ))}
+      </div>
+    </Section>
   );
 };
 
@@ -443,8 +494,18 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
 
 // ---------- Main Component ----------
 
+function formatAnnouncementDate(dateStr: string): string {
+  const t = Date.parse(dateStr);
+  if (Number.isNaN(t)) return dateStr;
+  return new Intl.DateTimeFormat('el-GR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(t);
+}
+
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
+  const recentAnnouncement = getRecentAnnouncement();
 
   // Contact form state (προσωρινά απενεργοποιημένη η φόρμα)
   /*
@@ -481,8 +542,6 @@ const HomePage: React.FC = () => {
     setReviewDirection(-1);
     setReviewIndex((i) => (i - 1 + reviewCount) % reviewCount);
   }, [reviewCount]);
-
-  // (Take a breath moved to the top navbar in MainLayout)
 
   /*
   const handleContactInputChange = useCallback(
@@ -567,48 +626,75 @@ const HomePage: React.FC = () => {
         <section className="relative w-full min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
           <HeroBackground />
           <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20">
-            <h1 className="mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight">
-              <span className="block text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black">
-                Technotes
-              </span>
-              <span className="mt-3 block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-800 dark:text-gray-100">
-                Πληροφορική Πανελλήνιες
-              </span>
+            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight">
+              Technotes
             </h1>
 
             <p
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed"
             >
-              Η <span className="font-bold text-[#f07f97]">ιδανική πλατφόρμα</span> προετοιμασίας
+              Η <span className="font-bold text-black dark:text-white">ιδανική πλατφόρμα</span> προετοιμασίας
               για τις Πανελλήνιες Πληροφορικής, εντελώς{' '}
               <span className="font-bold text-[#00000]">ΔΩΡΕΑΝ!</span>
             </p>
 
             <div className="flex items-center justify-center">
-              <motion.button
-                className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
-                onClick={() => navigate('/quiz')}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span>Ξεκίνα την προετοιμασία</span>
-                <span
-                  className="absolute inset-0 rounded-full ring-2 ring-[#f07f97]/55 animate-pulse"
-                  aria-hidden="true"
-                />
-              </motion.button>
-            </div>          </div>
+              <motion.div whileTap={{ scale: 0.98 }}>
+                <Link
+                  to="/proetoimasia"
+                  className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
+                >
+                  <span>Ξεκίνα την προετοιμασία</span>
+                  <span
+                    className="absolute inset-0 rounded-full ring-2 ring-[#f07f97]/55 animate-pulse"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </motion.div>
+            </div>
+
+            {recentAnnouncement && (
+              <div className="mt-8 sm:mt-10 max-w-2xl mx-auto text-left rounded-2xl border-2 border-[#f07f97]/40 bg-white/90 dark:bg-[#3a2658]/90 shadow-lg p-4 sm:p-5">
+                <p className="text-xs font-black uppercase tracking-wide text-[#f07f97]">
+                  Πρόσφατη ανακοίνωση · {formatAnnouncementDate(recentAnnouncement.date)}
+                </p>
+                <h2 className="mt-1.5 text-base sm:text-lg font-black text-gray-900 dark:text-white">
+                  {recentAnnouncement.title}
+                </h2>
+                <p className="mt-1.5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {recentAnnouncement.body.length > 160
+                    ? `${recentAnnouncement.body.slice(0, 160).trim()}…`
+                    : recentAnnouncement.body}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/announcements"
+                    className="inline-flex items-center rounded-full bg-[#f07f97] hover:bg-[#e06d88] text-white font-bold px-4 py-2 text-sm transition-colors"
+                  >
+                    Όλες οι ανακοινώσεις
+                  </Link>
+                  {recentAnnouncement.link && (
+                    <a
+                      href={
+                        /^https?:\/\//i.test(recentAnnouncement.link)
+                          ? recentAnnouncement.link
+                          : `https://${recentAnnouncement.link}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-bold text-[#f07f97] underline underline-offset-2 hover:text-[#e06d88]"
+                    >
+                      {recentAnnouncement.linkLabel || 'Περισσότερα'}
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </section>
 
-        {/* Take a breath relocated to navbar (MainLayout) */}
-
         {/* Video Showcase Section */}
-        <Section id="videos">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8 place-items-center">
-            {SHOWCASE_VIDEOS.map((src, idx) => (
-              <VideoShowcaseCard key={src} src={src} index={idx} />
-            ))}
-          </div>
-        </Section>
+        <VideoShowcase />
 
         {/* Features Section */}
         <Section
@@ -618,14 +704,7 @@ const HomePage: React.FC = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {featureCategoriesData.map((category) => (
-              <CategoryCard
-                key={category.title}
-                {...category}
-                onNavigate={(path) => {
-                  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-                  navigate(path);
-                }}
-              />
+              <CategoryCard key={category.title} {...category} />
             ))}
           </div>
         </Section>
@@ -666,7 +745,7 @@ const HomePage: React.FC = () => {
                       "{reviewsData[reviewIndex].description}"
                     </p>
                     <p className="text-[#f07f97] font-bold mt-4 mb-1 text-right">
-                      — {reviewsData[reviewIndex].name}
+                      {reviewsData[reviewIndex].name}
                     </p>
                   </motion.div>
                 </AnimatePresence>

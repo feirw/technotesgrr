@@ -14,13 +14,13 @@ interface VivlioItem {
 const VIVLIA: VivlioItem[] = [
   {
     id: 'aep',
-    title: 'Ανάπτυξη Εφαρμογών σε Προγραμματιστικό Περιβάλλον — Βιβλίο Μαθητή',
+    title: 'Ανάπτυξη Εφαρμογών σε Προγραμματιστικό Περιβάλλον, Βιβλίο Μαθητή',
     shortTitle: 'Βιβλίο Μαθητή',
     path: '/pdfs/vivlia/22-0275-01_Anaptyxi-Efarmogon-se-Programmatistiko-Perivallon_G-Lykeiou-SpOikPlir_Vivlio-Mathiti.pdf',
   },
   {
     id: 'pliroforiki',
-    title: 'Πληροφορική Γ’ Λυκείου — Συμπληρωματικό Εκπαιδευτικό Υλικό',
+    title: 'Πληροφορική Γ’ Λυκείου, Συμπληρωματικό Εκπαιδευτικό Υλικό',
     shortTitle: 'Συμπληρωματικό',
     path: '/pdfs/vivlia/22-0279-01_Pliroforiki_G-Lykeiou-SpOikPlir_Sympliromatiko-Ekpaideutiko-Yliko.pdf',
   },

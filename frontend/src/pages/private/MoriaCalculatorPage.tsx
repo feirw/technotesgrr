@@ -288,7 +288,7 @@ const MoriaCalculatorPage: React.FC = () => {
             Υπολογισμός Μορίων
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            {FIELD_4_TITLE} — Πανελλήνιες {COEFFICIENTS_YEAR}
+            {FIELD_4_TITLE}, Πανελλήνιες {COEFFICIENTS_YEAR}
           </p>
         </div>
       </header>

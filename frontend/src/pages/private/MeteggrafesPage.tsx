@@ -64,7 +64,7 @@ const METEGGRAFES_FAQ: FaqSection[] = [
         question: 'Πού βρίσκω τις βάσεις μετεγγραφών;',
         answer: 'Οι μοριοδοτικές βάσεις μετεγγραφών ανά τμήμα για το ακαδημαϊκό έτος 2025-2026.',
         link: 'https://www.aboutcareer.gr/post/%CE%B2%CE%AC%CF%83%CE%B5%CE%B9%CF%82-%CE%BC%CE%B5%CF%84%CE%B5%CE%B3%CE%B3%CF%81%CE%B1%CF%86%CF%8E%CE%BD-2025-2026',
-        linkLabel: 'Βάσεις Μεταγραφών — aboutcareer.gr',
+        linkLabel: 'Βάσεις Μεταγραφών, aboutcareer.gr',
       },
       {
         question: 'Είναι σταθερές κάθε χρόνο οι βάσεις των κοινωνικοοικονομικών μορίων για τις μετεγγραφές (π.χ. 2, 4, 6 μόρια);',

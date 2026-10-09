@@ -21,8 +21,8 @@ import { prefetchCriticalPrivateRoutes, loadGloglossaPage } from '@/routes/route
 import { getBackendUrlCandidates } from '@/utils/backendUrl';
 import CookieConsent from '@/components/shared/CookieConsent';
 import { MENU_ICONS, MenuNavIcon, prefetchAllMenuIcons, prefetchMenuIcons } from '@/data/menuIcons';
-import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
+import { PREP_TOOLS } from '@/data/prepTools';
 import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
@@ -73,31 +73,20 @@ type MenuLinkItem = {
   onPrefetch?: () => void;
 };
 
-const PREP_MENU_ITEMS: MenuLinkItem[] = [
-  { to: '/online-mathimata', label: 'Online Μαθήματα', iconSrc: MENU_ICONS.onlineLessons },
-  { to: '/quiz', label: 'Quiz', iconSrc: MENU_ICONS.quiz },
-  { to: '/flashcards', label: 'Flashcards', iconSrc: MENU_ICONS.flashcards },
-  { to: '/methodologies', label: 'Μεθοδολογίες', iconSrc: MENU_ICONS.methodologies },
-  { to: '/domes-dedomenon', label: 'Δομές Δεδομένων', iconSrc: MENU_ICONS.dataStructures },
-  { to: '/paliathemata', label: 'Παλιά Θέματα', iconSrc: MENU_ICONS.paliathemata },
-  { to: '/algorithms', label: 'Αλγόριθμοι', iconSrc: MENU_ICONS.algorithms },
-  { to: '/progress-tracker', label: 'Progress Tracker', iconSrc: MENU_ICONS.progressTracker },
-  { to: '/study-timer', label: 'Study Timer', iconSrc: MENU_ICONS.studyTimer },
-  {
-    to: '/gloglossa',
-    label: 'Διερμηνευτής ΓΛΩΣΣΑΣ',
-    iconSrc: MENU_ICONS.gloglossa,
-    onPrefetch: loadGloglossaPage,
-  },
-  {
-    to: '/vivlia',
-    label: 'Σχολικά βιβλία',
-    iconSrc: MENU_ICONS.vivlia,
-    onPrefetch: () => {
-      void import('@/pages/public/VivliaPage').then((m) => m.prefetchVivliaPdfs());
-    },
-  },
-];
+const PREP_MENU_ITEMS: MenuLinkItem[] = PREP_TOOLS.map((item) => {
+  if (item.to === '/gloglossa') {
+    return { ...item, onPrefetch: loadGloglossaPage };
+  }
+  if (item.to === '/vivlia') {
+    return {
+      ...item,
+      onPrefetch: () => {
+        void import('@/pages/public/VivliaPage').then((m) => m.prefetchVivliaPdfs());
+      },
+    };
+  }
+  return item;
+});
 
 const SCHOOLS_MENU_ITEMS: MenuLinkItem[] = [
   { to: '/sxoles', label: 'Σχολές', iconSrc: MENU_ICONS.schools },
@@ -121,14 +110,21 @@ const MobileMenuSectionTitle: React.FC<{ children: React.ReactNode }> = ({ child
   </p>
 );
 
-const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[] }> = ({ title, items }) => {
+const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[]; to?: string }> = ({
+  title,
+  items,
+  to,
+}) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const LinkItem: React.FC<MenuLinkItem> = ({ to, label, iconSrc, onPrefetch }) => (
+  const triggerClass =
+    'py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light inline-flex items-center gap-1';
+
+  const LinkItem: React.FC<MenuLinkItem> = ({ to: itemTo, label, iconSrc, onPrefetch }) => (
     <button
       type="button"
-      onClick={() => navigate(to)}
+      onClick={() => navigate(itemTo)}
       onMouseEnter={() => onPrefetch?.()}
       className="flex w-full min-h-11 items-center gap-3 px-3 py-2 rounded-lg hover:bg-coral-wash dark:hover:bg-[#2d1c48] text-sm text-gray-700 dark:text-gray-200 text-left"
     >
@@ -143,10 +139,17 @@ const NavDropdown: React.FC<{ title: string; items: MenuLinkItem[] }> = ({ title
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="py-2 px-3 rounded-xl font-semibold text-sm xl:text-base text-gray-700 dark:text-gray-200 hover:text-coral-accent dark:hover:text-coral-light inline-flex items-center gap-1">
-        {title}
-        <ChevronDown className="w-4 h-4" />
-      </button>
+      {to ? (
+        <NavLink to={to} className={triggerClass}>
+          {title}
+          <ChevronDown className="w-4 h-4" />
+        </NavLink>
+      ) : (
+        <button type="button" className={triggerClass}>
+          {title}
+          <ChevronDown className="w-4 h-4" />
+        </button>
+      )}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -303,18 +306,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     if (isMenuOpen) prefetchAllMenuIcons();
   }, [isMenuOpen]);
 
-  // Take a breath (global wellness prompt)
-  const [showPanic, setShowPanic] = useState(false);
-  const [panicMsg, setPanicMsg] = useState<{ type: 'tip' | 'joke' | 'breath'; text: string }>({
-    type: 'tip',
-    text: '',
-  });
-  const triggerPanic = () => {
-    const pick = PANIC_MESSAGES[Math.floor(Math.random() * PANIC_MESSAGES.length)];
-    setPanicMsg(pick);
-    setShowPanic(true);
-  };
-
   // Defer API warm-up + route prefetch until after first paint / LCP window —
   // early network contention was hurting mobile PageSpeed (LCP ~10s).
   useEffect(() => {
@@ -423,7 +414,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavLink to="/" className="flex items-center gap-3 group shrink-0">
                 <motion.img
                   src="/images/logo-80.webp"
-                  alt="Λογότυπο Technotes — Πληροφορική Πανελλήνιες"
+                  alt="Λογότυπο Technotes, Πληροφορική Πανελλήνιες"
                   width={40}
                   height={40}
                   decoding="async"
@@ -441,22 +432,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
-              {/* Take a breath */}
-              <button
-                type="button"
-                onClick={triggerPanic}
-                className="mr-2 px-6 py-3 rounded-full bg-coral-accent hover:bg-coral-strong text-white font-black shadow-lg hover:shadow-xl touch-manipulation min-h-11 transition-colors"
-                title="Take a breath"
-                aria-label="Take a breath"
-              >
-                Take a breath
-              </button>
               <NavButton to="/" iconSrc={MENU_ICONS.home} iconLabel="Αρχική">
                 Αρχική
               </NavButton>
-              <NavButton to="/about" iconSrc={MENU_ICONS.about} iconLabel="Σχετικά">
-                Σχετικά με εμένα
-              </NavButton>
+              <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} to="/proetoimasia" />
+              <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
               <NavButton
                 to="/announcements"
                 iconSrc={MENU_ICONS.announcements}
@@ -467,9 +447,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <NavButton to="/faq" iconSrc={MENU_ICONS.faq} iconLabel="FAQ">
                 FAQ
               </NavButton>
-              <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />
-              <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} />
-              <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
+              <NavButton to="/about" iconSrc={MENU_ICONS.about} iconLabel="Σχετικά">
+                Σχετικά με εμένα
+              </NavButton>
               <ThemeToggleButton
                 isDark={isDark}
                 onToggle={() => setIsDark(toggleTheme() === 'dark')}
@@ -522,51 +502,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </div>
       </motion.div>
 
-      {/* Take a breath modal */}
-      <AnimatePresence>
-        {showPanic && (
-          <motion.div
-            className="fixed inset-0 z-[95] flex items-center justify-center p-3 sm:p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="absolute inset-0 bg-black/40" onClick={() => setShowPanic(false)} />
-            <motion.div
-              className="relative max-w-md w-full max-h-[min(90dvh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/40 p-5 sm:p-6 shadow-2xl"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', stiffness: 240, damping: 20 }}
-            >
-              <div className="mb-3 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={triggerPanic}
-                  className="min-h-11 flex-1 rounded-xl bg-coral-accent px-4 py-3 font-bold text-white transition-colors hover:bg-coral-strong touch-manipulation"
-                >
-                  Άλλο ένα
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowPanic(false)}
-                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-[#2d1c48] dark:hover:text-white touch-manipulation transition-colors"
-                  aria-label="Κλείσιμο"
-                >
-                  <X size={20} strokeWidth={2.25} aria-hidden />
-                </button>
-              </div>
-
-              <div className="mb-3 flex items-center gap-3">
-                <MenuNavIcon src={MENU_ICONS.takeABreath} />
-                <h3 className="text-xl font-black text-gray-900 dark:text-white">Take a breath</h3>
-              </div>
-              <p className="leading-relaxed text-gray-700 dark:text-gray-300">{panicMsg.text}</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -605,36 +540,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
 
                 <div className="space-y-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerPanic();
-                      closeMenu();
-                    }}
-                    className="w-full flex min-h-11 items-center gap-3 py-3.5 px-4 rounded-xl text-coral-strong dark:text-coral-light bg-coral-wash dark:bg-coral-accent/15 font-bold border border-coral-accent/30 dark:border-coral-accent/35 touch-manipulation"
-                  >
-                    <MenuNavIcon src={MENU_ICONS.takeABreath} />
-                    <span className="leading-tight">Take a breath</span>
-                  </button>
-
                   <MobileNavButton to="/" iconSrc={MENU_ICONS.home} onClick={closeMenu}>
                     Αρχική
                   </MobileNavButton>
-                  <MobileNavButton to="/about" iconSrc={MENU_ICONS.about} onClick={closeMenu}>
-                    Σχετικά με εμένα
-                  </MobileNavButton>
-                  <MobileNavButton
-                    to="/announcements"
-                    iconSrc={MENU_ICONS.announcements}
-                    onClick={closeMenu}
-                  >
-                    Ανακοινώσεις
-                  </MobileNavButton>
-                  <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
-                    FAQ
-                  </MobileNavButton>
 
                   <MobileMenuSectionTitle>Προετοιμασία</MobileMenuSectionTitle>
+                  <MobileNavButton to="/proetoimasia" iconSrc={MENU_ICONS.quiz} onClick={closeMenu}>
+                    Όλα τα εργαλεία
+                  </MobileNavButton>
                   {PREP_MENU_ITEMS.map((item) => (
                     <MobileNavButton
                       key={item.to}
@@ -662,6 +575,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
+
+                  <MobileNavButton
+                    to="/announcements"
+                    iconSrc={MENU_ICONS.announcements}
+                    onClick={closeMenu}
+                  >
+                    Ανακοινώσεις
+                  </MobileNavButton>
+                  <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
+                    FAQ
+                  </MobileNavButton>
+                  <MobileNavButton to="/about" iconSrc={MENU_ICONS.about} onClick={closeMenu}>
+                    Σχετικά με εμένα
+                  </MobileNavButton>
 
                   {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
                   {user ? (

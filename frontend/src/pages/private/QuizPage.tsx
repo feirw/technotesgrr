@@ -17,6 +17,7 @@ import {
   Info,
   LucideIcon,
 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import QuizDialog from '@/components/private/QuizDialog';
 import { fetchAllQuizzes, sortQuizzesByChapterOrder } from '@/utils/quizUtils';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
@@ -77,6 +78,8 @@ const BRAND = 'rgb(255, 107, 122)'; // coral-accent
 // --- Component ---
 
 const QuizPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const openedFromUrlRef = useRef(false);
   // --- QuizPage State ---
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState<boolean>(false);
   const [selectedQuiz, setSelectedQuiz] = useState<ProcessedQuiz | null>(null);
@@ -318,6 +321,16 @@ const QuizPage: React.FC = () => {
     handleQuizCategorySelect(quiz, firstUnanswered === -1 ? 0 : firstUnanswered);
   };
 
+  useEffect(() => {
+    if (openedFromUrlRef.current || loading) return;
+    const id = searchParams.get('id');
+    if (!id) return;
+    const quiz = quizzes.find((item) => item.id === id);
+    if (!quiz) return;
+    openedFromUrlRef.current = true;
+    continueQuiz(quiz);
+  }, [loading, quizzes, searchParams, categoryAnswers]);
+
   const restartQuiz = (quiz: ProcessedQuiz, e: React.MouseEvent) => {
     e.stopPropagation();
     if (
@@ -340,7 +353,7 @@ const QuizPage: React.FC = () => {
 
   const restartAllQuizzes = () => {
     if (stats.answeredQuestions === 0) {
-      window.alert('Δεν έχεις καμία απάντηση ακόμα — δεν υπάρχει κάτι προς επαναφορά.');
+      window.alert('Δεν έχεις καμία απάντηση ακόμα, δεν υπάρχει κάτι προς επαναφορά.');
       return;
     }
     if (
@@ -703,14 +716,16 @@ const QuizPage: React.FC = () => {
                 const StatusIcon = status.icon;
 
                 return (
-                  <motion.div
+                  <motion.a
                     key={quiz.id}
-                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/25 dark:border-[#f07f97]/30 hover:border-coral-accent dark:hover:border-[#f07f97] hover:shadow-2xl transition-all overflow-hidden cursor-pointer"
+                    href={`/quiz?id=${encodeURIComponent(quiz.id)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#3a2658] border-2 border-coral-accent/25 dark:border-[#f07f97]/30 hover:border-coral-accent dark:hover:border-[#f07f97] hover:shadow-2xl transition-all overflow-hidden cursor-pointer block"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.05, 0.5) }}
                     whileHover={{ y: -8, scale: 1.02 }}
-                    onClick={() => continueQuiz(quiz)}
                   >
                     {/* Progress Bar */}
                     <div className="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-[#2d1c48] rounded-t-2xl overflow-hidden">
@@ -797,7 +812,10 @@ const QuizPage: React.FC = () => {
 
                       {quiz.answered > 0 && (
                         <motion.button
-                          onClick={(e) => restartQuiz(quiz, e)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            restartQuiz(quiz, e);
+                          }}
                           className="p-3 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 transition-colors"
                           whileHover={{ scale: 1.1, rotate: -180 }}
                           whileTap={{ scale: 0.9 }}
@@ -810,7 +828,7 @@ const QuizPage: React.FC = () => {
 
                     {/* Hover effect overlay */}
                     <div className="absolute inset-0 bg-coral-accent/0 group-hover:bg-coral-accent/8 transition-all rounded-2xl pointer-events-none" />
-                  </motion.div>
+                  </motion.a>
                 );
               })}
             </div>

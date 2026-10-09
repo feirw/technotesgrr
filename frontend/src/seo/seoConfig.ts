@@ -112,6 +112,19 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'FAQ', path: '/faq' },
     ],
   },
+  '/proetoimasia': {
+    path: '/proetoimasia',
+    slug: 'proetoimasia',
+    title: 'Προετοιμασία Πανελληνίων Πληροφορικής | Technotes',
+    description:
+      'Quiz, flashcards, παλιά θέματα, μεθοδολογίες, tracker ύλης και όλα τα εργαλεία μελέτης για Πανελλήνιες Πληροφορικής.',
+    ogImage: '/og/default.png',
+    includeCourseSchema: true,
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Προετοιμασία', path: '/proetoimasia' },
+    ],
+  },
   '/quiz': {
     path: '/quiz',
     slug: 'quiz',
@@ -304,7 +317,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     slug: 'vivlia',
     title: 'Σχολικά Βιβλία Πληροφορικής | Technotes',
     description:
-      'Σχολικά βιβλία ΑΕΠΠ και Πληροφορικής Γ\' Λυκείου σε online προβολή — βιβλίο μαθητή και συμπληρωματικό εκπαιδευτικό υλικό.',
+      'Σχολικά βιβλία ΑΕΠΠ και Πληροφορικής Γ\' Λυκείου σε online προβολή: βιβλίο μαθητή και συμπληρωματικό εκπαιδευτικό υλικό.',
     ogImage: og('vivlia'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
@@ -340,7 +353,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     slug: 'antistoixies-sxolon',
     title: 'Αντιστοιχίες Σχολών | 4ο Πεδίο',
     description:
-      'Επίσημος πίνακας αντίστοιχων τμημάτων ΑΕΙ 4ου επιστημονικού πεδίου — ποια τμήματα θεωρούνται «αντίστοιχα» μεταξύ τους.',
+      'Επίσημος πίνακας αντίστοιχων τμημάτων ΑΕΙ 4ου επιστημονικού πεδίου: ποια τμήματα θεωρούνται «αντίστοιχα» μεταξύ τους.',
     ogImage: og('antistoixies-sxolon'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },
@@ -352,7 +365,7 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     slug: 'meteggrafes',
     title: 'Μετεγγραφές Φοιτητών | Προϋποθέσεις & Μόρια',
     description:
-      'Προϋποθέσεις και μοριοδότηση μετεγγραφών φοιτητών ΑΕΙ — οικογενειακό εισόδημα, αδέλφια σε άλλη πόλη και λοιπά κριτήρια.',
+      'Προϋποθέσεις και μοριοδότηση μετεγγραφών φοιτητών ΑΕΙ: οικογενειακό εισόδημα, αδέλφια σε άλλη πόλη και λοιπά κριτήρια.',
     ogImage: og('meteggrafes'),
     breadcrumbs: [
       { name: 'Αρχική', path: '/' },

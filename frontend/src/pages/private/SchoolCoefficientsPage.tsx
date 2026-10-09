@@ -94,7 +94,7 @@ const SchoolCoefficientsPage: React.FC = () => {
             Συντελεστές Σχολών
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            {FIELD_4_TITLE} — Πανελλήνιες {COEFFICIENTS_YEAR}
+            {FIELD_4_TITLE}, Πανελλήνιες {COEFFICIENTS_YEAR}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center pt-4 leading-relaxed">
           Πηγή δεδομένων:{' '}

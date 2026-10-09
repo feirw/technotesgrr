@@ -12,6 +12,7 @@ const OUT = join(__dirname, '..', 'frontend', 'public', 'sitemap.xml');
 
 const PRIORITY = {
   '/': '1.0',
+  '/proetoimasia': '0.9',
   '/quiz': '0.9',
   '/flashcards': '0.9',
   '/paliathemata': '0.9',

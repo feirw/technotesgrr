@@ -13,6 +13,7 @@ Technotes (technotesgr) βοηθά μαθητές Γ' Λυκείου να προ
 ## Key pages
 
 - Αρχική: https://www.technotes.gr/
+- Προετοιμασία: https://www.technotes.gr/proetoimasia
 - Quiz: https://www.technotes.gr/quiz
 - Flashcards: https://www.technotes.gr/flashcards
 - Παλιά θέματα: https://www.technotes.gr/paliathemata

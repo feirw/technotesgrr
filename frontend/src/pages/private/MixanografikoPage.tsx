@@ -358,7 +358,7 @@ const MixanografikoPage: React.FC = () => {
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-[#faf5ef] tracking-tight">Μηχανογραφικό</h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            Πρόβα μηχανογραφικού — κατάταξε με σειρά προτίμησης τις σχολές που πληροίς την ΕΒΕ τους
+            Πρόβα μηχανογραφικού. Κατάταξε με σειρά προτίμησης τις σχολές που πληροίς την ΕΒΕ τους
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-semibold">💡 Η ιδέα είναι της Βαλεντίνας</p>
         </div>
@@ -422,7 +422,7 @@ const MixanografikoPage: React.FC = () => {
             </button>
             {gradesChangedSinceSearch && canSearch ? (
               <span className="text-xs font-semibold text-[#f07f97] dark:text-[#ffc4d6]">
-                Έχεις αλλάξει βαθμούς — πάτα Αναζήτηση για ενημέρωση.
+                Έχεις αλλάξει βαθμούς. Πάτα Αναζήτηση για ενημέρωση.
               </span>
             ) : hasAppliedSearch ? (
               <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -452,7 +452,7 @@ const MixanografikoPage: React.FC = () => {
 
           {rankedSchools.length === 0 ? (
             <p className="text-sm text-gray-500 dark:text-gray-400 py-6 text-center">
-              Δεν έχεις δηλώσει σχολές ακόμα. Ψάξε παρακάτω και πρόσθεσέ τες με τη σειρά που τις προτιμάς — μπορείς
+              Δεν έχεις δηλώσει σχολές ακόμα. Ψάξε παρακάτω και πρόσθεσέ τες με τη σειρά που τις προτιμάς. Μπορείς
               να τις σύρεις για να αλλάξεις τη σειρά.
             </p>
           ) : (
@@ -536,7 +536,7 @@ const MixanografikoPage: React.FC = () => {
             <>
               {gradesChangedSinceSearch ? (
                 <p className="mb-4 rounded-xl border border-[#f07f97]/30 bg-[#fff5f8] px-4 py-3 text-sm font-semibold text-[#f07f97] dark:border-[#ffc4d6]/30 dark:bg-[#2d1c48] dark:text-[#ffc4d6]">
-                  Άλλαξες βαθμούς — πάτα ξανά <span className="font-black">Αναζήτηση</span> πάνω για να ανανεωθεί η
+                  Άλλαξες βαθμούς. Πάτα ξανά <span className="font-black">Αναζήτηση</span> πάνω για να ανανεωθεί η
                   λίστα.
                 </p>
               ) : null}
@@ -611,7 +611,7 @@ const MixanografikoPage: React.FC = () => {
           <a href="/sxoles" className="text-[#f07f97] font-semibold hover:underline">
             Σχολές
           </a>
-          . Πρόβα εξάσκησης — για την πραγματική υποβολή χρησιμοποίησε το επίσημο σύστημα του Υπουργείου Παιδείας:{' '}
+          . Πρόβα εξάσκησης. Για την πραγματική υποβολή χρησιμοποίησε το επίσημο σύστημα του Υπουργείου Παιδείας:{' '}
           <a
             href={MINEDU_URL}
             target="_blank"
