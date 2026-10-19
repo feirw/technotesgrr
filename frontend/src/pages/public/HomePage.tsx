@@ -613,7 +613,7 @@ const HomePage: React.FC = () => {
         {/* 🚀 HERO SECTION 🚀 */}
         <section className="relative w-full min-h-[80vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
           <HeroBackground />
-          <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center py-16 sm:py-20 -translate-y-16 sm:-translate-y-24 md:-translate-y-28">
             <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-4 sm:mb-6 text-[#f07f97] drop-shadow-lg leading-tight tracking-tight">
               Technotes
             </h1>
@@ -630,13 +630,9 @@ const HomePage: React.FC = () => {
               <motion.div whileTap={{ scale: 0.98 }}>
                 <Link
                   to="/proetoimasia"
-                  className="relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-[#f07f97] hover:bg-[#e06d88] text-white font-extrabold rounded-full shadow-xl transition-colors transition-transform hover:-translate-y-1"
+                  className="hero-cta-glow relative inline-flex items-center gap-3 px-10 py-5 text-lg sm:text-xl bg-white hover:bg-[#fff5f8] text-[#e06d88] font-extrabold rounded-full transition-colors transition-transform hover:-translate-y-1"
                 >
                   <span>Ξεκίνα την προετοιμασία</span>
-                  <span
-                    className="absolute inset-0 rounded-full ring-2 ring-[#f07f97]/55 animate-pulse"
-                    aria-hidden="true"
-                  />
                 </Link>
               </motion.div>
             </div>

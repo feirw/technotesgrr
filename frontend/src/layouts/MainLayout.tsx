@@ -545,9 +545,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </MobileNavButton>
 
                   <MobileMenuSectionTitle>Προετοιμασία</MobileMenuSectionTitle>
-                  <MobileNavButton to="/proetoimasia" iconSrc={MENU_ICONS.quiz} onClick={closeMenu}>
-                    Όλα τα εργαλεία
-                  </MobileNavButton>
                   {PREP_MENU_ITEMS.map((item) => (
                     <MobileNavButton
                       key={item.to}
@@ -576,6 +573,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     </MobileNavButton>
                   ))}
 
+                  <MobileMenuSectionTitle>Extras</MobileMenuSectionTitle>
                   <MobileNavButton
                     to="/announcements"
                     iconSrc={MENU_ICONS.announcements}
