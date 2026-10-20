@@ -432,7 +432,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-wrap justify-end">
-              <NavButton to="/" iconSrc={MENU_ICONS.home} iconLabel="Αρχική">
+              <NavButton to="/">
                 Αρχική
               </NavButton>
               <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} to="/proetoimasia" />
@@ -540,7 +540,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
 
                 <div className="space-y-2">
-                  <MobileNavButton to="/" iconSrc={MENU_ICONS.home} onClick={closeMenu}>
+                  <MobileNavButton to="/" onClick={closeMenu}>
                     Αρχική
                   </MobileNavButton>
 

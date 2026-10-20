@@ -87,6 +87,20 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa' },
     ],
   },
+  '/learn-glossa': {
+    path: '/learn-glossa',
+    slug: 'learn-glossa',
+    title: 'Learn Glossa | Ασκήσεις ΓΛΩΣΣΑΣ ΑΕΠΠ',
+    description:
+      'Learn Glossa: ασκήσεις ΓΛΩΣΣΑΣ για Πανελλήνιες Πληροφορικής. Γράψε κώδικα, εκτέλεσέ τον και δες ποιες δοκιμές πέρασαν.',
+    ogImage: '/og/default.png',
+    includeCourseSchema: true,
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Προετοιμασία', path: '/proetoimasia' },
+      { name: 'Learn Glossa', path: '/learn-glossa' },
+    ],
+  },
   '/announcements': {
     path: '/announcements',
     slug: 'announcements',

@@ -18,6 +18,7 @@ const PRIORITY = {
   '/paliathemata': '0.9',
   '/online-mathimata': '0.9',
   '/gloglossa': '0.85',
+  '/learn-glossa': '0.85',
   '/methodologies': '0.85',
   '/algorithms': '0.85',
 };

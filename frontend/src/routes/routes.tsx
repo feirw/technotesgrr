@@ -13,6 +13,7 @@ const VivliaPage = lazy(() => import('@/pages/public/VivliaPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
 const PrepPage = lazy(() => import('@/pages/public/PrepPage'));
+const LearnGlossaPage = lazy(() => import('@/pages/public/LearnGlossaPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -86,6 +87,10 @@ const routes: RouteConfig[] = [
   {
     path: '/gloglossa',
     element: <GloglossaEmbedPage />,
+  },
+  {
+    path: '/learn-glossa',
+    element: <LearnGlossaPage />,
   },
   {
     path: '/vivlia',

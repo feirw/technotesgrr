@@ -29,6 +29,7 @@ export const MENU_ICONS = {
   vivlia: `${HP}/50.png`,
   prosanatolismosPliroforikis: `${HP}/23.png`,
   onlineLessons: `${HP}/18.png`,
+  learnGlossa: '/images/learn-glossa-logo.png',
 } as const;
 
 /** Εικονίδια σημειώσεων στη σελίδα Σχολών. */
@@ -99,7 +100,6 @@ export function menuIconWebpSrc(pngSrc: string): string {
 }
 
 const CRITICAL_NAV_ICON_PNGS = [
-  MENU_ICONS.home,
   MENU_ICONS.about,
   MENU_ICONS.announcements,
   MENU_ICONS.faq,
@@ -160,7 +160,9 @@ export const MenuIconImg: React.FC<{
         src={src}
         alt={alt ?? ''}
         aria-hidden={alt ? undefined : true}
-        className={`${className} object-contain shrink-0 mix-blend-normal [image-rendering:pixelated]`}
+        className={`${className} object-contain shrink-0 mix-blend-normal ${
+          src.includes('learn-glossa-logo') ? 'rounded-lg' : '[image-rendering:pixelated]'
+        }`}
         decoding="async"
         loading={loading}
         fetchPriority={fetchPriority}
@@ -213,6 +215,7 @@ const PAGE_MENU_ICON_LABELS: Record<MenuIconKey, string> = {
   vivlia: 'Βιβλία',
   prosanatolismosPliroforikis: 'Προσανατολισμός Πληροφορικής',
   onlineLessons: 'Online Μαθήματα',
+  learnGlossa: 'Learn Glossa',
 };
 
 export const PageMenuIcon: React.FC<{

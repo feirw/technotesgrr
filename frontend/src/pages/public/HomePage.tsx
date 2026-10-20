@@ -105,6 +105,7 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Quiz', path: '/quiz', iconSrc: MENU_ICONS.quiz },
       { label: 'Παλιά Θέματα', path: '/paliathemata', iconSrc: MENU_ICONS.paliathemata },
       { label: 'Μεθοδολογίες', path: '/methodologies', iconSrc: MENU_ICONS.methodologies },
+      { label: 'Learn Glossa', path: '/learn-glossa', iconSrc: MENU_ICONS.learnGlossa },
       { label: 'Οπτικοποίηση δομών', path: '/domes-dedomenon', iconSrc: MENU_ICONS.dataStructures },
       { label: 'Διερμηνευτής ΓΛΩΣΣΑΣ', path: '/gloglossa', iconSrc: MENU_ICONS.gloglossa },
       { label: 'Σχολικά βιβλία', path: '/vivlia', iconSrc: MENU_ICONS.vivlia },
