@@ -386,6 +386,15 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Μετεγγραφές', path: '/meteggrafes' },
     ],
   },
+  '/login': {
+    path: '/login',
+    slug: 'login',
+    title: 'Σύνδεση | Technotes',
+    description: 'Συνδέσου στο Technotes για να αποθηκεύεται η πρόοδός σου στα quiz, στα flashcards και στο tracker ύλης.',
+    ogImage: DEFAULT_OG_IMAGE_PATH,
+    noindex: true,
+    robots: 'noindex, nofollow',
+  },
   '/sygkrisi-mathimaton': {
     path: '/sygkrisi-mathimaton',
     slug: 'sygkrisi-mathimaton',

@@ -206,8 +206,12 @@ const routes: RouteConfig[] = [
   },
 
   {
-    path: '/test-auth',
+    path: '/login',
     element: <AuthTestScreen />,
+  },
+  {
+    path: '/test-auth',
+    element: <Navigate to="/login" replace />,
   },
 
   {
