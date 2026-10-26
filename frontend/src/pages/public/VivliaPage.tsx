@@ -24,6 +24,12 @@ const VIVLIA: VivlioItem[] = [
     shortTitle: 'Συμπληρωματικό',
     path: '/pdfs/vivlia/22-0279-01_Pliroforiki_G-Lykeiou-SpOikPlir_Sympliromatiko-Ekpaideutiko-Yliko.pdf',
   },
+  {
+    id: 'yli-2027',
+    title: 'Εξεταστέα ύλη Πανελληνίων 2027',
+    shortTitle: 'Ύλη 2027',
+    path: '/pdfs/vivlia/Yli-2027.pdf',
+  },
 ];
 
 const LOAD_TIMEOUT_MS = 25_000;
