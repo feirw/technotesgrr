@@ -36,6 +36,7 @@ const BRAND_DARK = '#f088a5';
 interface PaliaProps {
   pdfPath?: string;
   fileName?: string;
+  heading?: string;
 }
 
 function usePreferNativePdfViewer() {
@@ -81,7 +82,11 @@ class PdfErrorBoundary extends Component<
   }
 }
 
-const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = 'panel.pdf' }) => {
+const Palia: React.FC<PaliaProps> = ({
+  pdfPath = '/pdfs/notes.pdf',
+  fileName = 'panel.pdf',
+  heading = 'Παλιό θέμα (PDF)',
+}) => {
   const [loading, setLoading] = useState(true);
   const [viewerError, setViewerError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -228,7 +233,7 @@ const Palia: React.FC<PaliaProps> = ({ pdfPath = '/pdfs/notes.pdf', fileName = '
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-2xl font-black truncate">Παλιό θέμα (PDF)</h1>
+              <h1 className="text-lg sm:text-2xl font-black truncate">{heading}</h1>
               <p className="text-gray-800/80 text-xs sm:text-sm truncate">{fileName}</p>
             </div>
             {isFullscreen && (

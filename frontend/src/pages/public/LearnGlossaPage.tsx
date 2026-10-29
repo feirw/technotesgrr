@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { PageMenuIcon } from '@/data/menuIcons';
 
 export const LEARN_GLOSSA_URL = 'https://www.learnglossa.gr/';
 
@@ -8,12 +9,11 @@ const LearnGlossaPage: React.FC = () => (
     <div className="max-w-4xl mx-auto">
       <div className="rounded-3xl border-2 border-[#f07f97]/30 dark:border-white/15 bg-white/90 dark:bg-[#3a2658]/90 p-6 sm:p-10 shadow-xl">
         <div className="text-center">
-          <img
-            src="/images/learn-glossa-logo.png"
-            alt="Learn Glossa"
-            width={64}
-            height={64}
-            className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-2xl shadow-md"
+          <PageMenuIcon
+            icon="learnGlossa"
+            wrapperClassName="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4"
+            className="w-12 h-12 sm:w-14 sm:h-14"
+            label="Learn Glossa"
           />
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-[#faf5ef]">
             Learn Glossa

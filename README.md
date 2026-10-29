@@ -60,6 +60,7 @@ API: **http://localhost:8001** · Python 3.12 (`runtime.txt`).
 |--------|------|----------|
 | Quiz | `/quiz` | Κεφάλαια ύλης από `src/data/quizzes/`. Συνέχεια από την πρώτη αναπάντητη. |
 | Flashcards | `/flashcards` | Κεφάλαια από `src/data/flashcards/`. |
+| Ασκήσεις | `/askiseis` | Ασκήσεις ανά κατηγορία θέματος (Θέμα Γ) σε PDF. |
 | Μεθοδολογίες | `/methodologies` | Σημειώσεις / παραδείγματα ΑΕΠΠ. |
 | Δομές δεδομένων | `/domes-dedomenon` | Interactive visualizer: δέντρα, BST, λίστες, γράφοι. |
 | Παλιά θέματα | `/paliathemata` | PDFs (κανονικές, επαναληπτικές, ΟΕΦΕ, τράπεζα θεμάτων). |
@@ -68,8 +69,6 @@ API: **http://localhost:8001** · Python 3.12 (`runtime.txt`).
 | Study Timer | `/study-timer` | Χρόνος μελέτης και ημερήσιος στόχος. |
 | Διερμηνευτής ΓΛΩΣΣΑΣ | `/gloglossa` | Link στο [didactics.gr/glossa](https://www.didactics.gr/glossa). |
 | Σχολικά βιβλία | `/vivlia` | PDF βιβλίο μαθητή + συμπληρωματικό υλικό. |
-
-Η παλιά ενότητα **Ασκήσεις** (`/askiseis`) ανακατευθύνει στην αρχική.
 
 ### Σχολές (μετά τις Πανελλήνιες)
 

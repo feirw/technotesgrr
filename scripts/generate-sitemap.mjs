@@ -20,6 +20,7 @@ const PRIORITY = {
   '/gloglossa': '0.85',
   '/learn-glossa': '0.85',
   '/methodologies': '0.85',
+  '/askiseis': '0.85',
   '/algorithms': '0.85',
 };
 

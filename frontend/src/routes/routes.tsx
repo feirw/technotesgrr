@@ -14,6 +14,7 @@ const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePa
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
 const PrepPage = lazy(() => import('@/pages/public/PrepPage'));
 const LearnGlossaPage = lazy(() => import('@/pages/public/LearnGlossaPage'));
+const AskiseisPage = lazy(() => import('@/pages/public/AskiseisPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -170,7 +171,7 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/askiseis',
-    element: <Navigate to="/" replace />,
+    element: <AskiseisPage />,
   },
   {
     path: '/thank-you',

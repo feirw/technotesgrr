@@ -289,6 +289,20 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Online Μαθήματα', path: '/online-mathimata' },
     ],
   },
+  '/askiseis': {
+    path: '/askiseis',
+    slug: 'askiseis',
+    title: 'Ασκήσεις Πληροφορικής | Πανελλήνιες',
+    description:
+      'Ασκήσεις Πληροφορικής Γ\' Λυκείου για Πανελλήνιες: θέματα Γ σε ΓΛΩΣΣΑ, με εκφώνηση σε PDF.',
+    ogImage: '/og/default.png',
+    includeCourseSchema: true,
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Προετοιμασία', path: '/proetoimasia' },
+      { name: 'Ασκήσεις', path: '/askiseis' },
+    ],
+  },
   '/methodologies': {
     path: '/methodologies',
     slug: 'methodologies',

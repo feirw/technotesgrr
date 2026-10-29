@@ -10,6 +10,7 @@ export const PREP_TOOLS: PrepTool[] = [
   { to: '/online-mathimata', label: 'Online Μαθήματα', iconSrc: MENU_ICONS.onlineLessons },
   { to: '/quiz', label: 'Quiz', iconSrc: MENU_ICONS.quiz },
   { to: '/flashcards', label: 'Flashcards', iconSrc: MENU_ICONS.flashcards },
+  { to: '/askiseis', label: 'Ασκήσεις', iconSrc: MENU_ICONS.askiseis },
   { to: '/methodologies', label: 'Μεθοδολογίες', iconSrc: MENU_ICONS.methodologies },
   { to: '/learn-glossa', label: 'Learn Glossa', iconSrc: MENU_ICONS.learnGlossa },
   { to: '/domes-dedomenon', label: 'Δομές Δεδομένων', iconSrc: MENU_ICONS.dataStructures },

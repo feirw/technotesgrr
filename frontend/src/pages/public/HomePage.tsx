@@ -103,6 +103,7 @@ const featureCategoriesData: FeatureCategory[] = [
       { label: 'Online Μαθήματα', path: '/online-mathimata', iconSrc: MENU_ICONS.onlineLessons },
       { label: 'Flashcards', path: '/flashcards', iconSrc: MENU_ICONS.flashcards },
       { label: 'Quiz', path: '/quiz', iconSrc: MENU_ICONS.quiz },
+      { label: 'Ασκήσεις', path: '/askiseis', iconSrc: MENU_ICONS.askiseis },
       { label: 'Παλιά Θέματα', path: '/paliathemata', iconSrc: MENU_ICONS.paliathemata },
       { label: 'Μεθοδολογίες', path: '/methodologies', iconSrc: MENU_ICONS.methodologies },
       { label: 'Οπτικοποίηση δομών', path: '/domes-dedomenon', iconSrc: MENU_ICONS.dataStructures },
