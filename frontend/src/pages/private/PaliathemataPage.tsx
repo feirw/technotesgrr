@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Calendar, X, FileText } from 'lucide-react';
+import { Search, Calendar, X, FileText, Download } from 'lucide-react';
 import Palia from '@/components/private/Palia';
 import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
+import { downloadPdfsAsZip, type ZipProgressPhase } from '@/utils/downloadPdfsZip';
 
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -275,10 +276,21 @@ const TopicCard: React.FC<TopicCardProps> = ({ item, mode, isSelected, onClick, 
 // 🏠 MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════
 
+type DownloadProgress = {
+  mode: ExamMode;
+  done: number;
+  total: number;
+  phase: ZipProgressPhase;
+};
+
 const PaliathemataPage: React.FC = () => {
   const [mode, setMode] = useState<ExamMode>('kanonikes');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const downloadAbortRef = useRef<AbortController | null>(null);
+  const downloadingRef = useRef(false);
 
   const allItems = MODE_ITEMS[mode];
 
@@ -325,6 +337,47 @@ const PaliathemataPage: React.FC = () => {
     };
   }, [selectedId]);
 
+  useEffect(() => {
+    return () => {
+      downloadAbortRef.current?.abort();
+    };
+  }, []);
+
+  const handleDownloadAll = async (targetMode: ExamMode) => {
+    if (downloadingRef.current) return;
+    const items = MODE_ITEMS[targetMode];
+    if (items.length === 0) return;
+    const tab = MODE_TABS.find((t) => t.mode === targetMode);
+    const controller = new AbortController();
+    downloadingRef.current = true;
+    downloadAbortRef.current = controller;
+    setDownloadError(null);
+    setDownloadProgress({ mode: targetMode, done: 0, total: items.length, phase: 'fetch' });
+    try {
+      const { failed } = await downloadPdfsAsZip({
+        items: items.map((item) => ({
+          path: item.path ?? `/pdfs/${targetMode}/${item.id}.pdf`,
+          name: `${item.label}.pdf`,
+        })),
+        zipName: `Παλιά Θέματα - ${tab?.label ?? targetMode}.zip`,
+        signal: controller.signal,
+        onProgress: (done, total, phase) => {
+          setDownloadProgress({ mode: targetMode, done, total, phase });
+        },
+      });
+      if (failed.length > 0) {
+        setDownloadError(`Κατέβηκαν ${items.length - failed.length} από ${items.length} αρχεία.`);
+      }
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
+      setDownloadError('Η λήψη απέτυχε. Δοκίμασε ξανά.');
+    } finally {
+      downloadingRef.current = false;
+      setDownloadProgress(null);
+      if (downloadAbortRef.current === controller) downloadAbortRef.current = null;
+    }
+  };
+
   const searchPlaceholder = mode.startsWith('eimaste-mesa')
     ? 'Αναζήτηση περιόδου...'
     : mode.startsWith('trapeza')
@@ -366,51 +419,86 @@ const PaliathemataPage: React.FC = () => {
               role="tablist"
               aria-label="Επιλογή κατηγορίας"
             >
-              {MODE_TABS.map((tab) => (
-                <motion.button
-                  key={tab.mode}
-                  role="tab"
-                  aria-selected={mode === tab.mode}
-                  className={`
-                    relative px-3 sm:px-4 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all
-                    focus:outline-none focus:ring-2 focus:ring-coral-accent
-                    ${
-                      mode === tab.mode
-                        ? 'bg-coral-accent text-white shadow-lg'
-                        : 'bg-gray-100 dark:bg-[#2d1c48] text-gray-700 dark:text-gray-300 hover:bg-coral-accent/10 dark:hover:bg-gray-700'
-                    }
-                  `}
-                  onClick={() => handleModeChange(tab.mode)}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <div className="flex flex-col items-center gap-1 leading-tight">
-                    <Calendar className="w-4 h-4 shrink-0" />
-                    {tab.mode.startsWith('eimaste-mesa') ? (
-                      <span className="sm:hidden text-center text-[10px] leading-snug">
-                        <span className="block">Είμαστε Μέσα</span>
-                        <span className="block">
-                          {tab.mode === 'eimaste-mesa-a'
-                            ? 'Α Φάση'
-                            : tab.mode === 'eimaste-mesa-b'
-                              ? 'Β Φάση'
-                              : 'Γ Φάση'}
-                        </span>
-                      </span>
-                    ) : tab.mode.startsWith('trapeza') ? (
-                      <span className="sm:hidden text-center text-[10px] leading-snug">
-                        <span className="block">Τράπεζα Θεμάτων</span>
-                        <span className="block">
-                          {tab.mode === 'trapeza-thema-b' ? 'Θέμα Β' : 'Θέμα Δ'}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="sm:hidden">{tab.mobileLabel}</span>
-                    )}
-                    <span className="hidden sm:inline">{tab.label}</span>
-                    <span className="text-[10px] sm:text-xs opacity-75">({tab.count})</span>
+              {MODE_TABS.map((tab) => {
+                const selected = mode === tab.mode;
+                const isDownloading = downloadProgress?.mode === tab.mode;
+                return (
+                  <div
+                    key={tab.mode}
+                    className={`
+                      relative rounded-xl overflow-hidden font-bold text-xs sm:text-sm transition-all
+                      ${
+                        selected
+                          ? 'bg-coral-accent text-white shadow-lg'
+                          : 'bg-gray-100 dark:bg-[#2d1c48] text-gray-700 dark:text-gray-300'
+                      }
+                    `}
+                  >
+                    <motion.button
+                      type="button"
+                      role="tab"
+                      aria-selected={selected}
+                      className={`
+                        w-full px-3 sm:px-4 pt-3 pb-2
+                        focus:outline-none focus:ring-2 focus:ring-coral-accent focus:ring-inset
+                        ${selected ? '' : 'hover:bg-coral-accent/10 dark:hover:bg-gray-700'}
+                      `}
+                      onClick={() => handleModeChange(tab.mode)}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <div className="flex flex-col items-center gap-1 leading-tight">
+                        <Calendar className="w-4 h-4 shrink-0" />
+                        {tab.mode.startsWith('eimaste-mesa') ? (
+                          <span className="sm:hidden text-center text-[10px] leading-snug">
+                            <span className="block">Είμαστε Μέσα</span>
+                            <span className="block">
+                              {tab.mode === 'eimaste-mesa-a'
+                                ? 'Α Φάση'
+                                : tab.mode === 'eimaste-mesa-b'
+                                  ? 'Β Φάση'
+                                  : 'Γ Φάση'}
+                            </span>
+                          </span>
+                        ) : tab.mode.startsWith('trapeza') ? (
+                          <span className="sm:hidden text-center text-[10px] leading-snug">
+                            <span className="block">Τράπεζα Θεμάτων</span>
+                            <span className="block">
+                              {tab.mode === 'trapeza-thema-b' ? 'Θέμα Β' : 'Θέμα Δ'}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="sm:hidden">{tab.mobileLabel}</span>
+                        )}
+                        <span className="hidden sm:inline">{tab.label}</span>
+                        <span className="text-[10px] sm:text-xs opacity-75">({tab.count})</span>
+                      </div>
+                    </motion.button>
+                    <button
+                      type="button"
+                      onClick={() => void handleDownloadAll(tab.mode)}
+                      disabled={Boolean(downloadProgress)}
+                      className={`
+                        w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-[10px] sm:text-xs font-bold border-t
+                        focus:outline-none focus:ring-2 focus:ring-coral-accent focus:ring-inset
+                        disabled:opacity-60 disabled:cursor-not-allowed
+                        ${
+                          selected
+                            ? 'border-white/25 hover:bg-white/15'
+                            : 'border-black/10 dark:border-white/10 text-coral-accent hover:bg-coral-accent/10'
+                        }
+                      `}
+                      aria-label={`Λήψη όλων των PDF: ${tab.label}`}
+                    >
+                      <Download className="w-3.5 h-3.5 shrink-0" />
+                      {isDownloading
+                        ? downloadProgress.phase === 'zip'
+                          ? 'Zip…'
+                          : `${downloadProgress.done}/${downloadProgress.total}`
+                        : 'Λήψη όλων'}
+                    </button>
                   </div>
-                </motion.button>
-              ))}
+                );
+              })}
             </div>
 
             <div className="relative w-full md:w-64 shrink-0">
@@ -433,6 +521,10 @@ const PaliathemataPage: React.FC = () => {
               )}
             </div>
           </div>
+
+          {downloadError && (
+            <p className="mb-3 text-sm font-semibold text-coral-strong dark:text-coral-light">{downloadError}</p>
+          )}
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm">
             <div className="text-gray-600 dark:text-gray-400">
