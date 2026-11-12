@@ -28,6 +28,32 @@ const ASKISEIS: AskisiCategory[] = [
       },
     ],
   },
+  {
+    id: 'diagwnismata',
+    title: 'Διαγωνίσματα',
+    items: [
+      {
+        id: 'diagwnisma-1',
+        title: 'Διαγώνισμα 1 — Δομή Ακολουθίας',
+        path: '/pdfs/askiseis/diagwnisma-1.pdf',
+      },
+      {
+        id: 'diagwnisma-2',
+        title: 'Διαγώνισμα 2 — Δομές Επιλογής',
+        path: '/pdfs/askiseis/diagwnisma-2.pdf',
+      },
+      {
+        id: 'diagwnisma-3',
+        title: 'Διαγώνισμα 3 — Δομές Επανάληψης',
+        path: '/pdfs/askiseis/diagwnisma-3.pdf',
+      },
+      {
+        id: 'diagwnisma-4',
+        title: 'Διαγώνισμα 4 — Πίνακες',
+        path: '/pdfs/askiseis/diagwnisma-4.pdf',
+      },
+    ],
+  },
 ];
 
 const TopicCard: React.FC<{
@@ -169,7 +195,7 @@ const AskiseisPage: React.FC = () => {
             <div className="text-gray-600 dark:text-gray-400">
               Βρέθηκαν{' '}
               <span className="font-bold text-coral-accent dark:text-coral-light">{category.items.length}</span>{' '}
-              ασκήσεις
+              {categoryId === 'diagwnismata' ? 'διαγωνίσματα' : 'ασκήσεις'}
               {selectedItem && (
                 <span className="ml-2">
                   • Επιλεγμένη:{' '}
@@ -228,7 +254,7 @@ const AskiseisPage: React.FC = () => {
               <Palia
                 pdfPath={selectedItem.path}
                 fileName={`${selectedItem.title}.pdf`}
-                heading="Άσκηση (PDF)"
+                heading={categoryId === 'diagwnismata' ? 'Διαγώνισμα (PDF)' : 'Άσκηση (PDF)'}
               />
             </div>
           </motion.div>
