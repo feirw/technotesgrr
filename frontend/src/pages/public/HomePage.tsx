@@ -6,19 +6,8 @@ import { MENU_ICONS, MenuIconImg } from '@/data/menuIcons';
 import { getPreferredTheme } from '@/utils/theme';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
 import { HOME_FAQ } from '@/data/homeFaq';
-// import { getBackendUrl } from '@/utils/backendUrl';
-// import { apiFetch } from '@/utils/apiClient';
-// import { FiSend } from 'react-icons/fi';
 
 // --- Types & Interfaces ---
-
-// interface ContactFormState {
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   message: string;
-//   website: string;
-// }
 
 interface Review {
   name: string;
@@ -37,12 +26,6 @@ interface FeatureCategory {
   desc: string;
   items: FeatureCategoryItem[];
 }
-
-// interface ContactResponse {
-//   message: string;
-//   submission_id: number;
-//   email_sent?: boolean;
-// }
 
 // ---------- MOCK DATA ----------
 
@@ -131,8 +114,6 @@ const featureCategoriesData: FeatureCategory[] = [
 ];
 
 const faqData = HOME_FAQ;
-
-// const BACKEND_URL = getBackendUrl();
 
 /** Κοραλί (ζεστό): κύριο `#ff8f8e`, accent `#ff6b7a`, hover `#e85563`, ανοιχτό `#ffb0a4`. */
 
@@ -495,30 +476,6 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index }) => {
 // ---------- Main Component ----------
 
 const HomePage: React.FC = () => {
-
-  // Contact form state (προσωρινά απενεργοποιημένη η φόρμα)
-  /*
-  const [contactForm, setContactForm] = useState<ContactFormState>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    message: '',
-    website: '',
-  });
-
-  const [contactSubmitting, setContactSubmitting] = useState(false);
-  const [contactSuccess, setContactSuccess] = useState(false);
-  const [contactError, setContactError] = useState('');
-  const [contactSuccessMessage, setContactSuccessMessage] = useState('');
-
-  const firstId = useId();
-  const lastId = useId();
-  const emailId = useId();
-  const msgId = useId();
-  const successId = useId();
-  const errorId = useId();
-  */
-
   const [reviewIndex, setReviewIndex] = useState(0);
   const [reviewDirection, setReviewDirection] = useState(1);
 
@@ -531,82 +488,6 @@ const HomePage: React.FC = () => {
     setReviewDirection(-1);
     setReviewIndex((i) => (i - 1 + reviewCount) % reviewCount);
   }, [reviewCount]);
-
-  /*
-  const handleContactInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
-      setContactForm((prev) => ({ ...prev, [name]: value }));
-      if (contactError) setContactError('');
-    },
-    [contactError]
-  );
-
-  const validate = useCallback((): string | null => {
-    if (contactForm.website) return 'Spam detected.';
-    if (!contactForm.firstName.trim() || !contactForm.email.trim() || !contactForm.message.trim())
-      return 'Συμπλήρωσε όνομα, email και μήνυμα.';
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(contactForm.email))
-      return 'Το email δεν φαίνεται έγκυρο. Παρακαλώ ελέγξτε τη μορφή (π.χ. user@example.com).';
-
-    return null;
-  }, [contactForm]);
-
-  const handleContactSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      setContactError('');
-      const err = validate();
-      if (err) {
-        setContactError(err);
-        return;
-      }
-
-      setContactSubmitting(true);
-
-      try {
-        const data = await apiFetch<ContactResponse>(`${BACKEND_URL}/api/contact`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          timeoutMs: 10000,
-          retries: 1,
-          body: JSON.stringify({
-            firstName: contactForm.firstName.trim(),
-            lastName: contactForm.lastName.trim(),
-            email: contactForm.email.trim(),
-            message: contactForm.message.trim(),
-          }),
-        });
-        setContactSuccess(true);
-        setContactSuccessMessage(
-          data?.email_sent
-            ? '✓ Το μήνυμά σου στάλθηκε και ενημερώθηκε η ομάδα μας με email.'
-            : '✓ Το μήνυμά σου καταχωρήθηκε επιτυχώς. Θα σου απαντήσουμε σύντομα.'
-        );
-        setContactForm({
-          firstName: '',
-          lastName: '',
-          email: '',
-          message: '',
-          website: '',
-        });
-        setTimeout(() => {
-          setContactSuccess(false);
-          setContactSuccessMessage('');
-        }, 5000);
-      } catch (err) {
-        console.error('Error:', err);
-        const detail = err instanceof Error ? err.message : '';
-        setContactError(detail || 'Κάτι πήγε στραβά. Προσπάθησε ξανά.');
-      } finally {
-        setContactSubmitting(false);
-      }
-    },
-    [contactForm, validate]
-  );
-  */
 
   return (
     <MotionConfig reducedMotion="user">
@@ -728,17 +609,6 @@ const HomePage: React.FC = () => {
             ))}
           </div>
         </Section>
-
-        {/* Contact Section — προσωρινά απενεργοποιημένη
-        <Section
-          id="contact"
-          title="Επικοινώνησε μαζί μας"
-          subtitle="Έχεις απορίες ή προτάσεις; Στείλε μας μήνυμα!"
-          withGradient
-        >
-          ...
-        </Section>
-        */}
       </div>
     </MotionConfig>
   );

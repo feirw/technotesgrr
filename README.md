@@ -12,7 +12,7 @@
 
 Η **σύνδεση χρηστών είναι απενεργοποιημένη** στο μενού. Πρόοδος quiz / flashcards / study timer μένει στο `localStorage`. Αν κάποιος είναι συνδεδεμένος, το ίδιο state συγχρονίζεται στο `/api/progress/{key}`.
 
-Η φόρμα επικοινωνίας στην αρχική είναι επίσης απενεργοποιημένη. Επικοινωνία μέσω [Instagram](https://instagram.com/technotesgr) / Discord.
+Επικοινωνία μέσω [Instagram](https://instagram.com/technotesgr) / Discord.
 
 ## Quick start
 
@@ -36,7 +36,7 @@ bun run build    # production build → frontend/build
 
 ### Backend (προαιρετικό)
 
-Χρειάζεται μόνο για auth, sync προόδου, υποβολή προσανατολισμού, leaderboard, contact και AI endpoints.
+Χρειάζεται μόνο για auth, sync προόδου, υποβολή προσανατολισμού, leaderboard και AI endpoints.
 
 ```bash
 cd backend
@@ -117,7 +117,7 @@ python scripts/generate_<school>_curriculum.py
 | `GEMINI_MODEL` | Default: `gemini-2.5-flash` |
 | `PORT` | Default: `8001` |
 | `CORS_ORIGINS` | Extra origins (comma-separated). Το `server.py` επιτρέπει ήδη `.gr` / `.com` + local. |
-| `SMTP_*`, `CONTACT_RECEIVER_EMAIL` | Email για contact / reset password (αν ρυθμιστούν) |
+| `SMTP_*` | Email για reset password (αν ρυθμιστεί) |
 
 Πλήρης λίστα: `backend/.env.example`.
 

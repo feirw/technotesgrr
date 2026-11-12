@@ -18,7 +18,7 @@ const DataProtectionPage: React.FC = () => {
       <p>
         Η παρούσα Πολιτική περιγράφει πώς το <strong>technotesgr</strong> επεξεργάζεται τα προσωπικά
         δεδομένα που είναι απαραίτητα για τη λειτουργία (λογαριασμοί χρηστών, κοινότητα, κουίζ,
-        chatbot, επικοινωνία), σύμφωνα με τον GDPR.
+        chatbot), σύμφωνα με τον GDPR.
       </p>
 
       <h2 className="text-2xl font-bold mt-6 mb-3">2. Σκοπός και Πεδίο Εφαρμογής</h2>
@@ -50,11 +50,8 @@ const DataProtectionPage: React.FC = () => {
         <li>Προτιμήσεις: dark mode, προσωρινή κρυφή μνήμη (local/session storage).</li>
       </ul>
 
-      <h2 className="text-2xl font-bold mt-6 mb-3">5. Επικοινωνία μέσω Email</h2>
-      <p>
-        Αν επικοινωνήσετε μέσω της φόρμας/email, τα δεδομένα χρησιμοποιούνται μόνο για απάντηση στο
-        αίτημα και διατηρούνται για όσο απαιτείται από τον σκοπό/νόμο.
-      </p>
+      <h2 className="text-2xl font-bold mt-6 mb-3">5. Επικοινωνία</h2>
+      <p>Η επικοινωνία γίνεται μέσω των social media της σελίδας.</p>
 
       <h2 className="text-2xl font-bold mt-6 mb-3">6. Ασφάλεια</h2>
       <p>Η technotesgr εφαρμόζει τεχνικά και οργανωτικά μέτρα ασφαλείας, όπως:</p>
@@ -94,8 +91,7 @@ const DataProtectionPage: React.FC = () => {
         <strong>Υπεύθυνος Επικοινωνίας:</strong> Ελένη Ζαφείρη
       </p>
       <p className="text-sm text-gray-500 mt-2">
-        Για θέματα GDPR/ιδιωτικότητας, χρησιμοποιήστε τη φόρμα επικοινωνίας ή τα στοιχεία της
-        σελίδας.
+        Για θέματα GDPR/ιδιωτικότητας, επικοινωνήστε μέσω των social media της σελίδας.
       </p>
     </div>
   );
