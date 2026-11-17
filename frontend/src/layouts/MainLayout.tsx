@@ -545,6 +545,29 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     Αρχική
                   </MobileNavButton>
 
+                  <MobileMenuSectionTitle>Extras</MobileMenuSectionTitle>
+                  <MobileNavButton
+                    to="/community"
+                    iconSrc="/images/logo-80.webp"
+                    iconLabel="Community"
+                    onClick={closeMenu}
+                  >
+                    Community
+                  </MobileNavButton>
+                  <MobileNavButton
+                    to="/announcements"
+                    iconSrc={MENU_ICONS.announcements}
+                    onClick={closeMenu}
+                  >
+                    Ανακοινώσεις
+                  </MobileNavButton>
+                  <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
+                    FAQ
+                  </MobileNavButton>
+                  <MobileNavButton to="/about" iconSrc={MENU_ICONS.about} onClick={closeMenu}>
+                    Σχετικά με εμένα
+                  </MobileNavButton>
+
                   <MobileMenuSectionTitle>Προετοιμασία</MobileMenuSectionTitle>
                   {PREP_MENU_ITEMS.map((item) => (
                     <MobileNavButton
@@ -573,25 +596,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
-
-                  <MobileNavButton to="/community" onClick={closeMenu}>
-                    Community
-                  </MobileNavButton>
-
-                  <MobileMenuSectionTitle>Extras</MobileMenuSectionTitle>
-                  <MobileNavButton
-                    to="/announcements"
-                    iconSrc={MENU_ICONS.announcements}
-                    onClick={closeMenu}
-                  >
-                    Ανακοινώσεις
-                  </MobileNavButton>
-                  <MobileNavButton to="/faq" iconSrc={MENU_ICONS.faq} onClick={closeMenu}>
-                    FAQ
-                  </MobileNavButton>
-                  <MobileNavButton to="/about" iconSrc={MENU_ICONS.about} onClick={closeMenu}>
-                    Σχετικά με εμένα
-                  </MobileNavButton>
 
                   {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
                   {user ? (
