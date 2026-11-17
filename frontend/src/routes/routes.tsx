@@ -15,6 +15,7 @@ const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
 const PrepPage = lazy(() => import('@/pages/public/PrepPage'));
 const LearnGlossaPage = lazy(() => import('@/pages/public/LearnGlossaPage'));
 const AskiseisPage = lazy(() => import('@/pages/public/AskiseisPage'));
+const CommunityPage = lazy(() => import('@/pages/public/CommunityPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -112,6 +113,10 @@ const routes: RouteConfig[] = [
   {
     path: '/faq',
     element: <FaqPage />,
+  },
+  {
+    path: '/community',
+    element: <CommunityPage />,
   },
   {
     path: '/proetoimasia',

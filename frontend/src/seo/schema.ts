@@ -129,5 +129,38 @@ export function buildStructuredData(page: PageSeo, pathname: string): object[] {
     graphs.push(buildBreadcrumbSchema(page.breadcrumbs));
   }
 
+  if (page.path === '/community') {
+    graphs.push({
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: '1ο Technotes Meetup',
+      description:
+        'Meetup για μαθητές Πανελληνίων και φοιτητές: Technotes, καριέρες, διάβασμα και τεχνητή νοημοσύνη. Sui Hub Athens, 7 Δεκεμβρίου 2026.',
+      startDate: '2026-12-07',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      image: absoluteUrl('/images/technotes-meetup.png'),
+      url: 'https://luma.com/ot03om4c',
+      sameAs: [pageUrl, 'https://luma.com/ot03om4c'],
+      organizer: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        url: DEFAULT_SITE_ORIGIN,
+      },
+      location: {
+        '@type': 'Place',
+        name: 'Sui Hub Athens',
+        url: 'https://suihubathens.io/',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Agiou Markou 22',
+          addressLocality: 'Αθήνα',
+          postalCode: '105 60',
+          addressCountry: 'GR',
+        },
+      },
+    });
+  }
+
   return graphs;
 }

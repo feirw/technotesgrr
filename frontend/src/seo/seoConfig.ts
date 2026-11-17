@@ -289,6 +289,18 @@ export const PAGE_SEO: Record<string, PageSeo> = {
       { name: 'Online Μαθήματα', path: '/online-mathimata' },
     ],
   },
+  '/community': {
+    path: '/community',
+    slug: 'community',
+    title: 'Community | 1ο Technotes Meetup | 7 Δεκεμβρίου',
+    description:
+      '1ο Technotes Meetup στις 7 Δεκεμβρίου στο Sui Hub Athens. Γνώρισε νέους ανθρώπους, συζήτησε για καριέρα, διάβασμα και τεχνητή νοημοσύνη.',
+    ogImage: '/images/technotes-meetup.png',
+    breadcrumbs: [
+      { name: 'Αρχική', path: '/' },
+      { name: 'Community', path: '/community' },
+    ],
+  },
   '/askiseis': {
     path: '/askiseis',
     slug: 'askiseis',

@@ -437,6 +437,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </NavButton>
               <NavDropdown title="Προετοιμασία" items={PREP_MENU_ITEMS} to="/proetoimasia" />
               <NavDropdown title="Σχολές" items={SCHOOLS_MENU_ITEMS} />
+              <NavButton to="/community">Community</NavButton>
               <NavButton
                 to="/announcements"
                 iconSrc={MENU_ICONS.announcements}
@@ -572,6 +573,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
+
+                  <MobileNavButton to="/community" onClick={closeMenu}>
+                    Community
+                  </MobileNavButton>
 
                   <MobileMenuSectionTitle>Extras</MobileMenuSectionTitle>
                   <MobileNavButton
