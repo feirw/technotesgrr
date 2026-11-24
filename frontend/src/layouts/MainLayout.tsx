@@ -25,6 +25,7 @@ import { PANIC_MESSAGES } from '@/data/panicMessages';
 import { TERMS_LAST_UPDATED } from '@/data/legalDates';
 import { DISCORD_INVITE_URL } from '@/seo/siteMeta';
 import { OptimizedImg } from '@/components/shared/OptimizedImg';
+import { AuthNavDesktop, AuthNavMobile } from '@/components/auth/AuthNavMenu';
 // import { useAuth } from '@/context/AuthContext'; // Σύνδεση — προσωρινά απενεργοποιημένη
 
 const DARK_THEME_ICON = '/images/home%20page/starr.png';
@@ -476,6 +477,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 onToggle={() => setIsDark(toggleTheme() === 'dark')}
                 className="ml-2"
               />
+              <AuthNavDesktop />
               {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
               {user ? (
                 <button
@@ -663,6 +665,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       {item.label}
                     </MobileNavButton>
                   ))}
+
+                  <AuthNavMobile onNavigate={closeMenu} />
 
                   {/* Σύνδεση/Αποσύνδεση — προσωρινά απενεργοποιημένη
                   {user ? (

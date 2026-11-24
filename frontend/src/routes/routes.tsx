@@ -12,6 +12,13 @@ const GloglossaEmbedPage = lazy(loadGloglossaPage);
 const VivliaPage = lazy(() => import('@/pages/public/VivliaPage'));
 const AnnouncementsPage = lazy(() => import('@/pages/public/AnnouncementsTablePage'));
 const FaqPage = lazy(() => import('@/pages/public/FaqPage'));
+const LoginPage = lazy(() => import('@/pages/public/auth/LoginPage'));
+const SignupPage = lazy(() => import('@/pages/public/auth/SignupPage'));
+const ForgotPasswordPage = lazy(() => import('@/pages/public/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/public/auth/ResetPasswordPage'));
+const VerifyEmailPage = lazy(() => import('@/pages/public/auth/VerifyEmailPage'));
+const VerifyOtpPage = lazy(() => import('@/pages/public/auth/VerifyOtpPage'));
+const AccountPage = lazy(() => import('@/pages/public/auth/AccountPage'));
 
 // User Pages (Protected)
 const loadQuizPage = () => import('@/pages/private/QuizPage');
@@ -194,6 +201,13 @@ const routes: RouteConfig[] = [
     path: '/test-auth',
     element: <AuthTestScreen />,
   },
+  { path: '/login', element: <LoginPage /> },
+  { path: '/signup', element: <SignupPage /> },
+  { path: '/forgot-password', element: <ForgotPasswordPage /> },
+  { path: '/reset-password', element: <ResetPasswordPage /> },
+  { path: '/verify-email', element: <VerifyEmailPage /> },
+  { path: '/verify-otp', element: <VerifyOtpPage /> },
+  { path: '/account', element: <AccountPage /> },
 
   {
     path: '*',

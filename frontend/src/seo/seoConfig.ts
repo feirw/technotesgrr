@@ -1,4 +1,5 @@
 import { DEFAULT_OG_IMAGE_PATH } from '@/seo/siteMeta';
+import { AUTH_STRINGS } from '@/data/authStrings';
 
 export type BreadcrumbItem = {
   name: string;
@@ -22,6 +23,19 @@ export type PageSeo = {
 };
 
 const og = (slug: string) => `/og/pages/${slug}.png`;
+
+/** Σελίδες auth: noindex, χωρίς breadcrumbs, default OG. */
+const authSeo = (path: string, slug: string, title: string): Record<string, PageSeo> => ({
+  [path]: {
+    path,
+    slug,
+    title,
+    description: AUTH_STRINGS.seo.description,
+    ogImage: DEFAULT_OG_IMAGE_PATH,
+    noindex: true,
+    robots: 'noindex, nofollow',
+  },
+});
 
 export const PAGE_SEO: Record<string, PageSeo> = {
   '/': {
@@ -342,6 +356,13 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     ogImage: og('sygkrisi-mathimaton'),
     noindex: true,
   },
+  ...authSeo('/login', 'login', AUTH_STRINGS.seo.login),
+  ...authSeo('/signup', 'signup', AUTH_STRINGS.seo.signup),
+  ...authSeo('/forgot-password', 'forgot-password', AUTH_STRINGS.seo.forgot),
+  ...authSeo('/reset-password', 'reset-password', AUTH_STRINGS.seo.reset),
+  ...authSeo('/verify-email', 'verify-email', AUTH_STRINGS.seo.verifyEmail),
+  ...authSeo('/verify-otp', 'verify-otp', AUTH_STRINGS.seo.otp),
+  ...authSeo('/account', 'account', AUTH_STRINGS.seo.account),
 };
 
 export const NOT_FOUND_SEO: PageSeo = {
